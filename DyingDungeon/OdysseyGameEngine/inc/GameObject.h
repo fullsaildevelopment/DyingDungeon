@@ -7,10 +7,10 @@
 
 namespace Odyssey
 {
-	class SceneObject
+	class GameObject
 	{
 	public:
-		SceneObject();
+		GameObject();
 	public:
 		void importModel(const char* filename);
 	public: // Components
@@ -22,9 +22,9 @@ namespace Odyssey
 		bool hasParticleSystem();
 		bool hasAABB();
 	public: // Accessors
-		const std::vector<std::shared_ptr<SceneObject>> getChildren();
+		const std::vector<std::shared_ptr<GameObject>> getChildren();
 		const int getChildrenCount();
-		SceneObject* getParent();
+		GameObject* getParent();
 	public: //Debug
 		void enableDebug();
 		void disableDebug();
@@ -46,8 +46,8 @@ namespace Odyssey
 		template<class ComponentType>
 		int removeComponents();
 	private:
-		std::vector<std::shared_ptr<SceneObject>> children;
-		SceneObject* mParent;
+		std::vector<std::shared_ptr<GameObject>> children;
+		GameObject* mParent;
 		bool mDebugEnabled;
 		// Components
 		std::unique_ptr<Animator> mAnimator;
@@ -58,12 +58,12 @@ namespace Odyssey
 
 	// Template Functions
 	template<class ComponentType, typename ...Args>
-	void SceneObject::addComponent(Args&& ...params)
+	void GameObject::addComponent(Args&& ...params)
 	{
 		mComponents.emplace_back(std::make_unique<ComponentType>(std::forward<Args>(params)...));
 	}
 	template<class ComponentType>
-	ComponentType* SceneObject::getComponent()
+	ComponentType* GameObject::getComponent()
 	{
 		for (auto&& component : mComponents)
 		{
@@ -73,9 +73,9 @@ namespace Odyssey
 		return std::unique_ptr<ComponentType>(nullptr).get();
 	}
 	template<class ComponentType>
-	inline ComponentType* SceneObject::getRootComponent()
+	inline ComponentType* GameObject::getRootComponent()
 	{
-		SceneObject* parent = mParent;
+		GameObject* parent = mParent;
 
 		while (parent->mParent != nullptr)
 		{
@@ -84,7 +84,7 @@ namespace Odyssey
 		return parent->getComponent<ComponentType>();
 	}
 	template<class ComponentType>
-	bool SceneObject::removeComponent()
+	bool GameObject::removeComponent()
 	{
 		if (mComponents.empty())
 			return false;
@@ -106,7 +106,7 @@ namespace Odyssey
 	}
 
 	template<class ComponentType>
-	int SceneObject::removeComponents()
+	int GameObject::removeComponents()
 	{
 		if (mComponents.empty())
 			return 0;
@@ -135,7 +135,7 @@ namespace Odyssey
 	}
 
 	template<class ComponentType>
-	std::vector<ComponentType*> SceneObject::getComponents()
+	std::vector<ComponentType*> GameObject::getComponents()
 	{
 		std::vector<ComponentType*> componentsOfType;
 

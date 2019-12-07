@@ -14,7 +14,7 @@ namespace Odyssey
 	public:
 		AABB() = default;
 		AABB(DirectX::XMFLOAT3 min, DirectX::XMFLOAT3 max);
-		virtual void initialize(SceneObject* parent);
+		virtual void initialize(GameObject* parent);
 		void debugDraw(DirectX::XMFLOAT3 color);
 		DirectX::XMFLOAT3 calculateCenter();
 		DirectX::XMFLOAT3 calculateExtents();

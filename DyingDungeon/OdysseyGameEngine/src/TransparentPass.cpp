@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "Transform.h"
 
 namespace Odyssey
@@ -29,9 +29,9 @@ namespace Odyssey
 	}
 	void TransparentPass::render(RenderArgs& args)
 	{
-		std::multimap<float, std::shared_ptr<SceneObject>> renderMap;
+		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
 
-		for (std::shared_ptr<SceneObject> renderObject : args.transparentList)
+		for (std::shared_ptr<GameObject> renderObject : args.transparentList)
 		{
 			if (renderObject->hasParticleSystem())
 			{
@@ -41,7 +41,7 @@ namespace Odyssey
 				renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
 				view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 				float depth = DirectX::XMVectorGetZ(view.r[3]);
-				renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+				renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
 			}
 		}
 
@@ -49,8 +49,6 @@ namespace Odyssey
 		{
 			itr->second->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 			updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
-
-			itr->second->getParticleSystem()->Run();
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Odyssey
 		Transform();
 		Transform(DirectX::XMFLOAT4X4 worldMatrix);
 	public:
-		virtual void initialize(SceneObject* parent);
+		virtual void initialize(GameObject* parent);
 	public: // Mutators
 		void addPosition(float x, float y, float z);
 		void setPosition(float x, float y, float z);
@@ -24,7 +24,7 @@ namespace Odyssey
 		DirectX::XMFLOAT3 getPosition();
 		DirectX::XMFLOAT3 getRotation();
 		DirectX::XMFLOAT3 getScale();
-		DirectX::XMFLOAT4X4 getLocalTransform();
+		void getLocalTransform(DirectX::XMFLOAT4X4& localTransform);
 		void getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform);
 	private:
 		void recalculateWorldMatrix();

@@ -22,10 +22,10 @@ namespace Odyssey
 		mMaterial = material;
 	}
 
-	void MeshRenderer::initialize(SceneObject* parent)
+	void MeshRenderer::initialize(GameObject* parent)
 	{
+		mGameObject = parent;
 		onEnable();
-		mParent = parent;
 	}
 
 	void MeshRenderer::importMesh(const char* filename)

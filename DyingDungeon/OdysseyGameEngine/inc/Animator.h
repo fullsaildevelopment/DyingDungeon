@@ -53,7 +53,7 @@ namespace Odyssey
 	public: // Constructors
 		Animator();
 	public: // Component Inherited Functions
-		virtual void initialize(SceneObject* parent);
+		virtual void initialize(GameObject* parent);
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();

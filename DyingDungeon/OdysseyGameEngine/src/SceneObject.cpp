@@ -2,20 +2,20 @@
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "Mesh.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include <fstream>
 #include "MeshRenderer.h"
 #include "Transform.h"
 
 namespace Odyssey
 {
-	SceneObject::SceneObject()
+	GameObject::GameObject()
 	{
 		// Default state for scene objects is non-renderable without a parent or children
 		mParent = nullptr;
 	}
 
-	void SceneObject::importModel(const char* filename)
+	void GameObject::importModel(const char* filename)
 	{
 		// Open the mesh file
 		std::fstream file{ filename, std::ios_base::in | std::ios_base::binary };
@@ -31,7 +31,7 @@ namespace Odyssey
 		for (int i = 0; i < numMeshes; i++)
 		{
 			// Make a child scene object
-			std::shared_ptr<SceneObject> child = std::make_shared<SceneObject>();
+			std::shared_ptr<GameObject> child = std::make_shared<GameObject>();
 			// Read in the mesh's world matrix
 			DirectX::XMFLOAT4X4 world;
 			file.read((char*)&world, sizeof(DirectX::XMFLOAT4X4));
@@ -92,7 +92,7 @@ namespace Odyssey
 		file.close();
 	}
 
-	void SceneObject::attachParticleSystem()
+	void GameObject::attachParticleSystem()
 	{
 		if (mParticleSystem == nullptr)
 		{
@@ -100,7 +100,7 @@ namespace Odyssey
 		}
 	}
 
-	void SceneObject::attachAABB()
+	void GameObject::attachAABB()
 	{
 		if (mAABB == nullptr)
 		{
@@ -109,14 +109,14 @@ namespace Odyssey
 	}
 
 
-	ParticleSystem* SceneObject::getParticleSystem()
+	ParticleSystem* GameObject::getParticleSystem()
 	{
 		return mParticleSystem.get();
 	}
 
-	ParticleSystem* SceneObject::getRootParticleSystem()
+	ParticleSystem* GameObject::getRootParticleSystem()
 	{
-		SceneObject* parent = mParent;
+		GameObject* parent = mParent;
 
 		while (parent->mParent != nullptr)
 		{
@@ -126,47 +126,47 @@ namespace Odyssey
 		return parent->getParticleSystem();
 	}
 
-	AABB* SceneObject::getAABB()
+	AABB* GameObject::getAABB()
 	{
 		return mAABB.get();
 	}
 
-	bool SceneObject::hasParticleSystem()
+	bool GameObject::hasParticleSystem()
 	{
 		return (mParticleSystem != nullptr);
 	}
 
-	bool SceneObject::hasAABB()
+	bool GameObject::hasAABB()
 	{
 		return mAABB != nullptr;
 	}
 
-	const std::vector<std::shared_ptr<SceneObject>> SceneObject::getChildren()
+	const std::vector<std::shared_ptr<GameObject>> GameObject::getChildren()
 	{
 		return children;
 	}
 
-	const int SceneObject::getChildrenCount()
+	const int GameObject::getChildrenCount()
 	{
 		return static_cast<int>(children.size());
 	}
 
-	SceneObject* SceneObject::getParent()
+	GameObject* GameObject::getParent()
 	{
 		return mParent;
 	}
 
-	void SceneObject::enableDebug()
+	void GameObject::enableDebug()
 	{
 		mDebugEnabled = true;
 	}
 
-	void SceneObject::disableDebug()
+	void GameObject::disableDebug()
 	{
 		mDebugEnabled = false;
 	}
 
-	bool SceneObject::getDebugEnabled()
+	bool GameObject::getDebugEnabled()
 	{
 		return mDebugEnabled;
 	}

@@ -6,7 +6,7 @@
 #include "Light.h"
 #include "RenderState.h"
 #include "Buffer.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "Animator.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
@@ -86,7 +86,7 @@ namespace Odyssey
 	void ShadowPass::render(RenderArgs& args)
 	{
 		// Iterate over each scene object in the render list
-		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
+		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
 			// If the object has an animator, bind it to the vertex shader
 			if (Animator* animator = renderObject->getComponent<Animator>())
@@ -104,7 +104,7 @@ namespace Odyssey
 			}
 
 			// Iterate through the object's children and perform the same rendering checks
-			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
 				// If the object has a mesh renderer, render it
 				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
@@ -130,7 +130,7 @@ namespace Odyssey
 		mRenderTarget->bindDepthTexture();
 	}
 
-	void ShadowPass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
+	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
 		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);

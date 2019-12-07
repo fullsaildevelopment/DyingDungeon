@@ -6,7 +6,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "RenderTarget.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "TextureManager.h"
@@ -23,7 +23,7 @@ namespace Odyssey
 		std::shared_ptr<Material> material = MaterialManager::getInstance().createMaterial();
 		material->setTexture(TextureType::Skybox, texID);
 
-		mSkyBox = std::make_shared<SceneObject>();
+		mSkyBox = std::make_shared<GameObject>();
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixIdentity());
 		mSkyBox->addComponent<MeshRenderer>(world, mesh, material);
@@ -71,7 +71,7 @@ namespace Odyssey
 		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
 
 		// Get the global transform of the skybox and set the mvp matrix
-		mSkyBox->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
+		mSkyBox->getComponent<Transform>()->getLocalTransform(args.shaderMatrix.world);
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Draw the skybox

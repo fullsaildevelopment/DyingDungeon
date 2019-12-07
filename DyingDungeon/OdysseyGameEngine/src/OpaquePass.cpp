@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Frustum.h"
@@ -67,15 +67,14 @@ namespace Odyssey
 
 	void OpaquePass::render(RenderArgs& args)
 	{
-		std::multimap<float, std::shared_ptr<SceneObject>> renderMap;
+		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
 
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
 		DirectX::XMFLOAT4X4 globalTransform;
 
 		// Iterate over each object in the render list
-		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
+		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
-
 			// If the object has a mesh renderer, render it
 			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
@@ -87,12 +86,12 @@ namespace Odyssey
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
 						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 						float depth = DirectX::XMVectorGetZ(view.r[3]);
-						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
 					}
 				}
 			}
 
-			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
 				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
@@ -104,7 +103,7 @@ namespace Odyssey
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
 							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 							float depth = DirectX::XMVectorGetZ(view.r[3]);
-							renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
+							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
 						}
 					}
 				}
@@ -125,7 +124,7 @@ namespace Odyssey
 		}
 	}
 
-	void OpaquePass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
+	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
 		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);

@@ -7,6 +7,6 @@ class ExampleComponent : public Odyssey::Component
 public:
 	ExampleComponent() = default;
 public:
-	virtual void initialize(Odyssey::SceneObject* parent);
+	virtual void initialize(Odyssey::GameObject* parent);
 	virtual void update(double deltaTime);
 };

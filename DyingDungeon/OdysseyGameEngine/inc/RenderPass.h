@@ -6,15 +6,15 @@ namespace Odyssey
 	class Buffer;
 	class Camera;
 	class Light;
-	class SceneObject;
+	class GameObject;
 
 	struct RenderArgs
 	{
 		Camera* camera;
 		ShaderMatrix shaderMatrix;
 		std::shared_ptr<Buffer> shaderMatrixBuffer;
-		std::vector<std::shared_ptr<SceneObject>> renderList;
-		std::vector<std::shared_ptr<SceneObject>> transparentList;
+		std::vector<std::shared_ptr<GameObject>> renderList;
+		std::vector<std::shared_ptr<GameObject>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;
 	};
 

@@ -1,5 +1,5 @@
 #include "Component.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 
 namespace Odyssey
 {
@@ -25,9 +25,9 @@ namespace Odyssey
 
 	}
 
-	SceneObject* Component::getParent()
+	GameObject* Component::getParent()
 	{
-		return mParent;
+		return mGameObject;
 	}
 
 	void Component::setEnabled(bool enable)

@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "RenderState.h"
+#include "Component.h"
 
 namespace Odyssey
 {
@@ -18,12 +19,18 @@ namespace Odyssey
 	class Shader;
 	class RenderState;
 
-	class ParticleSystem
+	class ParticleSystem : public Component
 	{
-	public:
+		CLASS_DECLARATION(ParticleSystem)
+	public: // Constructors
 		ParticleSystem();
-		void Run();
+	public: // Component Functions
+		virtual void initialize(GameObject* parent);
+		virtual void update(double deltaTime);
+	public: // Public Interface
 		void setParticleData(std::vector<Particle> data);
+	private: // Helper Functions
+		void Run();
 	public:
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mGeometryShader;

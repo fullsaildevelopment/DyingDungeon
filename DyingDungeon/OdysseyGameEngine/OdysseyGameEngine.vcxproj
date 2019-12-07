@@ -47,7 +47,7 @@
     <ClInclude Include="inc\RenderWindow.h" />
     <ClInclude Include="inc\SamplerState.h" />
     <ClInclude Include="inc\Scene.h" />
-    <ClInclude Include="inc\SceneObject.h" />
+    <ClInclude Include="inc\GameObject.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\ShaderManager.h" />
     <ClInclude Include="inc\ShadowPass.h" />

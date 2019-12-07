@@ -4,7 +4,7 @@
 #include "ShaderManager.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "Camera.h"
 #include "MeshRenderer.h"
 #include "Light.h"
@@ -47,7 +47,7 @@ namespace Odyssey
 
 	void DebugPass::render(RenderArgs& args)
 	{
-		for (std::shared_ptr<SceneObject> debugObject : args.renderList)
+		for (std::shared_ptr<GameObject> debugObject : args.renderList)
 		{
 			if (Animator* animator = debugObject->getComponent<Animator>())
 			{
@@ -62,7 +62,7 @@ namespace Odyssey
 				debugObject->getAABB()->debugDraw({ 0,0,1 });
 			}
 
-			for (std::shared_ptr<SceneObject> child : debugObject->getChildren())
+			for (std::shared_ptr<GameObject> child : debugObject->getChildren())
 			{
 				if (Animator* animator = child->getComponent<Animator>())
 				{

@@ -1,5 +1,5 @@
 #include "Transform.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 
 namespace Odyssey
 {
@@ -17,10 +17,10 @@ namespace Odyssey
 		mWorldMatrix = worldMatrix;
 	}
 
-	void Transform::initialize(SceneObject* parent)
+	void Transform::initialize(GameObject* parent)
 	{
+		mGameObject = parent;
 		onEnable();
-		mParent = parent;
 	}
 
 	void Transform::addPosition(float x, float y, float z)
@@ -80,20 +80,22 @@ namespace Odyssey
 		return mScale;
 	}
 
-	DirectX::XMFLOAT4X4 Transform::getLocalTransform()
+	void Transform::getLocalTransform(DirectX::XMFLOAT4X4& localTransform)
 	{
-		return mWorldMatrix;
+		localTransform = mWorldMatrix;
 	}
 
 	void Transform::getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform)
 	{
 		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&mWorldMatrix);
 
-		SceneObject* parent = mParent;
+		GameObject* parent = mGameObject->getParent();
 
 		while (parent != nullptr)
 		{
-			transform = DirectX::XMMatrixMultiply(transform, DirectX::XMLoadFloat4x4(&parent->getComponent<Transform>()->getLocalTransform()));
+			DirectX::XMFLOAT4X4 localTransform;
+			parent->getComponent<Transform>()->getLocalTransform(localTransform);
+			transform = DirectX::XMMatrixMultiply(transform, DirectX::XMLoadFloat4x4(&localTransform));
 			parent = parent->getParent();
 		}
 

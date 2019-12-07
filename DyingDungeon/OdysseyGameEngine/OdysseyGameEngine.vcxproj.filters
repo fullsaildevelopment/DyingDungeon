@@ -177,11 +177,11 @@
     <ClInclude Include="inc\Scene.h">
       <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="inc\SceneObject.h">
-      <Filter>Header Files\Scene Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="inc\Transform.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameObject.h">
+      <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

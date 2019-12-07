@@ -6,7 +6,7 @@
 #include "MeshManager.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "RenderPass.h"
 #include "RenderPipelineManager.h"
 #include "ParticleSystem.h"
@@ -26,7 +26,7 @@ namespace Odyssey
 		mSceneLights.push_back(light);
 	}
 
-	void Scene::addSceneObject(std::shared_ptr<SceneObject> sceneObject)
+	void Scene::addSceneObject(std::shared_ptr<GameObject> sceneObject)
 	{
 		mSceneObjectList.push_back(sceneObject);
 	}
@@ -34,11 +34,19 @@ namespace Odyssey
 	void Scene::initialize()
 	{
 		mXTimer.Restart();
-		for (std::shared_ptr<SceneObject> sceneObject : mSceneObjectList)
+		for (std::shared_ptr<GameObject> sceneObject : mSceneObjectList)
 		{
 			for (auto* component : sceneObject->getComponents<Component>())
 			{
 				component->initialize(sceneObject.get());
+			}
+
+			for (auto child : sceneObject->getChildren())
+			{
+				for (auto component : child->getComponents<Component>())
+				{
+					component->initialize(child.get());
+				}
 			}
 		}
 
@@ -74,7 +82,7 @@ namespace Odyssey
 	void Scene::updateScene()
 	{
 		// Generate a render list
-		for (std::shared_ptr<SceneObject> renderObject : mSceneObjectList)
+		for (std::shared_ptr<GameObject> renderObject : mSceneObjectList)
 		{
 			for (auto& component : renderObject->getComponents<Component>())
 			{

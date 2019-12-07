@@ -5,7 +5,7 @@
 namespace Odyssey
 {
 	class RenderTarget;
-	class SceneObject;
+	class GameObject;
 	class RenderState;
 	class Shader;
 
@@ -18,7 +18,7 @@ namespace Odyssey
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
-		std::shared_ptr<SceneObject> mSkyBox;
+		std::shared_ptr<GameObject> mSkyBox;
 		std::shared_ptr<RenderTarget> mRenderTarget;
 		std::unique_ptr<RenderState> mRenderState;
 		std::shared_ptr<Shader> mVertexShader;
