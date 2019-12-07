@@ -10,6 +10,7 @@
 #include "Mesh.h"
 #include "Frustum.h"
 #include "AABB.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -68,9 +69,13 @@ namespace Odyssey
 	{
 		std::multimap<float, std::shared_ptr<SceneObject>> renderMap;
 
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+		DirectX::XMFLOAT4X4 globalTransform;
+
 		// Iterate over each object in the render list
 		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
 		{
+
 			// If the object has a mesh renderer, render it
 			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
@@ -79,9 +84,7 @@ namespace Odyssey
 					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
 					{
 						// Depth sorting
-						DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-						DirectX::XMFLOAT4X4 globalTransform;
-						renderObject->getGlobalTransform(globalTransform);
+						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
 						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 						float depth = DirectX::XMVectorGetZ(view.r[3]);
 						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
@@ -98,9 +101,7 @@ namespace Odyssey
 						if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
 						{
 							// Depth Sorting
-							DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-							DirectX::XMFLOAT4X4 globalTransform;
-							child->getGlobalTransform(globalTransform);
+							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
 							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 							float depth = DirectX::XMVectorGetZ(view.r[3]);
 							renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
@@ -127,7 +128,7 @@ namespace Odyssey
 	void OpaquePass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getGlobalTransform(args.shaderMatrix.world);
+		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Bind the mesh renderer

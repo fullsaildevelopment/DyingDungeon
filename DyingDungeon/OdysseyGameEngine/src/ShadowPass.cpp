@@ -10,6 +10,7 @@
 #include "Animator.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -132,7 +133,7 @@ namespace Odyssey
 	void ShadowPass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
-		object->getGlobalTransform(args.shaderMatrix.world);
+		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 
 		// Update and bind the constant buffer
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);

@@ -54,6 +54,7 @@
     <ClInclude Include="inc\SkyboxPass.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\TextureManager.h" />
+    <ClInclude Include="inc\Transform.h" />
     <ClInclude Include="inc\TransparentPass.h" />
     <ClInclude Include="inc\Viewport.h" />
     <ClInclude Include="src\XTime.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\SkyboxPass.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransparentPass.cpp" />
     <ClCompile Include="src\Viewport.cpp" />
     <ClCompile Include="src\WICTextureLoader.cpp" />

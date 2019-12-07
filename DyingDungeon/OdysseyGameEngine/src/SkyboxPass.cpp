@@ -12,6 +12,7 @@
 #include "TextureManager.h"
 #include "MeshManager.h"
 #include "MaterialManager.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -66,10 +67,11 @@ namespace Odyssey
 		DirectX::XMFLOAT3 camPos = args.camera->getPosition();
 
 		// Set the skybox to the camera's position
-		mSkyBox->setPosition(camPos.x, camPos.y, camPos.z);
+		mSkyBox->addComponent<Transform>();
+		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
 
 		// Get the global transform of the skybox and set the mvp matrix
-		mSkyBox->getGlobalTransform(args.shaderMatrix.world);
+		mSkyBox->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Draw the skybox

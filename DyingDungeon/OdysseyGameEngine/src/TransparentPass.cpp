@@ -4,6 +4,7 @@
 #include "RenderTarget.h"
 #include "RenderState.h"
 #include "SceneObject.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -37,7 +38,7 @@ namespace Odyssey
 				// Depth sorting
 				DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
 				DirectX::XMFLOAT4X4 globalTransform;
-				renderObject->getGlobalTransform(globalTransform);
+				renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
 				view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 				float depth = DirectX::XMVectorGetZ(view.r[3]);
 				renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
@@ -46,7 +47,7 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			itr->second->getGlobalTransform(args.shaderMatrix.world);
+			itr->second->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 			updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 			itr->second->getParticleSystem()->Run();

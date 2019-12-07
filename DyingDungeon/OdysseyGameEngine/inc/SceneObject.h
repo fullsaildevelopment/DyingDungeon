@@ -13,9 +13,6 @@ namespace Odyssey
 		SceneObject();
 	public:
 		void importModel(const char* filename);
-		void addPosition(float x, float y, float z);
-		void setPosition(float x, float y, float z);
-		void setScale(float x, float y, float z);
 	public: // Components
 		void attachParticleSystem();
 		void attachAABB();
@@ -25,10 +22,9 @@ namespace Odyssey
 		bool hasParticleSystem();
 		bool hasAABB();
 	public: // Accessors
-		void getLocalTransform(DirectX::XMFLOAT4X4& localTransform);
-		void getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform);
 		const std::vector<std::shared_ptr<SceneObject>> getChildren();
 		const int getChildrenCount();
+		SceneObject* getParent();
 	public: //Debug
 		void enableDebug();
 		void disableDebug();
@@ -50,7 +46,6 @@ namespace Odyssey
 		template<class ComponentType>
 		int removeComponents();
 	private:
-		DirectX::XMFLOAT4X4 mWorldMatrix;
 		std::vector<std::shared_ptr<SceneObject>> children;
 		SceneObject* mParent;
 		bool mDebugEnabled;
@@ -59,7 +54,6 @@ namespace Odyssey
 		std::unique_ptr<MeshRenderer> mMeshRenderer;
 		std::unique_ptr<ParticleSystem> mParticleSystem;
 		std::unique_ptr<AABB> mAABB;
-
 	};
 
 	// Template Functions

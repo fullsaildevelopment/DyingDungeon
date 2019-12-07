@@ -180,6 +180,9 @@
     <ClInclude Include="inc\SceneObject.h">
       <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Transform.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\DebugPixelShader.hlsl">
@@ -341,6 +344,9 @@
     </ClCompile>
     <ClCompile Include="src\SceneObject.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
