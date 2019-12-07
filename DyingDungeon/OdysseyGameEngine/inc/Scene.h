@@ -33,6 +33,7 @@ namespace Odyssey
 		std::shared_ptr<SceneObject> getSkybox();
 		void addLight(std::shared_ptr<Light> light);
 		void addSceneObject(std::shared_ptr<SceneObject> sceneObject);
+		void initialize();
 		void render();
 		double getDeltaTime();
 	private:

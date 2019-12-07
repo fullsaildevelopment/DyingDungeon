@@ -7,6 +7,8 @@
 
 namespace Odyssey
 {
+	CLASS_DEFINITION(Component, Animator)
+
 	Animator::Animator()
 	{
 		mCurrentClip.nextFrame = 0;
@@ -20,8 +22,14 @@ namespace Odyssey
 		// Create the constant buffer for skinned animation
 		mAnimationBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(AnimationBuffer), nullptr);
 
-		// Store a default identity as the joint pose
+		// No animation data to process for skinned rendering
 		mAnimationData.hasAnimationData = { 0.0f, 0.0f, 0.0f, 0.0f };
+	}
+
+	void Animator::initialize(SceneObject* parent)
+	{
+		setEnabled(true);
+		mParent = parent;
 	}
 
 	void Animator::importAnimation(const char* animationName, const char* filename)
@@ -111,12 +119,6 @@ namespace Odyssey
 	void Animator::setWorldMatrix(DirectX::XMFLOAT4X4 worldMatrix)
 	{
 		mWorldMatrix = worldMatrix;
-	}
-
-	void Animator::initialize(SceneObject* parent)
-	{
-		setEnabled(true);
-		mParent = parent;
 	}
 
 	void Animator::update(double deltaTime)

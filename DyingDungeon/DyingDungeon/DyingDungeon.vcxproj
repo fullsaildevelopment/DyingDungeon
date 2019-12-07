@@ -155,9 +155,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DyingDungeon.cpp" />
+    <ClCompile Include="src\ExampleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DyingDungeon.h" />
+    <ClInclude Include="src\ExampleComponent.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\targetver.h" />
   </ItemGroup>

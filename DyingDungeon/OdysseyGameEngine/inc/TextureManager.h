@@ -18,6 +18,6 @@ namespace Odyssey
 		typedef std::vector<std::unique_ptr<Texture>> TextureList;
 		TextureList mTextureList;
 		std::map<std::string, int> mTextureMap;
-		std::string texturePath = "Assets\\Textures\\";
+		std::string texturePath = "Assets\\textures\\";
 	};
 }

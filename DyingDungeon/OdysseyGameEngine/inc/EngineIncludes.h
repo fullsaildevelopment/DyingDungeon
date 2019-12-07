@@ -15,5 +15,7 @@
 #include <vector>
 #include <map>
 #include <array>
+#include <algorithm>
+#include <functional>
 // Custom Includes
 #include "RenderTypes.h"

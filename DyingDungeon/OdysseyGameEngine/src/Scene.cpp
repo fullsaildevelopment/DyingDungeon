@@ -47,6 +47,17 @@ namespace Odyssey
 		mSceneObjectList.push_back(sceneObject);
 	}
 
+	void Scene::initialize()
+	{
+		for (std::shared_ptr<SceneObject> sceneObject : mSceneObjectList)
+		{
+			for (auto& component : sceneObject->getComponents<Component>())
+			{
+				component->initialize(sceneObject.get());
+			}
+		}
+	}
+
 	void Scene::render()
 	{
 		mXTimer.Signal();
@@ -73,10 +84,9 @@ namespace Odyssey
 		// Generate a render list
 		for (std::shared_ptr<SceneObject> renderObject : mSceneObjectList)
 		{
-			// If the object has an animator, perform the update
-			if (renderObject->hasAnimator())
+			for (auto& component : renderObject->getComponents<Component>())
 			{
-				renderObject->getAnimator()->update(mDeltaTime);
+				component->update(mDeltaTime);
 			}
 
 			if (renderObject->hasParticleSystem())

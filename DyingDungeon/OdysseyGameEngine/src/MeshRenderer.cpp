@@ -5,6 +5,8 @@
 
 namespace Odyssey
 {
+	CLASS_DEFINITION(Component, MeshRenderer)
+
 	MeshRenderer::MeshRenderer(DirectX::XMFLOAT4X4 worldMatrix)
 	{
 		mDebugEnabled = false;
@@ -18,6 +20,12 @@ namespace Odyssey
 		mWorldMatrix = worldMatrix;
 		mMesh = meshID;
 		mMaterial = material;
+	}
+
+	void MeshRenderer::initialize(SceneObject* parent)
+	{
+		onEnable();
+		mParent = parent;
 	}
 
 	void MeshRenderer::importMesh(const char* filename)
