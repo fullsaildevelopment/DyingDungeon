@@ -17,15 +17,11 @@ namespace Odyssey
 		void setPosition(float x, float y, float z);
 		void setScale(float x, float y, float z);
 	public: // Components
-		void attachAnimator();
 		void attachParticleSystem();
 		void attachAABB();
-		Animator* getAnimator();
-		Animator* getRootAnimator();
 		ParticleSystem* getParticleSystem();
 		ParticleSystem* getRootParticleSystem();
 		AABB* getAABB();
-		bool hasAnimator();
 		bool hasParticleSystem();
 		bool hasAABB();
 	public: // Accessors
@@ -44,6 +40,8 @@ namespace Odyssey
 		void addComponent(Args&&... params);
 		template<class ComponentType>
 		ComponentType* getComponent();
+		template<class ComponentType>
+		ComponentType* getRootComponent();
 		template<class ComponentType>
 		bool removeComponent();
 	public: // Multi-Component Interaction
@@ -79,6 +77,17 @@ namespace Odyssey
 				return static_cast<ComponentType*>(component.get());
 		}
 		return std::unique_ptr<ComponentType>(nullptr).get();
+	}
+	template<class ComponentType>
+	inline ComponentType* SceneObject::getRootComponent()
+	{
+		SceneObject* parent = mParent;
+
+		while (parent->mParent != nullptr)
+		{
+			parent = parent->mParent;
+		}
+		return parent->getComponent<ComponentType>();
 	}
 	template<class ComponentType>
 	bool SceneObject::removeComponent()

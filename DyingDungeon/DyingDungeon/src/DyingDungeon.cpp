@@ -138,7 +138,7 @@ void setupArena()
 {
 	gArena = std::make_shared<Odyssey::SceneObject>();
 	gArena->importModel("assets/models/TestArena.dxm");
-	//gArena->addComponent<ExampleComponent>();
+	gArena->addComponent<ExampleComponent>();
 	gMainScene->addSceneObject(gArena);
 }
 

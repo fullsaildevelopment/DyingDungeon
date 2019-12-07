@@ -108,24 +108,6 @@ namespace Odyssey
 
 	}
 
-	void Scene::renderDebug(ShaderMatrix& bufferMatrices)
-	{
-		// Set the world matrix as identity
-		DirectX::XMFLOAT4X4 identity;
-		DirectX::XMStoreFloat4x4(&identity, DirectX::XMMatrixIdentity());
-
-		// Iterate over the entire debug list
-		for (int i = 0; i < mDebugList.size(); i++)
-		{
-			// Debug draw each animator in the list
-			if (mDebugList[i]->hasAnimator() && mDebugList[i]->getAnimator()->getDebugEnabled())
-			{
-				mDebugList[i]->getAnimator()->debugDraw({ 1,0,0 });
-			}
-		}
-		mDebugList.clear();
-	}
-
 	void Scene::updateLightingBuffer()
 	{
 		// Generate a list of lights on a per-object basis

@@ -37,7 +37,6 @@ namespace Odyssey
 		double getDeltaTime();
 	private:
 		void updateScene();
-		void renderDebug(ShaderMatrix& shaderMatrix);
 		void updateLightingBuffer();
 	public:
 		Camera mMainCamera;

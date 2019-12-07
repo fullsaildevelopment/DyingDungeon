@@ -49,10 +49,14 @@ namespace Odyssey
 	{
 		for (std::shared_ptr<SceneObject> debugObject : args.renderList)
 		{
-			if (debugObject->hasAnimator() && debugObject->getAnimator()->getDebugEnabled())
+			if (Animator* animator = debugObject->getComponent<Animator>())
 			{
-				debugObject->getAnimator()->debugDraw({ 1.0f, 0.0f, 0.0f });
+				if (animator->getDebugEnabled())
+				{
+					animator->debugDraw({ 1.0f, 0.0f, 0.0f });
+				}
 			}
+
 			if (debugObject->getAABB())
 			{
 				debugObject->getAABB()->debugDraw({ 0,0,1 });
@@ -60,9 +64,12 @@ namespace Odyssey
 
 			for (std::shared_ptr<SceneObject> child : debugObject->getChildren())
 			{
-				if (child->hasAnimator() && child->getAnimator()->getDebugEnabled())
+				if (Animator* animator = child->getComponent<Animator>())
 				{
-					child->getAnimator()->debugDraw({ 1.0f, 0.0f, 0.0f });
+					if (animator->getDebugEnabled())
+					{
+						animator->debugDraw({ 1.0f, 0.0f, 0.0f });
+					}
 				}
 				if (child->getAABB())
 				{

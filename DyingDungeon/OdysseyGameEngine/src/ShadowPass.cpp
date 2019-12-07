@@ -88,9 +88,9 @@ namespace Odyssey
 		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
 		{
 			// If the object has an animator, bind it to the vertex shader
-			if (renderObject->hasAnimator())
+			if (Animator* animator = renderObject->getComponent<Animator>())
 			{
-				renderObject->getAnimator()->bind();
+				animator->bind();
 			}
 
 			// If the object has a mesh renderer, render it
@@ -116,9 +116,9 @@ namespace Odyssey
 			}
 
 			// If the original render object has an animator, unbind it to the vertex shader
-			if (renderObject->hasAnimator())
+			if (Animator* animator = renderObject->getComponent<Animator>())
 			{
-				renderObject->getAnimator()->unbind();
+				animator->unbind();
 			}
 		}
 

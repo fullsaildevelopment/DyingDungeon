@@ -64,7 +64,7 @@ namespace Odyssey
 			file.read((char*)&numjoints, sizeof(numjoints));
 
 			// Attach an animator
-			attachAnimator();
+			addComponent<Animator>();
 
 			// Create a skeleton for importing
 			std::vector<Joint> skeleton(numjoints);
@@ -186,24 +186,6 @@ namespace Odyssey
 		}
 	}
 
-	void SceneObject::attachAnimator()
-	{
-		if (mAnimator == nullptr)
-		{
-			mAnimator = std::make_unique<Animator>();
-			DirectX::XMFLOAT4X4 globalTransform;
-			if (children.size() > 0)
-			{
-				children[0]->getGlobalTransform(globalTransform);
-			}
-			else
-			{
-				getGlobalTransform(globalTransform);
-			}
-			mAnimator->setWorldMatrix(globalTransform);
-		}
-	}
-
 	void SceneObject::attachParticleSystem()
 	{
 		if (mParticleSystem == nullptr)
@@ -220,21 +202,6 @@ namespace Odyssey
 		}
 	}
 
-	Animator* SceneObject::getAnimator()
-	{
-		return mAnimator.get();
-	}
-	Animator* SceneObject::getRootAnimator()
-	{
-		SceneObject* parent = mParent;
-
-		while (parent->mParent != nullptr)
-		{
-			parent = parent->mParent;
-		}
-
-		return parent->getAnimator();
-	}
 
 	ParticleSystem* SceneObject::getParticleSystem()
 	{
@@ -256,11 +223,6 @@ namespace Odyssey
 	AABB* SceneObject::getAABB()
 	{
 		return mAABB.get();
-	}
-
-	bool SceneObject::hasAnimator()
-	{
-		return (mAnimator != nullptr);
 	}
 
 	bool SceneObject::hasParticleSystem()

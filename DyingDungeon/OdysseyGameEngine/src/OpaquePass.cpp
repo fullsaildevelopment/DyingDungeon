@@ -112,14 +112,14 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->bind();
+				rootAnimator->bind();
 			}
 			renderSceneObject(itr->second, args);
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->unbind();
+				rootAnimator->unbind();
 			}
 		}
 	}
