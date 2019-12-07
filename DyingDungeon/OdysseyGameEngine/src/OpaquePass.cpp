@@ -72,33 +72,39 @@ namespace Odyssey
 		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
 		{
 			// If the object has a mesh renderer, render it
-			if (renderObject->hasMeshRenderer() && renderObject->getMeshRenderer()->getActive())
+			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
-				if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+				if (meshRenderer->getActive())
 				{
-					// Depth sorting
-					DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-					DirectX::XMFLOAT4X4 globalTransform;
-					renderObject->getGlobalTransform(globalTransform);
-					view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-					float depth = DirectX::XMVectorGetZ(view.r[3]);
-					renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+					{
+						// Depth sorting
+						DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+						DirectX::XMFLOAT4X4 globalTransform;
+						renderObject->getGlobalTransform(globalTransform);
+						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(view.r[3]);
+						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+					}
 				}
 			}
 
 			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
 			{
-				if (child->hasMeshRenderer() && child->getMeshRenderer()->getActive())
+				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
-					if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+					if (meshRenderer->getActive())
 					{
-						// Depth Sorting
-						DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-						DirectX::XMFLOAT4X4 globalTransform;
-						child->getGlobalTransform(globalTransform);
-						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(view.r[3]);
-						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
+						if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+						{
+							// Depth Sorting
+							DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+							DirectX::XMFLOAT4X4 globalTransform;
+							child->getGlobalTransform(globalTransform);
+							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(view.r[3]);
+							renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
+						}
 					}
 				}
 			}
@@ -125,11 +131,11 @@ namespace Odyssey
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Bind the mesh renderer
-		object->getMeshRenderer()->bind();
+		object->getComponent<MeshRenderer>()->bind();
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 
-		object->getMeshRenderer()->unbind();
+		object->getComponent<MeshRenderer>()->unbind();
 	}
 }

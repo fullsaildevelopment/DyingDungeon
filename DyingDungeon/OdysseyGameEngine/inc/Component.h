@@ -40,7 +40,6 @@ namespace Odyssey
 		static const std::size_t Type;
 		virtual ~Component() = default;
 		virtual bool isClassType(const std::size_t classType) const;
-
 		virtual void initialize(SceneObject* parent) = 0;
 		virtual void update(double deltaTime);
 		virtual void onEnable();

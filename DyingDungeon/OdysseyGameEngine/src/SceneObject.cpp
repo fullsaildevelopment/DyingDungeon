@@ -15,6 +15,8 @@ namespace Odyssey
 		DirectX::XMStoreFloat4x4(&mWorldMatrix, DirectX::XMMatrixIdentity());
 	}
 
+	
+
 	void SceneObject::importModel(const char* filename)
 	{
 		// Open the mesh file
@@ -42,12 +44,12 @@ namespace Odyssey
 			// Import the material from the current spot in the file
 			std::shared_ptr<Material> material = MaterialManager::getInstance().importMaterial(file);
 			// Create the mesh renderer for the child scene object
-			child->attachMeshRenderer(mesh, material);
+			child->addComponent<MeshRenderer>(child->mWorldMatrix, mesh, material);
 			// Set the parent of the child and allow it to be rendered
 			child->mParent = this;
 			// Calculate the new AABB of the mesh after loading in the vertices
 			child->attachAABB();
-			child->getAABB()->calculateAABBFromMesh(DirectX::XMLoadFloat4x4(&child->mWorldMatrix), child->getMeshRenderer()->getMesh()->getVertexList());
+			child->getAABB()->calculateAABBFromMesh(DirectX::XMLoadFloat4x4(&child->mWorldMatrix), child->getComponent<MeshRenderer>()->getMesh()->getVertexList());
 			children.push_back(child);
 		}
 
@@ -114,7 +116,7 @@ namespace Odyssey
 
 		for (std::shared_ptr<SceneObject> child : children)
 		{
-			if (child->getMeshRenderer())
+			if (child->getComponent<MeshRenderer>())
 			{
 				child->getGlobalTransform(globalTransform);
 
@@ -144,7 +146,7 @@ namespace Odyssey
 		}
 		for (std::shared_ptr<SceneObject> child : children)
 		{
-			if (child->getMeshRenderer())
+			if (child->getComponent<MeshRenderer>())
 			{
 				child->getGlobalTransform(globalTransform);
 				if (mAABB)
@@ -179,7 +181,7 @@ namespace Odyssey
 			if (child->getAABB())
 			{
 				child->getGlobalTransform(globalTransform);
-				child->mAABB->calculateAABBFromMesh(DirectX::XMLoadFloat4x4(&globalTransform), child->getMeshRenderer()->getMesh()->getVertexList());
+				child->mAABB->calculateAABBFromMesh(DirectX::XMLoadFloat4x4(&globalTransform), child->getComponent<MeshRenderer>()->getMesh()->getVertexList());
 			}
 		}
 	}
@@ -199,24 +201,6 @@ namespace Odyssey
 				getGlobalTransform(globalTransform);
 			}
 			mAnimator->setWorldMatrix(globalTransform);
-		}
-	}
-
-	void SceneObject::attachMeshRenderer()
-	{
-		if (mMeshRenderer == nullptr)
-		{
-			mMeshRenderer = std::make_unique<MeshRenderer>(mWorldMatrix);
-		}
-	}
-
-	void SceneObject::attachMeshRenderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material)
-	{
-		if (mMeshRenderer == nullptr)
-		{
-			mMeshRenderer = std::make_unique<MeshRenderer>(mWorldMatrix, mesh, material);
-			attachAABB();
-			mAABB->calculateAABBFromMesh(DirectX::XMLoadFloat4x4(&mWorldMatrix), mMeshRenderer->getMesh()->getVertexList());
 		}
 	}
 
@@ -252,11 +236,6 @@ namespace Odyssey
 		return parent->getAnimator();
 	}
 
-	MeshRenderer* SceneObject::getMeshRenderer()
-	{
-		return mMeshRenderer.get();
-	}
-
 	ParticleSystem* SceneObject::getParticleSystem()
 	{
 		return mParticleSystem.get();
@@ -282,11 +261,6 @@ namespace Odyssey
 	bool SceneObject::hasAnimator()
 	{
 		return (mAnimator != nullptr);
-	}
-
-	bool SceneObject::hasMeshRenderer()
-	{
-		return (mMeshRenderer != nullptr);
 	}
 
 	bool SceneObject::hasParticleSystem()

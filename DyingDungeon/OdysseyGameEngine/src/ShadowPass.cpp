@@ -94,24 +94,24 @@ namespace Odyssey
 			}
 
 			// If the object has a mesh renderer, render it
-			if (renderObject->hasMeshRenderer() && renderObject->getMeshRenderer()->getActive())
+			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
-				//if (args.camera->mFrustum.checkFrustumView(renderObject->getMeshRenderer()->getAABB()))
-				//{
-				renderSceneObject(renderObject, args);
-				//}
+				if (meshRenderer->getActive())
+				{
+					renderSceneObject(renderObject, args);
+				}
 			}
 
 			// Iterate through the object's children and perform the same rendering checks
 			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
 			{
 				// If the object has a mesh renderer, render it
-				if (child->hasMeshRenderer() && child->getMeshRenderer()->getActive())
+				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
-					//if (args.camera->mFrustum.checkFrustumView(child->getMeshRenderer()->getAABB()))
-					//{
-					renderSceneObject(child, args);
-					//}
+					if (meshRenderer->getActive())
+					{
+						renderSceneObject(child, args);
+					}
 				}
 			}
 
@@ -138,10 +138,10 @@ namespace Odyssey
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
-		object->getMeshRenderer()->getMesh()->getIndexBuffer()->bind();
-		object->getMeshRenderer()->getMesh()->getVertexBuffer()->bind();
+		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind();
+		object->getComponent<MeshRenderer>()->getMesh()->getVertexBuffer()->bind();
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }

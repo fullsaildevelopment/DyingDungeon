@@ -4,6 +4,7 @@
 #include "Frustum.h"
 #include "Light.h"
 #include "XTime.h"
+#include "RenderPass.h"
 
 namespace Odyssey
 {
@@ -29,17 +30,15 @@ namespace Odyssey
 	{
 	public:
 		Scene();
-		void setSkybox(const char* textureFilename);
-		std::shared_ptr<SceneObject> getSkybox();
+		void initialize();
 		void addLight(std::shared_ptr<Light> light);
 		void addSceneObject(std::shared_ptr<SceneObject> sceneObject);
-		void initialize();
-		void render();
+		void update();
 		double getDeltaTime();
 	private:
-		void renderScene();
+		void updateScene();
 		void renderDebug(ShaderMatrix& shaderMatrix);
-		void generateLightList();
+		void updateLightingBuffer();
 	public:
 		Camera mMainCamera;
 	private:
@@ -48,7 +47,7 @@ namespace Odyssey
 		std::vector<std::shared_ptr<SceneObject>> mDebugList;
 		std::shared_ptr<Buffer> mLightingBuffer;
 		std::shared_ptr<Buffer> mShaderMatrixBuffer;
-		std::shared_ptr<SceneObject> mSkybox;
+		RenderArgs renderArgs;
 		XTime mXTimer;
 		double mDeltaTime;
 	};

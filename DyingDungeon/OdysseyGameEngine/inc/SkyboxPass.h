@@ -12,7 +12,7 @@ namespace Odyssey
 	class SkyboxPass : public RenderPass
 	{
 	public:
-		SkyboxPass(std::shared_ptr<SceneObject> skybox, std::shared_ptr<RenderTarget> renderTarget);
+		SkyboxPass(const char* skyboxTexture, std::shared_ptr<RenderTarget> renderTarget);
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
 	private:

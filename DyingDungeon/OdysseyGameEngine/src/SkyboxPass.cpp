@@ -9,12 +9,24 @@
 #include "SceneObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
+#include "TextureManager.h"
+#include "MeshManager.h"
+#include "MaterialManager.h"
 
 namespace Odyssey
 {
-	SkyboxPass::SkyboxPass(std::shared_ptr<SceneObject> skybox, std::shared_ptr<RenderTarget> renderTarget)
+	SkyboxPass::SkyboxPass(const char* skyboxTexture, std::shared_ptr<RenderTarget> renderTarget)
 	{
-		mSkyBox = skybox;
+		int texID = TextureManager::getInstance().importTexture(TextureType::Skybox, skyboxTexture);
+		std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createCube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+		std::shared_ptr<Material> material = MaterialManager::getInstance().createMaterial();
+		material->setTexture(TextureType::Skybox, texID);
+
+		mSkyBox = std::make_shared<SceneObject>();
+		DirectX::XMFLOAT4X4 world;
+		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixIdentity());
+		mSkyBox->addComponent<MeshRenderer>(world, mesh, material);
+
 		mRenderTarget = renderTarget;
 		mDevice = RenderManager::getInstance().getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
@@ -61,11 +73,11 @@ namespace Odyssey
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Draw the skybox
-		if (mSkyBox->hasMeshRenderer())
+		if (mSkyBox->getComponent<MeshRenderer>())
 		{
-			mSkyBox->getMeshRenderer()->bind();
-			mDeviceContext->DrawIndexed(mSkyBox->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
-			mSkyBox->getMeshRenderer()->unbind();
+			mSkyBox->getComponent<MeshRenderer>()->bind();
+			mDeviceContext->DrawIndexed(mSkyBox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+			mSkyBox->getComponent<MeshRenderer>()->unbind();
 		}
 
 		// Clear the depth of the render targets
