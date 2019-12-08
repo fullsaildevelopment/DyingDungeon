@@ -92,14 +92,6 @@ namespace Odyssey
 		file.close();
 	}
 
-	void GameObject::attachParticleSystem()
-	{
-		if (mParticleSystem == nullptr)
-		{
-			mParticleSystem = std::make_unique<ParticleSystem>();
-		}
-	}
-
 	void GameObject::attachAABB()
 	{
 		if (mAABB == nullptr)
@@ -108,32 +100,9 @@ namespace Odyssey
 		}
 	}
 
-
-	ParticleSystem* GameObject::getParticleSystem()
-	{
-		return mParticleSystem.get();
-	}
-
-	ParticleSystem* GameObject::getRootParticleSystem()
-	{
-		GameObject* parent = mParent;
-
-		while (parent->mParent != nullptr)
-		{
-			parent = parent->mParent;
-		}
-
-		return parent->getParticleSystem();
-	}
-
 	AABB* GameObject::getAABB()
 	{
 		return mAABB.get();
-	}
-
-	bool GameObject::hasParticleSystem()
-	{
-		return (mParticleSystem != nullptr);
 	}
 
 	bool GameObject::hasAABB()

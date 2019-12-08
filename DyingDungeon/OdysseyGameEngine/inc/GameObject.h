@@ -14,12 +14,8 @@ namespace Odyssey
 	public:
 		void importModel(const char* filename);
 	public: // Components
-		void attachParticleSystem();
 		void attachAABB();
-		ParticleSystem* getParticleSystem();
-		ParticleSystem* getRootParticleSystem();
 		AABB* getAABB();
-		bool hasParticleSystem();
 		bool hasAABB();
 	public: // Accessors
 		const std::vector<std::shared_ptr<GameObject>> getChildren();

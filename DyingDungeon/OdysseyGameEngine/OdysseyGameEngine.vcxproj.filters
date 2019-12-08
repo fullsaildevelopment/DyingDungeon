@@ -342,11 +342,11 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObject.cpp">
-      <Filter>Source Files\Scene Interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject.cpp">
+      <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
