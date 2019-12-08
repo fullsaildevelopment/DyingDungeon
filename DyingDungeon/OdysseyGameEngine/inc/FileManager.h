@@ -10,6 +10,7 @@ namespace Odyssey
 	private:
 		struct MeshData
 		{
+			size_t hashID;
 			std::string name;
 			uint64_t numIndices;
 			std::vector<unsigned int> indexList;

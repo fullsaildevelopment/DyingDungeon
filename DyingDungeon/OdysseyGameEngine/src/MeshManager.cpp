@@ -81,9 +81,6 @@ namespace Odyssey
 
 		// Create the mesh and set it's index/vertex data
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
-
-		// Move the mesh into the list and return its ID
-		mMeshList.push_back(mesh);
 		return mesh;
 	}
 
@@ -118,39 +115,17 @@ namespace Odyssey
 
 		// Create the mesh and set it's index/vertex data
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
-
-		// Move the mesh into the list and return its ID
-		mMeshList.push_back(mesh);
 		return mesh;
 	}
 
-	Mesh* MeshManager::getMesh(int index)
+	std::shared_ptr<Mesh> MeshManager::createMesh(size_t hashID, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
-		return mMeshList[index].get();
-	}
-
-	Mesh* MeshManager::getMesh(std::string name)
-	{
-		if (int index = mMeshMap.count(name) > 0)
+		if (meshMap.count(hashID) != 0)
 		{
-			return mMeshList[index].get();
+			return meshMap[hashID];
 		}
-		else
-		{
-			return nullptr;
-		}
-	}
-
-	std::shared_ptr<Mesh> MeshManager::checkDuplicateImport(const char* filename)
-	{
-		// Check if we have imported this file before
-		if (mMeshMap.count(filename) != 0)
-		{
-			// Store the ID of the previously imported mesh
-			int copyID = mMeshMap[filename];
-
-			return mMeshList[copyID];
-		}
-		return nullptr;
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
+		meshMap[hashID] = mesh;
+		return mesh;
 	}
 }

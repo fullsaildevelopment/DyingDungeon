@@ -57,7 +57,7 @@ void initialize(HWND& hWnd)
 
 	// Load the arena scene
 	setupArena();
-	setupPaladin();
+	//setupPaladin();
 
 	// Set up the default rendering pipeline
 	setupPipeline();

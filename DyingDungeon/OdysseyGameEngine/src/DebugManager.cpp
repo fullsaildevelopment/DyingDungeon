@@ -4,7 +4,6 @@
 
 namespace Odyssey
 {
-
 	DebugManager& DebugManager::getInstance()
 	{
 		static DebugManager instance;

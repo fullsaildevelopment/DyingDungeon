@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "AABB.h"
+#include "MeshManager.h"
 
 namespace Odyssey
 {
@@ -49,7 +50,7 @@ namespace Odyssey
 			readMaterialData(file, materialData);
 
 			// Create a mesh from the vertex and index lists
-			std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshData.vertexList, meshData.indexList);
+			std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createMesh(meshData.hashID, meshData.vertexList, meshData.indexList);
 
 			// Create a blank material
 			std::shared_ptr<Material> material = std::make_shared<Material>();
@@ -107,6 +108,9 @@ namespace Odyssey
 	void FileManager::readMeshData(std::fstream& file, MeshData& meshData)
 	{
 		uint64_t nameLength;
+
+		// Read the hashID
+		file.read((char*)&meshData.hashID, sizeof(meshData.hashID));
 		// Get the length of the name for the mesh
 		file.read((char*)&nameLength, sizeof(nameLength));
 		// Resize the name of the mesh
