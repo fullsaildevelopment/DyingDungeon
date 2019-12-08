@@ -16,6 +16,7 @@
 #include "MaterialManager.h"
 #include "ShaderManager.h"
 #include "Component.h"
+#include "FileManager.h"
 
 // Game Includes
 #include "ExampleComponent.h"
@@ -137,7 +138,7 @@ void setupLighting()
 void setupArena()
 {
 	gArena = std::make_shared<Odyssey::GameObject>();
-	gArena->importModel("assets/models/TestArena.dxm");
+	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
 	gArena->addComponent<ExampleComponent>();
 	gMainScene->addSceneObject(gArena);
 }

@@ -6,18 +6,14 @@ namespace Odyssey
 {
 	Mesh::Mesh()
 	{
-		mNumberOfIndices = -1;
-		mVertexList.resize(0);
-		mIndexList.resize(0);
+		mNumberOfIndices = 0;
 	}
 
-	Mesh::Mesh(std::shared_ptr<Buffer> vertexBuffer, std::shared_ptr<Buffer> indexBuffer, int numIndices)
+	Mesh::Mesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
-		mVertexBuffer = vertexBuffer;
-		mIndexBuffer = indexBuffer;
-		mNumberOfIndices = numIndices;
-		mVertexList.resize(0);
-		mIndexList.resize(0);
+		mVertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, vertexList.size(), sizeof(Vertex), (void*)vertexList.data());
+		mIndexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, indexList.size(), sizeof(unsigned int), (void*)indexList.data());
+		mNumberOfIndices = indexList.size();
 	}
 
 	Mesh::Mesh(Mesh& other)
@@ -39,12 +35,6 @@ namespace Odyssey
 		mIndexBuffer->unbind(0, ShaderType::VertexShader);
 	}
 
-	void Mesh::flipWindingOrder()
-	{
-		std::reverse(mIndexList.begin(), mIndexList.end());
-		mIndexBuffer->updateData(mIndexList.data());
-	}
-
 	std::shared_ptr<Buffer> Mesh::getVertexBuffer()
 	{
 		return mVertexBuffer;
@@ -54,12 +44,7 @@ namespace Odyssey
 	{
 		return mIndexBuffer;
 	}
-
-	const std::vector<Vertex> Mesh::getVertexList()
-	{
-		return mVertexList;
-	}
-
+	
 	const int Mesh::getNumberOfIndices()
 	{
 		return mNumberOfIndices;
@@ -68,16 +53,6 @@ namespace Odyssey
 	void Mesh::setName(std::string name)
 	{
 		mName = name;
-	}
-
-	void Mesh::setVertexList(std::vector<Vertex> vertexList)
-	{
-		mVertexList = vertexList;
-	}
-
-	void Mesh::setIndexList(std::vector<unsigned int> indexList)
-	{
-		mIndexList = indexList;
 	}
 
 	void Mesh::setNumberOfindices(int numIndices)

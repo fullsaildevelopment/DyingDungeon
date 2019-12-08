@@ -23,7 +23,7 @@ namespace Odyssey
 		DirectX::XMFLOAT2 pad;
 	};  //------------------------------- ( 16 * 5 = 80 bytes )
 
-	struct MatFileImport
+	struct MatFileData
 	{
 		std::vector<const char*> texFilenames;
 		std::vector<DirectX::XMFLOAT3> texColors;

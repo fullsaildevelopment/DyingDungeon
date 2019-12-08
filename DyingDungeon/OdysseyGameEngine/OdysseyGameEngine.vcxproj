@@ -29,6 +29,7 @@
     <ClInclude Include="inc\DebugManager.h" />
     <ClInclude Include="inc\DebugPass.h" />
     <ClInclude Include="inc\EngineIncludes.h" />
+    <ClInclude Include="inc\FileManager.h" />
     <ClInclude Include="inc\Frustum.h" />
     <ClInclude Include="inc\GameObject.h" />
     <ClInclude Include="inc\Light.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\DDSTextureLoader.cpp" />
     <ClCompile Include="src\DebugManager.cpp" />
     <ClCompile Include="src\DebugPass.cpp" />
+    <ClCompile Include="src\FileManager.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Light.cpp" />

@@ -26,7 +26,7 @@ namespace Odyssey
 		mSkyBox = std::make_shared<GameObject>();
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixIdentity());
-		mSkyBox->addComponent<MeshRenderer>(world, mesh, material);
+		mSkyBox->addComponent<MeshRenderer>(mesh, material);
 
 		mRenderTarget = renderTarget;
 		mDevice = RenderManager::getInstance().getDevice();

@@ -80,7 +80,7 @@ namespace Odyssey
 			{
 				if (meshRenderer->getActive())
 				{
-					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getComponent<AABB>())))
 					{
 						// Depth sorting
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
@@ -97,7 +97,7 @@ namespace Odyssey
 				{
 					if (meshRenderer->getActive())
 					{
-						if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+						if (args.camera->mFrustum->checkFrustumView(*(child->getComponent<AABB>())))
 						{
 							// Depth Sorting
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);

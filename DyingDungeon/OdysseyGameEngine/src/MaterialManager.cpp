@@ -25,7 +25,7 @@ namespace Odyssey
 	std::shared_ptr<Material> MaterialManager::importMaterial(std::fstream& file)
 	{
 		// Create a mat file import object
-		MatFileImport matFile;
+		MatFileData matFile;
 
 		// Resize the arrays to hold 4 textures
 		matFile.texFilenames.resize(4);

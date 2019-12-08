@@ -11,110 +11,6 @@ namespace Odyssey
 		return instance;
 	}
 
-	std::shared_ptr<Mesh> MeshManager::importMesh(std::fstream& file)
-	{
-		// Create storage for the stored vertex and index data
-		uint64_t numVertices;
-		uint64_t numIndices;
-		uint64_t nameLength;
-		std::vector<Vertex> vertexList;
-		std::vector<unsigned int> indexList;
-		std::string name;
-
-		// Get the length of the name for the mesh
-		file.read((char*)&nameLength, sizeof(nameLength));
-		// Resize the name of the mesh
-		name.resize(nameLength);
-		// Read in the name of the mesh
-		file.read((char*)name.c_str(), sizeof(char) * nameLength);
-
-		// Get the number of indices for that mesh
-		file.read((char*)&numIndices, sizeof(uint64_t));
-		// Resize the index list to match the number of indices
-		indexList.resize(numIndices);
-		// Read into the index list
-		file.read((char*)indexList.data(), sizeof(unsigned int) * numIndices);
-
-		// Get the number of vertices for that mesh
-		file.read((char*)&numVertices, sizeof(uint64_t));
-		// Resize the vertex list to match num vertices
-		vertexList.resize(numVertices);
-		file.read((char*)vertexList.data(), sizeof(Vertex) * numVertices);
-
-		// Create a buffer in the render device for both the vertex and index data
-		std::shared_ptr<Buffer> vertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, numVertices, sizeof(Vertex), (void*)vertexList.data());
-		std::shared_ptr<Buffer> indexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, numIndices, sizeof(unsigned int), (void*)indexList.data());
-
-		// Create the mesh and set it's index/vertex data
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexBuffer, indexBuffer, static_cast<int>(numIndices));
-		mesh->setIndexList(indexList);
-		mesh->setVertexList(vertexList);
-		mesh->setName(name);
-
-		// Move the mesh into the list and return its ID
-		mMeshList.push_back(mesh);
-		int id = static_cast<int>(mMeshList.size()) - 1;
-		mMeshMap[name] = id;
-
-		return mesh;
-	}
-
-	std::shared_ptr<Mesh> MeshManager::importMesh(const char* filename)
-	{
-		// Check for a duplicate import and return the ID if a duplicate was found
-		std::shared_ptr<Mesh> dupe = checkDuplicateImport(filename);
-		if (dupe != nullptr)
-			return dupe;
-
-		// Open the mesh file
-		std::fstream file{ filename, std::ios_base::in | std::ios_base::binary };
-
-		// Check if the file is open
-		assert(file.is_open());
-
-		// Create storage for the stored vertex and index data
-		uint64_t numVertices;
-		uint64_t numIndices;
-		std::vector<Vertex> vertexList;
-		std::vector<unsigned int> indexList;
-
-		DirectX::XMFLOAT4X4 w;
-		uint64_t numMeshes;
-		file.read((char*)&numMeshes, sizeof(uint64_t));
-
-		file.read((char*)&w, sizeof(DirectX::XMFLOAT4X4));
-
-		// Get the number of indices for that mesh
-		file.read((char*)&numIndices, sizeof(uint64_t));
-		// Resize the index list to match the number of indices
-		indexList.resize(numIndices);
-		// Read into the index list
-		file.read((char*)indexList.data(), sizeof(unsigned int) * numIndices);
-
-		// Get the number of vertices for that mesh
-		file.read((char*)&numVertices, sizeof(uint64_t));
-		// Resize the vertex list to match num vertices
-		vertexList.resize(numVertices);
-		file.read((char*)vertexList.data(), sizeof(Vertex) * numVertices);
-
-		// Create a buffer in the render device for both the vertex and index data
-		std::shared_ptr<Buffer> vertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, numVertices, sizeof(Vertex), (void*)vertexList.data());
-		std::shared_ptr<Buffer> indexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, numIndices, sizeof(unsigned int), (void*)indexList.data());
-
-		// Create the mesh and set it's index/vertex data
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexBuffer, indexBuffer, static_cast<int>(numIndices));
-		mesh->setIndexList(indexList);
-		mesh->setVertexList(vertexList);
-
-		// Move the mesh into the list and return its ID
-		mMeshList.push_back(mesh);
-		int id = static_cast<int>(mMeshList.size()) - 1;
-
-		mMeshMap[filename] = id;
-
-		return mesh;
-	}
-
 	std::shared_ptr<Mesh> MeshManager::createPlane(int rows, int cols, float xScale, float zScale, float centerX, float centerZ)
 	{
 		// Calculate the number of total vertices and the number of cells in each direction
@@ -184,14 +80,8 @@ namespace Odyssey
 			}
 		}
 
-		// Create a buffer in the render device for both the vertex and index data
-		std::shared_ptr<Buffer> vertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, numVertices, sizeof(Vertex), (void*)vertexList.data());
-		std::shared_ptr<Buffer> indexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, indexList.size(), sizeof(unsigned int), (void*)indexList.data());
-
 		// Create the mesh and set it's index/vertex data
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexBuffer, indexBuffer, static_cast<int>(indexList.size()));
-		mesh->setIndexList(indexList);
-		mesh->setVertexList(vertexList);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
 
 		// Move the mesh into the list and return its ID
 		mMeshList.push_back(mesh);
@@ -227,14 +117,8 @@ namespace Odyssey
 			4, 0, 3, 4, 3, 7
 		};
 
-		// Create a buffer in the render device for both the vertex and index data
-		std::shared_ptr<Buffer> vertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, vertexList.size(), sizeof(Vertex), (void*)vertexList.data());
-		std::shared_ptr<Buffer> indexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, indexList.size(), sizeof(unsigned int), (void*)indexList.data());
-
 		// Create the mesh and set it's index/vertex data
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexBuffer, indexBuffer, static_cast<int>(indexList.size()));
-		mesh->setIndexList(indexList);
-		mesh->setVertexList(vertexList);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
 
 		// Move the mesh into the list and return its ID
 		mMeshList.push_back(mesh);

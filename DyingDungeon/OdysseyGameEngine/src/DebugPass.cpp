@@ -57,9 +57,9 @@ namespace Odyssey
 				}
 			}
 
-			if (debugObject->getAABB())
+			if (AABB* aabb = debugObject->getComponent<AABB>())
 			{
-				debugObject->getAABB()->debugDraw({ 0,0,1 });
+				aabb->debugDraw({ 0,0,1 });
 			}
 
 			for (std::shared_ptr<GameObject> child : debugObject->getChildren())
@@ -71,9 +71,11 @@ namespace Odyssey
 						animator->debugDraw({ 1.0f, 0.0f, 0.0f });
 					}
 				}
-				if (child->getAABB())
+
+				if (AABB* aabb = child->getComponent<AABB>())
 				{
-					child->getAABB()->debugDraw({ 0,0,1 });
+					child->getComponent<AABB>()->debugDraw({ 0,0,1 });
+					aabb->debugDraw({ 0,0,1 });
 				}
 			}
 		}

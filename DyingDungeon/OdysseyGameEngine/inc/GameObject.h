@@ -12,11 +12,8 @@ namespace Odyssey
 	public:
 		GameObject();
 	public:
-		void importModel(const char* filename);
-	public: // Components
-		void attachAABB();
-		AABB* getAABB();
-		bool hasAABB();
+		void addChild(std::shared_ptr<GameObject> child);
+		void setParent(GameObject* parent);
 	public: // Accessors
 		const std::vector<std::shared_ptr<GameObject>> getChildren();
 		const int getChildrenCount();
@@ -45,11 +42,6 @@ namespace Odyssey
 		std::vector<std::shared_ptr<GameObject>> children;
 		GameObject* mParent;
 		bool mDebugEnabled;
-		// Components
-		std::unique_ptr<Animator> mAnimator;
-		std::unique_ptr<MeshRenderer> mMeshRenderer;
-		std::unique_ptr<ParticleSystem> mParticleSystem;
-		std::unique_ptr<AABB> mAABB;
 	};
 
 	// Template Functions
