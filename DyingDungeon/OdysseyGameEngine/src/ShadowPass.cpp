@@ -59,8 +59,8 @@ namespace Odyssey
 	void ShadowPass::preRender(RenderArgs& args)
 	{
 		// Recalculate the light's transform and set the shader matrix's lightViewProj
-		float sceneRadius = 75.0f;
-		DirectX::XMFLOAT3 sceneCenter = { -30.0f, 0.0f, 25.0f };
+		float sceneRadius = 50.0f;
+		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT4X4 lightTransform = mShadowLight->buildLightTransform(sceneRadius, sceneCenter);
 		DirectX::XMStoreFloat4x4(&args.shaderMatrix.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
 

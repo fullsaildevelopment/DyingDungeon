@@ -15,6 +15,7 @@ namespace Odyssey
 		OpaquePass(std::shared_ptr<RenderTarget> renderTarget);
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
+		void setFrustumCullEnable(bool enable);
 	private:
 		void renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args);
 	private:
@@ -25,6 +26,7 @@ namespace Odyssey
 		std::shared_ptr<Buffer> mAnimationBuffer;
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mPixelShader;
+		bool mFrustumCull;
 	};
 
 	struct Cmp

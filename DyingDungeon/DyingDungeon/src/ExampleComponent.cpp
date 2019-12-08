@@ -15,6 +15,10 @@ void ExampleComponent::update(double deltaTime)
 {
 	if (GetAsyncKeyState('F'))
 	{
-		mGameObject->getComponent<Odyssey::Transform>()->addPosition(0.0f, 10.0f * deltaTime, 0.0f);
+		mGameObject->getComponent<Odyssey::Transform>()->addScale(-deltaTime, -deltaTime, -deltaTime);
+	}
+	if (GetAsyncKeyState('G'))
+	{
+		mGameObject->getComponent<Odyssey::Transform>()->addScale(deltaTime, deltaTime, deltaTime);
 	}
 }

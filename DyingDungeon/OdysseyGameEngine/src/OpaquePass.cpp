@@ -81,7 +81,7 @@ namespace Odyssey
 			{
 				if (meshRenderer->getActive())
 				{
-					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getComponent<AABB>())))
+					if (mFrustumCull == false || args.camera->mFrustum->checkFrustumView(*(renderObject->getComponent<AABB>())))
 					{
 						// Depth sorting
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
@@ -98,7 +98,7 @@ namespace Odyssey
 				{
 					if (meshRenderer->getActive())
 					{
-						if (args.camera->mFrustum->checkFrustumView(*(child->getComponent<AABB>())))
+						if (mFrustumCull == false || args.camera->mFrustum->checkFrustumView(*(child->getComponent<AABB>())))
 						{
 							// Depth Sorting
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
@@ -123,6 +123,11 @@ namespace Odyssey
 				rootAnimator->unbind();
 			}
 		}
+	}
+
+	void OpaquePass::setFrustumCullEnable(bool enable)
+	{
+		mFrustumCull = enable;
 	}
 
 	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)

@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "TextureManager.h"
 #include "Material.h"
-#include "MaterialManager.h"
 #include "MeshManager.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"

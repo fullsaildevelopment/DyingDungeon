@@ -11,16 +11,16 @@
 #include "Mesh.h"
 #include "TextureManager.h"
 #include "MeshManager.h"
-#include "MaterialManager.h"
 #include "Transform.h"
+#include "Material.h"
 
 namespace Odyssey
 {
 	SkyboxPass::SkyboxPass(const char* skyboxTexture, std::shared_ptr<RenderTarget> renderTarget)
 	{
 		int texID = TextureManager::getInstance().importTexture(TextureType::Skybox, skyboxTexture);
-		std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createCube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-		std::shared_ptr<Material> material = MaterialManager::getInstance().createMaterial();
+		std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+		std::shared_ptr<Material> material = std::make_shared<Material>();
 		material->setTexture(TextureType::Skybox, texID);
 
 		mSkyBox = std::make_shared<GameObject>();

@@ -1,7 +1,7 @@
 #include "MeshRenderer.h"
 #include <fstream>
-#include "MaterialManager.h"
 #include "MeshManager.h"
+#include "Material.h"
 
 namespace Odyssey
 {

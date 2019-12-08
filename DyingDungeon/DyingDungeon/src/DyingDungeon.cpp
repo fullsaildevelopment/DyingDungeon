@@ -13,7 +13,6 @@
 #include "ClearRenderTargetPass.h"
 #include "DebugPass.h"
 #include "Light.h"
-#include "MaterialManager.h"
 #include "ShaderManager.h"
 #include "Component.h"
 #include "FileManager.h"
@@ -57,7 +56,7 @@ void initialize(HWND& hWnd)
 
 	// Load the arena scene
 	setupArena();
-	//setupPaladin();
+	setupPaladin();
 
 	// Set up the default rendering pipeline
 	setupPipeline();
@@ -109,9 +108,9 @@ void setupPipeline()
 	//Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	//std::shared_ptr<Odyssey::DebugPass>debugPass;
-	//debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
-	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	std::shared_ptr<Odyssey::DebugPass>debugPass;
+	debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
+	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -173,7 +172,7 @@ void update()
 	// Update user input
 	updateInput();
 
-	// Render the scene
+	// Update and render the scene
 	gMainScene->update();
 
 	// Present the main window

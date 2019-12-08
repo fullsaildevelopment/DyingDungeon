@@ -10,9 +10,12 @@ namespace Odyssey
 		return instance;
 	}
 
-	std::shared_ptr<Mesh> MeshManager::createPlane(int rows, int cols, float xScale, float zScale, float centerX, float centerZ)
+	std::shared_ptr<Mesh> MeshManager::createPlane(DirectX::XMFLOAT2 dimensions, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT3 center)
 	{
 		// Calculate the number of total vertices and the number of cells in each direction
+		unsigned int rows = static_cast<unsigned int>(dimensions.x);
+		unsigned int cols = static_cast<unsigned int>(dimensions.y);
+
 		unsigned int numVertices = rows * cols;
 		unsigned int cellRows = rows - 1;
 		unsigned int cellCols = cols - 1;
@@ -44,9 +47,9 @@ namespace Odyssey
 				// Negate the depth coordinate to put in
 				// quadrant four.  Then offset to center about
 				// coordinate system.
-				vertexList[vIndex].position.x = ((j * dx + xOffset) * xScale) + centerX;
-				vertexList[vIndex].position.y = 0.0f;
-				vertexList[vIndex].position.z = ((-i * dz + zOffset) * zScale) + centerZ;
+				vertexList[vIndex].position.x = ((j * dx + xOffset) * scale.x) + center.x;
+				vertexList[vIndex].position.y = center.y;
+				vertexList[vIndex].position.z = ((-i * dz + zOffset) * scale.y) + center.z;
 				vertexList[vIndex].normal = { 0,1,0 };
 				vertexList[vIndex].tex.x = 1.0f - (j * dx);
 				vertexList[vIndex].tex.y = (i * dz);
@@ -84,18 +87,18 @@ namespace Odyssey
 		return mesh;
 	}
 
-	std::shared_ptr<Mesh> MeshManager::createCube(float scaleX, float scaleY, float scaleZ, float centerX, float centerY, float centerZ)
+	std::shared_ptr<Mesh> MeshManager::createCube(DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 center)
 	{
 		std::vector<Vertex> vertexList;
 		vertexList.resize(8);
-		vertexList[0].position = DirectX::XMFLOAT3(-scaleX + centerX, -scaleY + centerY, -scaleZ + centerZ);
-		vertexList[1].position = DirectX::XMFLOAT3(-scaleX + centerX, +scaleY + centerY, -scaleZ + centerZ);
-		vertexList[2].position = DirectX::XMFLOAT3(+scaleX + centerX, +scaleY + centerY, -scaleZ + centerZ);
-		vertexList[3].position = DirectX::XMFLOAT3(+scaleX + centerX, -scaleY + centerY, -scaleZ + centerZ);
-		vertexList[4].position = DirectX::XMFLOAT3(-scaleX + centerX, -scaleY + centerY, +scaleZ + centerZ);
-		vertexList[5].position = DirectX::XMFLOAT3(-scaleX + centerX, +scaleY + centerY, +scaleZ + centerZ);
-		vertexList[6].position = DirectX::XMFLOAT3(+scaleX + centerX, +scaleY + centerY, +scaleZ + centerZ);
-		vertexList[7].position = DirectX::XMFLOAT3(+scaleX + centerX, -scaleY + centerY, +scaleZ + centerZ);
+		vertexList[0].position = DirectX::XMFLOAT3(-scale.x + center.x, -scale.y + center.y, -scale.z + center.z);
+		vertexList[1].position = DirectX::XMFLOAT3(-scale.x + center.x, +scale.y + center.y, -scale.z + center.z);
+		vertexList[2].position = DirectX::XMFLOAT3(+scale.x + center.x, +scale.y + center.y, -scale.z + center.z);
+		vertexList[3].position = DirectX::XMFLOAT3(+scale.x + center.x, -scale.y + center.y, -scale.z + center.z);
+		vertexList[4].position = DirectX::XMFLOAT3(-scale.x + center.x, -scale.y + center.y, +scale.z + center.z);
+		vertexList[5].position = DirectX::XMFLOAT3(-scale.x + center.x, +scale.y + center.y, +scale.z + center.z);
+		vertexList[6].position = DirectX::XMFLOAT3(+scale.x + center.x, +scale.y + center.y, +scale.z + center.z);
+		vertexList[7].position = DirectX::XMFLOAT3(+scale.x + center.x, -scale.y + center.y, +scale.z + center.z);
 
 		std::vector<unsigned int> indexList
 		{
@@ -120,11 +123,16 @@ namespace Odyssey
 
 	std::shared_ptr<Mesh> MeshManager::createMesh(size_t hashID, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
+		// Check if we have registered this mesh already
 		if (meshMap.count(hashID) != 0)
 		{
+			// Return the stored mesh
 			return meshMap[hashID];
 		}
+
+		// Create a new mesh
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertexList, indexList);
+		// Store the mesh according to it's hash ID and return the mesh pointer
 		meshMap[hashID] = mesh;
 		return mesh;
 	}
