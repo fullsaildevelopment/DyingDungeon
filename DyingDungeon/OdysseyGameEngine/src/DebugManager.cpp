@@ -1,4 +1,3 @@
-#include "BufferManager.h"
 #include "DebugManager.h"
 #include "Buffer.h"
 #include "AABB.h"
@@ -15,7 +14,9 @@ namespace Odyssey
 	void DebugManager::initialize()
 	{
 		mNumVertices = 0;
-		mVertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, MAX_LINES, sizeof(ColoredVertex), nullptr);
+
+		mVertexBuffer = std::make_unique<Buffer>(BufferBindFlag::VertexBuffer, size_t(MAX_LINES),
+			static_cast<UINT>(sizeof(ColoredVertex)), nullptr);
 	}
 
 	void DebugManager::addLine(DirectX::XMFLOAT3 positionA, DirectX::XMFLOAT3 positionB, DirectX::XMFLOAT3 colorA, DirectX::XMFLOAT3 colorB)
@@ -108,7 +109,7 @@ namespace Odyssey
 
 	unsigned int DebugManager::getNumberOfVertices()
 	{
-		return mNumVertices;
+		return static_cast<unsigned int>(mNumVertices);
 	}
 
 	void DebugManager::bind()

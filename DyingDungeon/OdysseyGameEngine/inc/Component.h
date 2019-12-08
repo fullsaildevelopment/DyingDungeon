@@ -44,7 +44,7 @@ namespace Odyssey
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();
-		virtual GameObject* getParent();
+		virtual GameObject* getGameObject();
 		void setEnabled(bool enable);
 		bool isEnabled();
 	protected:

@@ -1,11 +1,4 @@
-#include "RenderManager.h"
-#include "MeshManager.h"
-#include "MaterialManager.h"
-#include "Mesh.h"
 #include "GameObject.h"
-#include <fstream>
-#include "MeshRenderer.h"
-#include "Transform.h"
 
 namespace Odyssey
 {

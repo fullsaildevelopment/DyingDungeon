@@ -22,8 +22,6 @@ namespace Odyssey
 		void enableDebug();
 		void disableDebug();
 		bool getDebugEnabled();
-	public: // Components
-		std::vector<std::unique_ptr<Component>> mComponents;
 	public: // Single Component Interaction
 		template<class ComponentType, typename... Args>
 		void addComponent(Args&&... params);
@@ -39,6 +37,7 @@ namespace Odyssey
 		template<class ComponentType>
 		int removeComponents();
 	private:
+		std::vector<std::unique_ptr<Component>> mComponents;
 		std::vector<std::shared_ptr<GameObject>> children;
 		GameObject* mParent;
 		bool mDebugEnabled;

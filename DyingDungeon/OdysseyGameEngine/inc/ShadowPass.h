@@ -1,10 +1,10 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "RenderPass.h"
+#include "Buffer.h"
 
 namespace Odyssey
 {
-	class Buffer;
 	class Light;
 	class RenderTarget;
 	class Viewport;
@@ -26,7 +26,7 @@ namespace Odyssey
 		std::shared_ptr<Light> mShadowLight;
 		std::shared_ptr<RenderTarget> mRenderTarget;
 		std::unique_ptr<RenderState> mRenderState;
-		std::shared_ptr<Buffer> mShadowBuffer;
+		std::unique_ptr<Buffer> mShadowBuffer;
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mPixelShader;
 	};

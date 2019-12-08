@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "Buffer.h"
 
 namespace Odyssey
 {
@@ -23,16 +24,7 @@ namespace Odyssey
 		DirectX::XMFLOAT2 pad;
 	};  //------------------------------- ( 16 * 5 = 80 bytes )
 
-	struct MatFileData
-	{
-		std::vector<const char*> texFilenames;
-		std::vector<DirectX::XMFLOAT3> texColors;
-		std::vector<float> texFactors;
-	};
-
-	class Buffer;
 	class Shader;
-
 	class Material
 	{
 	public:
@@ -55,7 +47,7 @@ namespace Odyssey
 		MaterialProperties mProperties;
 	private:
 		std::map<TextureType, int> mTextureMap;
-		std::shared_ptr<Buffer> mMaterialBuffer;
+		std::unique_ptr<Buffer> mMaterialBuffer;
 		std::shared_ptr<Shader> mPixelShader;
 	};
 }

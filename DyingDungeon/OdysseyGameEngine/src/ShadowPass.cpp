@@ -1,7 +1,6 @@
 #include "ShadowPass.h"
 #include "RenderManager.h"
 #include "RenderTarget.h"
-#include "BufferManager.h"
 #include "ShaderManager.h"
 #include "Light.h"
 #include "RenderState.h"
@@ -37,7 +36,8 @@ namespace Odyssey
 
 		DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		mShadowBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(DirectX::XMFLOAT4), &shadowsEnabled);
+		mShadowBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
+			static_cast<UINT>(sizeof(DirectX::XMFLOAT4)), &shadowsEnabled);
 
 		// Create the vertex shader
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =

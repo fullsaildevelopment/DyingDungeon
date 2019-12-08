@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "BufferManager.h"
 #include "TextureManager.h"
 #include "Material.h"
 #include "MaterialManager.h"
@@ -17,8 +16,11 @@ namespace Odyssey
 {
 	Scene::Scene()
 	{
-		mLightingBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(SceneLighting), nullptr);
-		mShaderMatrixBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(ShaderMatrix), nullptr);
+		mLightingBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
+
+		mShaderMatrixBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(ShaderMatrix)), nullptr);
 	}
 
 	void Scene::addLight(std::shared_ptr<Light> light)
@@ -51,7 +53,7 @@ namespace Odyssey
 		}
 
 		// Update the render args lists
-		renderArgs.shaderMatrixBuffer = mShaderMatrixBuffer;
+		renderArgs.shaderMatrixBuffer = mShaderMatrixBuffer.get();
 		renderArgs.camera = &mMainCamera;
 		renderArgs.lightList = mSceneLights;
 		renderArgs.renderList = mSceneObjectList;

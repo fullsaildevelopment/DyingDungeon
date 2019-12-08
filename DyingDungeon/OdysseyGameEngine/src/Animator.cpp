@@ -1,6 +1,5 @@
 #include <fstream>
 #include "Animator.h"
-#include "BufferManager.h"
 #include "RenderManager.h"
 #include "Buffer.h"
 #include "DebugManager.h"
@@ -20,7 +19,8 @@ namespace Odyssey
 		mDebugEnabled = false;
 
 		// Create the constant buffer for skinned animation
-		mAnimationBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(AnimationBuffer), nullptr);
+		mAnimationBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
+			static_cast<UINT>(sizeof(AnimationBuffer)), nullptr);
 
 		// No animation data to process for skinned rendering
 		mAnimationData.hasAnimationData = { 0.0f, 0.0f, 0.0f, 0.0f };

@@ -1,10 +1,9 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "Buffer.h"
 
 namespace Odyssey
 {
-	class Buffer;
-
 	class Mesh
 	{
 	public: // Constructors
@@ -16,16 +15,16 @@ namespace Odyssey
 		void bind();
 		void unbind();
 	public: // Accessors
-		std::shared_ptr<Buffer> getVertexBuffer();
-		std::shared_ptr<Buffer> getIndexBuffer();
+		Buffer* getVertexBuffer();
+		Buffer* getIndexBuffer();
 		const int getNumberOfIndices();
 	public: // Mutators
 		void setName(std::string name);
 		void setNumberOfindices(int id);
 	private:
 		std::string mName;
-		std::shared_ptr<Buffer> mVertexBuffer;
-		std::shared_ptr<Buffer> mIndexBuffer;
+		std::unique_ptr<Buffer> mVertexBuffer;
+		std::unique_ptr<Buffer> mIndexBuffer;
 		int mNumberOfIndices;
 	};
 }

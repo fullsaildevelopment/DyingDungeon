@@ -25,7 +25,7 @@ namespace Odyssey
 
 	}
 
-	GameObject* Component::getParent()
+	GameObject* Component::getGameObject()
 	{
 		return mGameObject;
 	}

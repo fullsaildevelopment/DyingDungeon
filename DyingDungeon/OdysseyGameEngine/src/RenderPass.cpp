@@ -30,7 +30,7 @@ namespace Odyssey
 	{
 	}
 
-	void RenderPass::updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, std::shared_ptr<Buffer> shaderMatrixBuffer)
+	void RenderPass::updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, Buffer* shaderMatrixBuffer)
 	{
 		// Calculate the WVP matrix
 		DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&shaderMatrix.world), DirectX::XMLoadFloat4x4(&shaderMatrix.view));

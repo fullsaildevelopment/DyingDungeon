@@ -17,7 +17,7 @@ namespace Odyssey
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		mRenderTarget = renderTarget;
-		mRenderState = std::make_shared<RenderState>(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = std::make_unique<RenderState>(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 
 		// Create the input layout
 		D3D11_INPUT_ELEMENT_DESC cvLayout[] =

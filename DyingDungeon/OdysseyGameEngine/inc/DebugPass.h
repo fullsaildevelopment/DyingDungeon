@@ -18,7 +18,7 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		std::shared_ptr<RenderTarget> mRenderTarget;
-		std::shared_ptr<RenderState> mRenderState;
+		std::unique_ptr<RenderState> mRenderState;
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mPixelShader;
 	};

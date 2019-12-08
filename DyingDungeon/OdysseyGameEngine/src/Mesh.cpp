@@ -1,6 +1,5 @@
 #include "Mesh.h"
 #include "Buffer.h"
-#include "BufferManager.h"
 
 namespace Odyssey
 {
@@ -11,9 +10,12 @@ namespace Odyssey
 
 	Mesh::Mesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
-		mVertexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::VertexBuffer, vertexList.size(), sizeof(Vertex), (void*)vertexList.data());
-		mIndexBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::IndexBuffer, indexList.size(), sizeof(unsigned int), (void*)indexList.data());
-		mNumberOfIndices = indexList.size();
+		mVertexBuffer = std::make_unique<Buffer>(BufferBindFlag::VertexBuffer, static_cast<size_t>(vertexList.size()),
+			static_cast<UINT>(sizeof(Vertex)), (void*)vertexList.data());
+
+		mIndexBuffer = std::make_unique<Buffer>(BufferBindFlag::IndexBuffer, static_cast<size_t>(indexList.size()),
+			static_cast<UINT>(sizeof(unsigned int)), (void*)indexList.data());
+		mNumberOfIndices = static_cast<int>(indexList.size());
 	}
 
 	Mesh::Mesh(Mesh& other)
@@ -35,14 +37,14 @@ namespace Odyssey
 		mIndexBuffer->unbind(0, ShaderType::VertexShader);
 	}
 
-	std::shared_ptr<Buffer> Mesh::getVertexBuffer()
+	Buffer* Mesh::getVertexBuffer()
 	{
-		return mVertexBuffer;
+		return mVertexBuffer.get();
 	}
 
-	std::shared_ptr<Buffer> Mesh::getIndexBuffer()
+	Buffer* Mesh::getIndexBuffer()
 	{
-		return mIndexBuffer;
+		return mIndexBuffer.get();
 	}
 	
 	const int Mesh::getNumberOfIndices()

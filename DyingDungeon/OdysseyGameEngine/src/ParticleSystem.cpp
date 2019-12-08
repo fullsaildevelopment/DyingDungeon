@@ -1,9 +1,10 @@
 #include "ParticleSystem.h"
-#include "BufferManager.h"
 #include "RenderManager.h"
 #include "ShaderManager.h"
 #include "Buffer.h"
 #include "Material.h"
+#include "RenderState.h"
+
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, ParticleSystem)
@@ -87,6 +88,8 @@ namespace Odyssey
 	void ParticleSystem::setParticleData(std::vector<Particle> particles)
 	{
 		mParticleData = particles;
-		mParticleBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::StructuredBuffer, mNumberOfParticles, sizeof(Particle), mParticleData.data());
+
+		mParticleBuffer = std::make_unique<Buffer>(BufferBindFlag::StructuredBuffer, size_t(mNumberOfParticles), 
+			static_cast<UINT>(sizeof(Particle)), mParticleData.data());
 	}
 }

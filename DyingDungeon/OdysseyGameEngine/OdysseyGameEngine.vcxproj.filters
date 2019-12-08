@@ -105,9 +105,6 @@
     <ClInclude Include="inc\ParticleSystem.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="inc\BufferManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="inc\DebugManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
@@ -177,14 +174,14 @@
     <ClInclude Include="inc\Transform.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GameObject.h">
-      <Filter>Header Files\Scene Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="inc\FileManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="inc\AABB.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameObject.h">
+      <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,9 +254,6 @@
     </ClCompile>
     <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BufferManager.cpp">
-      <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="src\DebugManager.cpp">
       <Filter>Source Files\Managers</Filter>
@@ -345,14 +339,14 @@
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject.cpp">
-      <Filter>Source Files\Scene Interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="src\FileManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="src\AABB.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject.cpp">
+      <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

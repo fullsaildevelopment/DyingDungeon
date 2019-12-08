@@ -12,7 +12,7 @@ namespace Odyssey
 	{
 		Camera* camera;
 		ShaderMatrix shaderMatrix;
-		std::shared_ptr<Buffer> shaderMatrixBuffer;
+		Buffer* shaderMatrixBuffer;
 		std::vector<std::shared_ptr<GameObject>> renderList;
 		std::vector<std::shared_ptr<GameObject>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;
@@ -29,7 +29,7 @@ namespace Odyssey
 		virtual void render(RenderArgs& args) = 0;
 		virtual void postRender(RenderArgs& args);
 	protected:
-		virtual void updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, std::shared_ptr<Buffer> shaderMatrixBuffer);
+		virtual void updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, Buffer* shaderMatrixBuffer);
 	private:
 		bool mEnabled;
 	};

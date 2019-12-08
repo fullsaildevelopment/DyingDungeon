@@ -56,7 +56,7 @@ PixelShaderInput main(VERTEX_SHADER_INPUT input)
 	float4 binormal = float4(input.binormal.xyz, 0.0f);
 
 	output.position = mul(worldViewProj, position);
-	output.worldPosition = mul(world, position);
+	output.worldPosition = mul(world, position).xyz;
 	output.normal = mul(world, normal).xyz;
 	output.normal = normalize(output.normal);
 	output.tangent = mul(world, tangent).xyz;

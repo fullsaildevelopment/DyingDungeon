@@ -1,7 +1,8 @@
 #pragma once
 #include "EngineIncludes.h"
-#include "RenderState.h"
 #include "Component.h"
+#include "Buffer.h"
+#include "RenderState.h"
 
 namespace Odyssey
 {
@@ -14,10 +15,8 @@ namespace Odyssey
 		float lifeTime;
 	};
 
-	class Buffer;
 	class Material;
 	class Shader;
-	class RenderState;
 
 	class ParticleSystem : public Component
 	{
@@ -36,7 +35,7 @@ namespace Odyssey
 		std::shared_ptr<Shader> mGeometryShader;
 		std::shared_ptr<Shader> mComputeShader;
 		std::shared_ptr<Material> mMaterial;
-		std::shared_ptr<Buffer> mParticleBuffer;
+		std::unique_ptr<Buffer> mParticleBuffer;
 		std::unique_ptr<RenderState> mRenderState;
 		int mNumberOfParticles;
 		std::vector<Particle> mParticleData;

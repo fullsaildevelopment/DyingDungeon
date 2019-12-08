@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "Buffer.h"
 
 namespace Odyssey
 {
@@ -11,8 +12,6 @@ namespace Odyssey
 	};
 
 	class AABB;
-	class Buffer;
-
 	class DebugManager
 	{
 	public:
@@ -33,6 +32,6 @@ namespace Odyssey
 	private:
 		std::array<ColoredVertex, MAX_LINES> mVertexList;
 		size_t mNumVertices;
-		std::shared_ptr<Buffer> mVertexBuffer;
+		std::unique_ptr<Buffer> mVertexBuffer;
 	};
 }

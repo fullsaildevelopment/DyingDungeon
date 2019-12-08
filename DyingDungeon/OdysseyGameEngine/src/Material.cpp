@@ -1,7 +1,6 @@
 #include "Material.h"
 #include "Buffer.h"
 #include "Shader.h"
-#include "BufferManager.h"
 #include "TextureManager.h"
 
 namespace Odyssey
@@ -162,6 +161,8 @@ namespace Odyssey
 		mProperties.mHasNormalTexture = 0;
 		mProperties.mSpecularPower = 256.0f;
 		mProperties.mReflectance = 0.01f;
-		mMaterialBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(MaterialProperties), &mProperties);
+		
+		mMaterialBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
+			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
 	}
 }
