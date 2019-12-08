@@ -39,6 +39,7 @@ namespace Odyssey
 
 		// Create the default pixel shader
 		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
+		
 		// Create the default vertex shader
 		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 

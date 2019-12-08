@@ -17,6 +17,7 @@
 #include "ShaderManager.h"
 #include "Component.h"
 #include "FileManager.h"
+#include "Transform.h"
 
 // Game Includes
 #include "ExampleComponent.h"
@@ -29,6 +30,7 @@ namespace
     // Scene resources
     std::unique_ptr<Odyssey::Scene> gMainScene;
 	std::shared_ptr<Odyssey::GameObject> gArena;
+	std::shared_ptr<Odyssey::GameObject> gPaladin;
     // Light resources
     std::shared_ptr<Odyssey::Light> gDirLight;
     std::shared_ptr<Odyssey::Light> gPointLight[10];
@@ -40,6 +42,7 @@ void setupDefaults(HWND& hWnd);
 void setupPipeline();
 void setupLighting();
 void setupArena();
+void setupPaladin();
 void update();
 void updateInput();
 
@@ -54,6 +57,7 @@ void initialize(HWND& hWnd)
 
 	// Load the arena scene
 	setupArena();
+	setupPaladin();
 
 	// Set up the default rendering pipeline
 	setupPipeline();
@@ -105,9 +109,9 @@ void setupPipeline()
 	//Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass;
-	debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
-	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	//std::shared_ptr<Odyssey::DebugPass>debugPass;
+	//debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
+	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -124,15 +128,25 @@ void setupLighting()
 
 	gPointLight[0] = std::make_shared<Odyssey::Light>();
 	gPointLight[0]->mLightType = Odyssey::LightType::Point;
-	gPointLight[0]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	gPointLight[0]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 20.0f, 0.0f, 1.0f);
 	gPointLight[0]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[0]->mColor = DirectX::XMFLOAT4(0.7f, 0.6f, 0.5f, 1.0f);
+	gPointLight[0]->mColor = DirectX::XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
 	gPointLight[0]->mIntensity = 1.0f;
-	gPointLight[0]->mRange = 100.0f;
+	gPointLight[0]->mRange = 50.0f;
 	gPointLight[0]->mSpotAngle = 0.0f;
+
+	gPointLight[1] = std::make_shared<Odyssey::Light>();
+	gPointLight[1]->mLightType = Odyssey::LightType::Spot;
+	gPointLight[1]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 20.0f, -13.0f, 1.0f);
+	gPointLight[1]->mWorldDirection = DirectX::XMFLOAT4(0.0f, -1.0f, 0.15f, 0.0f);
+	gPointLight[1]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 0.5f, 1.0f);
+	gPointLight[1]->mIntensity = 5.0f;
+	gPointLight[1]->mRange = 100.0f;
+	gPointLight[1]->mSpotAngle = 0.1f;
 
 	gMainScene->addLight(gDirLight);
 	gMainScene->addLight(gPointLight[0]);
+	gMainScene->addLight(gPointLight[1]);
 }
 
 void setupArena()
@@ -141,6 +155,17 @@ void setupArena()
 	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
 	gArena->addComponent<ExampleComponent>();
 	gMainScene->addSceneObject(gArena);
+}
+
+void setupPaladin()
+{
+	gPaladin = std::make_shared<Odyssey::GameObject>();
+	gPaladin->addComponent<Odyssey::Transform>();
+	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
+	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Paladin_Judgement.dxanim");
+	gMainScene->addSceneObject(gPaladin);
 }
 
 void update()

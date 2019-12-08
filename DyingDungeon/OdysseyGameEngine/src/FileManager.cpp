@@ -45,20 +45,23 @@ namespace Odyssey
 
 			// Read in the mesh data
 			readMeshData(file, meshData);
+			// Read in material data
 			readMaterialData(file, materialData);
 
-			// Mesh
+			// Create a mesh from the vertex and index lists
 			std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshData.vertexList, meshData.indexList);
-			// Material
+
+			// Create a blank material
 			std::shared_ptr<Material> material = std::make_shared<Material>();
 
-			// Convert the diffuse color from the import to an XMFloat4
+			// Set the diffuse color of the material
 			DirectX::XMFLOAT4 diffuseColor = { materialData.texColors[0].x, materialData.texColors[0].y, materialData.texColors[0].z, 1.0f };
-			// Set the diffuse color in the material
 			material->setDiffuseColor(diffuseColor);
 
+			// Iterate over the possible imported textures
 			for (int i = 0; i < 4; i++)
 			{
+				// If a filename is found for the texture import it
 				if (materialData.texFilenames[i])
 				{
 					// Create the texture and set it in the material
@@ -66,25 +69,38 @@ namespace Odyssey
 					material->setTexture((TextureType)i, texID);
 				}
 			}
-			// Mesh renderer
+
+			// Add the MeshRenderer component
 			child->addComponent<MeshRenderer>(mesh, material);
 
-			// Transform
+			// Add the Transform component
 			child->addComponent<Transform>(transform);
 
-			// AABB - transform, vertex list
+			// Check if the parent object has a transform component on it
+			if (Transform* parentTransform = gameObject->getComponent<Transform>())
+			{
+				// Convert the transform from the child's local space to it's parent local space aka world space
+				DirectX::XMFLOAT4X4 localTransform;
+				parentTransform->getLocalTransform(localTransform);
+				DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&transform), DirectX::XMLoadFloat4x4(&localTransform)));
+			}
+			
+			// Add the AABB component using the world-space transform
 			child->addComponent<AABB>(transform, meshData.vertexList);
 		}
 
+		// Check for skeleton data in the file
 		SkeletonData skeletonData;
 		readSkeletonData(file, skeletonData);
-		// Skeleton - Animator
+
+		// If a skeleton was read add an Animator component and set the skeleton
 		if (skeletonData.hasSkeleton)
 		{
 			gameObject->addComponent<Animator>();
 			gameObject->getComponent<Animator>()->setSkeleton(skeletonData.skeleton);
 		}
 
+		// Close the file
 		file.close();
 	}
 

@@ -88,32 +88,7 @@ namespace Odyssey
 			{
 				component->update(mDeltaTime);
 			}
-
-			//if (renderObject->hasParticleSystem())
-			//{
-			//	args.transparentList.push_back(renderObject);
-			//}
-
-			//// If the object has a mesh renderer push it, and its children, onto the render list
-			//if (renderObject->hasMeshRenderer())
-			//{
-			//	args.renderList.push_back(renderObject);
-			//}
-			//else
-			//{
-			//	// If the parent object doesn't have a mesh renderer, search the children for a mesh renderer
-			//	for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
-			//	{
-			//		// The child has a mesh renderer, push it's parent, and the parent's children onto the render list
-			//		if (child->hasMeshRenderer())
-			//		{
-			//			args.renderList.push_back(renderObject);
-			//			break;
-			//		}
-			//	}
-			//}
 		}
-
 	}
 
 	void Scene::updateLightingBuffer()
