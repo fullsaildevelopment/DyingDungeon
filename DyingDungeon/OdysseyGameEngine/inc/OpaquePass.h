@@ -16,7 +16,7 @@ namespace Odyssey
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
 	private:
-		void renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args);
+		void renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args);
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;

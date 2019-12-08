@@ -89,9 +89,9 @@ namespace Odyssey
 		return (sqDist < sqRadius);
 	}
 
-	void AABB::initialize(SceneObject* parent)
+	void AABB::initialize(GameObject* parent)
 	{
-		mParent = parent;
+		mGameObject = parent;
 		mMin = { 0,0,0 };
 		mMax = { 0,0,0 };
 	}

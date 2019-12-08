@@ -26,10 +26,10 @@ namespace Odyssey
 		mAnimationData.hasAnimationData = { 0.0f, 0.0f, 0.0f, 0.0f };
 	}
 
-	void Animator::initialize(SceneObject* parent)
+	void Animator::initialize(GameObject* parent)
 	{
+		mGameObject = parent;
 		setEnabled(true);
-		mParent = parent;
 	}
 
 	void Animator::importAnimation(const char* animationName, const char* filename)

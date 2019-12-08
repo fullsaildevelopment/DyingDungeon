@@ -1,18 +1,20 @@
 #include "ExampleComponent.h"
-#include "SceneObject.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 CLASS_DEFINITION(Component, ExampleComponent)
 
-void ExampleComponent::initialize(Odyssey::SceneObject* parent)
+void ExampleComponent::initialize(Odyssey::GameObject* parent)
 {
 	onEnable(); 
-	mParent = parent;
+	mGameObject = parent;
+	mGameObject->addComponent<Odyssey::Transform>();
 }
 
 void ExampleComponent::update(double deltaTime)
 {
 	if (GetAsyncKeyState('F'))
 	{
-		mParent->addPosition(0.0f, 10.0f * deltaTime, 0.0f);
+		mGameObject->getComponent<Odyssey::Transform>()->addPosition(0.0f, 10.0f * deltaTime, 0.0f);
 	}
 }

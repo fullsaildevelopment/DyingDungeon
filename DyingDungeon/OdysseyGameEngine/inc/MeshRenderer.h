@@ -11,12 +11,11 @@ namespace Odyssey
 	class MeshRenderer : public Component
 	{
 		CLASS_DECLARATION(Animator)
-
 	public: // Constructors
 		MeshRenderer(DirectX::XMFLOAT4X4 worldMatrix);
 		MeshRenderer(DirectX::XMFLOAT4X4 worldMatrix, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 	public: // Component Inherited Functions
-		virtual void initialize(SceneObject* parent);
+		virtual void initialize(GameObject* parent);
 	public: // Functions
 		void importMesh(const char* filename);
 	public: // Mutators

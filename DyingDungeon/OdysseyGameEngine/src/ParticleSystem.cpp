@@ -4,9 +4,10 @@
 #include "ShaderManager.h"
 #include "Buffer.h"
 #include "Material.h"
-
 namespace Odyssey
 {
+	CLASS_DEFINITION(Component, ParticleSystem)
+
 	ParticleSystem::ParticleSystem()
 	{
 		mDevice = RenderManager::getInstance().getDevice();
@@ -36,6 +37,17 @@ namespace Odyssey
 		blendDesc.RenderTarget[0] = desc;
 
 		mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
+	}
+
+	void ParticleSystem::initialize(GameObject* parent)
+	{
+		mGameObject = parent;
+		onEnable();
+	}
+
+	void ParticleSystem::update(double deltaTime)
+	{
+		Run();
 	}
 
 	void ParticleSystem::Run()

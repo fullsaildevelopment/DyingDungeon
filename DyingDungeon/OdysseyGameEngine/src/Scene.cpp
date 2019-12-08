@@ -6,11 +6,12 @@
 #include "MeshManager.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "RenderPass.h"
 #include "RenderPipelineManager.h"
 #include "ParticleSystem.h"
 #include "Buffer.h"
+#include "Component.h"
 
 namespace Odyssey
 {
@@ -18,23 +19,6 @@ namespace Odyssey
 	{
 		mLightingBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(SceneLighting), nullptr);
 		mShaderMatrixBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(ShaderMatrix), nullptr);
-		mXTimer.Restart();
-	}
-
-	void Scene::setSkybox(const char* textureFilename)
-	{
-		int texID = TextureManager::getInstance().importTexture(TextureType::Skybox, textureFilename);
-		std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createCube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-		std::shared_ptr<Material> material = MaterialManager::getInstance().createMaterial();
-
-		mSkybox = std::make_shared<SceneObject>();
-		mSkybox->attachMeshRenderer(mesh, material);
-		mSkybox->getMeshRenderer()->getMaterial()->setTexture(TextureType::Skybox, texID);
-	}
-
-	std::shared_ptr<SceneObject> Scene::getSkybox()
-	{
-		return mSkybox;
 	}
 
 	void Scene::addLight(std::shared_ptr<Light> light)
@@ -42,30 +26,52 @@ namespace Odyssey
 		mSceneLights.push_back(light);
 	}
 
-	void Scene::addSceneObject(std::shared_ptr<SceneObject> sceneObject)
+	void Scene::addSceneObject(std::shared_ptr<GameObject> sceneObject)
 	{
 		mSceneObjectList.push_back(sceneObject);
 	}
 
 	void Scene::initialize()
 	{
-		for (std::shared_ptr<SceneObject> sceneObject : mSceneObjectList)
+		mXTimer.Restart();
+		for (std::shared_ptr<GameObject> sceneObject : mSceneObjectList)
 		{
-			for (auto& component : sceneObject->getComponents<Component>())
+			for (auto* component : sceneObject->getComponents<Component>())
 			{
 				component->initialize(sceneObject.get());
 			}
+
+			for (auto child : sceneObject->getChildren())
+			{
+				for (auto component : child->getComponents<Component>())
+				{
+					component->initialize(child.get());
+				}
+			}
 		}
+
+		// Update the render args lists
+		renderArgs.shaderMatrixBuffer = mShaderMatrixBuffer;
+		renderArgs.camera = &mMainCamera;
+		renderArgs.lightList = mSceneLights;
+		renderArgs.renderList = mSceneObjectList;
 	}
 
-	void Scene::render()
+	void Scene::update()
 	{
 		mXTimer.Signal();
 
-		generateLightList();
-		// Generate a render list and perform the render pipeline process on all renderable objects
-		renderScene();
+		// Recalculate delta time
 		mDeltaTime = mXTimer.SmoothDelta();
+
+		// Updates the lighting buffer
+		updateLightingBuffer();
+
+		// Update the scene
+		updateScene();
+
+		// Render the scene
+		RenderPipelineManager::getInstance().render(renderArgs);
 	}
 
 	double Scene::getDeltaTime()
@@ -73,69 +79,44 @@ namespace Odyssey
 		return mDeltaTime;
 	}
 
-	void Scene::renderScene()
+	void Scene::updateScene()
 	{
-		RenderArgs args;
-		args.shaderMatrixBuffer = mShaderMatrixBuffer;
-		args.camera = &mMainCamera;
-		std::vector<std::shared_ptr<SceneObject>> renderList;
-		args.lightList = mSceneLights;
-
 		// Generate a render list
-		for (std::shared_ptr<SceneObject> renderObject : mSceneObjectList)
+		for (std::shared_ptr<GameObject> renderObject : mSceneObjectList)
 		{
 			for (auto& component : renderObject->getComponents<Component>())
 			{
 				component->update(mDeltaTime);
 			}
 
-			if (renderObject->hasParticleSystem())
-			{
-				args.transparentList.push_back(renderObject);
-			}
+			//if (renderObject->hasParticleSystem())
+			//{
+			//	args.transparentList.push_back(renderObject);
+			//}
 
-			// If the object has a mesh renderer push it, and its children, onto the render list
-			if (renderObject->hasMeshRenderer())
-			{
-				args.renderList.push_back(renderObject);
-			}
-			else
-			{
-				// If the parent object doesn't have a mesh renderer, search the children for a mesh renderer
-				for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
-				{
-					// The child has a mesh renderer, push it's parent, and the parent's children onto the render list
-					if (child->hasMeshRenderer())
-					{
-						args.renderList.push_back(renderObject);
-						break;
-					}
-				}
-			}
+			//// If the object has a mesh renderer push it, and its children, onto the render list
+			//if (renderObject->hasMeshRenderer())
+			//{
+			//	args.renderList.push_back(renderObject);
+			//}
+			//else
+			//{
+			//	// If the parent object doesn't have a mesh renderer, search the children for a mesh renderer
+			//	for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			//	{
+			//		// The child has a mesh renderer, push it's parent, and the parent's children onto the render list
+			//		if (child->hasMeshRenderer())
+			//		{
+			//			args.renderList.push_back(renderObject);
+			//			break;
+			//		}
+			//	}
+			//}
 		}
 
-		RenderPipelineManager::getInstance().render(args);
 	}
 
-	void Scene::renderDebug(ShaderMatrix& bufferMatrices)
-	{
-		// Set the world matrix as identity
-		DirectX::XMFLOAT4X4 identity;
-		DirectX::XMStoreFloat4x4(&identity, DirectX::XMMatrixIdentity());
-
-		// Iterate over the entire debug list
-		for (int i = 0; i < mDebugList.size(); i++)
-		{
-			// Debug draw each animator in the list
-			if (mDebugList[i]->hasAnimator() && mDebugList[i]->getAnimator()->getDebugEnabled())
-			{
-				mDebugList[i]->getAnimator()->debugDraw({ 1,0,0 });
-			}
-		}
-		mDebugList.clear();
-	}
-
-	void Scene::generateLightList()
+	void Scene::updateLightingBuffer()
 	{
 		// Generate a list of lights on a per-object basis
 		SceneLighting sceneLighting;

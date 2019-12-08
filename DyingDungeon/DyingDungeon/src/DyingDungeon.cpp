@@ -4,7 +4,7 @@
 #include "RenderTarget.h"
 #include "Animator.h"
 #include "Scene.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "RenderPipelineManager.h"
 #include "OpaquePass.h"
 #include "SkyboxPass.h"
@@ -27,7 +27,7 @@ namespace
     std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
     // Scene resources
     std::unique_ptr<Odyssey::Scene> gMainScene;
-	std::shared_ptr<Odyssey::SceneObject> gArena;
+	std::shared_ptr<Odyssey::GameObject> gArena;
     // Light resources
     std::shared_ptr<Odyssey::Light> gDirLight;
     std::shared_ptr<Odyssey::Light> gPointLight[10];
@@ -47,9 +47,6 @@ void initialize(HWND& hWnd)
 	// Set up the following default rendering resources:
 	// Render window, render target, viewport, render state, sampler state, main scene
 	setupDefaults(hWnd);
-
-	// Set up the skybox
-	gMainScene->setSkybox("Skybox.dds");
 
 	// Set up the scene lighting
 	setupLighting();
@@ -88,7 +85,7 @@ void setupPipeline()
 
 	// Create a skybox pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass;
-	skyboxPass = std::make_shared<Odyssey::SkyboxPass>(gMainScene->getSkybox(), gRenderTarget);
+	skyboxPass = std::make_shared<Odyssey::SkyboxPass>("Skybox.dds", gRenderTarget);
 	Odyssey::RenderPipelineManager::getInstance().addPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
@@ -107,9 +104,9 @@ void setupPipeline()
 	//Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	//std::shared_ptr<Odyssey::DebugPass>debugPass;
-	//debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
-	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	std::shared_ptr<Odyssey::DebugPass>debugPass;
+	debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
+	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -139,7 +136,7 @@ void setupLighting()
 
 void setupArena()
 {
-	gArena = std::make_shared<Odyssey::SceneObject>();
+	gArena = std::make_shared<Odyssey::GameObject>();
 	gArena->importModel("assets/models/TestArena.dxm");
 	gArena->addComponent<ExampleComponent>();
 	gMainScene->addSceneObject(gArena);
@@ -151,7 +148,7 @@ void update()
 	updateInput();
 
 	// Render the scene
-	gMainScene->render();
+	gMainScene->update();
 
 	// Present the main window
 	gMainWindow->present();

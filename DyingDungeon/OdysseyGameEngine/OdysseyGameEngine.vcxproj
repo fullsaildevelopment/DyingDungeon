@@ -30,6 +30,7 @@
     <ClInclude Include="inc\DebugPass.h" />
     <ClInclude Include="inc\EngineIncludes.h" />
     <ClInclude Include="inc\Frustum.h" />
+    <ClInclude Include="inc\GameObject.h" />
     <ClInclude Include="inc\Light.h" />
     <ClInclude Include="inc\Material.h" />
     <ClInclude Include="inc\MaterialManager.h" />
@@ -47,13 +48,13 @@
     <ClInclude Include="inc\RenderWindow.h" />
     <ClInclude Include="inc\SamplerState.h" />
     <ClInclude Include="inc\Scene.h" />
-    <ClInclude Include="inc\SceneObject.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\ShaderManager.h" />
     <ClInclude Include="inc\ShadowPass.h" />
     <ClInclude Include="inc\SkyboxPass.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\TextureManager.h" />
+    <ClInclude Include="inc\Transform.h" />
     <ClInclude Include="inc\TransparentPass.h" />
     <ClInclude Include="inc\Viewport.h" />
     <ClInclude Include="src\XTime.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\DebugManager.cpp" />
     <ClCompile Include="src\DebugPass.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
+    <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MaterialManager.cpp" />
@@ -176,13 +178,13 @@
     <ClCompile Include="src\RenderWindow.cpp" />
     <ClCompile Include="src\SamplerState.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\SceneObject.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\ShadowPass.cpp" />
     <ClCompile Include="src\SkyboxPass.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransparentPass.cpp" />
     <ClCompile Include="src\Viewport.cpp" />
     <ClCompile Include="src\WICTextureLoader.cpp" />

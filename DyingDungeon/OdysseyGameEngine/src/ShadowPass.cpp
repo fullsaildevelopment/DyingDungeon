@@ -6,10 +6,11 @@
 #include "Light.h"
 #include "RenderState.h"
 #include "Buffer.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "Animator.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -85,40 +86,40 @@ namespace Odyssey
 	void ShadowPass::render(RenderArgs& args)
 	{
 		// Iterate over each scene object in the render list
-		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
+		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
 			// If the object has an animator, bind it to the vertex shader
-			if (renderObject->hasAnimator())
+			if (Animator* animator = renderObject->getComponent<Animator>())
 			{
-				renderObject->getAnimator()->bind();
+				animator->bind();
 			}
 
 			// If the object has a mesh renderer, render it
-			if (renderObject->hasMeshRenderer() && renderObject->getMeshRenderer()->getActive())
+			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
-				//if (args.camera->mFrustum.checkFrustumView(renderObject->getMeshRenderer()->getAABB()))
-				//{
-				renderSceneObject(renderObject, args);
-				//}
+				if (meshRenderer->getActive())
+				{
+					renderSceneObject(renderObject, args);
+				}
 			}
 
 			// Iterate through the object's children and perform the same rendering checks
-			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
 				// If the object has a mesh renderer, render it
-				if (child->hasMeshRenderer() && child->getMeshRenderer()->getActive())
+				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
-					//if (args.camera->mFrustum.checkFrustumView(child->getMeshRenderer()->getAABB()))
-					//{
-					renderSceneObject(child, args);
-					//}
+					if (meshRenderer->getActive())
+					{
+						renderSceneObject(child, args);
+					}
 				}
 			}
 
 			// If the original render object has an animator, unbind it to the vertex shader
-			if (renderObject->hasAnimator())
+			if (Animator* animator = renderObject->getComponent<Animator>())
 			{
-				renderObject->getAnimator()->unbind();
+				animator->unbind();
 			}
 		}
 
@@ -129,19 +130,19 @@ namespace Odyssey
 		mRenderTarget->bindDepthTexture();
 	}
 
-	void ShadowPass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
+	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
-		object->getGlobalTransform(args.shaderMatrix.world);
+		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 
 		// Update and bind the constant buffer
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
-		object->getMeshRenderer()->getMesh()->getIndexBuffer()->bind();
-		object->getMeshRenderer()->getMesh()->getVertexBuffer()->bind();
+		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind();
+		object->getComponent<MeshRenderer>()->getMesh()->getVertexBuffer()->bind();
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }

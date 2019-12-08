@@ -177,7 +177,10 @@
     <ClInclude Include="inc\Scene.h">
       <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="inc\SceneObject.h">
+    <ClInclude Include="inc\Transform.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameObject.h">
       <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
@@ -339,7 +342,10 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObject.cpp">
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
   </ItemGroup>

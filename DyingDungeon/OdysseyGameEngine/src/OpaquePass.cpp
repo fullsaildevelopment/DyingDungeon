@@ -5,11 +5,12 @@
 #include "Camera.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Frustum.h"
 #include "AABB.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -66,39 +67,44 @@ namespace Odyssey
 
 	void OpaquePass::render(RenderArgs& args)
 	{
-		std::multimap<float, std::shared_ptr<SceneObject>> renderMap;
+		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
+
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+		DirectX::XMFLOAT4X4 globalTransform;
 
 		// Iterate over each object in the render list
-		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
+		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
 			// If the object has a mesh renderer, render it
-			if (renderObject->hasMeshRenderer() && renderObject->getMeshRenderer()->getActive())
+			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
-				if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+				if (meshRenderer->getActive())
 				{
-					// Depth sorting
-					DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-					DirectX::XMFLOAT4X4 globalTransform;
-					renderObject->getGlobalTransform(globalTransform);
-					view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-					float depth = DirectX::XMVectorGetZ(view.r[3]);
-					renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+					if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+					{
+						// Depth sorting
+						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(view.r[3]);
+						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
+					}
 				}
 			}
 
-			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
-				if (child->hasMeshRenderer() && child->getMeshRenderer()->getActive())
+				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
-					if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+					if (meshRenderer->getActive())
 					{
-						// Depth Sorting
-						DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-						DirectX::XMFLOAT4X4 globalTransform;
-						child->getGlobalTransform(globalTransform);
-						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(view.r[3]);
-						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
+						if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+						{
+							// Depth Sorting
+							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
+							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(view.r[3]);
+							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
+						}
 					}
 				}
 			}
@@ -106,30 +112,30 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->bind();
+				rootAnimator->bind();
 			}
 			renderSceneObject(itr->second, args);
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->unbind();
+				rootAnimator->unbind();
 			}
 		}
 	}
 
-	void OpaquePass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
+	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getGlobalTransform(args.shaderMatrix.world);
+		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
 		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
 
 		// Bind the mesh renderer
-		object->getMeshRenderer()->bind();
+		object->getComponent<MeshRenderer>()->bind();
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 
-		object->getMeshRenderer()->unbind();
+		object->getComponent<MeshRenderer>()->unbind();
 	}
 }
