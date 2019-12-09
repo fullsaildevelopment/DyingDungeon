@@ -10,6 +10,9 @@
 #include "Transform.h"
 #include "RenderDevice.h"
 #include "Shader.h"
+#include "Frustum.h"
+#include "AABB.h"
+#include "Camera.h"
 
 namespace Odyssey
 {
@@ -34,10 +37,11 @@ namespace Odyssey
 		// Create the render state
 		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
 
+		// Create a shadow buffer to tell the pixel shader a shadow map is bound
 		DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
-
 		mShadowBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(DirectX::XMFLOAT4)), &shadowsEnabled);
+		mShadowBuffer->bind(2, ShaderType::PixelShader);
 
 		// Create the vertex shader
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
@@ -54,15 +58,27 @@ namespace Odyssey
 		// Create the depth vertex and pixel shaders
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
 		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DepthPixelShader.cso", nullptr, 0);
+	
+		mGenerated = false;
 	}
 
 	void ShadowPass::preRender(RenderArgs& args)
 	{
+
 		// Recalculate the light's transform and set the shader matrix's lightViewProj
 		float sceneRadius = 50.0f;
 		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT4X4 lightTransform = mShadowLight->buildLightTransform(sceneRadius, sceneCenter);
 		DirectX::XMStoreFloat4x4(&args.perFrame.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
+
+		// If a shadow map was already generated return
+		if (mGenerated)
+		{
+			return;
+		}
+
+		// Update the per frame buffer
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		// Unbind the depth texture from the pipeline
 		mRenderTarget->unbindDepthTexture();
@@ -76,15 +92,20 @@ namespace Odyssey
 		// Bind the render state to the pipeline
 		mRenderState->bind();
 
-		// Update the shadow buffer to set the pixel shader to use shadows
-		mShadowBuffer->bind(2, ShaderType::PixelShader);
-
+		// Bind the shaders
 		mVertexShader->bind();
 		mPixelShader->bind();
 	}
 
 	void ShadowPass::render(RenderArgs& args)
 	{
+		// If a shadow map was already generated bind the texture and return
+		if (mGenerated)
+		{
+			mRenderTarget->bindDepthTexture();
+			return;
+		}
+
 		// Iterate over each scene object in the render list
 		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
@@ -128,6 +149,8 @@ namespace Odyssey
 
 		// Bind the depth texture to the pixel shader pipeline
 		mRenderTarget->bindDepthTexture();
+
+		mGenerated = true;
 	}
 
 	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
@@ -136,7 +159,6 @@ namespace Odyssey
 		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
 
 		// Update and bind the constant buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
