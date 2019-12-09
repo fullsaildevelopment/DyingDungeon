@@ -18,8 +18,11 @@ namespace Odyssey
 		mLightingBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 
-		mShaderMatrixBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
-			static_cast<UINT>(sizeof(ShaderMatrix)), nullptr);
+		mPerFrameBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(PerFrameBuffer)), nullptr);
+
+		mPerObjectBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(PerObjectBuffer)), nullptr);
 	}
 
 	void Scene::addLight(std::shared_ptr<Light> light)
@@ -52,7 +55,8 @@ namespace Odyssey
 		}
 
 		// Update the render args lists
-		renderArgs.shaderMatrixBuffer = mShaderMatrixBuffer.get();
+		renderArgs.perFrameBuffer = mPerFrameBuffer.get();
+		renderArgs.perObjectBuffer = mPerObjectBuffer.get();
 		renderArgs.camera = &mMainCamera;
 		renderArgs.lightList = mSceneLights;
 		renderArgs.renderList = mSceneObjectList;

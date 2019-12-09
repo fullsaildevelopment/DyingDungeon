@@ -47,7 +47,8 @@ namespace Odyssey
 		std::vector<std::shared_ptr<Light>> mSceneLights;
 		std::vector<std::shared_ptr<GameObject>> mDebugList;
 		std::shared_ptr<Buffer> mLightingBuffer;
-		std::shared_ptr<Buffer> mShaderMatrixBuffer;
+		std::shared_ptr<Buffer> mPerFrameBuffer;
+		std::shared_ptr<Buffer> mPerObjectBuffer;
 		RenderArgs renderArgs;
 		XTime mXTimer;
 		double mDeltaTime;

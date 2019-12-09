@@ -9,13 +9,15 @@ struct Vertex
 	int jointIndices[4];
 	DirectX::XMFLOAT2 tex;
 };
-struct ShaderMatrix
+struct PerFrameBuffer
+{
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMFLOAT4X4 viewProj;
+	DirectX::XMFLOAT4X4 lightViewProj;
+};
+struct PerObjectBuffer
 {
 	DirectX::XMFLOAT4X4 world;
-	DirectX::XMFLOAT4X4 view;
-	DirectX::XMFLOAT4X4 proj;
-	DirectX::XMFLOAT4X4 worldViewProj;
-	DirectX::XMFLOAT4X4 lightViewProj;
 };
 enum class TextureType
 {

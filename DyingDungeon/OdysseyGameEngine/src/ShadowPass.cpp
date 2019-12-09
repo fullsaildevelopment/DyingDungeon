@@ -62,7 +62,7 @@ namespace Odyssey
 		float sceneRadius = 50.0f;
 		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT4X4 lightTransform = mShadowLight->buildLightTransform(sceneRadius, sceneCenter);
-		DirectX::XMStoreFloat4x4(&args.shaderMatrix.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
+		DirectX::XMStoreFloat4x4(&args.perFrame.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
 
 		// Unbind the depth texture from the pipeline
 		mRenderTarget->unbindDepthTexture();
@@ -133,10 +133,11 @@ namespace Odyssey
 	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
-		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
+		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
 
 		// Update and bind the constant buffer
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
 		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind();

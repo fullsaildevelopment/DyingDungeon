@@ -34,9 +34,13 @@ namespace Odyssey
 
 	void DebugPass::preRender(RenderArgs& args)
 	{
-		args.shaderMatrix.view = args.camera->getInverseViewMatrix();
-		args.shaderMatrix.proj = args.camera->getProjectionMatrix();
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		// Set the view
+		args.perFrame.view = args.camera->getInverseViewMatrix();
+		// Calculate and set view proj
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		// Update the buffer
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		mRenderTarget->bind();
 		mVertexShader->bind();

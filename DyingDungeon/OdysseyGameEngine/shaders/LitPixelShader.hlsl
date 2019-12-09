@@ -61,6 +61,9 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	if (mat.hasNormalTexture)
 	{
 		// Sample the texture
+		input.tangent = normalize(input.tangent);
+		input.binormal = normalize(input.binormal);
+
 		float4 texNormal = txNormal.Sample(samLinear, input.tex);
 		// Convert from a 0.0 to 1.0 value into a -1.0 to 1.0 value
 		texNormal = (2.0f * texNormal) - 1.0f;
@@ -206,7 +209,7 @@ LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos,
 	// Get the distance between the two points
 	float distance = length(lightVector);
 	// Normalize the light vector
-	lightVector = normalize(lightVector);
+	lightVector = lightVector / distance;
 	// Calculate the appropriate attenuation based on the distance
 	float attenuation = calculateAttenuation(light, distance);
 	// Calculate the diffuse of the point light with attenuation factored in
@@ -226,7 +229,7 @@ LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, 
 	// Get the distance between the two points
 	float distance = length(lightVector);
 	// Normalize the light vector
-	lightVector = normalize(lightVector);
+	lightVector = lightVector / distance;
 	// Calculate the appropriate attenuation based on the distance
 	float attenuation = calculateAttenuation(light, distance);
 	// Calculate the spot light's intensity
@@ -241,7 +244,7 @@ LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, 
 float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, float3 surfaceNormal)
 {
 	// Calculate the half vector of the light vector and view vector
-	float3 R = normalize(reflect(-lightVector, surfaceNormal));
+	float3 R = reflect(-lightVector, surfaceNormal);
 	// Take the dot product of the surface normal and the half vector
 	float RdotV = saturate(dot(R, viewVector));
 

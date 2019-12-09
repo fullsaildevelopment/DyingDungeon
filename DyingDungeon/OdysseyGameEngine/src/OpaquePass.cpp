@@ -42,19 +42,18 @@ namespace Odyssey
 		
 		// Create the default vertex shader
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
-
-		std::shared_ptr<SamplerState> linear = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
-		std::shared_ptr<SamplerState> shadow = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_LESS, D3D11_FILTER_COMPARISON_ANISOTROPIC, 1);
-		mPixelShader->addSampler(linear);
-		mPixelShader->addSampler(shadow);
+		mFrustumCull = true;
 	}
 
 	void OpaquePass::preRender(RenderArgs& args)
 	{
-		// Get the view and projection matrices from the camera and set them in the constant buffer variables
-		args.shaderMatrix.view = args.camera->getInverseViewMatrix();
-		args.shaderMatrix.proj = args.camera->getProjectionMatrix();
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		// Set the view
+		args.perFrame.view = args.camera->getInverseViewMatrix();
+		// Calculate and set view proj
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		// Update the buffer
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		// Bind the render target
 		mRenderTarget->bind();
@@ -72,6 +71,10 @@ namespace Odyssey
 
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
 		DirectX::XMFLOAT4X4 globalTransform;
+
+		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
+		mDeviceContext->QueryInterface(__uuidof(performance), &performance);
+		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
 		for (std::shared_ptr<GameObject> renderObject : args.renderList)
@@ -123,6 +126,7 @@ namespace Odyssey
 				rootAnimator->unbind();
 			}
 		}
+		performance->EndEvent();
 	}
 
 	void OpaquePass::setFrustumCullEnable(bool enable)
@@ -133,15 +137,13 @@ namespace Odyssey
 	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getComponent<Transform>()->getGlobalTransform(args.shaderMatrix.world);
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
+		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer
 		object->getComponent<MeshRenderer>()->bind();
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
-
-		object->getComponent<MeshRenderer>()->unbind();
 	}
 }

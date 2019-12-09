@@ -1,14 +1,11 @@
-#ifdef __cplusplus
-#pragma once
-#define cbuffer struct
-#define matrix DirectX::XMFLOAT4X4
-#endif
+cbuffer PerFrameBuffer
+{
+	matrix view;
+	matrix viewProj;
+	matrix lightViewProj;
+};
 
-cbuffer ShaderMatrix
+cbuffer PerObjectBuffer
 {
 	matrix world;
-	matrix view;
-	matrix proj;
-	matrix worldViewProj;
-	matrix lightViewProj;
 };

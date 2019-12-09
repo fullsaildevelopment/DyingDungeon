@@ -38,11 +38,12 @@ namespace Odyssey
 		swapChainFullScreenDesc.Windowed = true;
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
+		hr = factory->CreateSwapChainForHwnd(renderDevice.getDevice().Get(), hWnd,
+			&swapChainDesc, &swapChainFullScreenDesc, nullptr, swapChain.GetAddressOf());
+		assert(!FAILED(hr));
 
-		assert(!FAILED(factory->CreateSwapChainForHwnd(renderDevice.getDevice().Get(), hWnd,
-			&swapChainDesc, &swapChainFullScreenDesc, nullptr, swapChain.GetAddressOf())));
-
-		assert(!FAILED(swapChain.Get()->QueryInterface<IDXGISwapChain2>(mSwapChain.GetAddressOf())));
+		hr = swapChain.Get()->QueryInterface<IDXGISwapChain2>(mSwapChain.GetAddressOf());
+		assert(!FAILED(hr));
 
 		mRenderTarget = renderDevice.createRenderTarget(mMainWindow.width, mMainWindow.height, true, this);
 	}

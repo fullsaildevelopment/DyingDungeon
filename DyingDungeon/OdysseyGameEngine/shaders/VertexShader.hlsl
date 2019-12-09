@@ -22,7 +22,7 @@ struct PixelShaderInput
 	float4 lightViewPosition : POSITION1;
 };
 
-cbuffer AnimationData : register(b1)
+cbuffer AnimationData : register(b2)
 {
 	float4 hasAnimationData;
 	float4x4 finalPose[128];
@@ -55,7 +55,8 @@ PixelShaderInput main(VERTEX_SHADER_INPUT input)
 	float4 tangent = float4(input.tangent.xyz, 0.0f);
 	float4 binormal = float4(input.binormal.xyz, 0.0f);
 
-	output.position = mul(worldViewProj, position);
+	output.position = mul(world, position);
+	output.position = mul(viewProj, output.position);
 	output.worldPosition = mul(world, position).xyz;
 	output.normal = mul(world, normal).xyz;
 	output.normal = normalize(output.normal);

@@ -215,13 +215,13 @@ namespace Odyssey
 	{
 		// Update the constant buffer and bind it to slot 1 of the vertex shader
 		mAnimationBuffer->updateData(&mAnimationData);
-		mAnimationBuffer->bind(1, ShaderType::VertexShader);
+		mAnimationBuffer->bind(2, ShaderType::VertexShader);
 	}
 
 	void Animator::unbind()
 	{
 		// Ubbind the constant buffer from slot 1 of the vertex shader
-		mAnimationBuffer->unbind(1, ShaderType::VertexShader);
+		mAnimationBuffer->unbind(2, ShaderType::VertexShader);
 	}
 
 	void Animator::setAnimationClip(const char* clipToPlay)

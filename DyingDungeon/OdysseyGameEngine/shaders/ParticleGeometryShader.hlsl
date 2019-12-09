@@ -40,7 +40,8 @@ void main(point uint input[1] : PRIMITIVE_ID, inout TriangleStream<GSOutput> out
 	for (int i = 0; i < 4; i++)
 	{
 		float4 pos = float4(p.position + camRight * offsets[i].x * size + camUp * offsets[i].y * size, 1.0f);
-		vOut[i].position = mul(worldViewProj, pos);
+		vOut[i].position = mul(world, pos);
+		vOut[i].position = mul(viewProj, pos);
 		float3 uv;
 		uv.x = max(offsets[i].x + 1.0f, 1.0f);
 		uv.y = max(offsets[i].y + 1.0f, 1.0f);

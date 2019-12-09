@@ -44,16 +44,18 @@ namespace Odyssey
 		};
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/SkyboxVertexShader.cso", vShaderLayout, 7);
 		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/SkyboxPixelShader.cso", nullptr);
-
-
-		std::shared_ptr<SamplerState> linear = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
-		mPixelShader->addSampler(linear);
 	}
 
 	void SkyboxPass::preRender(RenderArgs& args)
 	{
-		args.shaderMatrix.view = args.camera->getInverseViewMatrix();
-		args.shaderMatrix.proj = args.camera->getProjectionMatrix();
+		// Set the view
+		args.perFrame.view = args.camera->getInverseViewMatrix();
+		// Calculate and set view proj
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		// Update the buffer
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+
 		mRenderTarget->bind();
 		mRenderState->bind();
 		mVertexShader->bind();
@@ -69,16 +71,17 @@ namespace Odyssey
 		mSkyBox->addComponent<Transform>();
 		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
 
-		// Get the global transform of the skybox and set the mvp matrix
-		mSkyBox->getComponent<Transform>()->getLocalTransform(args.shaderMatrix.world);
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		// Get the object's global transform and set the MVP acoordingly
+		mSkyBox->getComponent<Transform>()->getLocalTransform(args.perObject.world);
+
+		// Update and bind the constant buffer
+		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Draw the skybox
 		if (mSkyBox->getComponent<MeshRenderer>())
 		{
 			mSkyBox->getComponent<MeshRenderer>()->bind();
 			mDeviceContext->DrawIndexed(mSkyBox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
-			mSkyBox->getComponent<MeshRenderer>()->unbind();
 		}
 
 		// Clear the depth of the render targets

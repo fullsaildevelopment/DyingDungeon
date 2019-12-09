@@ -30,17 +30,16 @@ namespace Odyssey
 	{
 	}
 
-	void RenderPass::updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, Buffer* shaderMatrixBuffer)
+	void RenderPass::updatePerFrameBuffer(PerFrameBuffer& perFrame, Buffer* frameBuffer)
 	{
-		// Calculate the WVP matrix
-		DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&shaderMatrix.world), DirectX::XMLoadFloat4x4(&shaderMatrix.view));
-		// Multiply in the projection for the MVP matrix
-		wvp = DirectX::XMMatrixMultiply(wvp, DirectX::XMLoadFloat4x4(&shaderMatrix.proj));
-		DirectX::XMStoreFloat4x4(&shaderMatrix.worldViewProj, wvp);
-
 		// Update and bind the constant buffer
-		shaderMatrixBuffer->updateData(&shaderMatrix);
-		shaderMatrixBuffer->bind(0, ShaderType::VertexShader);
-		shaderMatrixBuffer->bind(0, ShaderType::GeometryShader);
+		frameBuffer->updateData(&perFrame);
+		frameBuffer->bind(0, ShaderType::VertexShader);
+		//shaderMatrixBuffer->bind(0, ShaderType::GeometryShader);
+	}
+	void RenderPass::updatePerObjectBuffer(PerObjectBuffer& perObject, Buffer* objectBuffer)
+	{
+		objectBuffer->updateData(&perObject);
+		objectBuffer->bind(1, ShaderType::VertexShader);
 	}
 }
