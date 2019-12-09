@@ -17,7 +17,7 @@ struct PixelInputType
 	float4 depthPosition : TEXTURE0;
 };
 
-cbuffer AnimationData : register(b1)
+cbuffer AnimationData : register(b2)
 {
 	float4 hasAnimationData;
 	float4x4 finalPose[128];

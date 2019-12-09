@@ -17,6 +17,7 @@ namespace Odyssey
 	class GameObject;
 	class ParticleSystem;
 	class RenderPass;
+	class RenderDevice;
 
 	struct SceneLighting
 	{
@@ -30,6 +31,7 @@ namespace Odyssey
 	{
 	public:
 		Scene();
+		Scene(RenderDevice& renderDevice);
 		void initialize();
 		void addLight(std::shared_ptr<Light> light);
 		void addSceneObject(std::shared_ptr<GameObject> sceneObject);
@@ -45,9 +47,11 @@ namespace Odyssey
 		std::vector<std::shared_ptr<Light>> mSceneLights;
 		std::vector<std::shared_ptr<GameObject>> mDebugList;
 		std::shared_ptr<Buffer> mLightingBuffer;
-		std::shared_ptr<Buffer> mShaderMatrixBuffer;
+		std::shared_ptr<Buffer> mPerFrameBuffer;
+		std::shared_ptr<Buffer> mPerObjectBuffer;
 		RenderArgs renderArgs;
 		XTime mXTimer;
 		double mDeltaTime;
+		RenderDevice& mDevice;
 	};
 }

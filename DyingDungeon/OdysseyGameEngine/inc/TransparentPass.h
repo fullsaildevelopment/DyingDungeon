@@ -7,11 +7,12 @@ namespace Odyssey
 	class RenderTarget;
 	class RenderState;
 	class Shader;
+	class RenderDevice;
 
 	class TransparentPass : public RenderPass
 	{
 	public:
-		TransparentPass(std::shared_ptr<RenderTarget> renderTarget);
+		TransparentPass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget);
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
 	private:
@@ -20,6 +21,6 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		std::shared_ptr<RenderTarget> mRenderTarget;
-		std::unique_ptr<RenderState> mRenderState;
+		std::shared_ptr<RenderState> mRenderState;
 	};
 }

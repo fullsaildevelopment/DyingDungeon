@@ -1,28 +1,17 @@
 #include "Mesh.h"
 #include "Buffer.h"
-#include "BufferManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Mesh::Mesh()
+	Mesh::Mesh(RenderDevice& renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
-		mNumberOfIndices = -1;
-		mVertexList.resize(0);
-		mIndexList.resize(0);
-	}
+		mVertexBuffer = renderDevice.createBuffer(BufferBindFlag::VertexBuffer, static_cast<size_t>(vertexList.size()),
+			static_cast<UINT>(sizeof(Vertex)), (void*)vertexList.data());
 
-	Mesh::Mesh(std::shared_ptr<Buffer> vertexBuffer, std::shared_ptr<Buffer> indexBuffer, int numIndices)
-	{
-		mVertexBuffer = vertexBuffer;
-		mIndexBuffer = indexBuffer;
-		mNumberOfIndices = numIndices;
-		mVertexList.resize(0);
-		mIndexList.resize(0);
-	}
-
-	Mesh::Mesh(Mesh& other)
-	{
-		mNumberOfIndices = other.mNumberOfIndices;
+		mIndexBuffer = renderDevice.createBuffer(BufferBindFlag::IndexBuffer, static_cast<size_t>(indexList.size()),
+			static_cast<UINT>(sizeof(unsigned int)), (void*)indexList.data());
+		mNumberOfIndices = static_cast<int>(indexList.size());
 	}
 
 	void Mesh::bind()
@@ -39,27 +28,16 @@ namespace Odyssey
 		mIndexBuffer->unbind(0, ShaderType::VertexShader);
 	}
 
-	void Mesh::flipWindingOrder()
+	Buffer* Mesh::getVertexBuffer()
 	{
-		std::reverse(mIndexList.begin(), mIndexList.end());
-		mIndexBuffer->updateData(mIndexList.data());
+		return mVertexBuffer.get();
 	}
 
-	std::shared_ptr<Buffer> Mesh::getVertexBuffer()
+	Buffer* Mesh::getIndexBuffer()
 	{
-		return mVertexBuffer;
+		return mIndexBuffer.get();
 	}
-
-	std::shared_ptr<Buffer> Mesh::getIndexBuffer()
-	{
-		return mIndexBuffer;
-	}
-
-	const std::vector<Vertex> Mesh::getVertexList()
-	{
-		return mVertexList;
-	}
-
+	
 	const int Mesh::getNumberOfIndices()
 	{
 		return mNumberOfIndices;
@@ -68,16 +46,6 @@ namespace Odyssey
 	void Mesh::setName(std::string name)
 	{
 		mName = name;
-	}
-
-	void Mesh::setVertexList(std::vector<Vertex> vertexList)
-	{
-		mVertexList = vertexList;
-	}
-
-	void Mesh::setIndexList(std::vector<unsigned int> indexList)
-	{
-		mIndexList = indexList;
 	}
 
 	void Mesh::setNumberOfindices(int numIndices)

@@ -7,7 +7,7 @@ namespace Odyssey
 	{
 		DirectX::XMFLOAT3 pos = { mWorldPosition.x, mWorldPosition.y, mWorldPosition.z };
 
-		float range = (mLightType == LightType::Directional) ? 10.0f : mRange;
+		float range = (mLightType != LightType::Point) ? 10.0f : mRange;
 		DirectX::XMFLOAT3 color = { mColor.x, mColor.y, mColor.z };
 		DebugManager::getInstance().addSphere(pos, range, color);
 	}

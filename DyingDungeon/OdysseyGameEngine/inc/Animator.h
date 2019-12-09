@@ -44,14 +44,14 @@ namespace Odyssey
 		float blendFactor;
 	};
 
-	class DebugRenderer;
 	class Buffer;
+	class RenderDevice;
 
 	class Animator : public Component
 	{
 		CLASS_DECLARATION(Animator)
 	public: // Constructors
-		Animator();
+		Animator(RenderDevice& renderDevice);
 	public: // Component Inherited Functions
 		virtual void initialize(GameObject* parent);
 		virtual void update(double deltaTime);

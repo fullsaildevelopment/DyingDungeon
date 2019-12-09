@@ -17,8 +17,7 @@ VSOut main(VSIn input)
 	VSOut output;
 	float4 position = float4(input.position.xyz, 1.0f);
 	float4 color = float4(input.color.xyz, 1.0f);
-	position = mul(view, position);
-	position = mul(proj, position);
+	position = mul(viewProj, position);
 	output.position = position;
 	output.color = color;
 	return output;

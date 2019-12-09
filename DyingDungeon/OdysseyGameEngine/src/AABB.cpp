@@ -3,10 +3,39 @@
 
 namespace Odyssey
 {
-	AABB::AABB(DirectX::XMFLOAT3 min, DirectX::XMFLOAT3 max)
+	CLASS_DEFINITION(Component, AABB)
+	AABB::AABB(DirectX::XMFLOAT4X4& transform, std::vector<Vertex> vertexList)
 	{
-		mMin = min;
-		mMax = max;
+		float minX = FLT_MAX;
+		float minY = FLT_MAX;
+		float minZ = FLT_MAX;
+
+		float maxX = -FLT_MAX;
+		float maxY = -FLT_MAX;
+		float maxZ = -FLT_MAX;
+
+		for (Vertex vertex : vertexList)
+		{
+			// Convert the vertex to world space
+			DirectX::XMFLOAT3 pos = vertex.position;
+			DirectX::XMStoreFloat3(&pos, DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&vertex.position), DirectX::XMLoadFloat4x4(&transform)));
+			minX = (pos.x < minX) ? pos.x : minX;
+			minY = (pos.y < minY) ? pos.y : minY;
+			minZ = (pos.z < minZ) ? pos.z : minZ;
+
+			maxX = (pos.x > maxX) ? pos.x : maxX;
+			maxY = (pos.y > maxY) ? pos.y : maxY;
+			maxZ = (pos.z > maxZ) ? pos.z : maxZ;
+		}
+
+		mMin = { minX, minY, minZ };
+		mMax = { maxX, maxY, maxZ };
+	}
+
+	void AABB::initialize(GameObject* parent)
+	{
+		mGameObject = parent;
+		onEnable();
 	}
 
 	DirectX::XMFLOAT3 AABB::calculateCenter()
@@ -37,44 +66,6 @@ namespace Odyssey
 		return extents;
 	}
 
-	void AABB::calculateAABBFromMesh(DirectX::XMMATRIX worldMatrix, std::vector<Vertex> vertexList)
-	{
-		float minX = FLT_MAX;
-		float minY = FLT_MAX;
-		float minZ = FLT_MAX;
-
-		float maxX = -FLT_MAX;
-		float maxY = -FLT_MAX;
-		float maxZ = -FLT_MAX;
-
-		for (Vertex vertex : vertexList)
-		{
-			// Convert the vertex to world space
-			DirectX::XMFLOAT3 pos = vertex.position;
-			DirectX::XMStoreFloat3(&pos, DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&vertex.position), worldMatrix));
-			minX = (pos.x < minX) ? pos.x : minX;
-			minY = (pos.y < minY) ? pos.y : minY;
-			minZ = (pos.z < minZ) ? pos.z : minZ;
-
-			maxX = (pos.x > maxX) ? pos.x : maxX;
-			maxY = (pos.y > maxY) ? pos.y : maxY;
-			maxZ = (pos.z > maxZ) ? pos.z : maxZ;
-		}
-
-		mMin.x = minX;
-		mMin.y = minY;
-		mMin.z = minZ;
-
-		mMax.x = maxX;
-		mMax.y = maxY;
-		mMax.z = maxZ;
-
-		if (mMax.y > 100.0f)
-		{
-			int debug = 0;
-		}
-	}
-
 	bool AABB::testAABBtoSphere(Sphere toTest)
 	{
 		using namespace DirectX;
@@ -87,13 +78,6 @@ namespace Odyssey
 		float sqRadius = toTest.radius * toTest.radius;
 		float sqDist = pow(toTest.center.x - closestPoint.x, 2) + pow(toTest.center.y - closestPoint.y, 2) + pow(toTest.center.z - closestPoint.z, 2);
 		return (sqDist < sqRadius);
-	}
-
-	void AABB::initialize(GameObject* parent)
-	{
-		mGameObject = parent;
-		mMin = { 0,0,0 };
-		mMax = { 0,0,0 };
 	}
 
 	void AABB::debugDraw(DirectX::XMFLOAT3 color)

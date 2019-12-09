@@ -4,15 +4,13 @@
 namespace Odyssey
 {
 	class RenderWindow;
+	class RenderDevice;
+
 	class Viewport
 	{
 	public: // Constructors
-		Viewport() = default;
-		Viewport(const Viewport& other);
-		Viewport(RenderWindow& renderWindow);
-		Viewport(int width, int height);
-		Viewport(int width, int height, int topLeftX, int topLeftY);
-		Viewport(int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth);
+		Viewport(RenderDevice& renderDevice, RenderWindow* renderWindow);
+		Viewport(RenderDevice& renderDevice, int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth);
 	public:
 		void bind();
 		void unbind();

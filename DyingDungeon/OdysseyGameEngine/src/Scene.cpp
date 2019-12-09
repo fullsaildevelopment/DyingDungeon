@@ -1,9 +1,5 @@
 #include "Scene.h"
-#include "BufferManager.h"
-#include "TextureManager.h"
 #include "Material.h"
-#include "MaterialManager.h"
-#include "MeshManager.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
 #include "GameObject.h"
@@ -12,13 +8,21 @@
 #include "ParticleSystem.h"
 #include "Buffer.h"
 #include "Component.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Scene::Scene()
+	Scene::Scene(RenderDevice& renderDevice)
+		: mDevice(renderDevice)
 	{
-		mLightingBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(SceneLighting), nullptr);
-		mShaderMatrixBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(ShaderMatrix), nullptr);
+		mLightingBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
+
+		mPerFrameBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(PerFrameBuffer)), nullptr);
+
+		mPerObjectBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(PerObjectBuffer)), nullptr);
 	}
 
 	void Scene::addLight(std::shared_ptr<Light> light)
@@ -51,7 +55,8 @@ namespace Odyssey
 		}
 
 		// Update the render args lists
-		renderArgs.shaderMatrixBuffer = mShaderMatrixBuffer;
+		renderArgs.perFrameBuffer = mPerFrameBuffer.get();
+		renderArgs.perObjectBuffer = mPerObjectBuffer.get();
 		renderArgs.camera = &mMainCamera;
 		renderArgs.lightList = mSceneLights;
 		renderArgs.renderList = mSceneObjectList;
@@ -88,32 +93,7 @@ namespace Odyssey
 			{
 				component->update(mDeltaTime);
 			}
-
-			//if (renderObject->hasParticleSystem())
-			//{
-			//	args.transparentList.push_back(renderObject);
-			//}
-
-			//// If the object has a mesh renderer push it, and its children, onto the render list
-			//if (renderObject->hasMeshRenderer())
-			//{
-			//	args.renderList.push_back(renderObject);
-			//}
-			//else
-			//{
-			//	// If the parent object doesn't have a mesh renderer, search the children for a mesh renderer
-			//	for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
-			//	{
-			//		// The child has a mesh renderer, push it's parent, and the parent's children onto the render list
-			//		if (child->hasMeshRenderer())
-			//		{
-			//			args.renderList.push_back(renderObject);
-			//			break;
-			//		}
-			//	}
-			//}
 		}
-
 	}
 
 	void Scene::updateLightingBuffer()

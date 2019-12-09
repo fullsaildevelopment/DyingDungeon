@@ -1,13 +1,13 @@
 #include "Buffer.h"
-#include "RenderManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Buffer::Buffer(BufferBindFlag bindFlag, size_t count, UINT stride, const void* data) :
-		mBuffer(nullptr), mBindFlag(bindFlag), mCount(count), mStride(stride), mOffset(0)
+	Buffer::Buffer(RenderDevice& renderDevice, BufferBindFlag bindFlag, size_t count, UINT stride, const void* data)
+		: mBuffer(nullptr), mBindFlag(bindFlag), mCount(count), mStride(stride), mOffset(0)
 	{
 		// Get the device and device context
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(&mDeviceContext);
 
 		// Create the buffer description with the parameter bind flag and calculated byte width

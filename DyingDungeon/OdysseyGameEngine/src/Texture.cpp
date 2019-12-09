@@ -1,25 +1,26 @@
 #include "Texture.h"
-#include "RenderManager.h"
 #include "DDSTextureLoader.h"
 #include "WICTextureLoader.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Texture::Texture()
+	Texture::Texture(RenderDevice& renderDevice)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(&mDeviceContext);
 	}
-
-	Texture::Texture(TextureType textureType, const char* filename)
+	Texture::Texture(RenderDevice& renderDevice, TextureType textureType, const char* filename)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(&mDeviceContext);
 		mTextureType = textureType;
 		mBindFlag = TextureBindFlag::ShaderResource;
 
+		std::string fname = filename;
+		fname = "Assets\\textures\\" + fname;
 		wchar_t* file = nullptr;
-		stringToWChar(filename, file);
+		stringToWChar(fname.c_str(),file);
 
 		HRESULT hr;
 		if (mTextureType == TextureType::Skybox)

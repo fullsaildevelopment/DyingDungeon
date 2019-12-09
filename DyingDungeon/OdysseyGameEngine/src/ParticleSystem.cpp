@@ -1,22 +1,24 @@
 #include "ParticleSystem.h"
-#include "BufferManager.h"
-#include "RenderManager.h"
-#include "ShaderManager.h"
 #include "Buffer.h"
 #include "Material.h"
+#include "RenderState.h"
+#include "RenderDevice.h"
+#include "Shader.h"
+
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, ParticleSystem)
 
-	ParticleSystem::ParticleSystem()
+	ParticleSystem::ParticleSystem(RenderDevice& renderDevice)
+		: mRenderDevice(renderDevice)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/ParticleVertexShader.cso", nullptr, 0);
-		mGeometryShader = ShaderManager::getInstance().createShader(ShaderType::GeometryShader, "../OdysseyGameEngine/shaders/ParticleGeometryShader.cso", nullptr);
-		mComputeShader = ShaderManager::getInstance().createShader(ShaderType::ComputeShader, "../OdysseyGameEngine/shaders/ParticleComputeShader.cso", nullptr);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/ParticleVertexShader.cso", nullptr, 0);
+		mGeometryShader = renderDevice.createShader(ShaderType::GeometryShader, "../OdysseyGameEngine/shaders/ParticleGeometryShader.cso", nullptr);
+		mComputeShader = renderDevice.createShader(ShaderType::ComputeShader, "../OdysseyGameEngine/shaders/ParticleComputeShader.cso", nullptr);
 
-		mRenderState = std::make_unique<RenderState>(Topology::PointList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::PointList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 		mNumberOfParticles = 0;
 
 		D3D11_BLEND_DESC blendDesc;
@@ -87,6 +89,8 @@ namespace Odyssey
 	void ParticleSystem::setParticleData(std::vector<Particle> particles)
 	{
 		mParticleData = particles;
-		mParticleBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::StructuredBuffer, mNumberOfParticles, sizeof(Particle), mParticleData.data());
+
+		mParticleBuffer = mRenderDevice.createBuffer(BufferBindFlag::StructuredBuffer, size_t(mNumberOfParticles), 
+			static_cast<UINT>(sizeof(Particle)), mParticleData.data());
 	}
 }

@@ -3,12 +3,12 @@
 
 namespace Odyssey
 {
+	class RenderDevice;
+
 	class SamplerState
 	{
 	public:
-		SamplerState() = default;
-		SamplerState(const SamplerState& other);
-		SamplerState(ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot);
+		SamplerState(RenderDevice& renderDevice, ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot);
 		void bind();
 		void unbind();
 		~SamplerState() = default;

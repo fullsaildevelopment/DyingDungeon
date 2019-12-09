@@ -1,15 +1,14 @@
 #include <fstream>
 #include "Animator.h"
-#include "BufferManager.h"
-#include "RenderManager.h"
 #include "Buffer.h"
 #include "DebugManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Animator)
 
-	Animator::Animator()
+	Animator::Animator(RenderDevice& renderDevice)
 	{
 		mCurrentClip.nextFrame = 0;
 		mCurrentClip.prevFrame = 0;
@@ -20,7 +19,8 @@ namespace Odyssey
 		mDebugEnabled = false;
 
 		// Create the constant buffer for skinned animation
-		mAnimationBuffer = BufferManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(AnimationBuffer), nullptr);
+		mAnimationBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1), 
+			static_cast<UINT>(sizeof(AnimationBuffer)), nullptr);
 
 		// No animation data to process for skinned rendering
 		mAnimationData.hasAnimationData = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -215,13 +215,13 @@ namespace Odyssey
 	{
 		// Update the constant buffer and bind it to slot 1 of the vertex shader
 		mAnimationBuffer->updateData(&mAnimationData);
-		mAnimationBuffer->bind(1, ShaderType::VertexShader);
+		mAnimationBuffer->bind(2, ShaderType::VertexShader);
 	}
 
 	void Animator::unbind()
 	{
 		// Ubbind the constant buffer from slot 1 of the vertex shader
-		mAnimationBuffer->unbind(1, ShaderType::VertexShader);
+		mAnimationBuffer->unbind(2, ShaderType::VertexShader);
 	}
 
 	void Animator::setAnimationClip(const char* clipToPlay)
