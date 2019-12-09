@@ -1,7 +1,5 @@
 #include "Scene.h"
-#include "TextureManager.h"
 #include "Material.h"
-#include "MeshManager.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
 #include "GameObject.h"
@@ -10,15 +8,17 @@
 #include "ParticleSystem.h"
 #include "Buffer.h"
 #include "Component.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Scene::Scene()
+	Scene::Scene(RenderDevice& renderDevice)
+		: mDevice(renderDevice)
 	{
-		mLightingBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1),
+		mLightingBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 
-		mShaderMatrixBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1),
+		mShaderMatrixBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(ShaderMatrix)), nullptr);
 	}
 

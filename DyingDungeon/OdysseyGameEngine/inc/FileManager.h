@@ -4,6 +4,9 @@
 namespace Odyssey
 {
 	class GameObject;
+	struct Joint;
+	class Mesh;
+	class Texture;
 
 	class FileManager
 	{
@@ -33,11 +36,16 @@ namespace Odyssey
 		static FileManager& getInstance();
 		~FileManager() { }
 	public:
+		void initialize(RenderDevice* renderDevice);
 		void importModel(std::shared_ptr<GameObject> gameObject, const char* filename);
 	private:
 		void readMeshData(std::fstream& file, MeshData& meshData);
 		void readMaterialData(std::fstream& file, MaterialData& materialData);
 		void readSkeletonData(std::fstream& file, SkeletonData& skeletonData);
+	private:
+		RenderDevice* mRenderDevice;
+		std::map<size_t, std::shared_ptr<Mesh>> meshHashMap;
+		std::map<std::string, std::shared_ptr<Texture>> textureFileMap;
 	private:
 		FileManager() { }
 	};

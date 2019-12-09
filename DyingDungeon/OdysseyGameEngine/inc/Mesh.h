@@ -1,15 +1,15 @@
 #pragma once
 #include "EngineIncludes.h"
-#include "Buffer.h"
 
 namespace Odyssey
 {
+	class Buffer;
+	class RenderDevice;
+
 	class Mesh
 	{
 	public: // Constructors
-		Mesh();
-		Mesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
-		Mesh(Mesh& other);
+		Mesh(RenderDevice& renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
 		~Mesh() = default;
 	public: // Functions
 		void bind();
@@ -23,8 +23,8 @@ namespace Odyssey
 		void setNumberOfindices(int id);
 	private:
 		std::string mName;
-		std::unique_ptr<Buffer> mVertexBuffer;
-		std::unique_ptr<Buffer> mIndexBuffer;
+		std::shared_ptr<Buffer> mVertexBuffer;
+		std::shared_ptr<Buffer> mIndexBuffer;
 		int mNumberOfIndices;
 	};
 }

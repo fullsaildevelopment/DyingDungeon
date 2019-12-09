@@ -1,44 +1,40 @@
 #include "RenderTarget.h"
-#include "RenderManager.h"
 #include "RenderWindow.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	RenderTarget::RenderTarget()
+	RenderTarget::RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled)
+		: mRenderDevice(renderDevice)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
-	}
-
-	RenderTarget::RenderTarget(int width, int height, bool depthEnabled)
-	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(&mDeviceContext);
 
-		createRenderTargetView(width, height);
+		createRenderTargetView(renderDevice, width, height);
 
 		if (depthEnabled)
 		{
-			createDepthStencilView(width, height);
+			createDepthStencilView(renderDevice, width, height);
 		}
 	}
 
-	RenderTarget::RenderTarget(int width, int height, bool depthEnabled, RenderWindow& renderWindow)
+	RenderTarget::RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow)
+		: mRenderDevice(renderDevice)
 	{
 		// Set up the device and device context
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(&mDeviceContext);
 
 		// Create the render target view
-		HRESULT hr = mDevice->CreateRenderTargetView(renderWindow.getBackBuffer().Get(), nullptr, mRenderTargetView.GetAddressOf());
+		HRESULT hr = mDevice->CreateRenderTargetView(renderWindow->getBackBuffer().Get(), nullptr, mRenderTargetView.GetAddressOf());
 
 		// Set up a viewport for the render target
-		mViewport = std::make_unique<Viewport>(renderWindow);
+		mViewport = renderDevice.createViewport(renderWindow);
 
 		// If a depth stencil is enabled, create it
 		if (depthEnabled)
 		{
-			createDepthStencilView(width, height);
+			createDepthStencilView(renderDevice, width, height);
 		}
 	}
 
@@ -88,7 +84,7 @@ namespace Odyssey
 
 	void RenderTarget::createDepthTarget(UINT bindFlags, int width, int height)
 	{
-		mDSVTexture = std::make_unique<Texture>();
+		mDSVTexture = mRenderDevice.createRenderTexture();
 		UINT flag = bindFlags;
 		DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS;
 		mDSVTexture->loadRenderTargetTexture(width, height, format, flag);
@@ -108,9 +104,9 @@ namespace Odyssey
 		}
 	}
 
-	void RenderTarget::setViewport(Viewport& viewport)
+	void RenderTarget::setViewport(std::shared_ptr<Viewport> viewport)
 	{
-		mViewport = std::make_unique<Viewport>(viewport);
+		mViewport = viewport;
 	}
 
 	Texture* RenderTarget::getDepthTexture()
@@ -134,9 +130,9 @@ namespace Odyssey
 		}
 	}
 
-	void RenderTarget::createRenderTargetView(int width, int height)
+	void RenderTarget::createRenderTargetView(RenderDevice& renderDevice, int width, int height)
 	{
-		mRTVTexture = std::make_unique<Texture>();
+		mRTVTexture = renderDevice.createRenderTexture();
 		UINT flag = D3D11_BIND_RENDER_TARGET;
 		DXGI_FORMAT format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		mRTVTexture->loadRenderTargetTexture(width, height, format, flag);
@@ -154,9 +150,9 @@ namespace Odyssey
 		}
 	}
 
-	void RenderTarget::createDepthStencilView(int width, int height)
+	void RenderTarget::createDepthStencilView(RenderDevice& renderDevice, int width, int height)
 	{
-		mDSVTexture = std::make_unique<Texture>();
+		mDSVTexture = renderDevice.createRenderTexture();
 		UINT flag = D3D11_BIND_DEPTH_STENCIL;
 		DXGI_FORMAT format = DXGI_FORMAT_D32_FLOAT;
 		mDSVTexture->loadRenderTargetTexture(width, height, format, flag);

@@ -1,6 +1,7 @@
 #include "DebugManager.h"
 #include "Buffer.h"
 #include "AABB.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
@@ -10,11 +11,11 @@ namespace Odyssey
 		return instance;
 	}
 
-	void DebugManager::initialize()
+	void DebugManager::initialize(RenderDevice& renderDevice)
 	{
 		mNumVertices = 0;
 
-		mVertexBuffer = std::make_unique<Buffer>(BufferBindFlag::VertexBuffer, size_t(MAX_LINES),
+		mVertexBuffer = renderDevice.createBuffer(BufferBindFlag::VertexBuffer, size_t(MAX_LINES),
 			static_cast<UINT>(sizeof(ColoredVertex)), nullptr);
 	}
 

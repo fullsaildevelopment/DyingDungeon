@@ -3,11 +3,13 @@
 
 namespace Odyssey
 {
+	class RenderDevice;
+
 	class Buffer
 	{
 	public:
 		// Default constructor for the Buffer class
-		Buffer(BufferBindFlag bindFlag, size_t count, UINT stride, const void* data);
+		Buffer(RenderDevice& renderDevice, BufferBindFlag bindFlag, size_t count, UINT stride, const void* data);
 		// Update the buffer's data to a new value
 		void updateData(const void* data);
 		// Bind the buffer to the rendering pipeline

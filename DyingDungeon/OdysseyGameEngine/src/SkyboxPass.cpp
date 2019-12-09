@@ -1,7 +1,5 @@
 #include "SkyboxPass.h"
-#include "RenderManager.h"
 #include "RenderState.h"
-#include "ShaderManager.h"
 #include "SamplerState.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -9,19 +7,22 @@
 #include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
-#include "TextureManager.h"
-#include "MeshManager.h"
 #include "Transform.h"
 #include "Material.h"
+#include "RenderDevice.h"
+#include "Shader.h"
+#include "Texture.h"
 
 namespace Odyssey
 {
-	SkyboxPass::SkyboxPass(const char* skyboxTexture, std::shared_ptr<RenderTarget> renderTarget)
+	SkyboxPass::SkyboxPass(RenderDevice& renderDevice, const char* skyboxTexture, std::shared_ptr<RenderTarget> renderTarget)
 	{
-		int texID = TextureManager::getInstance().importTexture(TextureType::Skybox, skyboxTexture);
-		std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-		std::shared_ptr<Material> material = std::make_shared<Material>();
-		material->setTexture(TextureType::Skybox, texID);
+		mDevice = renderDevice.getDevice();
+		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+
+		std::shared_ptr<Texture> texture = renderDevice.createTexture(TextureType::Skybox, skyboxTexture);
+		std::shared_ptr<Mesh> mesh = renderDevice.createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+		std::shared_ptr<Material> material = renderDevice.createMaterial(TextureType::Skybox, texture);
 
 		mSkyBox = std::make_shared<GameObject>();
 		DirectX::XMFLOAT4X4 world;
@@ -29,9 +30,8 @@ namespace Odyssey
 		mSkyBox->addComponent<MeshRenderer>(mesh, material);
 
 		mRenderTarget = renderTarget;
-		mDevice = RenderManager::getInstance().getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
-		mRenderState = std::make_unique<RenderState>(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
+
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -42,12 +42,11 @@ namespace Odyssey
 			{ "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_SINT, 0, 64, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 80, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/SkyboxVertexShader.cso", vShaderLayout, 7);
-		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/SkyboxPixelShader.cso", nullptr);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/SkyboxVertexShader.cso", vShaderLayout, 7);
+		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/SkyboxPixelShader.cso", nullptr);
 
 
-		SamplerState linear(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
-
+		std::shared_ptr<SamplerState> linear = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
 		mPixelShader->addSampler(linear);
 	}
 

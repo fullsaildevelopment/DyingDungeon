@@ -1,14 +1,14 @@
 #include <fstream>
 #include "Animator.h"
-#include "RenderManager.h"
 #include "Buffer.h"
 #include "DebugManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Animator)
 
-	Animator::Animator()
+	Animator::Animator(RenderDevice& renderDevice)
 	{
 		mCurrentClip.nextFrame = 0;
 		mCurrentClip.prevFrame = 0;
@@ -19,7 +19,7 @@ namespace Odyssey
 		mDebugEnabled = false;
 
 		// Create the constant buffer for skinned animation
-		mAnimationBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
+		mAnimationBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1), 
 			static_cast<UINT>(sizeof(AnimationBuffer)), nullptr);
 
 		// No animation data to process for skinned rendering

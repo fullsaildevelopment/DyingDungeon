@@ -3,10 +3,23 @@
 
 namespace Odyssey
 {
+	class RenderDevice;
+	class RenderTarget;
 	class RenderWindow
 	{
 	public:
-		RenderWindow(HWND& hWnd);
+		RenderWindow(RenderDevice& renderDevice, HWND& hWnd);
+	public:
+		void present();
+		Microsoft::WRL::ComPtr<ID3D11Resource> getBackBuffer();
+		float getAspectRatio();
+		std::shared_ptr<RenderTarget> getRenderTarget();
+		~RenderWindow() { }
+	private:
+		Microsoft::WRL::ComPtr<IDXGISwapChain2> mSwapChain;
+		std::shared_ptr<RenderTarget> mRenderTarget;
+		HWND& mWindowHandle;
+	public:
 		struct Window
 		{
 			UINT left, right;
@@ -31,12 +44,5 @@ namespace Odyssey
 				aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 			}
 		} mMainWindow;
-	public:
-		void present();
-		Microsoft::WRL::ComPtr<ID3D11Resource> getBackBuffer();
-		float getAspectRatio();
-		~RenderWindow() { }
-	private:
-		Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
 	};
 }

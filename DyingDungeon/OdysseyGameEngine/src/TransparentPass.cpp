@@ -1,21 +1,21 @@
 #include "TransparentPass.h"
-#include "RenderManager.h"
 #include "Camera.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	TransparentPass::TransparentPass(std::shared_ptr<RenderTarget> renderTarget)
+	TransparentPass::TransparentPass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		mRenderTarget = renderTarget;
 
-		mRenderState = std::make_unique<RenderState>(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 	}
 
 	void TransparentPass::preRender(RenderArgs& args)

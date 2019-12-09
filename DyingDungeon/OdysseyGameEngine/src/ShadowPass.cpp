@@ -1,7 +1,5 @@
 #include "ShadowPass.h"
-#include "RenderManager.h"
 #include "RenderTarget.h"
-#include "ShaderManager.h"
 #include "Light.h"
 #include "RenderState.h"
 #include "Buffer.h"
@@ -10,33 +8,35 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Transform.h"
+#include "RenderDevice.h"
+#include "Shader.h"
 
 namespace Odyssey
 {
-	ShadowPass::ShadowPass(std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
+	ShadowPass::ShadowPass(RenderDevice& renderDevice, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
 	{
 		// Get the device and context
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		// Set the properties of the shadow pass
 		mShadowLight = shadowLight;
 
 		// Create the shadow map render target
-		mRenderTarget = std::make_shared <RenderTarget>(texWidth, texHeight, false);
+		mRenderTarget = renderDevice.createRenderTarget(texWidth, texHeight, false);
 		mRenderTarget->createDepthTarget(D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL, texWidth, texHeight);
 		mRenderTarget->getDepthTexture()->createSRV(DXGI_FORMAT_R24_UNORM_X8_TYPELESS);
 
 		// Create the shadow map viewport
-		Viewport shadowViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
+		std::shared_ptr<Viewport> shadowViewport = renderDevice.createViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
 		mRenderTarget->setViewport(shadowViewport);
 
 		// Create the render state
-		mRenderState = std::make_unique<RenderState>(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
+		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
 
 		DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		mShadowBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
+		mShadowBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(DirectX::XMFLOAT4)), &shadowsEnabled);
 
 		// Create the vertex shader
@@ -52,8 +52,8 @@ namespace Odyssey
 		};
 
 		// Create the depth vertex and pixel shaders
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
-		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DepthPixelShader.cso", nullptr, 0);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
+		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DepthPixelShader.cso", nullptr, 0);
 	}
 
 	void ShadowPass::preRender(RenderArgs& args)

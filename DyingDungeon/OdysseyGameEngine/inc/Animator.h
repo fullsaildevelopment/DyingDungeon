@@ -1,7 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "Component.h"
-#include "Buffer.h"
 
 namespace Odyssey
 {
@@ -45,11 +44,14 @@ namespace Odyssey
 		float blendFactor;
 	};
 
+	class Buffer;
+	class RenderDevice;
+
 	class Animator : public Component
 	{
 		CLASS_DECLARATION(Animator)
 	public: // Constructors
-		Animator();
+		Animator(RenderDevice& renderDevice);
 	public: // Component Inherited Functions
 		virtual void initialize(GameObject* parent);
 		virtual void update(double deltaTime);
@@ -85,7 +87,7 @@ namespace Odyssey
 		void updateAnimationBuffer(Keyframe& animationKeyframe);
 		DirectX::XMFLOAT4X4 interpolateJointMatrix(DirectX::XMFLOAT4X4 before, DirectX::XMFLOAT4X4 after, float ratio);
 	private: // Framework variables
-		std::unique_ptr<Buffer> mAnimationBuffer;
+		std::shared_ptr<Buffer> mAnimationBuffer;
 		AnimationBuffer mAnimationData;
 		std::vector<Joint> mSkeleton;
 	private: // Animation clips

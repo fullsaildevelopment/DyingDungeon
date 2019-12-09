@@ -1,21 +1,13 @@
 #include "RenderState.h"
-#include "RenderManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	RenderState::RenderState()
-	{
-		mTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		mCullMode = D3D11_CULL_BACK;
-		mFillMode = D3D11_FILL_SOLID;
-		mFrontCCW = false;
-		mDepthClipping = true;
-	}
-	RenderState::RenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
+	RenderState::RenderState(RenderDevice& renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
 		mFrontCCW(frontCCW), mDepthClipping(depthClipping)
 	{
 		// Get the device and immediate context from the render manager
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		// Convert the custom enums to directX enums

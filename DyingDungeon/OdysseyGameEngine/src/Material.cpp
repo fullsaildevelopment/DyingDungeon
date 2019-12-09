@@ -1,19 +1,26 @@
 #include "Material.h"
 #include "Buffer.h"
 #include "Shader.h"
-#include "TextureManager.h"
+#include "RenderDevice.h"
+#include "Texture.h"
 
 namespace Odyssey
 {
-	Material::Material()
+	Material::Material(RenderDevice& renderDevice)
 	{
+		mMaterialBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
+
 		setDefaultMaterialProperties();
 	}
 
-	Material::Material(TextureType textureType, int textureID)
+	Material::Material(RenderDevice& renderDevice, TextureType textureType, std::shared_ptr<Texture> texture)
 	{
+		mMaterialBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
+
 		setDefaultMaterialProperties();
-		setTexture(textureType, textureID);
+		setTexture(textureType, texture);
 	}
 
 	void Material::bind()
@@ -27,34 +34,29 @@ namespace Odyssey
 		// Bind the diffuse texture
 		if (mTextureMap.count(TextureType::Diffuse) != 0)
 		{
-			int textureID = mTextureMap[TextureType::Diffuse];
-			TextureManager::getInstance().getTexture(textureID)->bind();
+			mTextureMap[TextureType::Diffuse]->bind();
 		}
 		// Bind the emissive texture
 		if (mTextureMap.count(TextureType::Emissive) != 0)
 		{
-			int emissiveID = mTextureMap[TextureType::Emissive];
-			TextureManager::getInstance().getTexture(emissiveID)->bind();
+			mTextureMap[TextureType::Emissive]->bind();
 		}
 
 		// Bind the specular texture
 		if (mTextureMap.count(TextureType::Specular) != 0)
 		{
-			int specularID = mTextureMap[TextureType::Specular];
-			TextureManager::getInstance().getTexture(specularID)->bind();
+			mTextureMap[TextureType::Specular]->bind();
 		}
 
 		// Bind the Normal texture
 		if (mTextureMap.count(TextureType::NormalMap) != 0)
 		{
-			int normalID = mTextureMap[TextureType::NormalMap];
-			TextureManager::getInstance().getTexture(normalID)->bind();
+			mTextureMap[TextureType::NormalMap]->bind();
 		}
 
 		if (mTextureMap.count(TextureType::Skybox) != 0)
 		{
-			int skyboxID = mTextureMap[TextureType::Skybox];
-			TextureManager::getInstance().getTexture(skyboxID)->bind();
+			mTextureMap[TextureType::Skybox]->bind();
 		}
 	}
 
@@ -63,25 +65,22 @@ namespace Odyssey
 		// Bind the diffuse texture
 		if (mTextureMap.count(TextureType::Diffuse) != 0)
 		{
-			int textureID = mTextureMap[TextureType::Diffuse];
-			TextureManager::getInstance().getTexture(textureID)->unbind();
+			mTextureMap[TextureType::Diffuse]->unbind();
 		}
 		// Bind the emissive texture
 		if (mTextureMap.count(TextureType::Emissive) != 0)
 		{
-			int emissiveID = mTextureMap[TextureType::Emissive];
-			TextureManager::getInstance().getTexture(emissiveID)->unbind();
+			mTextureMap[TextureType::Emissive]->unbind();
 		}
 
 		// Bind the specular texture
 		if (mTextureMap.count(TextureType::Specular) != 0)
 		{
-			int specularID = mTextureMap[TextureType::Specular];
-			TextureManager::getInstance().getTexture(specularID)->unbind();
+			mTextureMap[TextureType::Specular]->unbind();
 		}
 	}
 
-	void Material::setTexture(TextureType textureType, int textureID)
+	void Material::setTexture(TextureType textureType, std::shared_ptr<Texture> texture)
 	{
 		switch (textureType)
 		{
@@ -110,7 +109,7 @@ namespace Odyssey
 			break;
 		}
 		}
-		mTextureMap[textureType] = textureID;
+		mTextureMap[textureType] = texture;
 	}
 
 	void Material::setGlobalAmbient(DirectX::XMFLOAT4 globalAmbient)
@@ -162,7 +161,6 @@ namespace Odyssey
 		mProperties.mSpecularPower = 256.0f;
 		mProperties.mReflectance = 0.01f;
 		
-		mMaterialBuffer = std::make_unique<Buffer>(BufferBindFlag::ConstantBuffer, size_t(1), 
-			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
+		
 	}
 }

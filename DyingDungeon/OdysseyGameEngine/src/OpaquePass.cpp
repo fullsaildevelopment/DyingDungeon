@@ -1,6 +1,4 @@
 #include "OpaquePass.h"
-#include "RenderManager.h"
-#include "ShaderManager.h"
 #include "SamplerState.h"
 #include "Camera.h"
 #include "RenderTarget.h"
@@ -11,20 +9,22 @@
 #include "Frustum.h"
 #include "AABB.h"
 #include "Transform.h"
+#include "RenderDevice.h"
+#include "Shader.h"
 
 namespace Odyssey
 {
-	OpaquePass::OpaquePass(std::shared_ptr<RenderTarget> renderTarget)
+	OpaquePass::OpaquePass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget)
 	{
 		// Get the device and context
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		// Get and store the render target
 		mRenderTarget = renderTarget;
 
 		// Create the render state for opaque objects
-		mRenderState = std::make_unique<RenderState>(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
 
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
@@ -38,13 +38,13 @@ namespace Odyssey
 		};
 
 		// Create the default pixel shader
-		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
+		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
 		
 		// Create the default vertex shader
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 
-		SamplerState linear(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
-		SamplerState shadow(ComparisonFunc::COMPARISON_LESS, D3D11_FILTER_COMPARISON_ANISOTROPIC, 1);
+		std::shared_ptr<SamplerState> linear = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
+		std::shared_ptr<SamplerState> shadow = renderDevice.createSamplerState(ComparisonFunc::COMPARISON_LESS, D3D11_FILTER_COMPARISON_ANISOTROPIC, 1);
 		mPixelShader->addSampler(linear);
 		mPixelShader->addSampler(shadow);
 	}

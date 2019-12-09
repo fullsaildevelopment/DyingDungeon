@@ -12,6 +12,8 @@ namespace Odyssey
 	};
 
 	class AABB;
+	class RenderDevice;
+
 	class DebugManager
 	{
 	public:
@@ -20,7 +22,7 @@ namespace Odyssey
 	private:
 		DebugManager() { }
 	public:
-		void initialize();
+		void initialize(RenderDevice& renderDevice);
 		void addLine(DirectX::XMFLOAT3 positionA, DirectX::XMFLOAT3 positionB, DirectX::XMFLOAT3 colorA, DirectX::XMFLOAT3 colorB);
 		void addSphere(DirectX::XMFLOAT3 center, float radius, DirectX::XMFLOAT3 color);
 		void addAABB(DirectX::XMFLOAT3& extents, DirectX::XMFLOAT3& center, DirectX::XMFLOAT3 color);
@@ -32,6 +34,6 @@ namespace Odyssey
 	private:
 		std::array<ColoredVertex, MAX_LINES> mVertexList;
 		size_t mNumVertices;
-		std::unique_ptr<Buffer> mVertexBuffer;
+		std::shared_ptr<Buffer> mVertexBuffer;
 	};
 }

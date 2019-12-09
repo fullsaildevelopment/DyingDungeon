@@ -2,11 +2,11 @@
 #include "FileManager.h"
 #include <fstream>
 #include "Material.h"
-#include "TextureManager.h"
 #include "Transform.h"
 #include "Mesh.h"
 #include "AABB.h"
-#include "MeshManager.h"
+#include "RenderDevice.h"
+#include "Animator.h"
 
 namespace Odyssey
 {
@@ -14,6 +14,11 @@ namespace Odyssey
 	{
 		static FileManager instance;
 		return instance;
+	}
+
+	void FileManager::initialize(RenderDevice* renderDevice)
+	{
+		mRenderDevice = renderDevice;
 	}
 
 	void FileManager::importModel(std::shared_ptr<GameObject> gameObject, const char* filename)
@@ -49,11 +54,20 @@ namespace Odyssey
 			// Read in material data
 			readMaterialData(file, materialData);
 
-			// Create a mesh from the vertex and index lists
-			std::shared_ptr<Mesh> mesh = MeshManager::getInstance().createMesh(meshData.hashID, meshData.vertexList, meshData.indexList);
+			std::shared_ptr<Mesh> mesh;
+
+			if (meshHashMap.count(meshData.hashID) != 0)
+			{
+				mesh = meshHashMap[meshData.hashID];
+			}
+			else
+			{
+				mesh = std::make_shared<Mesh>(*mRenderDevice, meshData.vertexList, meshData.indexList);
+				meshHashMap[meshData.hashID] = mesh;
+			}
 
 			// Create a blank material
-			std::shared_ptr<Material> material = std::make_shared<Material>();
+			std::shared_ptr<Material> material = mRenderDevice->createMaterial();
 
 			// Set the diffuse color of the material
 			DirectX::XMFLOAT4 diffuseColor = { materialData.texColors[0].x, materialData.texColors[0].y, materialData.texColors[0].z, 1.0f };
@@ -65,9 +79,18 @@ namespace Odyssey
 				// If a filename is found for the texture import it
 				if (materialData.texFilenames[i])
 				{
-					// Create the texture and set it in the material
-					int texID = TextureManager::getInstance().importTexture((TextureType)i, materialData.texFilenames[i]);
-					material->setTexture((TextureType)i, texID);
+					std::string fname = materialData.texFilenames[i];
+					if (textureFileMap.count(fname) != 0)
+					{
+						material->setTexture((TextureType)i, textureFileMap[materialData.texFilenames[i]]);
+					}
+					else
+					{
+						// Create the texture and set it in the material
+						std::shared_ptr<Texture> texture = mRenderDevice->createTexture((TextureType)i, materialData.texFilenames[i]);
+						material->setTexture((TextureType)i, texture);
+						textureFileMap[fname] = texture;
+					}
 				}
 			}
 
@@ -97,7 +120,7 @@ namespace Odyssey
 		// If a skeleton was read add an Animator component and set the skeleton
 		if (skeletonData.hasSkeleton)
 		{
-			gameObject->addComponent<Animator>();
+			gameObject->addComponent<Animator>(*mRenderDevice);
 			gameObject->getComponent<Animator>()->setSkeleton(skeletonData.skeleton);
 		}
 

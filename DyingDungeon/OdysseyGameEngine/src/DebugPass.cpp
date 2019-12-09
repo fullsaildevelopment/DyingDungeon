@@ -1,23 +1,23 @@
 #include "DebugPass.h"
 #include "DebugManager.h"
-#include "RenderManager.h"
-#include "ShaderManager.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "MeshRenderer.h"
 #include "Light.h"
+#include "RenderDevice.h"
+#include "Shader.h"
 
 namespace Odyssey
 {
-	DebugPass::DebugPass(std::shared_ptr<RenderTarget> renderTarget)
+	DebugPass::DebugPass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		mRenderTarget = renderTarget;
-		mRenderState = std::make_unique<RenderState>(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 
 		// Create the input layout
 		D3D11_INPUT_ELEMENT_DESC cvLayout[] =
@@ -26,10 +26,10 @@ namespace Odyssey
 			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DebugVertexShader.cso", cvLayout, 2);
-		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DebugPixelShader.cso", nullptr);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DebugVertexShader.cso", cvLayout, 2);
+		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DebugPixelShader.cso", nullptr);
 
-		DebugManager::getInstance().initialize();
+		DebugManager::getInstance().initialize(renderDevice);
 	}
 
 	void DebugPass::preRender(RenderArgs& args)

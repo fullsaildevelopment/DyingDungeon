@@ -1,29 +1,17 @@
 #include "Viewport.h"
 #include "RenderWindow.h"
-#include "RenderManager.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	Viewport::Viewport(const Viewport& other)
+	Viewport::Viewport(RenderDevice& renderDevice, RenderWindow* renderWindow)
 	{
-		mDevice = other.mDevice;
-		mDeviceContext = other.mDeviceContext;
-		mViewport = other.mViewport;
-		mWidth = other.mWidth;
-		mHeight = other.mHeight;
-		mTopLeftX = other.mTopLeftX;
-		mTopLeftY = other.mTopLeftY;
-		mMinDepth = other.mMinDepth;
-		mMaxDepth = other.mMaxDepth;
-	}
-	Viewport::Viewport(RenderWindow& renderWindow)
-	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
-		mWidth = renderWindow.mMainWindow.width;
-		mHeight = renderWindow.mMainWindow.height;
-		mTopLeftX = renderWindow.mMainWindow.left;
-		mTopLeftY = renderWindow.mMainWindow.top;
+		mWidth = renderWindow->mMainWindow.width;
+		mHeight = renderWindow->mMainWindow.height;
+		mTopLeftX = renderWindow->mMainWindow.left;
+		mTopLeftY = renderWindow->mMainWindow.top;
 		mMinDepth = 0.0f;
 		mMaxDepth = 1.0f;
 
@@ -35,45 +23,9 @@ namespace Odyssey
 		mViewport.MaxDepth = mMaxDepth;
 	}
 
-	Viewport::Viewport(int width, int height)
+	Viewport::Viewport(RenderDevice& renderDevice, int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth)
 	{
-		mDevice = RenderManager::getInstance().getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
-		mWidth = width;
-		mHeight = height;
-		mTopLeftX = 0;
-		mTopLeftY = 0;
-		mMinDepth = 0.0f;
-		mMaxDepth = 1.0f;
-		mViewport.Height = static_cast<float>(mHeight);
-		mViewport.Width = static_cast<float>(mWidth);
-		mViewport.TopLeftX = static_cast<float>(mTopLeftX);
-		mViewport.TopLeftY = static_cast<float>(mTopLeftY);
-		mViewport.MinDepth = mMinDepth;
-		mViewport.MaxDepth = mMaxDepth;
-	}
-
-	Viewport::Viewport(int width, int height, int topLeftX, int topLeftY)
-	{
-		mDevice = RenderManager::getInstance().getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
-		mWidth = width;
-		mHeight = height;
-		mTopLeftX = topLeftX;
-		mTopLeftY = topLeftY;
-		mMinDepth = 0.0f;
-		mMaxDepth = 1.0f;
-		mViewport.Height = static_cast<float>(mHeight);
-		mViewport.Width = static_cast<float>(mWidth);
-		mViewport.TopLeftX = static_cast<float>(mTopLeftX);
-		mViewport.TopLeftY = static_cast<float>(mTopLeftY);
-		mViewport.MinDepth = mMinDepth;
-		mViewport.MaxDepth = mMaxDepth;
-	}
-
-	Viewport::Viewport(int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth)
-	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 		mWidth = width;
 		mHeight = height;

@@ -3,13 +3,8 @@
 
 namespace Odyssey
 {
-	ClearRenderTargetPass::ClearRenderTargetPass(const ClearRenderTargetPass& copy)
-	{
-		mRenderTarget = copy.mRenderTarget;
-		mClearDepth = copy.mClearDepth;
-	}
-
-	ClearRenderTargetPass::ClearRenderTargetPass(std::shared_ptr<RenderTarget> renderTarget, bool clearDepth)
+	ClearRenderTargetPass::ClearRenderTargetPass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget, bool clearDepth)
+		: mDevice(renderDevice)
 	{
 		mRenderTarget = renderTarget;
 		mClearDepth = clearDepth;
