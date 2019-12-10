@@ -47,6 +47,9 @@ void setupArena();
 void setupPaladin();
 void setupSkeleton();
 
+//Tristen's Stuff
+std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
+
 void setupPipeline(Odyssey::RenderDevice* renderDevice)
 {
 	// Create a clear render target pass and add it to the render pipeline
@@ -129,6 +132,22 @@ void setupPaladin()
 	gMainScene->addSceneObject(gPaladin);
 }
 
+std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam)
+{
+	//Make a new vector
+	std::vector<std::shared_ptr<Odyssey::GameObject>> newTeam;
+
+	int NumOfPlayersOnEachTeam = _amountOfPlayersOnTeam;
+	//Give amount of player to the team
+	for (int i = 0; i < NumOfPlayersOnEachTeam; i++)
+	{
+		std::shared_ptr<Odyssey::GameObject> newPlayer;
+		newTeam.push_back(newPlayer);
+	}
+
+	return newTeam;
+}
+
 void setupSkeleton()
 {
 	gSkeleton = std::make_shared<Odyssey::GameObject>();
@@ -167,6 +186,10 @@ int playGame()
 	setupSkeleton();
 
 	// Set up Battle Instance
+	//std::vector<std::shared_ptr<Odyssey::GameObject>> playerUnit = CreateTeam(1);
+	//std::vector<std::shared_ptr<Odyssey::GameObject>> enemyUnit = CreateTeam(1);
+	//std::shared_ptr<Odyssey::GameObject> currentBattle;
+	//currentBattle->addComponent<BattleInstance>(playerUnit, enemyUnit);
 
 	// Set the initial view and projection matrix
 	gMainScene->mMainCamera.setPosition(0, 0, 0);

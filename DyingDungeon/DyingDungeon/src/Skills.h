@@ -1,9 +1,9 @@
 #pragma once
 #include "Buffs.h"
-class EnemyComponent;
 
 class Skills
 {
+	class EnemyComponent;
 //public and private variables
 public:
 	

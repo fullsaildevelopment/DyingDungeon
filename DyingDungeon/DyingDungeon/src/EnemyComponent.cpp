@@ -1,7 +1,7 @@
 #include "EnemyComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
-//#include "Skills.h"
+#include "Skills.h"
 
 CLASS_DEFINITION(Component, EnemyComponent)
 
