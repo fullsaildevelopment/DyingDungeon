@@ -69,9 +69,6 @@
     <ClInclude Include="inc\EngineIncludes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\AABB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\ClearRenderTargetPass.h">
       <Filter>Header Files\Render Passes</Filter>
     </ClInclude>
@@ -108,28 +105,10 @@
     <ClInclude Include="inc\ParticleSystem.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="inc\BufferManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="inc\DebugManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="inc\MaterialManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\MeshManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\RenderManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="inc\RenderPipelineManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ShaderManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\TextureManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="inc\Buffer.h">
@@ -177,8 +156,23 @@
     <ClInclude Include="inc\Scene.h">
       <Filter>Header Files\Scene Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="inc\SceneObject.h">
+    <ClInclude Include="inc\Transform.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FileManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AABB.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameObject.h">
       <Filter>Header Files\Scene Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderDevice.h">
+      <Filter>Header Files\Render Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,9 +222,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AABB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DDSTextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -255,28 +246,10 @@
     <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\BufferManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="src\DebugManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="src\MaterialManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RenderManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderPipelineManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShaderManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TextureManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="src\Buffer.cpp">
@@ -339,8 +312,23 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObject.cpp">
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AABB.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject.cpp">
       <Filter>Source Files\Scene Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderDevice.cpp">
+      <Filter>Source Files\Render Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

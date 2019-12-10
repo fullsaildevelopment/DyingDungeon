@@ -4,7 +4,7 @@
 #include "RenderTarget.h"
 #include "Animator.h"
 #include "Scene.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "RenderPipelineManager.h"
 #include "OpaquePass.h"
 #include "SkyboxPass.h"
@@ -13,98 +13,62 @@
 #include "ClearRenderTargetPass.h"
 #include "DebugPass.h"
 #include "Light.h"
-#include "MaterialManager.h"
-#include "ShaderManager.h"
+#include "Component.h"
+#include "FileManager.h"
+#include "Transform.h"
+#include "Application.h"
+#include "RenderDevice.h"
+
+// Game Includes
+#include "ExampleComponent.h"
+#include "BattleInstance.h"
 
 namespace
 {
     // Rendering resources
-    std::unique_ptr<Odyssey::RenderWindow> gMainWindow;
+    std::shared_ptr<Odyssey::RenderWindow> gMainWindow;
     std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
     // Scene resources
-    std::unique_ptr<Odyssey::Scene> gMainScene;
+    std::shared_ptr<Odyssey::Scene> gMainScene;
+	std::shared_ptr<Odyssey::GameObject> gArena;
+	std::shared_ptr<Odyssey::GameObject> gPaladin;
     // Light resources
     std::shared_ptr<Odyssey::Light> gDirLight;
     std::shared_ptr<Odyssey::Light> gPointLight[10];
 }
 
 // Forward declarations
-void initialize(HWND& hWnd);
-void setupDefaults(HWND& hWnd);
-void setupPipeline();
-void setupSkybox();
+int playGame();
+void setupPipeline(Odyssey::RenderDevice* renderDevice);
 void setupLighting();
-void update();
-void updateInput();
+void setupArena();
+void setupPaladin();
 
-void initialize(HWND& hWnd)
-{
-	// Set up the following default rendering resources:
-	// Render window, render target, viewport, render state, sampler state, main scene
-	setupDefaults(hWnd);
-
-	// Set up the skybox
-	setupSkybox();
-
-	// Set up the scene lighting
-	setupLighting();
-
-	// Set up the default rendering pipeline
-	setupPipeline();
-
-	// Set the initial view and projection matrix
-	gMainScene->mMainCamera.setPosition(0, 0, 0);
-	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 75.0f);
-}
-
-void setupDefaults(HWND& hWnd)
-{
-	// Create a render window from the current window
-	gMainWindow = std::make_unique<Odyssey::RenderWindow>(hWnd);
-
-	// Create a render target from the main window
-	gRenderTarget = std::make_shared<Odyssey::RenderTarget>(gMainWindow->mMainWindow.width, gMainWindow->mMainWindow.height, true, *gMainWindow);
-
-	// Create the scene
-	gMainScene = std::make_unique<Odyssey::Scene>();
-}
-
-void setupPipeline()
+void setupPipeline(Odyssey::RenderDevice* renderDevice)
 {
 	// Create a clear render target pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass;
-	rtvPass = std::make_shared<Odyssey::ClearRenderTargetPass>(gRenderTarget, true);
+	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
 	Odyssey::RenderPipelineManager::getInstance().addPass(rtvPass);
 
-	// Create a skybox pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass;
-	skyboxPass = std::make_shared<Odyssey::SkyboxPass>(gMainScene->getSkybox(), gRenderTarget);
+	// Create a skybox pass and add it to the render pipeline 
+	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
 	Odyssey::RenderPipelineManager::getInstance().addPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ShadowPass> shadowPass;
-	shadowPass = std::make_shared<Odyssey::ShadowPass>(gDirLight, 4096, 4096);
+	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
 	Odyssey::RenderPipelineManager::getInstance().addPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::OpaquePass> opaquePass;
-	opaquePass = std::make_shared<Odyssey::OpaquePass>(gRenderTarget);
+	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
 	Odyssey::RenderPipelineManager::getInstance().addPass(opaquePass);
 
 	// Create a transparent pass and add it to the render pipeline
-	//std::shared_ptr<Odyssey::TransparentPass> transparentPass;
-	//transparentPass = std::make_shared<Odyssey::TransparentPass>(gRenderTarget);
-	//Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
+	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
+	Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	//std::shared_ptr<Odyssey::DebugPass>debugPass;
-	//debugPass = std::make_shared<Odyssey::DebugPass>(gRenderTarget);
+	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
 	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
-}
-
-void setupSkybox()
-{
-	gMainScene->setSkybox("Skybox.dds");
 }
 
 void setupLighting()
@@ -114,293 +78,92 @@ void setupLighting()
 	gDirLight->mLightType = Odyssey::LightType::Directional;
 	gDirLight->mWorldPosition = DirectX::XMFLOAT4(0, 0, 0, 1);
 	gDirLight->mWorldDirection = DirectX::XMFLOAT4(0.0f, -0.5f, -0.5f, 0.0f);
-	gDirLight->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	gDirLight->mColor = DirectX::XMFLOAT4(0.4f, 0.5f, 0.6f, 1.0f);
 	gDirLight->mIntensity = 1.0f;
 	gDirLight->mRange = 0.0f;
 	gDirLight->mSpotAngle = 0.0f;
 
 	gPointLight[0] = std::make_shared<Odyssey::Light>();
 	gPointLight[0]->mLightType = Odyssey::LightType::Point;
-	gPointLight[0]->mWorldPosition = DirectX::XMFLOAT4(-9.0f, -4.5f, 0.0f, 1);
+	gPointLight[0]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 20.0f, 0.0f, 1.0f);
 	gPointLight[0]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[0]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	gPointLight[0]->mColor = DirectX::XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
 	gPointLight[0]->mIntensity = 1.0f;
-	gPointLight[0]->mRange = 10.0f;
+	gPointLight[0]->mRange = 50.0f;
 	gPointLight[0]->mSpotAngle = 0.0f;
 
 	gPointLight[1] = std::make_shared<Odyssey::Light>();
-	gPointLight[1]->mLightType = Odyssey::LightType::Point;
-	gPointLight[1]->mWorldPosition = DirectX::XMFLOAT4(-9.0f, -4.5f, 25.0f, 1);
-	gPointLight[1]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[1]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	gPointLight[1]->mIntensity = 1.0f;
-	gPointLight[1]->mRange = 10.0f;
-	gPointLight[1]->mSpotAngle = 0.0f;
-
-	gPointLight[2] = std::make_shared<Odyssey::Light>();
-	gPointLight[2]->mLightType = Odyssey::LightType::Point;
-	gPointLight[2]->mWorldPosition = DirectX::XMFLOAT4(-9.0f, -6.5f, 50.0f, 1);
-	gPointLight[2]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[2]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	gPointLight[2]->mIntensity = 1.0f;
-	gPointLight[2]->mRange = 10.0f;
-	gPointLight[2]->mSpotAngle = 0.0f;
-
-	gPointLight[3] = std::make_shared<Odyssey::Light>();
-	gPointLight[3]->mLightType = Odyssey::LightType::Point;
-	gPointLight[3]->mWorldPosition = DirectX::XMFLOAT4(-30.0f, -6.5f, 50.0f, 1);
-	gPointLight[3]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[3]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	gPointLight[3]->mIntensity = 1.0f;
-	gPointLight[3]->mRange = 10.0f;
-	gPointLight[3]->mSpotAngle = 0.0f;
-
-	gPointLight[4] = std::make_shared<Odyssey::Light>();
-	gPointLight[4]->mLightType = Odyssey::LightType::Point;
-	gPointLight[4]->mWorldPosition = DirectX::XMFLOAT4(10.0f, -2.5f, -2.5f, 1);
-	gPointLight[4]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gPointLight[4]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	gPointLight[4]->mIntensity = 1.0f;
-	gPointLight[4]->mRange = 10.0f;
-	gPointLight[4]->mSpotAngle = 0.0f;
+	gPointLight[1]->mLightType = Odyssey::LightType::Spot;
+	gPointLight[1]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 20.0f, -13.0f, 1.0f);
+	gPointLight[1]->mWorldDirection = DirectX::XMFLOAT4(0.0f, -1.0f, 0.15f, 0.0f);
+	gPointLight[1]->mColor = DirectX::XMFLOAT4(1.0f, 1.0f, 0.5f, 1.0f);
+	gPointLight[1]->mIntensity = 5.0f;
+	gPointLight[1]->mRange = 100.0f;
+	gPointLight[1]->mSpotAngle = 0.1f;
 
 	gMainScene->addLight(gDirLight);
 	gMainScene->addLight(gPointLight[0]);
 	gMainScene->addLight(gPointLight[1]);
-	gMainScene->addLight(gPointLight[2]);
-	gMainScene->addLight(gPointLight[3]);
-	gMainScene->addLight(gPointLight[4]);
 }
 
-void update()
+void setupArena()
 {
-	// Update user input
-	updateInput();
-
-	// Render the scene
-	gMainScene->render();
-
-	// Present the main window
-	gMainWindow->present();
+	gArena = std::make_shared<Odyssey::GameObject>();
+	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
+	gArena->addComponent<ExampleComponent>();
+	gMainScene->addSceneObject(gArena);
 }
 
-void updateInput()
+void setupPaladin()
 {
-	float delta = static_cast<float>(gMainScene->getDeltaTime());
-	float moveSpeed = 10.0f * delta;
-	float rotationSpeed = 100.0f * delta;
-	float xPosition = 0.0f;
-	float yPosition = 0.0f;
-	float zPosition = 0.0f;
-	float pitch = 0.0f;
-	float yaw = 0.0f;
+	gPaladin = std::make_shared<Odyssey::GameObject>();
+	gPaladin->addComponent<Odyssey::Transform>();
+	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
+	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Paladin_Judgement.dxanim");
+	gMainScene->addSceneObject(gPaladin);
+}
 
-	if (GetAsyncKeyState('W'))
-	{
-		zPosition += moveSpeed;
-	}
-	if (GetAsyncKeyState('S'))
-	{
-		zPosition -= moveSpeed;
-	}
-	if (GetAsyncKeyState('D'))
-	{
-		xPosition += moveSpeed;
-	}
-	if (GetAsyncKeyState('A'))
-	{
-		xPosition -= moveSpeed;
-	}
+int playGame()
+{
+	// Set up the application and create a render window
+	Odyssey::Application application;
+	gMainWindow = application.createRenderWindow("Dying Dungeon", 1920, 1080);
 
-	if (GetAsyncKeyState(VK_SPACE))
-	{
-		yPosition += moveSpeed;
-	}
+	// Get the render device
+	Odyssey::RenderDevice* renderDevice = application.getRenderDevice();
 
-	if (GetAsyncKeyState('X'))
-	{
-		yPosition -= moveSpeed;
-	}
+	// Create the main scene
+	gMainScene = renderDevice->createScene();
 
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-		yaw -= rotationSpeed;
-	}
+	// Set up the scene lighting
+	setupLighting();
 
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		yaw += rotationSpeed;
-	}
+	// Set up the default rendering pipeline
+	setupPipeline(renderDevice);
 
-	if (GetAsyncKeyState(VK_UP))
-	{
-		pitch -= rotationSpeed;
-	}
+	// Load the arena scene
+	setupArena();
+	// Set up the paladin
+	setupPaladin();
 
-	if (GetAsyncKeyState(VK_DOWN))
-	{
-		pitch += rotationSpeed;
-	}
+	// Set up Battle Instance
 
-	gMainScene->mMainCamera.updateCamera(xPosition, yPosition, zPosition, pitch, yaw, 0.0f);
+	// Set the initial view and projection matrix
+	gMainScene->mMainCamera.setPosition(0, 0, 0);
+	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 100.0f);
+
+	// Set the active scene
+	application.setActiveScene(gMainScene);
+
+	// Run the application
+	return application.update();
 }
 
 #pragma region WINDOWS CODE
-#define MAX_LOADSTRING 100
-
-// Global Variables:
-HINSTANCE hInst;                                // current instance
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-
-// Forward declarations of functions included in this code module:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
-	// TODO: Place code here.
-
-	// Initialize global strings
-	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadStringW(hInstance, IDC_DYINGDUNGEON, szWindowClass, MAX_LOADSTRING);
-	MyRegisterClass(hInstance);
-
-	// Perform application initialization:
-	if (!InitInstance(hInstance, nCmdShow))
-	{
-		return FALSE;
-	}
-
-	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DYINGDUNGEON));
-
-	MSG msg;
-
-	// Main message loop:
-	while (true)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		if (msg.message == WM_QUIT)
-		{
-			break;
-		}
-
-		// Update
-		update();
-	}
-
-	return (int)msg.wParam;
-}
-
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-	WNDCLASSEXW wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_DYINGDUNGEON));
-	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_DYINGDUNGEON);
-	wcex.lpszClassName = szWindowClass;
-	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-	return RegisterClassExW(&wcex);
-}
-
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-	hInst = hInstance; // Store instance handle in our global variable
-
-	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-	if (!hWnd)
-	{
-		return FALSE;
-	}
-
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-
-	// Initialize
-	initialize(hWnd);
-
-	return TRUE;
-}
-
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	switch (message)
-	{
-	case WM_COMMAND:
-	{
-		int wmId = LOWORD(wParam);
-		// Parse the menu selections:
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-	}
-	break;
-	case WM_PAINT:
-	{
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code that uses hdc here...
-		EndPaint(hWnd, &ps);
-	}
-	break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-	return 0;
-}
-
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
+	return playGame();
 }
 #pragma endregion

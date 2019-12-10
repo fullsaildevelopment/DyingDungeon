@@ -1,29 +1,30 @@
 #include "OpaquePass.h"
-#include "RenderManager.h"
-#include "ShaderManager.h"
 #include "SamplerState.h"
 #include "Camera.h"
 #include "RenderTarget.h"
 #include "RenderState.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Frustum.h"
 #include "AABB.h"
+#include "Transform.h"
+#include "RenderDevice.h"
+#include "Shader.h"
 
 namespace Odyssey
 {
-	OpaquePass::OpaquePass(std::shared_ptr<RenderTarget> renderTarget)
+	OpaquePass::OpaquePass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget)
 	{
 		// Get the device and context
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		// Get and store the render target
 		mRenderTarget = renderTarget;
 
 		// Create the render state for opaque objects
-		mRenderState = std::make_unique<RenderState>(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
 
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
@@ -37,22 +38,22 @@ namespace Odyssey
 		};
 
 		// Create the default pixel shader
-		mPixelShader = ShaderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
+		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
+		
 		// Create the default vertex shader
-		mVertexShader = ShaderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
-
-		SamplerState linear(ComparisonFunc::COMPARISON_NEVER, D3D11_FILTER_ANISOTROPIC, 0);
-		SamplerState shadow(ComparisonFunc::COMPARISON_LESS, D3D11_FILTER_COMPARISON_ANISOTROPIC, 1);
-		mPixelShader->addSampler(linear);
-		mPixelShader->addSampler(shadow);
+		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
+		mFrustumCull = true;
 	}
 
 	void OpaquePass::preRender(RenderArgs& args)
 	{
-		// Get the view and projection matrices from the camera and set them in the constant buffer variables
-		args.shaderMatrix.view = args.camera->getInverseViewMatrix();
-		args.shaderMatrix.proj = args.camera->getProjectionMatrix();
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		// Set the view
+		args.perFrame.view = args.camera->getInverseViewMatrix();
+		// Calculate and set view proj
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		// Update the buffer
+		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		// Bind the render target
 		mRenderTarget->bind();
@@ -66,39 +67,48 @@ namespace Odyssey
 
 	void OpaquePass::render(RenderArgs& args)
 	{
-		std::multimap<float, std::shared_ptr<SceneObject>> renderMap;
+		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
+
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+		DirectX::XMFLOAT4X4 globalTransform;
+
+		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
+		mDeviceContext->QueryInterface(__uuidof(performance), &performance);
+		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
-		for (std::shared_ptr<SceneObject> renderObject : args.renderList)
+		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
 			// If the object has a mesh renderer, render it
-			if (renderObject->hasMeshRenderer() && renderObject->getMeshRenderer()->getActive())
+			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
-				if (args.camera->mFrustum->checkFrustumView(*(renderObject->getAABB())))
+				if (meshRenderer->getActive())
 				{
-					// Depth sorting
-					DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-					DirectX::XMFLOAT4X4 globalTransform;
-					renderObject->getGlobalTransform(globalTransform);
-					view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-					float depth = DirectX::XMVectorGetZ(view.r[3]);
-					renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, renderObject));
+					if (mFrustumCull == false || args.camera->mFrustum->checkFrustumView(*(renderObject->getComponent<AABB>())))
+					{
+						// Depth sorting
+						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(view.r[3]);
+						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
+					}
 				}
 			}
 
-			for (std::shared_ptr<SceneObject> child : renderObject->getChildren())
+			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
-				if (child->hasMeshRenderer() && child->getMeshRenderer()->getActive())
+				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
-					if (args.camera->mFrustum->checkFrustumView(*(child->getAABB())))
+					if (meshRenderer->getActive())
 					{
-						// Depth Sorting
-						DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
-						DirectX::XMFLOAT4X4 globalTransform;
-						child->getGlobalTransform(globalTransform);
-						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(view.r[3]);
-						renderMap.insert(std::pair<float, std::shared_ptr<SceneObject>>(depth, child));
+						if (mFrustumCull == false || args.camera->mFrustum->checkFrustumView(*(child->getComponent<AABB>())))
+						{
+							// Depth Sorting
+							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
+							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(view.r[3]);
+							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
+						}
 					}
 				}
 			}
@@ -106,30 +116,34 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->bind();
+				rootAnimator->bind();
 			}
 			renderSceneObject(itr->second, args);
-			if (itr->second->getRootAnimator())
+			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
-				itr->second->getRootAnimator()->unbind();
+				rootAnimator->unbind();
 			}
 		}
+		performance->EndEvent();
 	}
 
-	void OpaquePass::renderSceneObject(std::shared_ptr<SceneObject> object, RenderArgs& args)
+	void OpaquePass::setFrustumCullEnable(bool enable)
+	{
+		mFrustumCull = enable;
+	}
+
+	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getGlobalTransform(args.shaderMatrix.world);
-		updateShaderMatrixBuffer(args.shaderMatrix, args.shaderMatrixBuffer);
+		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
+		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer
-		object->getMeshRenderer()->bind();
+		object->getComponent<MeshRenderer>()->bind();
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getMeshRenderer()->getMesh()->getNumberOfIndices(), 0, 0);
-
-		object->getMeshRenderer()->unbind();
+		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }

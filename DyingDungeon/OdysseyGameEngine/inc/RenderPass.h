@@ -6,15 +6,17 @@ namespace Odyssey
 	class Buffer;
 	class Camera;
 	class Light;
-	class SceneObject;
+	class GameObject;
 
 	struct RenderArgs
 	{
 		Camera* camera;
-		ShaderMatrix shaderMatrix;
-		std::shared_ptr<Buffer> shaderMatrixBuffer;
-		std::vector<std::shared_ptr<SceneObject>> renderList;
-		std::vector<std::shared_ptr<SceneObject>> transparentList;
+		PerFrameBuffer perFrame;
+		Buffer* perFrameBuffer;
+		PerObjectBuffer perObject;
+		Buffer* perObjectBuffer;
+		std::vector<std::shared_ptr<GameObject>> renderList;
+		std::vector<std::shared_ptr<GameObject>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;
 	};
 
@@ -29,7 +31,8 @@ namespace Odyssey
 		virtual void render(RenderArgs& args) = 0;
 		virtual void postRender(RenderArgs& args);
 	protected:
-		virtual void updateShaderMatrixBuffer(ShaderMatrix& shaderMatrix, std::shared_ptr<Buffer> shaderMatrixBuffer);
+		virtual void updatePerFrameBuffer(PerFrameBuffer& perFrame, Buffer* frameBuffer);
+		virtual void updatePerObjectBuffer(PerObjectBuffer& perObject, Buffer* objectBuffer);
 	private:
 		bool mEnabled;
 	};

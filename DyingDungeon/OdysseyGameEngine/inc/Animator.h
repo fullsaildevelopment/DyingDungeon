@@ -44,22 +44,27 @@ namespace Odyssey
 		float blendFactor;
 	};
 
-	class DebugRenderer;
 	class Buffer;
+	class RenderDevice;
 
-	class Animator : Component
+	class Animator : public Component
 	{
+		CLASS_DECLARATION(Animator)
 	public: // Constructors
-		Animator();
-	public: // Inherited Functions
-		virtual void initialize(SceneObject* parent);
+		Animator(RenderDevice& renderDevice);
+	public: // Component Inherited Functions
+		virtual void initialize(GameObject* parent);
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();
-	public: // Initialization Functions
+	public: // Import Functions
 		void importAnimation(const char* animationName, const char* filename);
+	public: // Mutators
 		void setSkeleton(std::vector<Joint> skeleton);
 		void setWorldMatrix(DirectX::XMFLOAT4X4 worldMatrix);
+		void setAnimationClip(const char* clipToPlay);
+		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
+	public: // Accessors
 	public: // Update Functions
 		void updateSequence(double deltaTime);
 		void play();
@@ -69,8 +74,6 @@ namespace Odyssey
 		void bind();
 		void unbind();
 	public: // Mutators
-		void setAnimationClip(const char* clipToPlay);
-		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
 		void addAnimationBlend(float addition);
 	public: // Accessors
 		bool getActive();

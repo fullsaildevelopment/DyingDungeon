@@ -3,13 +3,15 @@
 
 namespace Odyssey
 {
+	class RenderDevice;
+
 	class Texture
 	{
 	public:
 
 	public: // Constructor
-		Texture();
-		Texture(TextureType textureType, const char* filename);
+		Texture(RenderDevice& renderDevice);
+		Texture(RenderDevice& renderDevice, TextureType textureType, const char* filename);
 		~Texture() = default;
 	public:
 		void bind();

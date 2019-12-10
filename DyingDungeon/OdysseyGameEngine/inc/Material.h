@@ -23,27 +23,22 @@ namespace Odyssey
 		DirectX::XMFLOAT2 pad;
 	};  //------------------------------- ( 16 * 5 = 80 bytes )
 
-	struct MatFileImport
-	{
-		std::vector<const char*> texFilenames;
-		std::vector<DirectX::XMFLOAT3> texColors;
-		std::vector<float> texFactors;
-	};
-
 	class Buffer;
+	class RenderDevice;
 	class Shader;
+	class Texture;
 
 	class Material
 	{
 	public:
-		Material();
-		Material(TextureType textureType, int textureID);
+		Material(RenderDevice& renderDevice);
+		Material(RenderDevice& renderDevice, TextureType textureType, std::shared_ptr<Texture> texture);
 		~Material() = default;
 	public:
 		void bind();
 		void unbind();
 	public: // Mutators
-		void setTexture(TextureType textureType, int textureID);
+		void setTexture(TextureType textureType, std::shared_ptr<Texture> texture);
 		void setGlobalAmbient(DirectX::XMFLOAT4 globalAmbient);
 		void setSpecularPower(float specularPower);
 		void setReflectance(float reflectance);
@@ -54,7 +49,7 @@ namespace Odyssey
 		void setDefaultMaterialProperties();
 		MaterialProperties mProperties;
 	private:
-		std::map<TextureType, int> mTextureMap;
+		std::map<TextureType, std::shared_ptr<Texture>> mTextureMap;
 		std::shared_ptr<Buffer> mMaterialBuffer;
 		std::shared_ptr<Shader> mPixelShader;
 	};

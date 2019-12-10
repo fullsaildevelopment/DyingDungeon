@@ -4,15 +4,19 @@
 namespace Odyssey
 {
 	class SamplerState;
+	class RenderDevice;
+
 	class Shader
 	{
 	public:
-		Shader(ShaderType shaderType, void* shaderCode, size_t shaderSize, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements = 0);
+		Shader(RenderDevice& renderDevice, ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements = 0);
 		void bind();
-		void addSampler(SamplerState& state);
+		void addSampler(std::shared_ptr<SamplerState> state);
 		void unbind();
 		void dispatch(int x, int y, int z);
 		~Shader() = default;
+	private:
+		LONG readShaderFile(const char* filename, char*& byteCode);
 	private:
 		std::vector<std::shared_ptr<SamplerState>> samplerList;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;

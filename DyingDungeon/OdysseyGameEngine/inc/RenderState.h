@@ -3,11 +3,12 @@
 
 namespace Odyssey
 {
+	class RenderDevice;
+
 	class RenderState
 	{
 	public:
-		RenderState();
-		RenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW = false, bool depthClipping = true, bool isShadowMap = false);
+		RenderState(RenderDevice& renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW = false, bool depthClipping = true, bool isShadowMap = false);
 		void bind();
 		~RenderState() = default;
 	public:

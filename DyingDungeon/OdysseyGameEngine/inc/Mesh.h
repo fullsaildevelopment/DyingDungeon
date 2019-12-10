@@ -4,34 +4,27 @@
 namespace Odyssey
 {
 	class Buffer;
+	class RenderDevice;
 
 	class Mesh
 	{
 	public: // Constructors
-		Mesh();
-		Mesh(std::shared_ptr<Buffer> vertexBuffer, std::shared_ptr<Buffer> indexBuffer, int numIndices);
-		Mesh(Mesh& other);
+		Mesh(RenderDevice& renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
 		~Mesh() = default;
 	public: // Functions
 		void bind();
 		void unbind();
-		void flipWindingOrder();
 	public: // Accessors
-		std::shared_ptr<Buffer> getVertexBuffer();
-		std::shared_ptr<Buffer> getIndexBuffer();
-		const std::vector<Vertex> getVertexList();
+		Buffer* getVertexBuffer();
+		Buffer* getIndexBuffer();
 		const int getNumberOfIndices();
 	public: // Mutators
 		void setName(std::string name);
-		void setVertexList(std::vector<Vertex> vertexList);
-		void setIndexList(std::vector<unsigned int> indexList);
 		void setNumberOfindices(int id);
 	private:
 		std::string mName;
 		std::shared_ptr<Buffer> mVertexBuffer;
 		std::shared_ptr<Buffer> mIndexBuffer;
 		int mNumberOfIndices;
-		std::vector<Vertex> mVertexList;
-		std::vector<unsigned int> mIndexList;
 	};
 }

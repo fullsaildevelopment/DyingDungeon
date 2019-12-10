@@ -19,7 +19,8 @@ PIXEL_SHADER_INPUT main(VERTEX_SHADER_INPUT input)
 {
 	PIXEL_SHADER_INPUT output;
 	float4 position = float4(input.position.xyz, 1.0f);
-	output.position = mul(worldViewProj, position);
-	output.texCoord = position.xyz;
+	position = mul(world, position);
+	output.position = mul(viewProj, position);
+	output.texCoord = input.position.xyz;
 	return output;
 }

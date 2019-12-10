@@ -1,8 +1,15 @@
 #include "Component.h"
-#include "SceneObject.h"
+#include "GameObject.h"
 
 namespace Odyssey
 {
+	const std::size_t Component::Type = std::hash<std::string>()(TO_STRING(Component));
+
+	bool Component::isClassType(const std::size_t classType) const
+	{
+		return classType == Type;
+	}
+
 	void Component::update(double deltaTime)
 	{
 
@@ -18,9 +25,9 @@ namespace Odyssey
 
 	}
 
-	SceneObject* Component::getParent()
+	GameObject* Component::getGameObject()
 	{
-		return mParent;
+		return mGameObject;
 	}
 
 	void Component::setEnabled(bool enable)

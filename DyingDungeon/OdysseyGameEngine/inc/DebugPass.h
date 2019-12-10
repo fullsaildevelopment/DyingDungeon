@@ -7,11 +7,12 @@ namespace Odyssey
 	class RenderTarget;
 	class RenderState;
 	class Shader;
+	class RenderDevice;
 
 	class DebugPass : public RenderPass
 	{
 	public:
-		DebugPass(std::shared_ptr<RenderTarget> renderTarget);
+		DebugPass(RenderDevice& renderDevice, std::shared_ptr<RenderTarget> renderTarget);
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
 	private:

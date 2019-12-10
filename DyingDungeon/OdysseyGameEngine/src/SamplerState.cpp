@@ -1,19 +1,11 @@
-#include "RenderManager.h"
 #include "SamplerState.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
-	SamplerState::SamplerState(const SamplerState& other)
+	SamplerState::SamplerState(RenderDevice& renderDevice, ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
 	{
-		mDevice = other.mDevice;
-		mDeviceContext = other.mDeviceContext;
-		mSamplerState = other.mSamplerState;
-		mComparisonFunc = other.mComparisonFunc;
-		mBindSlot = other.mBindSlot;
-	}
-	SamplerState::SamplerState(ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
-	{
-		mDevice = RenderManager::getInstance().getDevice();
+		mDevice = renderDevice.getDevice();
 		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
 
 		mComparisonFunc = comparisonFunc;
