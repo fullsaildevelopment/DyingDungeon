@@ -18,6 +18,15 @@ namespace Odyssey
 		mParent = parent;
 	}
 
+	void GameObject::setStaticObject(bool isStatic)
+	{
+		mIsStatic = isStatic;
+		for (std::shared_ptr<GameObject> child : children)
+		{
+			child->setStaticObject(isStatic);
+		}
+	}
+
 	const std::vector<std::shared_ptr<GameObject>> GameObject::getChildren()
 	{
 		return children;
@@ -31,6 +40,11 @@ namespace Odyssey
 	GameObject* GameObject::getParent()
 	{
 		return mParent;
+	}
+
+	bool GameObject::getStaticObject()
+	{
+		return mIsStatic;
 	}
 
 	void GameObject::enableDebug()
