@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+class Skills;
+
 class EnemyComponent : public Odyssey::Component
 {
 	CLASS_DECLARATION(EnemyComponent)
@@ -11,6 +13,9 @@ public:
 	virtual void initialize(Odyssey::GameObject* parent);
 	virtual void update(double deltaTime);
 	
+	//Attack Functions
+	void TakeTurn();
+
 	
 	/////Get and Set Functions/////
 	
@@ -26,5 +31,6 @@ public:
 private:
 	float mHP;
 	float mMana;
+	Skills skillList;
 };
 

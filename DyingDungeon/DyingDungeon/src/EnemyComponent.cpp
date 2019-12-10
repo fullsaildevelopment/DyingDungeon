@@ -1,6 +1,7 @@
 #include "EnemyComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Skills.h"
 
 CLASS_DEFINITION(Component, EnemyComponent)
 
@@ -9,9 +10,18 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 	onEnable();
 	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
+
+	mHP = 50;
+	mMana = 50;
+	Skills skill = Skills(50, 25);
 }
 
 void EnemyComponent::update(double deltaTime)
+{
+	
+}
+
+void EnemyComponent::TakeTurn()
 {
 	
 }
