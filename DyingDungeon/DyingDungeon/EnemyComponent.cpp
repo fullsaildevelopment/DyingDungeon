@@ -16,23 +16,49 @@ void EnemyComponent::update(double deltaTime)
 	
 }
 
-//Get HP (Returns a float)
+/*
+ * Function:  GetMana()
+ * --------------------
+ * Gets the HP of the enemy
+ *
+ * returns: A float representing current HP
+ */
 float EnemyComponent::GetHP()
 {
 	return mHP;
 }
-//Set HP (Pass in float)
+
+/*
+ * Function:  SetHP(float HP)
+ * --------------------
+ * Sets the HP of the enemy to the passed in float
+ *
+ * returns: nothing
+ */
 void EnemyComponent::SetHP(float HP)
 {
 	mHP = HP;
 }
 
-//Get Mana (Returns a float)
+/*
+ * Function:  GetMana()
+ * --------------------
+ * Gets the mana of the enemy
+ *
+ * returns: A float representing mana
+ */
 float EnemyComponent::GetMana()
 {
 	return mMana;
 }
-//Set Mana (Pass in float)
+
+/*
+ * Function:  SetMana(float Mana)
+ * --------------------
+ * Sets the Mana of the enemy to the passed in float
+ *
+ * returns: nothing
+ */
 void EnemyComponent::SetMana(float Mana)
 {
 	mMana = Mana;
