@@ -1,13 +1,15 @@
 #include "BattleInstance.h"
 #include "GameObject.h"
 
+CLASS_DEFINITION(Component,BattleInstance)
+
 BattleInstance::BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>> _playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> _enemyTeam)
 {
 	playerTeam = _playerTeam;
 	enemyTeam = _enemyTeam;
 }
 
-void BattleInstance::initialize()
+void BattleInstance::initialize(Odyssey::GameObject* Parent)
 {
 	srand(time(NULL));
 }
