@@ -18,6 +18,7 @@
 #include "Transform.h"
 #include "Application.h"
 #include "RenderDevice.h"
+#include "Material.h"
 
 // Game Includes
 #include "ExampleComponent.h"
@@ -32,6 +33,7 @@ namespace
     std::shared_ptr<Odyssey::Scene> gMainScene;
 	std::shared_ptr<Odyssey::GameObject> gArena;
 	std::shared_ptr<Odyssey::GameObject> gPaladin;
+	std::shared_ptr<Odyssey::GameObject> gSkeleton;
     // Light resources
     std::shared_ptr<Odyssey::Light> gDirLight;
     std::shared_ptr<Odyssey::Light> gPointLight[10];
@@ -43,6 +45,7 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice);
 void setupLighting();
 void setupArena();
 void setupPaladin();
+void setupSkeleton();
 
 //Tristen's Stuff
 std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
@@ -70,8 +73,8 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice)
 	Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
-	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
+	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -112,6 +115,7 @@ void setupLighting()
 void setupArena()
 {
 	gArena = std::make_shared<Odyssey::GameObject>();
+	gArena->addComponent<Odyssey::Transform>();
 	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
 	gArena->addComponent<ExampleComponent>();
 	gMainScene->addSceneObject(gArena);
@@ -144,6 +148,17 @@ std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayer
 	return newTeam;
 }
 
+void setupSkeleton()
+{
+	gSkeleton = std::make_shared<Odyssey::GameObject>();
+	gSkeleton->addComponent<Odyssey::Transform>();
+	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
+	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Skeleton_Idle.dxanim");
+	gMainScene->addSceneObject(gSkeleton);
+}
+
 int playGame()
 {
 	// Set up the application and create a render window
@@ -164,8 +179,11 @@ int playGame()
 
 	// Load the arena scene
 	setupArena();
+
 	// Set up the paladin
-	setupPaladin();
+	//setupPaladin();
+
+	setupSkeleton();
 
 	// Set up Battle Instance
 	//std::vector<std::shared_ptr<Odyssey::GameObject>> playerUnit = CreateTeam(1);
@@ -175,7 +193,7 @@ int playGame()
 
 	// Set the initial view and projection matrix
 	gMainScene->mMainCamera.setPosition(0, 0, 0);
-	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 100.0f);
+	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 75.0f);
 
 	// Set the active scene
 	application.setActiveScene(gMainScene);

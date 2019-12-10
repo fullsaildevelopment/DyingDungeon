@@ -12,7 +12,7 @@ public: // Constructors
 	BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>> _playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> _enemyTeam);
 
 public: // Functions
-	virtual void initialize(Odyssey::GameObject* parent);
+	virtual void initialize(Odyssey::GameObject* Parent);
 	virtual void update(double deltaTime);
 
 private: // Varibales

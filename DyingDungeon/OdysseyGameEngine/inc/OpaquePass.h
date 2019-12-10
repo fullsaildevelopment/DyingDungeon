@@ -24,7 +24,6 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		std::shared_ptr<RenderTarget> mRenderTarget;
 		std::shared_ptr<RenderState> mRenderState;
-		std::shared_ptr<Buffer> mAnimationBuffer;
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mPixelShader;
 		bool mFrustumCull;
