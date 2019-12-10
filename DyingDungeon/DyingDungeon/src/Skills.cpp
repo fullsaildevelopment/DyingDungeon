@@ -1,4 +1,5 @@
 #include "Skills.h"
+#include "EnemyComponent.h"
 
 Skills::Skills(float dps, float mana)
 {

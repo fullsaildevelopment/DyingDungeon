@@ -1,7 +1,9 @@
 #pragma once
-#include "EnemyComponent.h"
+#include "Buffs.h"
+
 class Skills
 {
+	class EnemyComponent;
 //public and private variables
 public:
 	
@@ -14,6 +16,7 @@ private:
 public:
 	//constructor, give how much damage you want the skill to do and how much mana you want it to cost 
 	Skills(float dps, float mana);
+	//deconstructor
 	~Skills();
 	//get how much mana the skill cost
 	float GetManaCost();
