@@ -15,3 +15,15 @@ void EnemyComponent::update(double deltaTime)
 {
 	
 }
+
+//Gets the current hp of the enemy (returned as a float)
+float EnemyComponent::GetHP()
+{
+	return mHP;
+}
+
+//Sets the current hp of the enemy (passed in float)
+void EnemyComponent::SetHP(float HP)
+{
+	mHP = HP;
+}
