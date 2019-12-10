@@ -21,6 +21,7 @@
 
 // Game Includes
 #include "ExampleComponent.h"
+#include "BattleInstance.h"
 
 namespace
 {
@@ -146,6 +147,8 @@ int playGame()
 	setupArena();
 	// Set up the paladin
 	setupPaladin();
+
+	// Set up Battle Instance
 
 	// Set the initial view and projection matrix
 	gMainScene->mMainCamera.setPosition(0, 0, 0);
