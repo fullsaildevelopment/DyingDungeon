@@ -14,10 +14,12 @@ namespace Odyssey
 	public:
 		void addChild(std::shared_ptr<GameObject> child);
 		void setParent(GameObject* parent);
+		void setStaticObject(bool isStatic);
 	public: // Accessors
 		const std::vector<std::shared_ptr<GameObject>> getChildren();
 		const int getChildrenCount();
 		GameObject* getParent();
+		bool getStaticObject();
 	public: //Debug
 		void enableDebug();
 		void disableDebug();
@@ -41,6 +43,7 @@ namespace Odyssey
 		std::vector<std::shared_ptr<GameObject>> children;
 		GameObject* mParent;
 		bool mDebugEnabled;
+		bool mIsStatic;
 	};
 
 	// Template Functions
