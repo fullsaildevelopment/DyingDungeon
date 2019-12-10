@@ -160,13 +160,21 @@
     <ResourceCompile Include="DyingDungeon.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BattleInstance.cpp" />
+    <ClCompile Include="EnemyComponent.cpp" />
+    <ClCompile Include="src\Buffs.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\ExampleComponent.cpp" />
+    <ClCompile Include="src\Skills.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BattleInstance.h" />
+    <ClInclude Include="EnemyComponent.h" />
+    <ClInclude Include="src\Buffs.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\ExampleComponent.h" />
     <ClInclude Include="src\Resource.h" />
+    <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\targetver.h" />
   </ItemGroup>
   <ItemGroup>
