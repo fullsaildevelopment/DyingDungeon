@@ -73,8 +73,8 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice)
 	Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
-	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
+	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -126,7 +126,8 @@ void setupPaladin()
 	gPaladin = std::make_shared<Odyssey::GameObject>();
 	gPaladin->addComponent<Odyssey::Transform>();
 	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
+	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
+	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0,180,0);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Paladin_Judgement.dxanim");
 	gMainScene->addSceneObject(gPaladin);
@@ -181,7 +182,7 @@ int playGame()
 	setupArena();
 
 	// Set up the paladin
-	//setupPaladin();
+	setupPaladin();
 
 	setupSkeleton();
 
@@ -192,7 +193,7 @@ int playGame()
 	//currentBattle->addComponent<BattleInstance>(playerUnit, enemyUnit);
 
 	// Set the initial view and projection matrix
-	gMainScene->mMainCamera.setPosition(0, 0, 0);
+	gMainScene->mMainCamera.setPosition(7.31f, 6.578f, 5.579f);
 	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 75.0f);
 
 	// Set the active scene

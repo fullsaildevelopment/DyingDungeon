@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
-
-class Skills;
+#include "Skills.h"
 
 class EnemyComponent : public Odyssey::Component
 {
