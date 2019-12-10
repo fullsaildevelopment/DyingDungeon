@@ -3,7 +3,7 @@
 
 class Buffs : public Odyssey::Component
 {
-	CLASS_DECLARATION(Componet,Buffs)
+	CLASS_DECLARATION(Buff)
 	//public and private variables
 public:
 

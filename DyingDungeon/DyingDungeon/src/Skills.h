@@ -1,5 +1,6 @@
 #pragma once
 #include "Buffs.h"
+
 class EnemyComponent;
 
 class Skills

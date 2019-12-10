@@ -47,6 +47,9 @@ void setupArena();
 void setupPaladin();
 void setupSkeleton();
 
+//Tristen's Stuff
+std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
+
 void setupPipeline(Odyssey::RenderDevice* renderDevice)
 {
 	// Create a clear render target pass and add it to the render pipeline
@@ -70,8 +73,8 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice)
 	Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
-	Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
+	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
 }
 
 void setupLighting()
@@ -123,10 +126,27 @@ void setupPaladin()
 	gPaladin = std::make_shared<Odyssey::GameObject>();
 	gPaladin->addComponent<Odyssey::Transform>();
 	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
+	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
+	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0,180,0);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Paladin_Judgement.dxanim");
 	gMainScene->addSceneObject(gPaladin);
+}
+
+std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam)
+{
+	//Make a new vector
+	std::vector<std::shared_ptr<Odyssey::GameObject>> newTeam;
+
+	int NumOfPlayersOnEachTeam = _amountOfPlayersOnTeam;
+	//Give amount of player to the team
+	for (int i = 0; i < NumOfPlayersOnEachTeam; i++)
+	{
+		std::shared_ptr<Odyssey::GameObject> newPlayer;
+		newTeam.push_back(newPlayer);
+	}
+
+	return newTeam;
 }
 
 void setupSkeleton()
@@ -162,14 +182,18 @@ int playGame()
 	setupArena();
 
 	// Set up the paladin
-	//setupPaladin();
+	setupPaladin();
 
 	setupSkeleton();
 
 	// Set up Battle Instance
+	//std::vector<std::shared_ptr<Odyssey::GameObject>> playerUnit = CreateTeam(1);
+	//std::vector<std::shared_ptr<Odyssey::GameObject>> enemyUnit = CreateTeam(1);
+	//std::shared_ptr<Odyssey::GameObject> currentBattle;
+	//currentBattle->addComponent<BattleInstance>(playerUnit, enemyUnit);
 
 	// Set the initial view and projection matrix
-	gMainScene->mMainCamera.setPosition(0, 0, 0);
+	gMainScene->mMainCamera.setPosition(7.31f, 6.578f, 5.579f);
 	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 75.0f);
 
 	// Set the active scene
