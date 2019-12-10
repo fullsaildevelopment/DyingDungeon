@@ -160,10 +160,12 @@
     <ResourceCompile Include="DyingDungeon.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Skills.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\ExampleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Skills.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\ExampleComponent.h" />
     <ClInclude Include="src\Resource.h" />
