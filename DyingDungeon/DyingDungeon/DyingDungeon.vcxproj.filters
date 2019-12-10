@@ -32,10 +32,10 @@
     <ClCompile Include="src\Buffs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BattleInstance.cpp">
+    <ClCompile Include="src\EnemyComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\EnemyComponent.cpp">
+    <ClCompile Include="src\BattleInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,10 +58,10 @@
     <ClInclude Include="src\Buffs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BattleInstance.h">
+    <ClInclude Include="src\EnemyComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\EnemyComponent.h">
+    <ClInclude Include="src\BattleInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

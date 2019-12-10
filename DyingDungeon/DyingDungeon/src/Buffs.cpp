@@ -1,16 +1,18 @@
 #include "Buffs.h"
 
+CLASS_DEFINITION(Component, Buffs)
+
 Buffs::Buffs(float* stat, float effect, int duration)
 {
 	m_statToAffect = stat;
 	m_amountOfEffect = effect;
-	duration = duration;
+	m_duration = duration;
 }
 Buffs::~Buffs()
 {
 
 }
-void initialize(Odyssey::GameObject* parent, float* stat, float effect, int duration)
+void Buffs::initialize(Odyssey::GameObject* parent)
 {
-	
+
 }
