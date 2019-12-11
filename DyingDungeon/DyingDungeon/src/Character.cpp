@@ -20,7 +20,7 @@ void Character::update(double deltaTime)
 	
 }
 
-void Character::TakeTurn()
+bool Character::TakeTurn()
 {
 
 }

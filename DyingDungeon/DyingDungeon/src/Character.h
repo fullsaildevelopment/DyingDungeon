@@ -14,7 +14,7 @@ public:
 	virtual void update(double deltaTime);
 
 	//Attack Functions
-	void TakeTurn();
+	virtual bool TakeTurn();
 
 
 	/////Get and Set Functions/////
