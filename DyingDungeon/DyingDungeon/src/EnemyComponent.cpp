@@ -40,6 +40,12 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 	return bestMove;
 }
 
+float ScoreMove(Skills skillOption, Character target)
+{
+	float bestScore = 0;
+	return bestScore;
+}
+
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	Move bestMove = findBestMove(targets);

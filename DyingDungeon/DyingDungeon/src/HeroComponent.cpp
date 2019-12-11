@@ -25,7 +25,7 @@ bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> c
 		for (std::shared_ptr<Odyssey::GameObject> temp : characters)
 		{
 			Character* target = temp->getComponent<Character>();
-			if (target->IsHero == false && target->IsDead() == false)
+			if (target->IsHero() == false && target->IsDead() == false)
 			{
 				BasicAttack(target);
 				return true;
