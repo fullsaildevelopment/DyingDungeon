@@ -12,7 +12,7 @@ void HeroComponent::initialize(Odyssey::GameObject* parent)
 
 	SetHP(100);
 	SetMana(100);
-
+	
 	skillList[0] = Skills(10, 5);
 }
 
@@ -21,9 +21,9 @@ void HeroComponent::update(double deltaTime)
 
 }
 
-void HeroComponent::TakeTurn()
+void HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
 {
-
+	
 }
 
 /*
@@ -38,5 +38,5 @@ void HeroComponent::TakeTurn()
  */
 void HeroComponent::BasicAttack(EnemyComponent& target)
 {
-	skillList[0].Use(target);
+	skillList[0].Use(*mGameObject->getComponent<Character>(), target);
 }

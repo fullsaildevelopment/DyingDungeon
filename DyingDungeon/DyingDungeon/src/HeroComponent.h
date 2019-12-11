@@ -10,7 +10,7 @@ public:
 	virtual void update(double deltaTime);
 
 	//Attack Functions
-	void TakeTurn();
+	void TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
 
 	//Rework needed
 	void BasicAttack(EnemyComponent& target);

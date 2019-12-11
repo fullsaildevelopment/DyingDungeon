@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Skills.h"
+#include <vector>
 
 class Character : public Odyssey::Component
 {
