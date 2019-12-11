@@ -12,6 +12,8 @@ void HeroComponent::initialize(Odyssey::GameObject* parent)
 
 	SetHP(100);
 	SetMana(100);
+
+	skillList[0] = Skills(10, 5);
 }
 
 void HeroComponent::update(double deltaTime)

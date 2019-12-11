@@ -12,11 +12,13 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 
 	SetHP(100);
 	SetMana(100);
+
+	skillList[0] = Skills(5, 5);
 }
 
 void EnemyComponent::update(double deltaTime)
 {
-
+	
 }
 
 void EnemyComponent::TakeTurn()

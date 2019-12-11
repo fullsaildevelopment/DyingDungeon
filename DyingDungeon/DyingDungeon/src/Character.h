@@ -24,10 +24,14 @@ public:
 	//Mana Functions
 	float GetMana();
 	void SetMana(float Mana);
+	//Dead Status Functions
+	bool IsDead();
+	void SetDead(bool deadStatus);
 
 	/////End of Get and Set Functions/////
 
 protected:
+	bool mDead;
 	float mHP;
 	float mMana;
 	Skills skillList[4];

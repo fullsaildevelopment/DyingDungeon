@@ -12,11 +12,12 @@ void Character::initialize(Odyssey::GameObject* parent)
 
 	SetHP(0);
 	SetMana(0);
+	SetDead(false);
 }
 
 void Character::update(double deltaTime)
 {
-
+	
 }
 
 void Character::TakeTurn()
@@ -27,7 +28,7 @@ void Character::TakeTurn()
 /*
  * Function:  GetMana()
  * --------------------
- * Gets the HP of the enemy
+ * Gets the HP of the character
  *
  * returns: A float representing current HP
  */
@@ -39,7 +40,7 @@ float Character::GetHP()
 /*
  * Function:  SetHP(float HP)
  * --------------------
- * Sets the HP of the enemy to the passed in float
+ * Sets the HP of the character to the passed in float
  *
  * returns: nothing
  */
@@ -51,7 +52,7 @@ void Character::SetHP(float HP)
 /*
  * Function:  GetMana()
  * --------------------
- * Gets the mana of the enemy
+ * Gets the mana of the character
  *
  * returns: A float representing mana
  */
@@ -63,12 +64,36 @@ float Character::GetMana()
 /*
  * Function:  SetMana(float Mana)
  * --------------------
- * Sets the Mana of the enemy to the passed in float
+ * Sets the Mana of the character to the passed in float
  *
  * returns: nothing
  */
 void Character::SetMana(float Mana)
 {
 	mMana = Mana;
+}
+
+/*
+ * Function:  IsDead()
+ * --------------------
+ * Check to see if the character is dead
+ *
+ * returns: nothing
+ */
+bool Character::IsDead()
+{
+	return mDead;
+}
+
+/*
+ * Function:  SetMana(float Mana)
+ * --------------------
+ * Set the dead staus of the character
+ *
+ * returns: nothing
+ */
+void Character::SetDead(bool deadStatus)
+{
+	mDead = deadStatus;
 }
 
