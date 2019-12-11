@@ -13,13 +13,13 @@ namespace Odyssey
 	class Camera;
 	class RenderWindow;
 	class BufferManager;
+	class Light;
 	class RenderTarget;
 	class GameObject;
 	class ParticleSystem;
 	class RenderPass;
 	class RenderDevice;
 
-	
 	class Scene
 	{
 	public:

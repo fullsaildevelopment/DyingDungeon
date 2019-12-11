@@ -126,7 +126,7 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			setupLightingBuffer(itr->second->getComponent<AABB>(), args);
+			updateLightingBuffer(itr->second, args);
 
 			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
@@ -193,42 +193,5 @@ namespace Odyssey
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
-	}
-	void OpaquePass::setupLightingBuffer(AABB* objectAABB, RenderArgs& args)
-	{
-		// Generate a list of lights on a per-object basis
-		SceneLighting sceneLighting;
-		sceneLighting.numLights = 0;
-
-		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = DirectX::XMFLOAT3(args.camera->getViewMatrix().m[3][0], args.camera->getViewMatrix().m[3][1], args.camera->getViewMatrix().m[3][2]);
-
-		// Iterate through the entire scene light list
-		for (std::shared_ptr<Light> light : args.lightList)
-		{
-			if (light->mLightType == LightType::Point)
-			{
-				Sphere test;
-				test.center = light->getPosition();
-				test.radius = light->mRange;
-				if (objectAABB->testAABBtoSphere(test))
-				{
-					// Directional and spot lights are automatically added to the light list
-					sceneLighting.sceneLights[sceneLighting.numLights] = *(light);
-					sceneLighting.numLights++;
-				}
-			}
-			else
-			{
-				// Directional and spot lights are automatically added to the light list
-				sceneLighting.sceneLights[sceneLighting.numLights] = *(light);
-				sceneLighting.numLights++;
-			}
-			
-		}
-
-		// Set the lighting constant buffer
-		mLightingBuffer->updateData(&sceneLighting);
-		mLightingBuffer->bind(1, ShaderType::PixelShader);
 	}
 }
