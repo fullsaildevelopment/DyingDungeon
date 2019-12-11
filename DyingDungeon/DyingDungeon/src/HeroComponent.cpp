@@ -20,6 +20,11 @@ void HeroComponent::update(double deltaTime)
 
 }
 
+void HeroComponent::TakeTurn()
+{
+
+}
+
 /*
  * Function:  BasicAttack()
  * --------------------
