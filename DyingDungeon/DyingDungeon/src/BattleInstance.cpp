@@ -1,6 +1,7 @@
 #include "BattleInstance.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Character.h"
 
 CLASS_DEFINITION(Component, BattleInstance)
 
@@ -36,7 +37,7 @@ void BattleInstance::initialize(Odyssey::GameObject* parent)
 void BattleInstance::update(double deltaTime)
 {
 	// Has the current player taken it's turn yet
-	if (pCurrentCharacter->getComponent<Character>().TakeTurn(allCharacters))
+	if (pCurrentCharacter->getComponent<Character>()->TakeTurn(allCharacters))
 	{
 		// Take the current character out of the front of the line
 		battleQueue.pop();

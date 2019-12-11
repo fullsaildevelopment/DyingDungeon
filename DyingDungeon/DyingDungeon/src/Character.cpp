@@ -20,9 +20,9 @@ void Character::update(double deltaTime)
 	
 }
 
-bool Character::TakeTurn()
+bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allCharacters)
 {
-	return true;
+	return false;
 }
 
 /*

@@ -19,10 +19,13 @@
 #include "Application.h"
 #include "RenderDevice.h"
 #include "Material.h"
+#include "Camera.h"
 
 // Game Includes
 #include "ExampleComponent.h"
 #include "BattleInstance.h"
+#include "HeroComponent.h"
+#include "EnemyComponent.h"
 
 namespace
 {
@@ -32,6 +35,7 @@ namespace
 	// Scene resources
 		//Scene
 	std::shared_ptr<Odyssey::Scene> gMainScene;
+	std::shared_ptr<Odyssey::GameObject> gMainCamera;
 	//Game Objects
 	std::shared_ptr<Odyssey::GameObject> gArena;
 	std::shared_ptr<Odyssey::GameObject> gPaladin;
@@ -42,7 +46,7 @@ namespace
 	std::vector<std::shared_ptr<Odyssey::GameObject>> gEnemyUnit;
 	// Light resources
 	std::shared_ptr<Odyssey::Light> gDirLight;
-	std::shared_ptr<Odyssey::Light> gLights[10];
+	std::shared_ptr<Odyssey::Light> gLights[15];
 }
 
 // Forward declarations
@@ -52,6 +56,7 @@ void setupLighting();
 void setupArena();
 void setupPaladin();
 void setupSkeleton();
+void setupCamera();
 
 //Tristen's Stuff
 std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
@@ -177,6 +182,33 @@ void setupLighting()
 	gLights[8]->mRange = 5.0f;
 	gLights[8]->mSpotAngle = 0.0f;
 
+	gLights[9] = std::make_shared<Odyssey::Light>();
+	gLights[9]->mLightType = Odyssey::LightType::Point;
+	gLights[9]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
+	gLights[9]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	gLights[9]->mColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	gLights[9]->mIntensity = 2.0f;
+	gLights[9]->mRange = 40.0f;
+	gLights[9]->mSpotAngle = 0.0f;
+
+	gLights[10] = std::make_shared<Odyssey::Light>();
+	gLights[10]->mLightType = Odyssey::LightType::Spot;
+	gLights[10]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 10.0f, 3.0f, 1.0f);
+	gLights[10]->mWorldDirection = DirectX::XMFLOAT4(0.0f, -1.0f, 0.0f, 0.0f);
+	gLights[10]->mColor = DirectX::XMFLOAT4(0.4f, 0.4f, 1.0f, 1.0f);
+	gLights[10]->mIntensity = 5.0f;
+	gLights[10]->mRange = 50.0f;
+	gLights[10]->mSpotAngle = 0.4f;
+
+	gLights[11] = std::make_shared<Odyssey::Light>();
+	gLights[11]->mLightType = Odyssey::LightType::Spot;
+	gLights[11]->mWorldPosition = DirectX::XMFLOAT4(0.0f, 10.0f, -10.0f, 1.0f);
+	gLights[11]->mWorldDirection = DirectX::XMFLOAT4(0.0f, -1.0f, 0.0f, 0.0f);
+	gLights[11]->mColor = DirectX::XMFLOAT4(1.0f, 0.4f, 0.4f, 1.0f);
+	gLights[11]->mIntensity = 5.0f;
+	gLights[11]->mRange = 50.0f;
+	gLights[11]->mSpotAngle = 0.4f;
+
 	gMainScene->addLight(gDirLight);
 	gMainScene->addLight(gLights[0]);
 	gMainScene->addLight(gLights[1]);
@@ -187,6 +219,9 @@ void setupLighting()
 	gMainScene->addLight(gLights[6]);
 	gMainScene->addLight(gLights[7]);
 	gMainScene->addLight(gLights[8]);
+	gMainScene->addLight(gLights[9]);
+	gMainScene->addLight(gLights[10]);
+	gMainScene->addLight(gLights[11]);
 }
 
 void setupArena()
@@ -207,6 +242,8 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Judgement", "assets/animations/Paladin_Idle.dxanim");
+	gPaladin->addComponent<HeroComponent>();
+	gPaladin->getComponent<HeroComponent>()->name = "PaladinButBetter";
 	gMainScene->addSceneObject(gPaladin);
 }
 
@@ -235,6 +272,17 @@ void setUpBattleInstance()
 	gMainScene->addSceneObject(gCurrentBattle);
 }
 
+void setUpCamera()
+{
+	gMainCamera = std::make_shared<Odyssey::GameObject>();
+	gMainCamera->addComponent<Odyssey::Transform>();
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(7.31f, 6.578f, 5.579f);
+	//gMainCamera->getComponent<Odyssey::Transform>()->setRotation(0.0f, 6.578f, 5.579f);
+	gMainCamera->addComponent<Odyssey::Camera>();
+	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	gMainScene->addSceneObject(gMainCamera);
+}
+
 void setupSkeleton()
 {
 	gSkeleton = std::make_shared<Odyssey::GameObject>();
@@ -243,6 +291,8 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->addComponent<EnemyComponent>();
+	gSkeleton->getComponent<EnemyComponent>()->name = "SkeleyBoi";
 	gMainScene->addSceneObject(gSkeleton);
 }
 
@@ -276,15 +326,19 @@ int playGame()
 	// Set up the battle instance
 	setUpBattleInstance();
 
-	// Set the initial view and projection matrix
-	gMainScene->mMainCamera.setPosition(7.31f, 6.578f, 5.579f);
-	gMainScene->mMainCamera.setProjectionValues(60.0f, gMainWindow->getAspectRatio(), 0.1f, 75.0f);
+	// Set up camera
+	setUpCamera();
 
 	// Set the active scene
 	application.setActiveScene(gMainScene);
 
 	// Run the application
 	return application.update();
+}
+
+int main()
+{
+	wWinMain(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOWNORMAL);
 }
 
 #pragma region WINDOWS CODE

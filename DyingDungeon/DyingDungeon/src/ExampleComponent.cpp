@@ -14,8 +14,6 @@ void ExampleComponent::initialize(Odyssey::GameObject* parent)
 
 void ExampleComponent::update(double deltaTime)
 {
-	std::cout << "Updating" << std::endl;
-
 	if (Odyssey::InputManager::getInstance().getKeyDown('F'))
 	{
 		mGameObject->getComponent<Odyssey::Transform>()->addScale(-deltaTime, -deltaTime, -deltaTime);

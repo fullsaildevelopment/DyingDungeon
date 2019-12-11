@@ -66,7 +66,7 @@ namespace Odyssey
 
 		mRenderDevice = std::make_unique<RenderDevice>(*this);
 
-		//DebugManager::getInstance().initialize(*mRenderDevice);
+		DebugManager::getInstance().initialize(*mRenderDevice);
 	}
 
 	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::string& title, int windowWidth, int windowHeight)

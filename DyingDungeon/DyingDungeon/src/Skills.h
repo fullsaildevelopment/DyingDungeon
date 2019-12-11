@@ -8,7 +8,7 @@ class Skills
 {
 //public and private variables
 public:
-	
+	Skills() = default;
 private:
 	//how much damage this skill will do to HP
 	float m_damage;

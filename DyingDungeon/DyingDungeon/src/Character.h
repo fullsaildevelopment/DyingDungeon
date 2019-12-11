@@ -14,7 +14,7 @@ public:
 	virtual void update(double deltaTime);
 
 	//Attack Functions
-	virtual bool TakeTurn();
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allCharacters);
 
 
 	/////Get and Set Functions/////
@@ -32,6 +32,8 @@ public:
 	bool IsHero();
 	void SetHero(bool heroStat);
 	/////End of Get and Set Functions/////
+
+	std::string name;
 
 protected:
 	bool mHero;
