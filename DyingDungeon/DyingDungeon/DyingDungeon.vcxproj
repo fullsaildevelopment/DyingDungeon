@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="src\BattleInstance.cpp" />
     <ClCompile Include="src\Buffs.cpp" />
+    <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
     <ClCompile Include="src\ExampleComponent.cpp" />
@@ -170,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h" />
     <ClInclude Include="src\Buffs.h" />
+    <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
     <ClInclude Include="src\ExampleComponent.h" />
