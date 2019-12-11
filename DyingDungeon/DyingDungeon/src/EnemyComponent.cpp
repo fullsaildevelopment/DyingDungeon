@@ -21,7 +21,16 @@ void EnemyComponent::update(double deltaTime)
 	
 }
 
-void EnemyComponent::TakeTurn()
+EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets, Skills* skills)
 {
-	
+	for (std::shared_ptr<Odyssey::GameObject> t : targets)
+	{
+
+	}
+}
+
+void EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+{
+
+	skillList[0].Use(*mGameObject->getComponent<Character>(), *targets[0]->getComponent<Character>());
 }
