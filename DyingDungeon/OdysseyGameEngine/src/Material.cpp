@@ -154,11 +154,11 @@ namespace Odyssey
 		mProperties.mHasDiffuseTexture = 0;
 		mProperties.mDiffuseColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		mProperties.mHasSpecularTexture = 0;
-		mProperties.mSpecularColor = { 0.5f, 0.5f, 0.5f, 1.0f };
+		mProperties.mSpecularColor = { 0.25f, 0.25f, 0.25f, 1.0f };
 		mProperties.mHasEmissiveTexture = 0;
 		mProperties.mEmissiveColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		mProperties.mHasNormalTexture = 0;
-		mProperties.mSpecularPower = 256.0f;
+		mProperties.mSpecularPower = 512.0f;
 		mProperties.mReflectance = 0.01f;
 		
 		

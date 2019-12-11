@@ -154,6 +154,40 @@ namespace Odyssey
 		float pitch = 0.0f;
 		float yaw = 0.0f;
 
+		std::shared_ptr<Light> light = mActiveScene->getLight(4);
+
+		if (GetAsyncKeyState(VK_NUMPAD4))
+		{
+			light->addPosition(-0.1f, 0, 0);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD6))
+		{
+			light->addPosition(0.1f, 0, 0);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD2))
+		{
+			light->addPosition(0.0f, 0, -0.1f);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD8))
+		{
+			light->addPosition(0.0f, 0, 0.1f);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD9))
+		{
+			light->addPosition(0.0f, 0.1f, 0.0f);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD3))
+		{
+			light->addPosition(0.0f, -0.1f, 0.0f);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD7))
+		{
+			light->addRange(0.1f);
+		}
+		if (GetAsyncKeyState(VK_NUMPAD1))
+		{
+			light->addRange(-0.1f);
+		}
 		if (GetAsyncKeyState('W'))
 		{
 			zPosition += moveSpeed;
