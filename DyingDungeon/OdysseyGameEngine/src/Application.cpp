@@ -4,6 +4,10 @@
 #include "RenderWindow.h"
 #include "DebugManager.h"
 #include "InputManager.h"
+#include "GameObject.h"
+#include "Camera.h"
+#include "Component.h"
+#include "Transform.h"
 
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
@@ -11,30 +15,30 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	switch (message)
 	{
-		case WM_KEYDOWN:
-		{
-			Odyssey::InputManager::getInstance().registerInput(wParam, true);
-		}
-		break;
-		case WM_KEYUP:
-		{
-			Odyssey::InputManager::getInstance().registerInput(wParam, false);
-		}
-		break;
-		case WM_PAINT:
-		{
-			PAINTSTRUCT paintStruct;
-			HDC hDC;
+	case WM_KEYDOWN:
+	{
+		Odyssey::InputManager::getInstance().registerInput(wParam, true);
+	}
+	break;
+	case WM_KEYUP:
+	{
+		Odyssey::InputManager::getInstance().registerInput(wParam, false);
+	}
+	break;
+	case WM_PAINT:
+	{
+		PAINTSTRUCT paintStruct;
+		HDC hDC;
 
-			hDC = BeginPaint(hwnd, &paintStruct);
-			EndPaint(hwnd, &paintStruct);
-		}
-		break;
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-		}
-		break;
+		hDC = BeginPaint(hwnd, &paintStruct);
+		EndPaint(hwnd, &paintStruct);
+	}
+	break;
+	case WM_DESTROY:
+	{
+		PostQuitMessage(0);
+	}
+	break;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
@@ -62,7 +66,7 @@ namespace Odyssey
 
 		mRenderDevice = std::make_unique<RenderDevice>(*this);
 
-		DebugManager::getInstance().initialize(*mRenderDevice);
+		//DebugManager::getInstance().initialize(*mRenderDevice);
 	}
 
 	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::string& title, int windowWidth, int windowHeight)
@@ -162,71 +166,50 @@ namespace Odyssey
 		float delta = static_cast<float>(mActiveScene->getDeltaTime());
 		float moveSpeed = 10.0f * delta;
 		float rotationSpeed = 100.0f * delta;
-		float xPosition = 0.0f;
-		float yPosition = 0.0f;
-		float zPosition = 0.0f;
+		DirectX::XMFLOAT3 velocity(0, 0, 0);
+		DirectX::XMFLOAT3 fwd = mActiveScene->mMainCamera->getComponent<Transform>()->getForward();
+		DirectX::XMFLOAT3 right = mActiveScene->mMainCamera->getComponent<Transform>()->getRight();
+		DirectX::XMFLOAT3 up = mActiveScene->mMainCamera->getComponent<Transform>()->getUp();
 		float pitch = 0.0f;
 		float yaw = 0.0f;
 
-		std::shared_ptr<Light> light = mActiveScene->getLight(4);
-
-		if (GetAsyncKeyState(VK_NUMPAD4))
-		{
-			light->addPosition(-0.1f, 0, 0);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD6))
-		{
-			light->addPosition(0.1f, 0, 0);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD2))
-		{
-			light->addPosition(0.0f, 0, -0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD8))
-		{
-			light->addPosition(0.0f, 0, 0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD9))
-		{
-			light->addPosition(0.0f, 0.1f, 0.0f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD3))
-		{
-			light->addPosition(0.0f, -0.1f, 0.0f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD7))
-		{
-			light->addRange(0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD1))
-		{
-			light->addRange(-0.1f);
-		}
 		if (GetAsyncKeyState('W'))
 		{
-			zPosition += moveSpeed;
+			velocity.x += fwd.x;
+			velocity.y += fwd.y;
+			velocity.z += fwd.z;
 		}
 		if (GetAsyncKeyState('S'))
 		{
-			zPosition -= moveSpeed;
+			velocity.x -= fwd.x;
+			velocity.y -= fwd.y;
+			velocity.z -= fwd.z;
 		}
 		if (GetAsyncKeyState('D'))
 		{
-			xPosition += moveSpeed;
+			velocity.x += right.x;
+			velocity.y += right.y;
+			velocity.z += right.z;
 		}
 		if (GetAsyncKeyState('A'))
 		{
-			xPosition -= moveSpeed;
+			velocity.x -= right.x;
+			velocity.y -= right.y;
+			velocity.z -= right.z;
 		}
 
 		if (GetAsyncKeyState(VK_SPACE))
 		{
-			yPosition += moveSpeed;
+			velocity.x += up.x;
+			velocity.y += up.y;
+			velocity.z += up.z;
 		}
 
 		if (GetAsyncKeyState('X'))
 		{
-			yPosition -= moveSpeed;
+			velocity.x -= up.x;
+			velocity.y -= up.y;
+			velocity.z -= up.z;
 		}
 
 		if (GetAsyncKeyState(VK_LEFT))
@@ -249,6 +232,15 @@ namespace Odyssey
 			pitch += rotationSpeed;
 		}
 
-		mActiveScene->mMainCamera.updateCamera(xPosition, yPosition, zPosition, pitch, yaw, 0.0f);
+		bool zero = velocity.x == 0.0f && velocity.y == 0.0f && velocity.z == 0.0f;
+		if (!zero)
+		{
+			velocity.x = velocity.x * moveSpeed;
+			velocity.y = velocity.y * moveSpeed;
+			velocity.z = velocity.z * moveSpeed;
+			mActiveScene->mMainCamera->getComponent<Transform>()->addPosition(velocity.x, velocity.y, velocity.z);
+		}
+
+		mActiveScene->mMainCamera->getComponent<Transform>()->addRotation(pitch, yaw, 0.0f);
 	}
 }

@@ -10,7 +10,7 @@ namespace Odyssey
 
 	struct RenderArgs
 	{
-		Camera* camera;
+		GameObject* camera;
 		PerFrameBuffer perFrame;
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;

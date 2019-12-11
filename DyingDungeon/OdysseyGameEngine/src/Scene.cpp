@@ -30,6 +30,11 @@ namespace Odyssey
 	void Scene::addSceneObject(std::shared_ptr<GameObject> sceneObject)
 	{
 		mSceneObjectList.push_back(sceneObject);
+
+		if (sceneObject->getComponent<Camera>())
+		{
+			mMainCamera = sceneObject;
+		}
 	}
 
 	void Scene::initialize()
@@ -54,7 +59,7 @@ namespace Odyssey
 		// Update the render args lists
 		renderArgs.perFrameBuffer = mPerFrameBuffer.get();
 		renderArgs.perObjectBuffer = mPerObjectBuffer.get();
-		renderArgs.camera = &mMainCamera;
+		renderArgs.camera = mMainCamera.get();
 		renderArgs.lightList = mSceneLights;
 		renderArgs.renderList = mSceneObjectList;
 	}
