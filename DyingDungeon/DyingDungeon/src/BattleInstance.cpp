@@ -1,5 +1,6 @@
 #include "BattleInstance.h"
 #include "GameObject.h"
+#include "Transform.h"
 
 CLASS_DEFINITION(Component, BattleInstance)
 
@@ -8,18 +9,29 @@ BattleInstance::BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>>
 	playerTeam = _playerTeam;
 	enemyTeam = _enemyTeam;
 }
-void BattleInstance::initialize(Odyssey::GameObject* Parent)
+
+void BattleInstance::initialize(Odyssey::GameObject* parent)
 {
+	onEnable();
+	mGameObject = parent;
+	mGameObject->addComponent<Odyssey::Transform>();
+
 	srand(time(NULL));
-	GenerateBattleOrder();
+	GenerateBattleQueue();
 }
 
 void BattleInstance::update(double deltaTime)
 {
+	//Get the next character in line so the character can do it's attack
+	std::shared_ptr<Odyssey::GameObject> pCurrentCharacter = battleQueue.front();
 
+	//Take the current character out of the front of the line
+	battleQueue.pop();
+	//Put the current character to back into the queue, he will go to the back of the line
+	battleQueue.emplace(pCurrentCharacter);
 }
 
-void BattleInstance::GenerateBattleOrder()
+void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
 	std::vector<std::shared_ptr<Odyssey::GameObject>> characterPool;

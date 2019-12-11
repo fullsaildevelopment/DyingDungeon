@@ -22,6 +22,6 @@ private: // Varibales
 	std::queue<std::shared_ptr<Odyssey::GameObject>> battleQueue; // Battle Queue that will hodl the order in which players can attack
 
 private: // Functions
-	void GenerateBattleOrder();
+	void GenerateBattleQueue();
 };
 
