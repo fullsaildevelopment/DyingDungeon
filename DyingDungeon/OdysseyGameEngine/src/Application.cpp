@@ -3,26 +3,38 @@
 #include "Scene.h"
 #include "RenderWindow.h"
 #include "DebugManager.h"
+#include "InputManager.h"
+
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
 static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-	case WM_PAINT:
-	{
-		PAINTSTRUCT paintStruct;
-		HDC hDC;
+		case WM_KEYDOWN:
+		{
+			Odyssey::InputManager::getInstance().registerInput(wParam, true);
+		}
+		break;
+		case WM_KEYUP:
+		{
+			Odyssey::InputManager::getInstance().registerInput(wParam, false);
+		}
+		break;
+		case WM_PAINT:
+		{
+			PAINTSTRUCT paintStruct;
+			HDC hDC;
 
-		hDC = BeginPaint(hwnd, &paintStruct);
-		EndPaint(hwnd, &paintStruct);
-	}
-	break;
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-	}
-	break;
+			hDC = BeginPaint(hwnd, &paintStruct);
+			EndPaint(hwnd, &paintStruct);
+		}
+		break;
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
+		}
+		break;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
