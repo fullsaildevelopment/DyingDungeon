@@ -12,6 +12,7 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 
 	SetHP(100);
 	SetMana(100);
+	SetHero(false);
 
 	skillList[0] = Skills(5, 5);
 	skillList[1] = Skills(2, 2);
@@ -19,26 +20,29 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 	skillList[3] = Skills(1, 1);
 }
 
-void EnemyComponent::update(double deltaTime)
-{
-	
-}
-
 EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	Character* target = nullptr;
 	for (std::shared_ptr<Odyssey::GameObject> t : targets)
 	{
-		if (target = t->getComponent<Character>())
+		if(target = t->getComponent<Character>())
 		{
-			break;
+			if (target->IsHero() == true && target->IsDead() == false)
+			{
+				break;
+			}
 		}
 	}
-	
+	Skills* skill = &skillList[0];
+	Move bestMove;
+	bestMove.skill = skill;
+	bestMove.target = target;
+	return bestMove;
 }
 
-void EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
-
-	skillList[0].Use(*mGameObject->getComponent<Character>(), *targets[0]->getComponent<Character>());
+	Move bestMove = findBestMove(targets);
+	bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+	return true;
 }

@@ -7,7 +7,6 @@ class EnemyComponent : public Character
 
 public:
 	virtual void initialize(Odyssey::GameObject* parent);
-	virtual void update(double deltaTime);
 	struct Move 
 	{
 		Character* target;
@@ -15,7 +14,7 @@ public:
 	};
 	//Attack Functions
 	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
-	void TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	
 
 	
