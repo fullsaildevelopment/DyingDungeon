@@ -51,12 +51,12 @@ cbuffer MaterialBuffer : register(b0)
 
 cbuffer Lighting : register(b1)
 {
-	Light sceneLights[24];
-	//------------------------------- ( 25 x 64 bytes = 1600 bytes)
+	Light sceneLights[8];
+	//------------------------------- ( 8 x 64 bytes = 512 bytes)
 	uint numLights;
 	float3 camPos;
 	//------------------------------- ( 16 bytes )
-};  //------------------------------- ( 26 x 16 bytes = 1616 bytes)
+};  //------------------------------- ( 9 x 16 bytes = 528 bytes)
 
 cbuffer ShadowBuffer : register(b2)
 {

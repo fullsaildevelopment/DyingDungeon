@@ -11,6 +11,9 @@
 #include "Transform.h"
 #include "RenderDevice.h"
 #include "Shader.h"
+#include "Buffer.h"
+#include "Camera.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
@@ -26,6 +29,9 @@ namespace Odyssey
 		// Create the render state for opaque objects
 		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
 
+		mLightingBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
+
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -39,7 +45,7 @@ namespace Odyssey
 
 		// Create the default pixel shader
 		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/LitPixelShader.cso", nullptr);
-		
+
 		// Create the default vertex shader
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 		mFrustumCull = true;
@@ -116,6 +122,8 @@ namespace Odyssey
 
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
+			setupLightingBuffer(itr->second->getComponent<AABB>(), args);
+
 			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
 				rootAnimator->bind();
@@ -145,5 +153,42 @@ namespace Odyssey
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+	}
+	void OpaquePass::setupLightingBuffer(AABB* objectAABB, RenderArgs& args)
+	{
+		// Generate a list of lights on a per-object basis
+		SceneLighting sceneLighting;
+		sceneLighting.numLights = 0;
+
+		// Set the camera's position for specular highlighting
+		sceneLighting.camPos = DirectX::XMFLOAT3(args.camera->getViewMatrix().m[3][0], args.camera->getViewMatrix().m[3][1], args.camera->getViewMatrix().m[3][2]);
+
+		// Iterate through the entire scene light list
+		for (std::shared_ptr<Light> light : args.lightList)
+		{
+			if (light->mLightType == LightType::Point)
+			{
+				Sphere test;
+				test.center = light->getPosition();
+				test.radius = light->mRange;
+				if (objectAABB->testAABBtoSphere(test))
+				{
+					// Directional and spot lights are automatically added to the light list
+					sceneLighting.sceneLights[sceneLighting.numLights] = *(light);
+					sceneLighting.numLights++;
+				}
+			}
+			else
+			{
+				// Directional and spot lights are automatically added to the light list
+				sceneLighting.sceneLights[sceneLighting.numLights] = *(light);
+				sceneLighting.numLights++;
+			}
+			
+		}
+
+		// Set the lighting constant buffer
+		mLightingBuffer->updateData(&sceneLighting);
+		mLightingBuffer->bind(1, ShaderType::PixelShader);
 	}
 }
