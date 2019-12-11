@@ -8,6 +8,7 @@
 #include "Light.h"
 #include "RenderDevice.h"
 #include "Shader.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
@@ -33,9 +34,18 @@ namespace Odyssey
 	void DebugPass::preRender(RenderArgs& args)
 	{
 		// Set the view
-		args.perFrame.view = args.camera->getInverseViewMatrix();
+		if (Camera* camera = args.camera->getComponent<Camera>())
+		{
+			args.perFrame.view = camera->getInverseViewMatrix();
+			// Calculate and set view proj
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
+			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+			// Update the buffer
+			updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		}
+
 		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
 		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 		// Update the buffer
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);

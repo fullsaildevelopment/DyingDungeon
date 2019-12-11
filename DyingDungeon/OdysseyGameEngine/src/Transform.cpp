@@ -12,6 +12,7 @@ namespace Odyssey
 		mScale = DirectX::XMFLOAT3(1, 1, 1);
 		recalculateWorldMatrix();
 	}
+
 	Transform::Transform(DirectX::XMFLOAT4X4 worldMatrix)
 	{
 		mWorldMatrix = worldMatrix;
@@ -78,6 +79,21 @@ namespace Odyssey
 	DirectX::XMFLOAT3 Transform::getScale()
 	{
 		return mScale;
+	}
+
+	DirectX::XMFLOAT3 Transform::getForward()
+	{
+		return DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
+	}
+
+	DirectX::XMFLOAT3 Transform::getRight()
+	{
+		return DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+	}
+
+	DirectX::XMFLOAT3 Transform::getUp()
+	{
+		return DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
 	}
 
 	void Transform::getLocalTransform(DirectX::XMFLOAT4X4& localTransform)

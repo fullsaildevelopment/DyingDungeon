@@ -9,6 +9,8 @@
 
 namespace Odyssey
 {
+	using namespace std;
+
 	DebugManager& DebugManager::getInstance()
 	{
 		static DebugManager instance;
@@ -126,7 +128,7 @@ namespace Odyssey
 
 	void DebugManager::setupDebugConsole(short bufferWidth, short bufferHeight, short windowWidth, short windowHeight)
 	{
-		using namespace std;
+		
 
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		FILE* file;
