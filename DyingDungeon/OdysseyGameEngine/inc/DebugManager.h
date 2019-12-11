@@ -30,6 +30,7 @@ namespace Odyssey
 		unsigned int getNumberOfVertices();
 		void bind();
 	private:
+		void setupDebugConsole(short bufferWidth, short bufferHeight, short windowWidth, short windowHeight);
 		void drawRing(DirectX::XMFLOAT4 center, DirectX::XMFLOAT4 majorAxis, DirectX::XMFLOAT4 minorAxis, DirectX::XMFLOAT3 color);
 	private:
 		std::array<ColoredVertex, MAX_LINES> mVertexList;

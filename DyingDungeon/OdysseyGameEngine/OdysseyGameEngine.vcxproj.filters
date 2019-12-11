@@ -174,6 +174,9 @@
     <ClInclude Include="inc\RenderDevice.h">
       <Filter>Header Files\Render Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="inc\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\DebugPixelShader.hlsl">
@@ -329,6 +332,9 @@
     </ClCompile>
     <ClCompile Include="src\RenderDevice.cpp">
       <Filter>Source Files\Render Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

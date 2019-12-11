@@ -70,6 +70,11 @@ namespace Odyssey
 		return mRenderTarget;
 	}
 
+	RenderWindow::~RenderWindow()
+	{
+		mSwapChain->SetFullscreenState(false, nullptr);
+	}
+
 	// This function was inspired by:
 	// http://www.rastertek.com/dx11tut03.html
 	static DXGI_RATIONAL QueryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync)

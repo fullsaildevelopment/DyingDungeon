@@ -30,10 +30,16 @@ namespace
     std::shared_ptr<Odyssey::RenderWindow> gMainWindow;
     std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
     // Scene resources
-    std::shared_ptr<Odyssey::Scene> gMainScene;
-	std::shared_ptr<Odyssey::GameObject> gArena;
-	std::shared_ptr<Odyssey::GameObject> gPaladin;
-	std::shared_ptr<Odyssey::GameObject> gSkeleton;
+		//Scene
+		std::shared_ptr<Odyssey::Scene> gMainScene;
+		//Game Objects
+		std::shared_ptr<Odyssey::GameObject> gArena;
+		std::shared_ptr<Odyssey::GameObject> gPaladin;
+		std::shared_ptr<Odyssey::GameObject> gSkeleton;
+		std::shared_ptr<Odyssey::GameObject> gCurrentBattle;
+		//Vectors
+		std::vector<std::shared_ptr<Odyssey::GameObject>> gPlayerUnit;
+		std::vector<std::shared_ptr<Odyssey::GameObject>> gEnemyUnit;
     // Light resources
     std::shared_ptr<Odyssey::Light> gDirLight;
     std::shared_ptr<Odyssey::Light> gLights[10];
@@ -49,6 +55,7 @@ void setupSkeleton();
 
 //Tristen's Stuff
 std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
+void setUpBattleInstance();
 
 void setupPipeline(Odyssey::RenderDevice* renderDevice)
 {
@@ -61,7 +68,7 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice)
 	Odyssey::RenderPipelineManager::getInstance().addPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
+	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 2048, 2048);
 	Odyssey::RenderPipelineManager::getInstance().addPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
@@ -193,20 +200,29 @@ void setupPaladin()
 	gMainScene->addSceneObject(gPaladin);
 }
 
-std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam)
+//std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam)
+//{
+//	//Make a new vector
+//	std::vector<std::shared_ptr<Odyssey::GameObject>> newTeam;
+//
+//	int NumOfPlayersOnEachTeam = _amountOfPlayersOnTeam;
+//	//Give amount of player to the team
+//	for (int i = 0; i < NumOfPlayersOnEachTeam; i++)
+//	{
+//		std::shared_ptr<Odyssey::GameObject> newPlayer;
+//		newTeam.push_back(newPlayer);
+//	}
+//
+//	return newTeam;
+//}
+
+void setUpBattleInstance()
 {
-	//Make a new vector
-	std::vector<std::shared_ptr<Odyssey::GameObject>> newTeam;
-
-	int NumOfPlayersOnEachTeam = _amountOfPlayersOnTeam;
-	//Give amount of player to the team
-	for (int i = 0; i < NumOfPlayersOnEachTeam; i++)
-	{
-		std::shared_ptr<Odyssey::GameObject> newPlayer;
-		newTeam.push_back(newPlayer);
-	}
-
-	return newTeam;
+	gPlayerUnit.push_back(gPaladin);
+	gEnemyUnit.push_back(gSkeleton);
+	gCurrentBattle = std::make_shared<Odyssey::GameObject>();
+	gCurrentBattle->addComponent<BattleInstance>(gPlayerUnit, gEnemyUnit);
+	gMainScene->addSceneObject(gCurrentBattle);
 }
 
 void setupSkeleton()
@@ -244,13 +260,11 @@ int playGame()
 	// Set up the paladin
 	setupPaladin();
 
+	// Set up the skeleton
 	setupSkeleton();
 
-	// Set up Battle Instance
-	//std::vector<std::shared_ptr<Odyssey::GameObject>> playerUnit = CreateTeam(1);
-	//std::vector<std::shared_ptr<Odyssey::GameObject>> enemyUnit = CreateTeam(1);
-	//std::shared_ptr<Odyssey::GameObject> currentBattle;
-	//currentBattle->addComponent<BattleInstance>(playerUnit, enemyUnit);
+	// Set up the battle instance
+	setUpBattleInstance();
 
 	// Set the initial view and projection matrix
 	gMainScene->mMainCamera.setPosition(7.31f, 6.578f, 5.579f);
