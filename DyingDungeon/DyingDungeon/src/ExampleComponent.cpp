@@ -1,7 +1,6 @@
 #include "ExampleComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
-#include "DebugManager.h"
 
 CLASS_DEFINITION(Component, ExampleComponent)
 
@@ -10,7 +9,6 @@ void ExampleComponent::initialize(Odyssey::GameObject* parent)
 	onEnable(); 
 	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
-	Odyssey::DebugManager::getInstance().addText("Initialize");
 }
 
 void ExampleComponent::update(double deltaTime)
