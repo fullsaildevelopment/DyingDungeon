@@ -1,36 +1,30 @@
 #pragma once
-#include "Component.h"
-#include "Skills.h"
+#include "Character.h"
+#include "InputManager.h"
 
-class HeroComponent : public Odyssey::Component
+class HeroComponent : public Character
 {
 	CLASS_DECLARATION(HeroComponent)
 
 public:
-	HeroComponent() = default;
-public:
 	virtual void initialize(Odyssey::GameObject* parent);
-	virtual void update(double deltaTime);
+
+	//Input
+	Odyssey::InputManager input;
+
 
 	//Attack Functions
-	void TakeTurn();
-	void BasicAttack(EnemyComponent& target);
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
+	void BasicAttack(Character* target);
 
 
 	/////Get and Set Functions/////
 
-	//HP Functions
-	float GetHP();
-	void SetHP(float m_HP);
-	//Mana Functions
-	float GetMana();
-	void SetMana(float Mana);
+	
 
 	/////End of Get and Set Functions/////
 
 private:
-	float mHP;
-	float mMana;
-	Skills skillList[4];
+
 };
 

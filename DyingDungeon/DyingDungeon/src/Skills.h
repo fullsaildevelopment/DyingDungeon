@@ -1,7 +1,8 @@
 #pragma once
 #include "Buffs.h"
 
-class EnemyComponent;
+//forward declare charater class
+class Character;
 
 class Skills
 {
@@ -22,7 +23,7 @@ public:
 	//get how much mana the skill cost
 	float GetManaCost();
 	//use the skill
-	void Use(EnemyComponent& target);
+	void Use(Character& caster, Character& target);
 private:
 
 };

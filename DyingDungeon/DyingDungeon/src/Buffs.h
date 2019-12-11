@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+class Character;
+
 class Buffs : public Odyssey::Component
 {
 	CLASS_DECLARATION(Buff)

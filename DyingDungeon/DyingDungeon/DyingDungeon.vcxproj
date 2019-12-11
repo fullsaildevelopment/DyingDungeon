@@ -162,17 +162,21 @@
   <ItemGroup>
     <ClCompile Include="src\BattleInstance.cpp" />
     <ClCompile Include="src\Buffs.cpp" />
+    <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
     <ClCompile Include="src\ExampleComponent.cpp" />
+    <ClCompile Include="src\HeroComponent.cpp" />
     <ClCompile Include="src\Skills.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h" />
     <ClInclude Include="src\Buffs.h" />
+    <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
     <ClInclude Include="src\ExampleComponent.h" />
+    <ClInclude Include="src\HeroComponent.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\targetver.h" />
