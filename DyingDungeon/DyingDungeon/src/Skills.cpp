@@ -1,5 +1,5 @@
 #include "Skills.h"
-#include "EnemyComponent.h"
+#include "Character.h"
 
 Skills::Skills(float dps, float mana)
 {
@@ -13,7 +13,8 @@ float Skills::GetManaCost()
 {
 	return m_mpCost;
 }
-void Skills::Use(EnemyComponent& target)
+void Skills::Use(Character& caster,Character& target)
 {
+	caster.SetMana(caster.GetMana() - m_mpCost);
 	target.SetHP(target.GetHP() - m_damage);
 }
