@@ -81,4 +81,8 @@ namespace Odyssey
 		DirectX::XMVECTOR rotatedDirection = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&mWorldDirection), DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angleInDegrees)));
 		DirectX::XMStoreFloat4(&mWorldDirection, rotatedDirection);
 	}
+	DirectX::XMFLOAT3 Light::getPosition()
+	{
+		return { mWorldPosition.x, mWorldPosition.y, mWorldPosition.z };
+	}
 }

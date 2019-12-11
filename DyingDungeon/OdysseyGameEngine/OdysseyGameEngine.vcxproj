@@ -32,6 +32,7 @@
     <ClInclude Include="inc\FileManager.h" />
     <ClInclude Include="inc\Frustum.h" />
     <ClInclude Include="inc\GameObject.h" />
+    <ClInclude Include="inc\InputManager.h" />
     <ClInclude Include="inc\Light.h" />
     <ClInclude Include="inc\Material.h" />
     <ClInclude Include="inc\Mesh.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\FileManager.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />

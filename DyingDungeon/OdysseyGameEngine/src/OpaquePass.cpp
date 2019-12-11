@@ -43,6 +43,10 @@ namespace Odyssey
 		// Create the default vertex shader
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 		mFrustumCull = true;
+
+		// Create the per object lighting buffer
+		mLightingBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 	}
 
 	void OpaquePass::preRender(RenderArgs& args)
@@ -120,6 +124,7 @@ namespace Odyssey
 			{
 				rootAnimator->bind();
 			}
+			updateLightingBuffer(itr->second, args);
 			renderSceneObject(itr->second, args);
 			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
 			{
@@ -132,6 +137,41 @@ namespace Odyssey
 	void OpaquePass::setFrustumCullEnable(bool enable)
 	{
 		mFrustumCull = enable;
+	}
+
+	void OpaquePass::updateLightingBuffer(std::shared_ptr<GameObject> gameObject, RenderArgs& args)
+	{
+		// Generate a list of lights on a per-object basis
+		SceneLighting sceneLighting;
+		sceneLighting.numLights = 0;
+
+		// Set the camera's position for specular highlighting
+		sceneLighting.camPos = DirectX::XMFLOAT3(args.camera->getViewMatrix().m[3][0], args.camera->getViewMatrix().m[3][1], args.camera->getViewMatrix().m[3][2]);
+
+		for (std::shared_ptr<Light> light : args.lightList)
+		{
+			if (light->mLightType == LightType::Point)
+			{
+				Sphere sphere;
+				sphere.center = light->getPosition();
+				sphere.radius = light->mRange;
+				if (gameObject->getComponent<AABB>()->testAABBtoSphere(sphere))
+				{
+					sceneLighting.sceneLights[sceneLighting.numLights] = *light;
+					sceneLighting.numLights++;
+				}
+			}
+			else
+			{
+				// Directional and spot lights are automatically added to the light list
+				sceneLighting.sceneLights[sceneLighting.numLights] = *light;
+				sceneLighting.numLights++;
+			}
+		}
+
+		// Set the lighting constant buffer
+		mLightingBuffer->updateData(&sceneLighting);
+		mLightingBuffer->bind(1, ShaderType::PixelShader);
 	}
 
 	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)

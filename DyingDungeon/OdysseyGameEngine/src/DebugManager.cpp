@@ -2,6 +2,10 @@
 #include "Buffer.h"
 #include "AABB.h"
 #include "RenderDevice.h"
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <windows.h>
 
 namespace Odyssey
 {
@@ -17,6 +21,8 @@ namespace Odyssey
 
 		mVertexBuffer = renderDevice.createBuffer(BufferBindFlag::VertexBuffer, size_t(MAX_LINES),
 			static_cast<UINT>(sizeof(ColoredVertex)), nullptr);
+
+		setupDebugConsole(80, 300, 80, 300);
 	}
 
 	void DebugManager::addLine(DirectX::XMFLOAT3 positionA, DirectX::XMFLOAT3 positionB, DirectX::XMFLOAT3 colorA, DirectX::XMFLOAT3 colorB)
@@ -116,6 +122,53 @@ namespace Odyssey
 	{
 		mVertexBuffer->updateData(&mVertexList);
 		mVertexBuffer->bind();
+	}
+
+	void DebugManager::setupDebugConsole(short bufferWidth, short bufferHeight, short windowWidth, short windowHeight)
+	{
+		using namespace std;
+
+		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+		FILE* file;
+		int consoleHandle;
+		HANDLE stdHandle;
+		SMALL_RECT window = { 0, };
+
+		// Allocate a console window
+		AllocConsole();
+
+		// Set the console properties
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &consoleInfo);
+		consoleInfo.dwSize.Y = bufferHeight;
+		consoleInfo.dwSize.X = bufferWidth;
+		window.Left = 0;
+		window.Top = 0;
+		window.Right = windowWidth - 1;
+		window.Bottom = windowHeight - 1;
+		SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), consoleInfo.dwSize);
+		SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), true, &window);
+
+		// Redirect STDOUT to the console window
+		stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		consoleHandle = _open_osfhandle((intptr_t)stdHandle, _O_TEXT);
+		file = _fdopen(consoleHandle, "w");
+		*stdout = *file;
+		setvbuf(stdout, nullptr, _IONBF, 0);
+
+		// Redirect STDIN to the console window
+		stdHandle = GetStdHandle(STD_INPUT_HANDLE);
+		consoleHandle = _open_osfhandle((intptr_t)stdHandle, _O_TEXT);
+		file = _fdopen(consoleHandle, "r");
+		*stdin = *file;
+		setvbuf(stdin, nullptr, _IONBF, 0);
+
+		stdHandle = GetStdHandle(STD_ERROR_HANDLE);
+		consoleHandle = _open_osfhandle((intptr_t)stdHandle, _O_TEXT);
+		file = _fdopen(consoleHandle, "w");
+		*stderr = *file;
+		setvbuf(stderr, NULL, _IONBF, 0);
+
+		ios::sync_with_stdio();
 	}
 
 	void DebugManager::drawRing(DirectX::XMFLOAT4 center, DirectX::XMFLOAT4 majorAxis, DirectX::XMFLOAT4 minorAxis, DirectX::XMFLOAT3 color)
