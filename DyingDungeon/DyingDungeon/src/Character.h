@@ -27,9 +27,13 @@ public:
 
 	/////End of Get and Set Functions/////
 
-private:
+protected:
 	float mHP;
 	float mMana;
 	Skills skillList[4];
+
+
+private:
+
 };
 
