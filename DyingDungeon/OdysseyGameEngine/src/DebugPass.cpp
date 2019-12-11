@@ -28,8 +28,6 @@ namespace Odyssey
 
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DebugVertexShader.cso", cvLayout, 2);
 		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DebugPixelShader.cso", nullptr);
-
-		DebugManager::getInstance().initialize(renderDevice);
 	}
 
 	void DebugPass::preRender(RenderArgs& args)

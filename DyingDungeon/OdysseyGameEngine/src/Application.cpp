@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "Scene.h"
 #include "RenderWindow.h"
+#include "DebugManager.h"
 
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
@@ -49,6 +50,7 @@ namespace Odyssey
 		RegisterClass(&renderWindowClass);
 
 		mRenderDevice = std::make_unique<RenderDevice>(*this);
+		DebugManager::getInstance().initialize(*mRenderDevice);
 	}
 
 	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::string& title, int windowWidth, int windowHeight)
