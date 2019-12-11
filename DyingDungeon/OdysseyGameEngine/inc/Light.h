@@ -24,6 +24,7 @@ namespace Odyssey
 		void rotateDirectionX(float angleInDegrees);
 		void rotateDirectionY(float angleInDegrees);
 		void rotateDirectionZ(float angleInDegrees);
+		DirectX::XMFLOAT3 getPosition();
 	public:
 		DirectX::XMFLOAT4 mWorldPosition;
 		DirectX::XMFLOAT4 mWorldDirection;

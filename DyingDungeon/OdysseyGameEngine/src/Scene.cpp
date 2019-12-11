@@ -15,9 +15,6 @@ namespace Odyssey
 	Scene::Scene(RenderDevice& renderDevice)
 		: mDevice(renderDevice)
 	{
-		mLightingBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
-			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
-
 		mPerFrameBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(PerFrameBuffer)), nullptr);
 
@@ -69,9 +66,6 @@ namespace Odyssey
 		// Recalculate delta time
 		mDeltaTime = mXTimer.SmoothDelta();
 
-		// Updates the lighting buffer
-		updateLightingBuffer();
-
 		// Update the scene
 		updateScene();
 
@@ -94,27 +88,5 @@ namespace Odyssey
 				component->update(mDeltaTime);
 			}
 		}
-	}
-
-	void Scene::updateLightingBuffer()
-	{
-		// Generate a list of lights on a per-object basis
-		SceneLighting sceneLighting;
-		sceneLighting.numLights = 0;
-
-		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = DirectX::XMFLOAT3(mMainCamera.getViewMatrix().m[3][0], mMainCamera.getViewMatrix().m[3][1], mMainCamera.getViewMatrix().m[3][2]);
-
-		// Iterate through the entire scene light list
-		for (int i = 0; i < mSceneLights.size(); i++)
-		{
-			// Directional and spot lights are automatically added to the light list
-			sceneLighting.sceneLights[sceneLighting.numLights] = *(mSceneLights[i]);
-			sceneLighting.numLights++;
-		}
-
-		// Set the lighting constant buffer
-		mLightingBuffer->updateData(&sceneLighting);
-		mLightingBuffer->bind(1, ShaderType::PixelShader);
 	}
 }
