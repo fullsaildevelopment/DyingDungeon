@@ -1,10 +1,10 @@
-#include "EnemyComponent.h"
+#include "HeroComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
 
-CLASS_DEFINITION(Component, EnemyComponent)
+CLASS_DEFINITION(Component, HeroComponent)
 
-void EnemyComponent::initialize(Odyssey::GameObject* parent)
+void HeroComponent::initialize(Odyssey::GameObject* parent)
 {
 	onEnable();
 	mGameObject = parent;
@@ -15,14 +15,24 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 	skillList[0] = Skills(5, 5);
 }
 
-void EnemyComponent::update(double deltaTime)
+void HeroComponent::update(double deltaTime)
 {
-	
+
 }
 
-void EnemyComponent::TakeTurn()
+/*
+ * Function:  BasicAttack()
+ * --------------------
+ * Uses basic attack (skillList[0])
+ *
+ * Currently a public function but will be moved
+ * to a private one
+ *
+ * returns: void
+ */
+void HeroComponent::BasicAttack(EnemyComponent& target)
 {
-	
+	skillList[0].Use(target);
 }
 
 /*
@@ -32,7 +42,7 @@ void EnemyComponent::TakeTurn()
  *
  * returns: A float representing current HP
  */
-float EnemyComponent::GetHP()
+float HeroComponent::GetHP()
 {
 	return mHP;
 }
@@ -44,7 +54,7 @@ float EnemyComponent::GetHP()
  *
  * returns: nothing
  */
-void EnemyComponent::SetHP(float HP)
+void HeroComponent::SetHP(float HP)
 {
 	mHP = HP;
 }
@@ -56,7 +66,7 @@ void EnemyComponent::SetHP(float HP)
  *
  * returns: A float representing mana
  */
-float EnemyComponent::GetMana()
+float HeroComponent::GetMana()
 {
 	return mMana;
 }
@@ -68,7 +78,7 @@ float EnemyComponent::GetMana()
  *
  * returns: nothing
  */
-void EnemyComponent::SetMana(float Mana)
+void HeroComponent::SetMana(float Mana)
 {
 	mMana = Mana;
 }
