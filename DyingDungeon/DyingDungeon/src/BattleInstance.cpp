@@ -76,20 +76,3 @@ void BattleInstance::GenerateBattleQueue()
 		characterPool.erase(characterPool.begin() + rndIndex);
 	}
 }
-
-//bool BattleInstance::IsCharacterOnPlayerTeam(std::shared_ptr<Odyssey::GameObject> _characterToCheck)
-//{
-//	// Start looping though all of the characters on the player team
-//	for (int i = 0; i < playerTeam.size(); i++)
-//	{
-//		// If the character we want to check is equal to one of the characters on the player team
-//		// Then the character we wanted to check is on the player team
-//		if (_characterToCheck == playerTeam[i])
-//		{
-//			return true;
-//		}
-//	}
-//
-//	// The character we wanted to check was not on the player's team
-//	return false;
-//}

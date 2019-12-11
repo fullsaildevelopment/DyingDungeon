@@ -26,6 +26,5 @@ private: // Varibales
 
 private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
-	//bool IsCharacterOnPlayerTeam(std::shared_ptr<Odyssey::GameObject> _characterToCheck); // This will check to see if a character is on the player's team
 };
 
