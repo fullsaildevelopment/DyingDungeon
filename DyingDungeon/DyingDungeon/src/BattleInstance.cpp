@@ -25,6 +25,14 @@ void BattleInstance::update(double deltaTime)
 	//Get the next character in line so the character can do it's attack
 	std::shared_ptr<Odyssey::GameObject> pCurrentCharacter = battleQueue.front();
 
+	bool yeeyee = false;
+	//Do Take Turn Function for the next character
+	//Is the current character on the player team or enemy team?
+	if (IsCharacterOnPlayerTeam(pCurrentCharacter))
+		yeeyee = true;
+	else
+		yeeyee = false;
+
 	//Take the current character out of the front of the line
 	battleQueue.pop();
 	//Put the current character to back into the queue, he will go to the back of the line
@@ -59,4 +67,21 @@ void BattleInstance::GenerateBattleQueue()
 		// Remove the character from the character pool so he won't be added to the battle queue multiple times
 		characterPool.erase(characterPool.begin() + rndIndex);
 	}
+}
+
+bool BattleInstance::IsCharacterOnPlayerTeam(std::shared_ptr<Odyssey::GameObject> _characterToCheck)
+{
+	// Start looping though all of the characters on the player team
+	for (int i = 0; i < playerTeam.size(); i++)
+	{
+		// If the character we want to check is equal to one of the characters on the player team
+		// Then the character we wanted to check is on the player team
+		if (_characterToCheck == playerTeam[i])
+		{
+			return true;
+		}
+	}
+
+	// The character we wanted to check was not on the player's team
+	return false;
 }
