@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 
-CLASS_DEFINITION(Component, HeroComponent)
+CLASS_DEFINITION(Character, HeroComponent)
 
 void HeroComponent::initialize(Odyssey::GameObject* parent)
 {
@@ -10,9 +10,8 @@ void HeroComponent::initialize(Odyssey::GameObject* parent)
 	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
-	mHP = 100;
-	mMana = 50;
-	skillList[0] = Skills(10, 5);
+	SetHP(100);
+	SetMana(100);
 }
 
 void HeroComponent::update(double deltaTime)
@@ -38,52 +37,4 @@ void HeroComponent::TakeTurn()
 void HeroComponent::BasicAttack(EnemyComponent& target)
 {
 	skillList[0].Use(target);
-}
-
-/*
- * Function:  GetMana()
- * --------------------
- * Gets the HP of the enemy
- *
- * returns: A float representing current HP
- */
-float HeroComponent::GetHP()
-{
-	return mHP;
-}
-
-/*
- * Function:  SetHP(float HP)
- * --------------------
- * Sets the HP of the enemy to the passed in float
- *
- * returns: nothing
- */
-void HeroComponent::SetHP(float HP)
-{
-	mHP = HP;
-}
-
-/*
- * Function:  GetMana()
- * --------------------
- * Gets the mana of the enemy
- *
- * returns: A float representing mana
- */
-float HeroComponent::GetMana()
-{
-	return mMana;
-}
-
-/*
- * Function:  SetMana(float Mana)
- * --------------------
- * Sets the Mana of the enemy to the passed in float
- *
- * returns: nothing
- */
-void HeroComponent::SetMana(float Mana)
-{
-	mMana = Mana;
 }
