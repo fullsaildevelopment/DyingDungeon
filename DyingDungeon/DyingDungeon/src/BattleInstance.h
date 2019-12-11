@@ -22,6 +22,7 @@ private: // Varibales
 	std::queue<std::shared_ptr<Odyssey::GameObject>> battleQueue; // Battle Queue that will hodl the order in which players can attack
 
 private: // Functions
-	void GenerateBattleOrder();
+	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
+	bool IsCharacterOnPlayerTeam(std::shared_ptr<Odyssey::GameObject> _characterToCheck); // This will check to see if a character is on the player's team
 };
 
