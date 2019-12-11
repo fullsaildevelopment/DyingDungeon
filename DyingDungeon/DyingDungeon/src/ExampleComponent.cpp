@@ -1,6 +1,7 @@
 #include "ExampleComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "InputManager.h"
 
 CLASS_DEFINITION(Component, ExampleComponent)
 
@@ -13,11 +14,12 @@ void ExampleComponent::initialize(Odyssey::GameObject* parent)
 
 void ExampleComponent::update(double deltaTime)
 {
-	if (GetAsyncKeyState('F'))
+	if (Odyssey::InputManager::getInstance().getKeyDown('F'))
 	{
 		mGameObject->getComponent<Odyssey::Transform>()->addScale(-deltaTime, -deltaTime, -deltaTime);
 	}
-	if (GetAsyncKeyState('G'))
+
+	if (Odyssey::InputManager::getInstance().getKeyDown('G'))
 	{
 		mGameObject->getComponent<Odyssey::Transform>()->addScale(deltaTime, deltaTime, deltaTime);
 	}
