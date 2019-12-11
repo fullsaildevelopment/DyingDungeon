@@ -14,7 +14,7 @@ public:
 		Skills* skill;
 	};
 	//Attack Functions
-	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets, Skills* skills);
+	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	void TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	
 

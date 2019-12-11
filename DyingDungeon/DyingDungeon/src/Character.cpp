@@ -97,3 +97,26 @@ void Character::SetDead(bool deadStatus)
 	mDead = deadStatus;
 }
 
+/*
+ * Function:  IsHero()
+ * --------------------
+ * Gets the Hero staus of the character
+ *
+ * returns: nothing
+ */
+bool Character::IsHero()
+{
+	return mHero;
+}
+
+/*
+ * Function:  SetHero(bool heroStat)
+ * --------------------
+ * Set the Hero staus of the character
+ *
+ * returns: nothing
+ */
+void Character::SetHero(bool heroStat)
+{
+	mHero = heroStat;
+}

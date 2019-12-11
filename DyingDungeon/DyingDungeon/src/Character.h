@@ -28,10 +28,13 @@ public:
 	//Dead Status Functions
 	bool IsDead();
 	void SetDead(bool deadStatus);
-
+	//isHero Functions
+	bool IsHero();
+	void SetHero(bool heroStat);
 	/////End of Get and Set Functions/////
 
 protected:
+	bool mHero;
 	bool mDead;
 	float mHP;
 	float mMana;
