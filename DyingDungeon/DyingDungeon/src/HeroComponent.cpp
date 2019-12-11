@@ -1,6 +1,7 @@
 #include "HeroComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "EnemyComponent.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -12,18 +13,27 @@ void HeroComponent::initialize(Odyssey::GameObject* parent)
 
 	SetHP(100);
 	SetMana(100);
-	
+	SetHero(true);
+
 	skillList[0] = Skills(10, 5);
 }
 
-void HeroComponent::update(double deltaTime)
+bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
 {
+	if (input.getKeyDown(VK_RETURN))
+	{
+		for (std::shared_ptr<Odyssey::GameObject> temp : characters)
+		{
+			Character* target = temp->getComponent<Character>();
+			if (target->IsHero == false && target->IsDead() == false)
+			{
+				BasicAttack(target);
+				return true;
+			}
+		}
+	}
 
-}
-
-void HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
-{
-	
+	return false;
 }
 
 /*
@@ -36,7 +46,7 @@ void HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> c
  *
  * returns: void
  */
-void HeroComponent::BasicAttack(EnemyComponent& target)
+void HeroComponent::BasicAttack(Character* target)
 {
-	skillList[0].Use(*mGameObject->getComponent<Character>(), target);
+	skillList[0].Use(*mGameObject->getComponent<Character>(), *target);
 }

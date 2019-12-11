@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "InputManager.h"
 
 class HeroComponent : public Character
 {
@@ -7,13 +8,14 @@ class HeroComponent : public Character
 
 public:
 	virtual void initialize(Odyssey::GameObject* parent);
-	virtual void update(double deltaTime);
+
+	//Input
+	Odyssey::InputManager input;
+
 
 	//Attack Functions
-	void TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
-
-	//Rework needed
-	void BasicAttack(EnemyComponent& target);
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
+	void BasicAttack(Character* target);
 
 
 	/////Get and Set Functions/////
