@@ -18,6 +18,7 @@ public:
 	virtual void Die();
 
 	void TakeDamage(float dmg);
+	void DepleteMana(float manaCost);
 
 	/////Get and Set Functions/////
 
@@ -42,8 +43,13 @@ public:
 protected:
 	bool mHero;
 	bool mDead;
-	float mHP;
-	float mMana;
+	
+	//Stats
+	float mCurrentHP;
+	float mCurrentMana;
+	float mBaseMaxHP;
+	float mBaseMaxMana;
+
 	Skills skillList[4];
 	std::string mName;
 

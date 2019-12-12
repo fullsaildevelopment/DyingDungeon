@@ -50,7 +50,22 @@ void Character::TakeDamage(float dmg)
     //TODO calculate damage reduction here
 
     //Take Damage
-    mHP - dmg;
+    SetHP(GetHP() - dmg);
+}
+
+/*
+ * Function:  DepleteMana()
+ * --------------------
+ * Reduces the current mana by the mana cost
+ *
+ * returns: void
+ */
+void Character::DepleteMana(float manaCost)
+{
+    //Special Conditions here
+
+    //Reduce current mana
+    SetMana(GetMana() - manaCost);
 }
 
 /*
@@ -62,7 +77,7 @@ void Character::TakeDamage(float dmg)
  */
 float Character::GetHP()
 {
-	return mHP;
+	return mCurrentHP;
 }
 
 /*
@@ -74,9 +89,11 @@ float Character::GetHP()
  */
 void Character::SetHP(float HP)
 {
-	mHP = HP;
-    if (mHP < 0)
-        mHP = 0;
+	mCurrentHP = HP;
+    if (mCurrentHP < 0)
+        mCurrentHP = 0;
+    else if (mCurrentHP > mBaseMaxHP)
+        mCurrentHP = mBaseMaxHP;
 }
 
 /*
@@ -88,7 +105,7 @@ void Character::SetHP(float HP)
  */
 float Character::GetMana()
 {
-	return mMana;
+	return mCurrentMana;
 }
 
 /*
@@ -100,7 +117,11 @@ float Character::GetMana()
  */
 void Character::SetMana(float Mana)
 {
-	mMana = Mana;
+    mCurrentMana = Mana;
+    if (mCurrentMana < 0)
+        mCurrentMana = 0;
+    else if (mCurrentMana > mBaseMaxMana)
+        mCurrentMana = mBaseMaxMana;
 }
 
 /*

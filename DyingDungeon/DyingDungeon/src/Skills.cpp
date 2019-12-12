@@ -9,14 +9,35 @@ Skills::Skills(float dps, float mana)
 Skills::~Skills()
 {
 }
+
+/*
+ * Function:  GetManaCost()
+ * --------------------
+ * Gets the mana cost of the skill/ability
+ *
+ * returns: void
+ */
 float Skills::GetManaCost()
 {
 	return mMpCost;
 }
+
+/*
+ * Function:  Use()
+ * --------------------
+ * Caster will attack the target with dealing damage
+ * and any status effects will be applied.
+ *
+ * returns: void
+ */
 void Skills::Use(Character& caster,Character& target)
 {
-	caster.SetMana(caster.GetMana() - mMpCost);
-	target.SetHP(target.GetHP() - mDamage);
+    //Does the caster have enough mana
+	if (caster.GetMana() < mMpCost)
+		return;
+
+    caster.DepleteMana(mMpCost);
+	target.TakeDamage(mDamage);
 
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
