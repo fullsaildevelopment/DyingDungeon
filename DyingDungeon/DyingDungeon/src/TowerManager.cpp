@@ -4,10 +4,6 @@
 
 CLASS_DEFINITION(Component, TowerManager)
 
-TowerManager::TowerManager()
-{
-}
-
 void TowerManager::initialize(Odyssey::GameObject* _parent)
 {
 	onEnable();

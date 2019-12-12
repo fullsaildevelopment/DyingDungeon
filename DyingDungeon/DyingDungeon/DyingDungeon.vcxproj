@@ -170,6 +170,7 @@
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Skills.cpp" />
+    <ClCompile Include="src\TowerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\TowerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico" />
