@@ -14,16 +14,18 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	char* cmd = new char[strlen(m_alias) + 15];
 	int curr_count = 8;
 
-	LPTSTR out_string = LPTSTR(new char[15]);
+	//LPTSTR out_string = LPTSTR(new char[15]);
 
-	strcpy_s(cmd, curr_count, "status ");
-	curr_count += strlen(m_alias) + 1;
-	strcat_s(cmd, curr_count, m_alias);
-	curr_count += 8;
-	strcat_s(cmd, curr_count, " length");
-	//cmd[strlen(m_alias) + 14] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, 15, NULL);
-	m_end = m_duration = std::stoul(out_string, nullptr, 10);
+	//strcpy_s(cmd, curr_count, "status ");
+	//curr_count += strlen(m_alias) + 1;
+	//strcat_s(cmd, curr_count, m_alias);
+	//curr_count += 8;
+	//strcat_s(cmd, curr_count, " length");
+	////cmd[strlen(m_alias) + 14] = '\0';
+	//mciSendString(ConvertCharToWChar(cmd), out_string, 15, NULL);
+	///*if (strcmp(out_string , "") != 0) {*/
+	//	m_end = m_duration = std::stoul(out_string, nullptr, 10);
+	////}
 }
 
 RedAudio::~RedAudio()
@@ -52,6 +54,8 @@ void RedAudio::Close() {
 
 void RedAudio::Open()
 {
+	LPTSTR out_string = LPTSTR(new char[15]);
+	LPTSTR out_error = LPTSTR(new char[45]);
 	char* cmd = new char[strlen(m_path) + strlen(m_alias) + 17];
 	int curr_count = 6;
 	strcpy_s(cmd, curr_count, "open ");
@@ -62,7 +66,9 @@ void RedAudio::Open()
 	curr_count += strlen(m_alias) + 1;
 	strcat_s(cmd, curr_count, m_alias);
 	//cmd[strlen(path) + strlen(alias) + 16] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+	mciSendString(ConvertCharToWChar(cmd), out_string, 15, NULL);
+	//if(strcmp(out_string, ))
+	//mciGetErrorString(std::stoul(out_string), out_error, 45);
 }
 
 const wchar_t* RedAudio::ConvertCharToWChar(const char* p_char)
@@ -89,6 +95,8 @@ void RedAudio::Play()
 
 void RedAudio::PlayLoop()
 {
+	LPTSTR out_string = LPTSTR(new char[15]);
+	LPTSTR out_error = LPTSTR(new char[45]);
 	char* cmd = new char[strlen(m_alias) + 20];
 	int curr_count = 6;
 	strcpy_s(cmd, curr_count, "play ");
@@ -97,7 +105,8 @@ void RedAudio::PlayLoop()
 	curr_count += 15;
 	strcat_s(cmd, curr_count, " repeat notify");
 	//cmd[strlen(m_alias) + 19] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+	mciSendString(ConvertCharToWChar(cmd), out_string, 15, NULL);
+	//mciGetErrorString(std::stoul(out_string), out_error, 45);
 	m_playing = true;
 	m_looping = true;
 }

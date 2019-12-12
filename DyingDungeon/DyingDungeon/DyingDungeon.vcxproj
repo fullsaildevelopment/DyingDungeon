@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)OdysseyGameEngine\lib\OdysseyGameEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OdysseyGameEngine\lib\OdysseyGameEngine.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,6 +167,8 @@
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
     <ClCompile Include="src\HeroComponent.cpp" />
+    <ClCompile Include="src\RedAudio.cpp" />
+    <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Skills.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +179,8 @@
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
     <ClInclude Include="src\HeroComponent.h" />
+    <ClInclude Include="src\RedAudio.h" />
+    <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\targetver.h" />
