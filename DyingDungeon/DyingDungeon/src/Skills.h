@@ -8,14 +8,14 @@ class Skills
 {
 //public and private variables
 public:
-	Skills() = default;
 private:
 	//how much damage this skill will do to HP
-	float m_damage;
+	float mDamage;
 	//how much mana it will cost the caster
-	float m_mpCost;
+	float mMpCost;
 //public and private functions
 public:
+	Skills() = default;
 	//constructor, give how much damage you want the skill to do and how much mana you want it to cost 
 	Skills(float dps, float mana);
 	//deconstructor

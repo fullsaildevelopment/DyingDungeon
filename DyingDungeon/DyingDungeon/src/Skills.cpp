@@ -3,22 +3,24 @@
 
 Skills::Skills(float dps, float mana)
 {
-	m_damage = dps;
-	m_mpCost = mana;
+	mDamage = dps;
+	mMpCost = mana;
 }
 Skills::~Skills()
 {
 }
 float Skills::GetManaCost()
 {
-	return m_mpCost;
+	return mMpCost;
 }
 void Skills::Use(Character& caster,Character& target)
 {
-	caster.SetMana(caster.GetMana() - m_mpCost);
-	target.SetHP(target.GetHP() - m_damage);
+	caster.SetMana(caster.GetMana() - mMpCost);
+	target.SetHP(target.GetHP() - mDamage);
 
-	std::cout << caster.name << " attacked " << target.name << " for " << m_damage << std::endl;
-	std::cout << target.name << " now has " << target.GetHP() << "HP\n" << std::endl;
+	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
+	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
 
+	if (target.GetHP() <= 0);
+		//target.die();
 }

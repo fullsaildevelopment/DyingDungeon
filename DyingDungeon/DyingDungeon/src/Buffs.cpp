@@ -4,17 +4,26 @@
 
 CLASS_DEFINITION(Component, Buffs)
 
-Buffs::Buffs(float* stat, float effect, int duration)
+Buffs::Buffs(int effectedStat, float effect, int duration)
 {
-	m_statToAffect = stat;
-	m_amountOfEffect = effect;
-	m_duration = duration;
+	mStatToAffect = nullptr;
+	mAmountOfEffect = effect;
+	mDuration = duration;
+	mEffectedStat = effectedStat;
 }
 Buffs::~Buffs()
 {
-	*m_statToAffect -= m_amountOfEffect;
+	*mStatToAffect -= mAmountOfEffect;
 }
 void Buffs::initialize(Odyssey::GameObject* parent)
 {
-	*m_statToAffect += m_amountOfEffect;
+	switch (mEffectedStat)
+	{
+	case 0:
+	{
+		//mStatToAffect = parent->getComponent<Character>()->GetHP();
+	}
+	default:
+		break;
+	}
 }
