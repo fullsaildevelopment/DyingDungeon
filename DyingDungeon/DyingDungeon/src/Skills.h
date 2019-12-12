@@ -1,13 +1,14 @@
 #pragma once
 #include "Buffs.h"
 
-class EnemyComponent;
+//forward declare charater class
+class Character;
 
 class Skills
 {
 //public and private variables
 public:
-	
+	Skills() = default;
 private:
 	//how much damage this skill will do to HP
 	float m_damage;
@@ -22,7 +23,7 @@ public:
 	//get how much mana the skill cost
 	float GetManaCost();
 	//use the skill
-	void Use(EnemyComponent& target);
+	void Use(Character& caster, Character& target);
 private:
 
 };

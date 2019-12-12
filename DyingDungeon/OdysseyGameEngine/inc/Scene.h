@@ -33,7 +33,7 @@ namespace Odyssey
 	private:
 		void updateScene();
 	public:
-		Camera mMainCamera;
+		std::shared_ptr<GameObject> mMainCamera;
 	private:
 		std::vector<std::shared_ptr<GameObject>> mSceneObjectList;
 		std::vector<std::shared_ptr<Light>> mSceneLights;

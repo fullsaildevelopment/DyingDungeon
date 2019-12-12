@@ -58,9 +58,18 @@ namespace Odyssey
 	void OpaquePass::preRender(RenderArgs& args)
 	{
 		// Set the view
-		args.perFrame.view = args.camera->getInverseViewMatrix();
+		if (Camera* camera = args.camera->getComponent<Camera>())
+		{
+			args.perFrame.view = camera->getInverseViewMatrix();
+			// Calculate and set view proj
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
+			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+			// Update the buffer
+			updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		}
+
 		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
 		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 		// Update the buffer
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
@@ -79,7 +88,7 @@ namespace Odyssey
 	{
 		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
 
-		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
 		DirectX::XMFLOAT4X4 globalTransform;
 
 		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
@@ -94,7 +103,7 @@ namespace Odyssey
 			{
 				if (meshRenderer->getActive())
 				{
-					if (mFrustumCull == false || renderObject->getStaticObject() == false || args.camera->mFrustum->checkFrustumView(*(renderObject->getComponent<AABB>())))
+					if (mFrustumCull == false || renderObject->getStaticObject() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(renderObject->getComponent<AABB>())))
 					{
 						// Depth sorting
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
@@ -111,7 +120,7 @@ namespace Odyssey
 				{
 					if (meshRenderer->getActive())
 					{
-						if (mFrustumCull == false || child->getStaticObject() == false || args.camera->mFrustum->checkFrustumView(*(child->getComponent<AABB>())))
+						if (mFrustumCull == false || child->getStaticObject() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(child->getComponent<AABB>())))
 						{
 							// Depth Sorting
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
@@ -154,7 +163,7 @@ namespace Odyssey
 		sceneLighting.numLights = 0;
 
 		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = DirectX::XMFLOAT3(args.camera->getViewMatrix().m[3][0], args.camera->getViewMatrix().m[3][1], args.camera->getViewMatrix().m[3][2]);
+		sceneLighting.camPos = args.camera->getComponent<Transform>()->getPosition();
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{

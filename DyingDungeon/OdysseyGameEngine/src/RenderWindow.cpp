@@ -50,7 +50,7 @@ namespace Odyssey
 
 	void RenderWindow::present()
 	{
-		mSwapChain->Present(1, 0);
+		mSwapChain->Present(0, 0);
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> RenderWindow::getBackBuffer()

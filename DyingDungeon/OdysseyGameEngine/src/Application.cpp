@@ -4,6 +4,10 @@
 #include "RenderWindow.h"
 #include "DebugManager.h"
 #include "InputManager.h"
+#include "GameObject.h"
+#include "Camera.h"
+#include "Component.h"
+#include "Transform.h"
 
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
@@ -11,30 +15,30 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	switch (message)
 	{
-		case WM_KEYDOWN:
-		{
-			Odyssey::InputManager::getInstance().registerInput(wParam, true);
-		}
-		break;
-		case WM_KEYUP:
-		{
-			Odyssey::InputManager::getInstance().registerInput(wParam, false);
-		}
-		break;
-		case WM_PAINT:
-		{
-			PAINTSTRUCT paintStruct;
-			HDC hDC;
+	case WM_KEYDOWN:
+	{
+		Odyssey::InputManager::getInstance().registerInput(static_cast<char>(wParam), true);
+	}
+	break;
+	case WM_KEYUP:
+	{
+		Odyssey::InputManager::getInstance().unregisterInput(static_cast<char>(wParam));
+	}
+	break;
+	case WM_PAINT:
+	{
+		PAINTSTRUCT paintStruct;
+		HDC hDC;
 
-			hDC = BeginPaint(hwnd, &paintStruct);
-			EndPaint(hwnd, &paintStruct);
-		}
-		break;
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-		}
-		break;
+		hDC = BeginPaint(hwnd, &paintStruct);
+		EndPaint(hwnd, &paintStruct);
+	}
+	break;
+	case WM_DESTROY:
+	{
+		PostQuitMessage(0);
+	}
+	break;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
@@ -130,8 +134,6 @@ namespace Odyssey
 				DispatchMessage(&msg);
 			}
 			{
-				updateInput();
-
 				if (mActiveScene)
 					mActiveScene->update();
 
@@ -155,100 +157,5 @@ namespace Odyssey
 	HINSTANCE Application::GetModuleHandle() const
 	{
 		return mHandleInstance;
-	}
-
-	void Application::updateInput()
-	{
-		float delta = static_cast<float>(mActiveScene->getDeltaTime());
-		float moveSpeed = 10.0f * delta;
-		float rotationSpeed = 100.0f * delta;
-		float xPosition = 0.0f;
-		float yPosition = 0.0f;
-		float zPosition = 0.0f;
-		float pitch = 0.0f;
-		float yaw = 0.0f;
-
-		std::shared_ptr<Light> light = mActiveScene->getLight(4);
-
-		if (GetAsyncKeyState(VK_NUMPAD4))
-		{
-			light->addPosition(-0.1f, 0, 0);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD6))
-		{
-			light->addPosition(0.1f, 0, 0);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD2))
-		{
-			light->addPosition(0.0f, 0, -0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD8))
-		{
-			light->addPosition(0.0f, 0, 0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD9))
-		{
-			light->addPosition(0.0f, 0.1f, 0.0f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD3))
-		{
-			light->addPosition(0.0f, -0.1f, 0.0f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD7))
-		{
-			light->addRange(0.1f);
-		}
-		if (GetAsyncKeyState(VK_NUMPAD1))
-		{
-			light->addRange(-0.1f);
-		}
-		if (GetAsyncKeyState('W'))
-		{
-			zPosition += moveSpeed;
-		}
-		if (GetAsyncKeyState('S'))
-		{
-			zPosition -= moveSpeed;
-		}
-		if (GetAsyncKeyState('D'))
-		{
-			xPosition += moveSpeed;
-		}
-		if (GetAsyncKeyState('A'))
-		{
-			xPosition -= moveSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_SPACE))
-		{
-			yPosition += moveSpeed;
-		}
-
-		if (GetAsyncKeyState('X'))
-		{
-			yPosition -= moveSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_LEFT))
-		{
-			yaw -= rotationSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_RIGHT))
-		{
-			yaw += rotationSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_UP))
-		{
-			pitch -= rotationSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_DOWN))
-		{
-			pitch += rotationSpeed;
-		}
-
-		mActiveScene->mMainCamera.updateCamera(xPosition, yPosition, zPosition, pitch, yaw, 0.0f);
 	}
 }

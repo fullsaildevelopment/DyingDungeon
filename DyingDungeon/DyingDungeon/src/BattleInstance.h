@@ -16,13 +16,15 @@ public: // Functions
 	virtual void update(double deltaTime);
 
 private: // Varibales
+	std::vector<std::shared_ptr<Odyssey::GameObject>> allCharacters; // allCharacters will hold all of the game objects that are in the current battle
 	std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
 
 	std::queue<std::shared_ptr<Odyssey::GameObject>> battleQueue; // Battle Queue that will hodl the order in which players can attack
 
+	std::shared_ptr<Odyssey::GameObject> pCurrentCharacter; // This will hold the current player who's turn it is
+
 private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
-	bool IsCharacterOnPlayerTeam(std::shared_ptr<Odyssey::GameObject> _characterToCheck); // This will check to see if a character is on the player's team
 };
 

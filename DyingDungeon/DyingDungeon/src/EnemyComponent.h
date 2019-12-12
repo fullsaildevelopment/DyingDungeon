@@ -1,36 +1,31 @@
 #pragma once
-#include "Component.h"
-#include "Skills.h"
+#include "Character.h"
 
-class EnemyComponent : public Odyssey::Component
+class EnemyComponent : public Character
 {
 	CLASS_DECLARATION(EnemyComponent)
 
 public:
 	EnemyComponent() = default;
-public:
 	virtual void initialize(Odyssey::GameObject* parent);
-	virtual void update(double deltaTime);
-	
+	struct Move 
+	{
+		Character* target;
+		Skills* skill;
+	};
 	//Attack Functions
-	void TakeTurn();
+	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
+	float ScoreMove(Skills skillOption, Character* target);
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	
 
 	
 	/////Get and Set Functions/////
 	
-	//HP Functions
-	float GetHP();
-	void SetHP(float m_HP);
-	//Mana Functions
-	float GetMana();
-	void SetMana(float Mana);
 
 	/////End of Get and Set Functions/////
 
 private:
-	float mHP;
-	float mMana;
-	Skills skillList[4];
+
 };
 

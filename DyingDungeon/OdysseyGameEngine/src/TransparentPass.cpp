@@ -22,16 +22,21 @@ namespace Odyssey
 	void TransparentPass::preRender(RenderArgs& args)
 	{
 		// Set the view
-		args.perFrame.view = args.camera->getInverseViewMatrix();
-		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
-		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		if (Camera* camera = args.camera->getComponent<Camera>())
+		{
+			args.perFrame.view = camera->getInverseViewMatrix();
+			// Calculate and set view proj
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
+			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		}
+		
 		// Update the buffer
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		mRenderTarget->bind();
 		mRenderState->bind();
 	}
+
 	void TransparentPass::render(RenderArgs& args)
 	{
 		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
@@ -41,7 +46,7 @@ namespace Odyssey
 			if (renderObject->getComponent<ParticleSystem>())
 			{
 				// Depth sorting
-				DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getInverseViewMatrix());
+				DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getInverseViewMatrix());
 				DirectX::XMFLOAT4X4 globalTransform;
 				renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
 				view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);

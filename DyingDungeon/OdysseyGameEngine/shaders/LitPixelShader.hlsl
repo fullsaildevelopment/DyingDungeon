@@ -82,9 +82,9 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	LightOutput sceneLighting = calculateLighting(viewNormal, surfaceNormal, input.worldPosition, input.lightViewPosition);
 
 	// Calculate the diffuse color
-	float4 diffuseColor = sceneLighting.diffuse * (texDiffuse * mat.diffuseColor);
+	float4 diffuseColor = sceneLighting.diffuse * mat.diffuseColor;
 	// Calculate the emissive color
-	float4 emissiveColor = texEmissive * texDiffuse;
+	float4 emissiveColor = texEmissive;
 	// Calculate the ambient color
 	float4 ambientColor = mat.globalAmbient;
 	// Calculate the specular color
@@ -97,6 +97,7 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 
 	// Add together the different calculated colors
 	float4 finalColor = (diffuseColor + emissiveColor + specColor + ambientColor + environment);
+    finalColor = finalColor * texDiffuse;
 	finalColor.a = texDiffuse.a;
 	// Saturate and return the pixel color
 	return saturate(finalColor);
@@ -263,7 +264,7 @@ float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal)
 	// Calculate the intensity of the light using the dot between the surface normal and the light vector while factoring in the intensity of the light itself
 	float intensity = max(0.0f, dot(surfaceNormal, lightVector));
 	// Return the diffuse of the light multiplied by it's total intensity
-	return float4(light.color.xyz * intensity, 1.0f);
+	return float4(light.color.xyz * intensity * light.intensity, 1.0f);
 }
 
 // Calculates the attenuation factor of any point/spot light

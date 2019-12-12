@@ -49,13 +49,16 @@ namespace Odyssey
 	void SkyboxPass::preRender(RenderArgs& args)
 	{
 		// Set the view
-		args.perFrame.view = args.camera->getInverseViewMatrix();
-		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getProjectionMatrix()));
-		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-		// Update the buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
-
+		if (Camera* camera = args.camera->getComponent<Camera>())
+		{
+			args.perFrame.view = camera->getInverseViewMatrix();
+			// Calculate and set view proj
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
+			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+			// Update the buffer
+			updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		}
+		
 		mRenderTarget->bind();
 		mRenderState->bind();
 		mVertexShader->bind();
@@ -65,7 +68,7 @@ namespace Odyssey
 	void SkyboxPass::render(RenderArgs& args)
 	{
 		// Get the camera's position
-		DirectX::XMFLOAT3 camPos = args.camera->getPosition();
+		DirectX::XMFLOAT3 camPos = args.camera->getComponent<Transform>()->getPosition();
 
 		// Set the skybox to the camera's position
 		mSkyBox->addComponent<Transform>();

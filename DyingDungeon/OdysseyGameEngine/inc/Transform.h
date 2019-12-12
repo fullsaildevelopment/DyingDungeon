@@ -24,6 +24,9 @@ namespace Odyssey
 		DirectX::XMFLOAT3 getPosition();
 		DirectX::XMFLOAT3 getRotation();
 		DirectX::XMFLOAT3 getScale();
+		DirectX::XMFLOAT3 getForward();
+		DirectX::XMFLOAT3 getRight();
+		DirectX::XMFLOAT3 getUp();
 		void getLocalTransform(DirectX::XMFLOAT4X4& localTransform);
 		void getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform);
 	private:
