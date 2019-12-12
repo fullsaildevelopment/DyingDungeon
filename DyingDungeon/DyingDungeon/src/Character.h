@@ -15,7 +15,9 @@ public:
 
 	//Attack Functions
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allCharacters);
+	virtual void Die();
 
+	void TakeDamage(float dmg);
 
 	/////Get and Set Functions/////
 

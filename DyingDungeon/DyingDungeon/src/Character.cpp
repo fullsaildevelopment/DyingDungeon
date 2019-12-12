@@ -26,6 +26,34 @@ bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allC
 }
 
 /*
+ * Function:  Die()
+ * --------------------
+ * Sets dead boolean to true
+ * Sets animation to death animation
+ *
+ * returns: void
+ */
+void Character::Die()
+{
+}
+
+/*
+ * Function:  TakeDamage(float dmg)
+ * --------------------
+ * Pass in a float to deal damage to the character
+ * Calculates any damage reduction (TODO)
+ *
+ * returns: void
+ */
+void Character::TakeDamage(float dmg)
+{
+    //TODO calculate damage reduction here
+
+    //Take Damage
+    mHP - dmg;
+}
+
+/*
  * Function:  GetMana()
  * --------------------
  * Gets the HP of the character
@@ -47,6 +75,8 @@ float Character::GetHP()
 void Character::SetHP(float HP)
 {
 	mHP = HP;
+    if (mHP < 0)
+        mHP = 0;
 }
 
 /*
@@ -66,7 +96,7 @@ float Character::GetMana()
  * --------------------
  * Sets the Mana of the character to the passed in float
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetMana(float Mana)
 {
@@ -78,7 +108,7 @@ void Character::SetMana(float Mana)
  * --------------------
  * Check to see if the character is dead
  *
- * returns: nothing
+ * returns: bool
  */
 bool Character::IsDead()
 {
@@ -90,7 +120,7 @@ bool Character::IsDead()
  * --------------------
  * Set the dead staus of the character
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetDead(bool deadStatus)
 {
@@ -102,7 +132,7 @@ void Character::SetDead(bool deadStatus)
  * --------------------
  * Gets the Hero staus of the character
  *
- * returns: nothing
+ * returns: bool
  */
 bool Character::IsHero()
 {
@@ -114,18 +144,32 @@ bool Character::IsHero()
  * --------------------
  * Set the Hero staus of the character
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetHero(bool heroStat)
 {
 	mHero = heroStat;
 }
 
+/*
+ * Function:  GetName()
+ * --------------------
+ * Gets the characters name
+ *
+ * returns: string
+ */
 std::string Character::GetName()
 {
 	return mName;
 }
 
+/*
+ * Function:  SetName(string newName)
+ * --------------------
+ * Set the character's name
+ *
+ * returns: void
+ */
 void Character::SetName(std::string newName)
 {
 	mName = newName;
