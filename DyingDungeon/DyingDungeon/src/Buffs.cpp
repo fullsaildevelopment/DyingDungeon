@@ -82,6 +82,10 @@ int Buffs::GetEffectedStat()
 {
 	return mEffectedStat;
 }
+void Buffs::SetEffectedStat(int statEffected)
+{
+	mEffectedStat = statEffected;
+}
 float Buffs::GetAmountOfEffect()
 {
 	return mAmountOfEffect;

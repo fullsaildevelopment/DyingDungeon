@@ -15,9 +15,7 @@ Skills::Skills(float dps, float mana,Buffs* buff)
 }
 Skills::~Skills()
 {
-
 }
-
 /*
  * Function:  GetManaCost()
  * --------------------
@@ -29,7 +27,6 @@ float Skills::GetManaCost()
 {
 	return mMpCost;
 }
-
 /*
  * Function:  Use()
  * --------------------

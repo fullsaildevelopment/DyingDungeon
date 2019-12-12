@@ -32,6 +32,7 @@ public:
 	bool IsBleed();
 	// Getter and setter for stat to be affected
 	int GetEffectedStat();
+	void SetEffectedStat(int statEffected);
 	// Getter and setter for amount to effect by
 	float GetAmountOfEffect();
 private:
