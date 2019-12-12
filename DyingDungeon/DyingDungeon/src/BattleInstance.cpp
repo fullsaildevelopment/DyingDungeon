@@ -3,8 +3,6 @@
 #include "Transform.h"
 #include "Character.h"
 
-CLASS_DEFINITION(Component, BattleInstance)
-
 BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam)
 {
 	mPlayerTeam = _playerTeam;
@@ -17,13 +15,6 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 	// Add all of the characters from the enemy's team to the allCharacters vector
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 		mAllCharacters.push_back(mEnemyTeam[i]);
-}
-
-void BattleInstance::initialize(Odyssey::GameObject* _parent)
-{
-	onEnable();
-	mGameObject = _parent;
-	mGameObject->addComponent<Odyssey::Transform>();
 
 	// Set time to be random
 	srand(static_cast<int>(time(NULL)));
@@ -41,7 +32,7 @@ void BattleInstance::initialize(Odyssey::GameObject* _parent)
 	mBattleState = IN_BATTLE;
 }
 
-void BattleInstance::update(double deltaTime)
+void BattleInstance::UpdateBattle()
 {
 	// Check to see if both teams have at least one character still alive
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))

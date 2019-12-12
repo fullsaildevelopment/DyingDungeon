@@ -1,5 +1,6 @@
 #pragma once
 #include "MyTypeDefs.h"
+#include "BattleInstance.h"
 #include "Buffs.h"
 #include <time.h>
 
@@ -28,6 +29,9 @@ public: // Functions
 
 private: // Varibales
 
+	//Battle Instance
+	std::shared_ptr<BattleInstance> mCurrentBattle;
+
 	// Vectors
 	GameObjectList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
 	GameObjectList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
@@ -38,9 +42,9 @@ private: // Varibales
 
 	// GameObjects
 
-
 	// Ints
-
+	int mCurrentLevel;
+	int mNumberOfLevels;
 
 	// Floats
 	std::shared_ptr<float> mStatitics;

@@ -9,18 +9,15 @@ enum BATTLE_STATE
 	BATTLE_OVER
 };
 
-class BattleInstance : public Odyssey::Component
+class BattleInstance
 {
-	CLASS_DECLARATION(BattleInstance);
 
 public: // Constructors
 	BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam);
 
 public: // Functions
 
-	// Necessary
-	virtual void initialize(Odyssey::GameObject* _parent);
-	virtual void update(double deltaTime);
+	void UpdateBattle();
 
 	//Getters
 	int GetBattleState(){ return mBattleState; }
