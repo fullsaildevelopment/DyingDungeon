@@ -15,7 +15,10 @@ public:
 
 	//Attack Functions
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allCharacters);
+	virtual void Die();
 
+	void TakeDamage(float dmg);
+	void DepleteMana(float manaCost);
 
 	/////Get and Set Functions/////
 
@@ -31,15 +34,23 @@ public:
 	//isHero Functions
 	bool IsHero();
 	void SetHero(bool heroStat);
+	// Name Fucntions
+	std::string GetName();
+	void SetName(std::string newName);
 	/////End of Get and Set Functions/////
 
-	std::string name;
 
+	std::string name;
 protected:
 	bool mHero;
 	bool mDead;
-	float mHP;
-	float mMana;
+	
+	//Stats
+	float mCurrentHP;
+	float mCurrentMana;
+	float mBaseMaxHP;
+	float mBaseMaxMana;
+
 	Skills skillList[4];
 
 

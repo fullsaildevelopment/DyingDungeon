@@ -26,6 +26,49 @@ bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allC
 }
 
 /*
+ * Function:  Die()
+ * --------------------
+ * Sets dead boolean to true
+ * Sets animation to death animation
+ *
+ * returns: void
+ */
+void Character::Die()
+{
+}
+
+/*
+ * Function:  TakeDamage(float dmg)
+ * --------------------
+ * Pass in a float to deal damage to the character
+ * Calculates any damage reduction (TODO)
+ *
+ * returns: void
+ */
+void Character::TakeDamage(float dmg)
+{
+    //TODO calculate damage reduction here
+
+    //Take Damage
+    SetHP(GetHP() - dmg);
+}
+
+/*
+ * Function:  DepleteMana()
+ * --------------------
+ * Reduces the current mana by the mana cost
+ *
+ * returns: void
+ */
+void Character::DepleteMana(float manaCost)
+{
+    //Special Conditions here
+
+    //Reduce current mana
+    SetMana(GetMana() - manaCost);
+}
+
+/*
  * Function:  GetMana()
  * --------------------
  * Gets the HP of the character
@@ -34,7 +77,7 @@ bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allC
  */
 float Character::GetHP()
 {
-	return mHP;
+	return mCurrentHP;
 }
 
 /*
@@ -46,7 +89,11 @@ float Character::GetHP()
  */
 void Character::SetHP(float HP)
 {
-	mHP = HP;
+	mCurrentHP = HP;
+    if (mCurrentHP < 0)
+        mCurrentHP = 0;
+    else if (mCurrentHP > mBaseMaxHP)
+        mCurrentHP = mBaseMaxHP;
 }
 
 /*
@@ -58,7 +105,7 @@ void Character::SetHP(float HP)
  */
 float Character::GetMana()
 {
-	return mMana;
+	return mCurrentMana;
 }
 
 /*
@@ -66,11 +113,15 @@ float Character::GetMana()
  * --------------------
  * Sets the Mana of the character to the passed in float
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetMana(float Mana)
 {
-	mMana = Mana;
+    mCurrentMana = Mana;
+    if (mCurrentMana < 0)
+        mCurrentMana = 0;
+    else if (mCurrentMana > mBaseMaxMana)
+        mCurrentMana = mBaseMaxMana;
 }
 
 /*
@@ -78,7 +129,7 @@ void Character::SetMana(float Mana)
  * --------------------
  * Check to see if the character is dead
  *
- * returns: nothing
+ * returns: bool
  */
 bool Character::IsDead()
 {
@@ -90,7 +141,7 @@ bool Character::IsDead()
  * --------------------
  * Set the dead staus of the character
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetDead(bool deadStatus)
 {
@@ -102,7 +153,7 @@ void Character::SetDead(bool deadStatus)
  * --------------------
  * Gets the Hero staus of the character
  *
- * returns: nothing
+ * returns: bool
  */
 bool Character::IsHero()
 {
@@ -114,9 +165,33 @@ bool Character::IsHero()
  * --------------------
  * Set the Hero staus of the character
  *
- * returns: nothing
+ * returns: void
  */
 void Character::SetHero(bool heroStat)
 {
 	mHero = heroStat;
+}
+
+/*
+ * Function:  GetName()
+ * --------------------
+ * Gets the characters name
+ *
+ * returns: string
+ */
+std::string Character::GetName()
+{
+	return name;
+}
+
+/*
+ * Function:  SetName(string newName)
+ * --------------------
+ * Set the character's name
+ *
+ * returns: void
+ */
+void Character::SetName(std::string newName)
+{
+	name = newName;
 }
