@@ -15,9 +15,14 @@ namespace Odyssey
 		~InputManager() { }
 	public:
 		void registerInput(char input, bool state);
+		void unregisterInput(char input);
+		bool getKeyPress(char input);
 		bool getKeyDown(char input);
+		bool getKeyUp(char input);
 	private:
-		std::bitset<256> mInputMap;
+		std::bitset<256> mKeyPressMap;
+		std::bitset<256> mKeyDownMap;
+		std::bitset<256> mKeyUpMap;
 		InputManager() { }
 	};
 }

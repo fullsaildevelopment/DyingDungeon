@@ -20,7 +20,7 @@ void HeroComponent::initialize(Odyssey::GameObject* parent)
 
 bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
 {
-	if (Odyssey::InputManager::getInstance().getKeyDown(VK_RETURN))
+	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
 	{
 		for (std::shared_ptr<Odyssey::GameObject> temp : characters)
 		{

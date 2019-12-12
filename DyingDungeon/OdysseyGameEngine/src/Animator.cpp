@@ -274,11 +274,11 @@ namespace Odyssey
 				DirectX::XMStoreFloat3(&parentPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&parentPos), DirectX::XMLoadFloat4x4(&mWorldMatrix)));
 
 				// Draw a line from the joint to it's parent
-				//DebugManager::getInstance().addLine(jointPos, parentPos, color, color);
+				DebugManager::getInstance().addLine(jointPos, parentPos, color, color);
 			}
 
 			// Draw a debug sphere at the joint
-			//DebugManager::getInstance().addSphere(jointPos, 0.025f, { 0,1,0 });
+			DebugManager::getInstance().addSphere(jointPos, 0.025f, { 0,1,0 });
 		}
 	}
 
