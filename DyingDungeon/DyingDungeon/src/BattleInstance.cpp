@@ -5,7 +5,7 @@
 
 CLASS_DEFINITION(Component, BattleInstance)
 
-BattleInstance::BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>> _playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> _enemyTeam)
+BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
@@ -78,7 +78,7 @@ void BattleInstance::update(double deltaTime)
 void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
-	std::vector<std::shared_ptr<Odyssey::GameObject>> characterPool;
+	GameObjectList characterPool;
 
 	// Add each character from the player's team to the characetr pool 
 	for (int i = 0; i < mPlayerTeam.size(); i++)
@@ -105,7 +105,7 @@ void BattleInstance::GenerateBattleQueue()
 	}
 }
 
-bool BattleInstance::IsTeamAlive(std::vector<std::shared_ptr<Odyssey::GameObject>> _teamToCheck)
+bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 {
 	for (int i = 0; i < _teamToCheck.size(); i++)
 	{

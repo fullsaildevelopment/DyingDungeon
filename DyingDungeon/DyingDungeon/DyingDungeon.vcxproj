@@ -173,6 +173,7 @@
     <ClCompile Include="src\TowerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyTypeDefs.h" />
     <ClInclude Include="src\BattleInstance.h" />
     <ClInclude Include="src\Buffs.h" />
     <ClInclude Include="src\CameraController.h" />

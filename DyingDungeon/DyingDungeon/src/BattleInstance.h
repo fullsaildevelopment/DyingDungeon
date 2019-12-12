@@ -1,7 +1,6 @@
 #pragma once
-#include "Component.h"
+#include "MyTypeDefs.h"
 #include <queue>
-#include <vector>
 #include <time.h>
 
 enum BATTLE_STATE
@@ -15,7 +14,7 @@ class BattleInstance : public Odyssey::Component
 	CLASS_DECLARATION(BattleInstance);
 
 public: // Constructors
-	BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>> _playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> _enemyTeam);
+	BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam);
 
 public: // Functions
 
@@ -32,12 +31,12 @@ public: // Functions
 private: // Varibales
 
 	// Vectors
-	std::vector<std::shared_ptr<Odyssey::GameObject>> mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
-	std::vector<std::shared_ptr<Odyssey::GameObject>> mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
-	std::vector<std::shared_ptr<Odyssey::GameObject>> mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
+	GameObjectList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
+	GameObjectList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
+	GameObjectList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
 
 	// Queues
-	std::queue<std::shared_ptr<Odyssey::GameObject>> mBattleQueue; // Battle Queue that will hodl the order in which players can attack
+	GameObjectQueue mBattleQueue; // Battle Queue that will hodl the order in which players can attack
 
 	// GameObjects
 	std::shared_ptr<Odyssey::GameObject> mCurrentCharacter; // This will hold the current player who's turn it is
@@ -56,6 +55,6 @@ private: // Varibales
 
 private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
-	bool IsTeamAlive(std::vector<std::shared_ptr<Odyssey::GameObject>> _teamToCheck); // This will check to see if at least one character from the passed in team is alive
+	bool IsTeamAlive(GameObjectList _teamToCheck); // This will check to see if at least one character from the passed in team is alive
 };
 
