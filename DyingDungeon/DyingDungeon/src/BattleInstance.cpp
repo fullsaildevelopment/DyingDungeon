@@ -26,7 +26,7 @@ void BattleInstance::initialize(Odyssey::GameObject* _parent)
 	mGameObject->addComponent<Odyssey::Transform>();
 
 	// Set time to be random
-	srand(time(NULL));
+	srand(static_cast<int>(time(NULL)));
 
 	//Set the state of the battle
 	mIsBattleOver = false;
@@ -89,7 +89,7 @@ void BattleInstance::GenerateBattleQueue()
 		characterPool.push_back(mEnemyTeam[i]);
 
 	// Get the beginning count of the character pool
-	int numOfCharacters = characterPool.size();
+	int numOfCharacters = static_cast<int>(characterPool.size());
 	// What? - Loop for the number of beginning amount of characters
 	// Why? - Because we will be removing characters from the pool when we add the character to the battle queue 
 	for (int i = 0; i < numOfCharacters; i++)

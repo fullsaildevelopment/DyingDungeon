@@ -10,6 +10,9 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
+	mBaseMaxHP = 100.0f;
+	mBaseMaxMana = 100.0f;
+
 	SetHP(100);
 	SetMana(100);
 	SetHero(false);
