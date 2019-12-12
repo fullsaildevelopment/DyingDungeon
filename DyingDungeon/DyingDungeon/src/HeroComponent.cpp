@@ -39,6 +39,16 @@ bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> c
 	return false;
 }
 
+void HeroComponent::Die()
+{
+	if (GetHP() <= 0)
+	{
+		SetDead(true);
+		//TODO Uncomment for death animation
+		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
+	}
+}
+
 /*
  * Function:  BasicAttack()
  * --------------------

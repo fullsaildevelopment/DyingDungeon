@@ -35,6 +35,7 @@ bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allC
  */
 void Character::Die()
 {
+
 }
 
 /*

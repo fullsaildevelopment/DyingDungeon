@@ -70,3 +70,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	}
 	return true;
 }
+
+void EnemyComponent::Die()
+{
+	if (GetHP() <= 0)
+	{
+		SetDead(true);
+		//TODO Uncomment for death animation
+		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
+	}
+}
