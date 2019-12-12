@@ -42,6 +42,8 @@ void Skills::Use(Character& caster,Character& target)
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
 
-	if (target.GetHP() <= 0);
+	if (target.GetHP() <= 0)
+	{
 		//target.die();
+	}
 }
