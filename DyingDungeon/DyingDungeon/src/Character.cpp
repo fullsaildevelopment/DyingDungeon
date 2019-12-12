@@ -181,7 +181,7 @@ void Character::SetHero(bool heroStat)
  */
 std::string Character::GetName()
 {
-	return mName;
+	return name;
 }
 
 /*
@@ -193,5 +193,5 @@ std::string Character::GetName()
  */
 void Character::SetName(std::string newName)
 {
-	mName = newName;
+	name = newName;
 }

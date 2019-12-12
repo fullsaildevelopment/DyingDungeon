@@ -40,6 +40,7 @@ public:
 	/////End of Get and Set Functions/////
 
 
+	std::string name;
 protected:
 	bool mHero;
 	bool mDead;
@@ -51,7 +52,6 @@ protected:
 	float mBaseMaxMana;
 
 	Skills skillList[4];
-	std::string mName;
 
 
 private:

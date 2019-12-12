@@ -48,7 +48,22 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
+	// Find my best option
 	Move bestMove = findBestMove(targets);
+	// Use the best move
 	bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+	// If i have any buffs manage them 
+	for (Buffs* b : mGameObject->getComponents<Buffs>())
+	{
+		//reduce its duration by 1
+		b->ReduceDuration(1);
+		// Check if my buff is over, else see if it need to bleed its effect
+		if (b->GetDuration() == 0)
+		{
+			
+		}
+		else if(b->IsBleed())
+			b->Bleed();
+	}
 	return true;
 }
