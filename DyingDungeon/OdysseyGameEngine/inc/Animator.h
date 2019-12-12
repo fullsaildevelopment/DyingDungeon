@@ -64,7 +64,8 @@ namespace Odyssey
 		void setWorldMatrix(DirectX::XMFLOAT4X4 worldMatrix);
 		void setAnimationClip(const char* clipToPlay);
 		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
-	public: // Accessors
+	public: // Interactions
+
 	public: // Update Functions
 		void updateSequence(double deltaTime);
 		void play();
