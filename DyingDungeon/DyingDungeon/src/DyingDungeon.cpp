@@ -20,6 +20,7 @@
 #include "RenderDevice.h"
 #include "Material.h"
 #include "Camera.h"
+#include "RedAudioManager.h"
 
 // Game Includes
 #include "BattleInstance.h"
@@ -375,6 +376,10 @@ int playGame()
 
 	// Set the active scene
 	application.setActiveScene(gMainScene);
+
+	//Play audio
+	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	RedAudioManager::Instance()->Loop("Background");
 
 	// Run the application
 	return application.update();
