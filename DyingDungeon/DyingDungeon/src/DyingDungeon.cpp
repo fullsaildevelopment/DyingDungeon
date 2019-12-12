@@ -335,7 +335,8 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
+	//gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Death", "assets/animations/Skeleton_Death.dxanim");
 	gSkeleton->addComponent<EnemyComponent>();
 	gSkeleton->getComponent<EnemyComponent>()->name = "Skeleton";
 	gMainScene->addSceneObject(gSkeleton);

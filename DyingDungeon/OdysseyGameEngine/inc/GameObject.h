@@ -33,6 +33,8 @@ namespace Odyssey
 		ComponentType* getRootComponent();
 		template<class ComponentType>
 		bool removeComponent();
+		template<class ComponentType>
+		bool removeComponent(ComponentType* searching);
 	public: // Multi-Component Interaction
 		template<class ComponentType>
 		std::vector<ComponentType*> getComponents();
@@ -93,6 +95,23 @@ namespace Odyssey
 			mComponents.erase(index);
 
 		return success;
+	}
+
+	template<class ComponentType>
+	inline bool GameObject::removeComponent(ComponentType* searching)
+	{
+		if (mComponents.empty())
+			return false;
+
+		for (int i = 0; i < mComponents.size(); i++)
+		{
+			if (mComponents[i]->isClassType(ComponentType::Type) && mComponents[i].get() == searching)
+			{
+				mComponents.erase(mComponents.begin() + i);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	template<class ComponentType>
