@@ -40,7 +40,7 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 	return bestMove;
 }
 
-float ScoreMove(Skills skillOption, Character* target)
+float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 {
 	float bestScore = 0;
 	return bestScore;

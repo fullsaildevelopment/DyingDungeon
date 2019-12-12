@@ -120,3 +120,13 @@ void Character::SetHero(bool heroStat)
 {
 	mHero = heroStat;
 }
+
+std::string Character::GetName()
+{
+	return mName;
+}
+
+void Character::SetName(std::string newName)
+{
+	mName = newName;
+}

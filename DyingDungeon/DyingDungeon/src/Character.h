@@ -31,9 +31,11 @@ public:
 	//isHero Functions
 	bool IsHero();
 	void SetHero(bool heroStat);
+	// Name Fucntions
+	std::string GetName();
+	void SetName(std::string newName);
 	/////End of Get and Set Functions/////
 
-	std::string name;
 
 protected:
 	bool mHero;
@@ -41,6 +43,7 @@ protected:
 	float mHP;
 	float mMana;
 	Skills skillList[4];
+	std::string mName;
 
 
 private:
