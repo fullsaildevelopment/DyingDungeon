@@ -31,23 +31,45 @@ void TowerManager::initialize(Odyssey::GameObject* _parent)
 	mGameObject = _parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
-	// Create the battle on init !!THIS IS TEMPORARY!!
-	mCurrentBattle = std::make_shared<BattleInstance>(mPlayerTeam, mEnemyTeam);
+	// Create the battle on init, but this is TEMPORARY
+	CreateBattleInstance();
 }
 
 void TowerManager::update(double deltaTime)
 {
-	// If there is an instance of BattleInstance, Update the battle
-	if (mCurrentBattle != nullptr)
+	// If we are in battle, Update the battle
+	if (GetTowerState() == IN_BATTLE)
 	{
+		// Update the current battle
 		int result = mCurrentBattle->UpdateBattle();
 
 		// If the result of the updated battle was DESTROY, destory the current battle instance
 		if (result == mCurrentBattle->DESTORY)
 		{
-			// Destory pointer and set it to a nullptr
-			mCurrentBattle.reset();
-			mCurrentBattle == nullptr;
+			// Destory the battle instance
+			DestroyBattleInstance();
 		}
 	}
+}
+
+void TowerManager::CreateBattleInstance()
+{
+	// Create the battle instance
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
+
+	// Since we created a BattleInstance we will be in combat
+	SetTowerState(IN_BATTLE);
+
+	std::cout << "Created a battle instance\n" << std::endl;
+}
+
+void TowerManager::DestroyBattleInstance()
+{
+	// Destory pointer and set it to a nullptr
+	delete mCurrentBattle;
+
+	// Since we destoryed the BattleInstance we will NOT be in combat
+	SetTowerState(NOT_IN_BATTLE);
+
+	std::cout << "Destroyed a battle instance\n" << std::endl;
 }

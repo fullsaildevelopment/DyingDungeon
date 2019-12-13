@@ -23,7 +23,7 @@
 #include "RedAudioManager.h"
 
 // Game Includes
-#include "BattleInstance.h"
+#include "TowerManager.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 #include "CameraController.h"
@@ -41,7 +41,7 @@ namespace
 	std::shared_ptr<Odyssey::GameObject> gArena;
 	std::shared_ptr<Odyssey::GameObject> gPaladin;
 	std::shared_ptr<Odyssey::GameObject> gSkeleton;
-	std::shared_ptr<Odyssey::GameObject> gCurrentBattle;
+	std::shared_ptr<Odyssey::GameObject> gCurrentTower;
 	//Vectors
 	std::vector<std::shared_ptr<Odyssey::GameObject>> gPlayerUnit;
 	std::vector<std::shared_ptr<Odyssey::GameObject>> gEnemyUnit;
@@ -59,8 +59,7 @@ void setupPaladin();
 void setupSkeleton();
 
 //Tristen's Stuff
-std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam);
-void setUpBattleInstance();
+void setUpTowerManager();
 
 void setupPipeline(Odyssey::RenderDevice* renderDevice)
 {
@@ -291,29 +290,13 @@ void setupPaladin()
 	gMainScene->addSceneObject(gPaladin);
 }
 
-//std::vector<std::shared_ptr<Odyssey::GameObject>> CreateTeam(int _amountOfPlayersOnTeam)
-//{
-//	//Make a new vector
-//	std::vector<std::shared_ptr<Odyssey::GameObject>> newTeam;
-//
-//	int NumOfPlayersOnEachTeam = _amountOfPlayersOnTeam;
-//	//Give amount of player to the team
-//	for (int i = 0; i < NumOfPlayersOnEachTeam; i++)
-//	{
-//		std::shared_ptr<Odyssey::GameObject> newPlayer;
-//		newTeam.push_back(newPlayer);
-//	}
-//
-//	return newTeam;
-//}
-
-void setUpBattleInstance()
+void setUpTowerManager()
 {
 	gPlayerUnit.push_back(gPaladin);
 	gEnemyUnit.push_back(gSkeleton);
-	gCurrentBattle = std::make_shared<Odyssey::GameObject>();
-	gCurrentBattle->addComponent<BattleInstance>(gPlayerUnit, gEnemyUnit);
-	gMainScene->addSceneObject(gCurrentBattle);
+	gCurrentTower = std::make_shared<Odyssey::GameObject>();
+	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
+	gMainScene->addSceneObject(gCurrentTower);
 }
 
 void setUpCamera()
@@ -369,8 +352,8 @@ int playGame()
 	// Set up the skeleton
 	setupSkeleton();
 
-	// Set up the battle instance
-	setUpBattleInstance();
+	// Set up the tower manager
+	setUpTowerManager();
 
 	// Set up camera
 	setUpCamera();
