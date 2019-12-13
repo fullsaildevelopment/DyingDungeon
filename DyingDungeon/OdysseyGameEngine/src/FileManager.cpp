@@ -21,6 +21,21 @@ namespace Odyssey
 		mRenderDevice = renderDevice;
 	}
 
+	// TODO:
+	// FileManager::importScene(std::shared_ptr<Scene>, const char*)
+	// Each mesh inside the file is a new gameobject
+
+	// TODO:
+	// FileManager::importMesh(std::shared_ptr<GameObject>, const char*)
+	// A singular mesh without a skeleton
+
+	// TODO:
+	// FileManager::importModel(std::shared_ptr<GameObject>, const char*)
+	// Parameter game object is the mesh
+	// Childed to the mesh is the skeleton processed in the joint heirarchy
+	// An animator is attached and sent the joint index -> transform map
+	// On animator update, map[animated joint index]->setWorldMatrix(animatedTransform);
+	// For more extendability, track previous animated frame's position and rotation, find the delta and set.
 	void FileManager::importModel(std::shared_ptr<GameObject> gameObject, const char* filename)
 	{
 		// Open the model file
@@ -212,10 +227,12 @@ namespace Odyssey
 				skeletonData.skeleton[i].name.resize(nameLength);
 				// Write the name to the file
 				file.read((char*)skeletonData.skeleton[i].name.c_str(), nameLength * sizeof(char));
-				// Write the inverse bindpose
-				file.read((char*)&skeletonData.skeleton[i].invBindposeTransform, sizeof(DirectX::XMFLOAT4X4));
 				// Write the parent index
 				file.read((char*)&skeletonData.skeleton[i].parentIndex, sizeof(skeletonData.skeleton[i].parentIndex));
+				// Write the inverse bindpose
+				file.read((char*)&skeletonData.skeleton[i].invBindposeTransform, sizeof(DirectX::XMFLOAT4X4));
+				// Write the inverse bindpose
+				file.read((char*)&skeletonData.skeleton[i].bindposeTransform, sizeof(DirectX::XMFLOAT4X4));
 			}
 		}
 	}

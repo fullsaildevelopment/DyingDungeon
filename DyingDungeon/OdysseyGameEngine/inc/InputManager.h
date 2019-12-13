@@ -14,8 +14,8 @@ namespace Odyssey
 		static InputManager& getInstance();
 		~InputManager() { }
 	public:
-		void registerInput(char input, bool state);
-		void unregisterInput(char input);
+		void registerKeyDown(int input);
+		void registerKeyUp(int input);
 		bool getKeyPress(char input);
 		bool getKeyDown(char input);
 		bool getKeyUp(char input);

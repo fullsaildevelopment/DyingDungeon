@@ -82,7 +82,7 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	LightOutput sceneLighting = calculateLighting(viewNormal, surfaceNormal, input.worldPosition, input.lightViewPosition);
 
 	// Calculate the diffuse color
-	float4 diffuseColor = sceneLighting.diffuse * mat.diffuseColor;
+    float4 diffuseColor = sceneLighting.diffuse * mat.diffuseColor;
 	// Calculate the emissive color
 	float4 emissiveColor = texEmissive;
 	// Calculate the ambient color
@@ -90,17 +90,11 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	// Calculate the specular color
 	float4 specColor = sceneLighting.specular * (texSpecular + mat.specularColor).r;
 
-	float3 incident = (camPos.xyz - input.worldPosition) * (-1.0f);
-	float3 reflectVec = reflect(incident, surfaceNormal);
-	float4 reflectionColor = txSkybox.Sample(samLinear, reflectVec);
-	float4 environment = mat.reflectance * reflectionColor;
-
 	// Add together the different calculated colors
-	float4 finalColor = (diffuseColor + emissiveColor + specColor + ambientColor + environment);
-    finalColor = finalColor * texDiffuse;
+    float4 finalColor = (diffuseColor + emissiveColor + specColor + ambientColor) * texDiffuse;
 	finalColor.a = texDiffuse.a;
 	// Saturate and return the pixel color
-	return saturate(finalColor);
+    return finalColor;
 }
 
 LightOutput calculateLighting(float3 viewNormal, float3 surfaceNormal, float3 worldPosition, float4 lightViewPosition)

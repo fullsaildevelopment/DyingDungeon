@@ -58,8 +58,6 @@ namespace Odyssey
 		// Create the depth vertex and pixel shaders
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyGameEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
 		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyGameEngine/shaders/DepthPixelShader.cso", nullptr, 0);
-	
-		mGenerated = false;
 	}
 
 	void ShadowPass::preRender(RenderArgs& args)
@@ -70,12 +68,6 @@ namespace Odyssey
 		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT4X4 lightTransform = mShadowLight->buildLightTransform(sceneRadius, sceneCenter);
 		DirectX::XMStoreFloat4x4(&args.perFrame.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
-
-		// If a shadow map was already generated return
-		if (mGenerated)
-		{
-			return;
-		}
 
 		// Update the per frame buffer
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
@@ -99,13 +91,6 @@ namespace Odyssey
 
 	void ShadowPass::render(RenderArgs& args)
 	{
-		// If a shadow map was already generated bind the texture and return
-		if (mGenerated)
-		{
-			mRenderTarget->bindDepthTexture();
-			return;
-		}
-
 		// Iterate over each scene object in the render list
 		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
@@ -149,8 +134,6 @@ namespace Odyssey
 
 		// Bind the depth texture to the pixel shader pipeline
 		mRenderTarget->bindDepthTexture();
-
-		mGenerated = true;
 	}
 
 	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)

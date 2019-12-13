@@ -8,6 +8,7 @@ namespace Odyssey
 	{
 		std::string name;
 		DirectX::XMFLOAT4X4 invBindposeTransform;
+		DirectX::XMFLOAT4X4 bindposeTransform;
 		int parentIndex;
 	};
 
