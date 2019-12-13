@@ -1,6 +1,6 @@
 #include "Buffs.h"
 #include "Character.h"
-#include "GameObject.h"
+
 
 CLASS_DEFINITION(Component, Buffs)
 
@@ -14,7 +14,7 @@ Buffs::Buffs(int effectedStat, float effect, int duration, bool isBleed)
 Buffs::~Buffs()
 {
 	Character* tempC = nullptr;
-	tempC = this->getGameObject()->getComponent<Character>();
+	tempC = mGameObject->getComponent<Character>();
 	switch (mEffectedStat)
 	{
 	case HP:
@@ -23,6 +23,7 @@ Buffs::~Buffs()
 		{
 			mAmountOfEffect *= tempC->GetHP();
 			tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+			std::cout << "Dab the buff is gone" << std::endl;
 		}
 		break;
 	}
@@ -40,6 +41,7 @@ void Buffs::initialize(Odyssey::GameObject* parent)
 	{
 		mAmountOfEffect *= tempC->GetHP();
 		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		std::cout << "Fuck you tristan" << std::endl;
 		break;
 	}
 	default:
@@ -49,13 +51,14 @@ void Buffs::initialize(Odyssey::GameObject* parent)
 void Buffs::Bleed()
 {
 	Character* tempC = nullptr;
-	tempC = this->getGameObject()->getComponent<Character>();
+	tempC = mGameObject->getComponent<Character>();
 	switch (mEffectedStat)
 	{
 	case HP:
 	{
 		mAmountOfEffect *= tempC->GetHP();
 		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		std::cout << "Bleed" << std::endl;
 		break;
 	}
 	default:
@@ -77,4 +80,16 @@ void Buffs::ReduceDuration(int deduction)
 bool Buffs::IsBleed()
 {
 	return mBleed;
+}
+int Buffs::GetEffectedStat()
+{
+	return mEffectedStat;
+}
+void Buffs::SetEffectedStat(int statEffected)
+{
+	mEffectedStat = statEffected;
+}
+float Buffs::GetAmountOfEffect()
+{
+	return mAmountOfEffect;
 }

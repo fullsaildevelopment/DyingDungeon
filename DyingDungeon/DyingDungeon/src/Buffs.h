@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "GameObject.h"
 
 class Character;
 
@@ -29,6 +30,11 @@ public:
 	void ReduceDuration(int deduction);
 	//Getter and setter for mBleed
 	bool IsBleed();
+	// Getter and setter for stat to be affected
+	int GetEffectedStat();
+	void SetEffectedStat(int statEffected);
+	// Getter and setter for amount to effect by
+	float GetAmountOfEffect();
 private:
 };
 

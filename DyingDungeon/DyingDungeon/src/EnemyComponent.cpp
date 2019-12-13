@@ -63,10 +63,20 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 		// Check if my buff is over, else see if it need to bleed its effect
 		if (b->GetDuration() == 0)
 		{
-			
+			mGameObject->removeComponent(b);
 		}
 		else if(b->IsBleed())
 			b->Bleed();
 	}
 	return true;
+}
+
+void EnemyComponent::Die()
+{
+	if (GetHP() <= 0)
+	{
+		SetDead(true);
+		//TODO Uncomment for death animation
+		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
+	}
 }

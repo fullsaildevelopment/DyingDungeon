@@ -15,6 +15,9 @@ public:
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
 	void BasicAttack(Character* target);
 
+	//Death Check
+	virtual void Die();
+
 
 	/////Get and Set Functions/////
 
