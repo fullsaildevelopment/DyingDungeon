@@ -3,24 +3,24 @@
 #include <queue>
 #include <time.h>
 
-enum BATTLE_STATE
-{
-	IN_BATTLE,
-	BATTLE_OVER
-};
-
 class BattleInstance
 {
 
 public: // Constructors
 	BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam);
 
+	enum BattleInstanceCommands
+	{
+		DESTORY = -1,
+		CONTINUE = 1,
+	};
+
 public: // Functions
 
-	void UpdateBattle();
+	int UpdateBattle();
 
 	//Getters
-	int GetBattleState(){ return mBattleState; }
+
 
 	//Setters
 
@@ -45,13 +45,9 @@ private: // Varibales
 
 
 	// Bools
-	bool mIsBattleOver;
 
-	// Battle State
-	BATTLE_STATE mBattleState;
 
 private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
 	bool IsTeamAlive(GameObjectList _teamToCheck); // This will check to see if at least one character from the passed in team is alive
 };
-

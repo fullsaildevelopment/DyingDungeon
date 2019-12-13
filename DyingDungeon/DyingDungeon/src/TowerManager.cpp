@@ -6,6 +6,7 @@ CLASS_DEFINITION(Component, TowerManager)
 
 TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam, int _numberOfBattles)
 {
+	// Assign the player team and the enemy team
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 
@@ -19,6 +20,7 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 
 	// Set the current level to 1
 	mCurrentLevel = 1;
+
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 }
@@ -29,10 +31,23 @@ void TowerManager::initialize(Odyssey::GameObject* _parent)
 	mGameObject = _parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
+	// Create the battle on init !!THIS IS TEMPORARY!!
 	mCurrentBattle = std::make_shared<BattleInstance>(mPlayerTeam, mEnemyTeam);
 }
 
 void TowerManager::update(double deltaTime)
 {
-	mCurrentBattle->UpdateBattle();
+	// If there is an instance of BattleInstance, Update the battle
+	if (mCurrentBattle != nullptr)
+	{
+		int result = mCurrentBattle->UpdateBattle();
+
+		// If the result of the updated battle was DESTROY, destory the current battle instance
+		if (result == mCurrentBattle->DESTORY)
+		{
+			// Destory pointer and set it to a nullptr
+			mCurrentBattle.reset();
+			mCurrentBattle == nullptr;
+		}
+	}
 }

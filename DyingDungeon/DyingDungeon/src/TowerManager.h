@@ -4,6 +4,12 @@
 #include "Buffs.h"
 #include <time.h>
 
+enum TOWER_STATE
+{
+	NOT_IN_BATTLE,
+	IN_BATTLE,
+};
+
 class TowerManager : public Odyssey::Component
 {
 	CLASS_DECLARATION(TowerManager);
@@ -18,6 +24,8 @@ public: // Functions
 	virtual void update(double deltaTime);
 
 	//Getters
+	int GetTowerState() { return mTowerState; }
+
 	GameObjectList GetEnemyTeam() { return mEnemyTeam; } // This will allow the battle instance to get the enemy team genreated by the Overlord
 
 	std::shared_ptr<float> GetStatitics() { return mStatitics; } // This will return the statics that the Overlord will be using to construct a new enemy team
@@ -42,6 +50,7 @@ private: // Varibales
 
 	// GameObjects
 
+
 	// Ints
 	int mCurrentLevel;
 	int mNumberOfLevels;
@@ -52,6 +61,9 @@ private: // Varibales
 
 	// Bools
 
+
+	// Tower State
+	TOWER_STATE mTowerState;
 
 private: // Functions
 };

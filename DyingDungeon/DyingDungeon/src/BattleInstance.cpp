@@ -19,20 +19,14 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 	// Set time to be random
 	srand(static_cast<int>(time(NULL)));
 
-	//Set the state of the battle
-	mIsBattleOver = false;
-
 	// Create the battle queue before going to battle
 	GenerateBattleQueue();
 
 	// Set the pCurrentCharacter to the front of the battle queue
 	mCurrentCharacter = mBattleQueue.front();
-
-	// Update Battle State
-	mBattleState = IN_BATTLE;
 }
 
-void BattleInstance::UpdateBattle()
+int BattleInstance::UpdateBattle()
 {
 	// Check to see if both teams have at least one character still alive
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
@@ -61,9 +55,12 @@ void BattleInstance::UpdateBattle()
 		// The current battle has ended, at least one team is completely dead
 		std::cout << "The battle has ended!\n" << std::endl;
 
-		// Update Battle State
-		mBattleState = BATTLE_OVER;
+		//Return -1 to Destory the BattleInstance object when the battle is over
+		return DESTORY;
 	}
+
+	// Return 1 if there is no change in state and the battle needs to continue
+	return CONTINUE;
 }
 
 void BattleInstance::GenerateBattleQueue()
