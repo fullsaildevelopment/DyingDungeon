@@ -23,6 +23,7 @@ Buffs::~Buffs()
 		{
 			mAmountOfEffect *= tempC->GetHP();
 			tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+			std::cout << "Dab the buff is gone" << std::endl;
 		}
 		break;
 	}
@@ -40,6 +41,7 @@ void Buffs::initialize(Odyssey::GameObject* parent)
 	{
 		mAmountOfEffect *= tempC->GetHP();
 		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		std::cout << "Fuck you tristan" << std::endl;
 		break;
 	}
 	default:
@@ -56,6 +58,7 @@ void Buffs::Bleed()
 	{
 		mAmountOfEffect *= tempC->GetHP();
 		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		std::cout << "Bleed" << std::endl;
 		break;
 	}
 	default:
