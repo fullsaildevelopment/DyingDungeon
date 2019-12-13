@@ -8,6 +8,7 @@ namespace Odyssey
 	{
 		std::string name;
 		DirectX::XMFLOAT4X4 invBindposeTransform;
+		DirectX::XMFLOAT4X4 bindposeTransform;
 		int parentIndex;
 	};
 
@@ -53,7 +54,7 @@ namespace Odyssey
 	public: // Constructors
 		Animator(RenderDevice& renderDevice);
 	public: // Component Inherited Functions
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();

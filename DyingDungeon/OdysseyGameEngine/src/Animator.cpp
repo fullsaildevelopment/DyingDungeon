@@ -26,9 +26,8 @@ namespace Odyssey
 		mAnimationData.hasAnimationData = { 0.0f, 0.0f, 0.0f, 0.0f };
 	}
 
-	void Animator::initialize(GameObject* parent)
+	void Animator::initialize()
 	{
-		mGameObject = parent;
 		setEnabled(true);
 	}
 

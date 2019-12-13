@@ -32,9 +32,8 @@ namespace Odyssey
 		mMax = { maxX, maxY, maxZ };
 	}
 
-	void AABB::initialize(GameObject* parent)
+	void AABB::initialize()
 	{
-		mGameObject = parent;
 		onEnable();
 	}
 

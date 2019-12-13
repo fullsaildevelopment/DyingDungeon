@@ -18,9 +18,8 @@ namespace Odyssey
 		mWorldMatrix = worldMatrix;
 	}
 
-	void Transform::initialize(GameObject* parent)
+	void Transform::initialize()
 	{
-		mGameObject = parent;
 		onEnable();
 	}
 

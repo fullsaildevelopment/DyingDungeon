@@ -17,12 +17,12 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	{
 	case WM_KEYDOWN:
 	{
-		Odyssey::InputManager::getInstance().registerInput(static_cast<char>(wParam), true);
+		Odyssey::InputManager::getInstance().registerKeyDown(static_cast<int>(wParam));
 	}
 	break;
 	case WM_KEYUP:
 	{
-		Odyssey::InputManager::getInstance().unregisterInput(static_cast<char>(wParam));
+		Odyssey::InputManager::getInstance().registerKeyUp(static_cast<int>(wParam));
 	}
 	break;
 	case WM_PAINT:

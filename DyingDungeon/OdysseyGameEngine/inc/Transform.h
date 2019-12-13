@@ -12,7 +12,7 @@ namespace Odyssey
 		Transform();
 		Transform(DirectX::XMFLOAT4X4 worldMatrix);
 	public:
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 	public: // Mutators
 		void addPosition(float x, float y, float z);
 		void setPosition(float x, float y, float z);

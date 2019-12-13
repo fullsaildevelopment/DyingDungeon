@@ -30,6 +30,5 @@ namespace Odyssey
 		std::shared_ptr<Buffer> mShadowBuffer;
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mPixelShader;
-		bool mGenerated;
 	};
 }

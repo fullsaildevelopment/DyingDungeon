@@ -25,7 +25,7 @@ namespace Odyssey
 	public: // Constructors
 		ParticleSystem(RenderDevice& renderDevice);
 	public: // Component Functions
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 		virtual void update(double deltaTime);
 	public: // Public Interface
 		void setParticleData(std::vector<Particle> data);

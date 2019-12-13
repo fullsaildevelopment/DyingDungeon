@@ -11,9 +11,8 @@ namespace Odyssey
 		mFrustum = std::make_shared<Frustum>();
 	}
 
-	void Camera::initialize(GameObject* gameObject)
+	void Camera::initialize()
 	{
-		mGameObject = gameObject;
 		onEnable();
 		setProjectionValues(60.0f, mAspectRatio, 0.1f, 75.0f);
 	}

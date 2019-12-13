@@ -44,14 +44,14 @@ namespace Odyssey
 		{
 			for (auto* component : sceneObject->getComponents<Component>())
 			{
-				component->initialize(sceneObject.get());
+				component->initialize();
 			}
 
 			for (auto child : sceneObject->getChildren())
 			{
 				for (auto component : child->getComponents<Component>())
 				{
-					component->initialize(child.get());
+					component->initialize();
 				}
 			}
 		}

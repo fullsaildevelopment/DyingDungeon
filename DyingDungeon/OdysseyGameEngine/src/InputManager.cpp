@@ -8,18 +8,24 @@ namespace Odyssey
 		return instance;
 	}
 
-	void InputManager::registerInput(char input, bool state)
+	void InputManager::registerKeyDown(int input)
 	{
+		// Reject the registration if the key is already contained inside the key press or down map
 		if (mKeyPressMap[input] || mKeyDownMap[input])
 			return;
-		mKeyPressMap[input] = state;
-		mKeyDownMap[input] = state;
+
+		// Set the key press and key down state to true
+		mKeyPressMap[input] = true;
+		mKeyDownMap[input] = true;
 	}
 
-	void InputManager::unregisterInput(char input)
+	void InputManager::registerKeyUp(int input)
 	{
+		// Set the key press and key down state to false
 		mKeyPressMap[input] = false;
 		mKeyDownMap[input] = false;
+
+		// Set the key up state to true
 		mKeyUpMap[input] = true;
 	}
 

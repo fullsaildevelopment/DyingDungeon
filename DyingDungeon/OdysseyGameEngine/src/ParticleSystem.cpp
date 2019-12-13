@@ -41,9 +41,8 @@ namespace Odyssey
 		mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
 	}
 
-	void ParticleSystem::initialize(GameObject* parent)
+	void ParticleSystem::initialize()
 	{
-		mGameObject = parent;
 		onEnable();
 	}
 

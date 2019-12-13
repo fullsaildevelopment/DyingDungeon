@@ -15,7 +15,7 @@ namespace Odyssey
 		MeshRenderer();
 		MeshRenderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 	public: // Component Inherited Functions
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 	public: // Mutators
 		void setActive(bool active);
 		void setMesh(std::shared_ptr<Mesh> mesh);
