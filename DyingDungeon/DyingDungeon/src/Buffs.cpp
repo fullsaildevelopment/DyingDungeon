@@ -13,22 +13,25 @@ Buffs::Buffs(int effectedStat, float effect, int duration, bool isBleed)
 }
 Buffs::~Buffs()
 {
-	Character* tempC = nullptr;
-	tempC = mGameObject->getComponent<Character>();
-	switch (mEffectedStat)
+	if (mGameObject != nullptr)
 	{
-	case HP:
-	{
-		if (mBleed == false)
+		Character* tempC = nullptr;
+		tempC = mGameObject->getComponent<Character>();
+		switch (mEffectedStat)
 		{
-			mAmountOfEffect *= tempC->GetHP();
-			tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
-			std::cout << "Dab the buff is gone" << std::endl;
+		case HP:
+		{
+			if (mBleed == false)
+			{
+				mAmountOfEffect *= tempC->GetHP();
+				tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+				std::cout << "Dab the buff is gone" << std::endl;
+			}
+			break;
 		}
-		break;
-	}
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 }
 void Buffs::initialize()
@@ -40,7 +43,7 @@ void Buffs::initialize()
 	case HP:
 	{
 		mAmountOfEffect *= tempC->GetHP();
-		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		tempC->TakeDamage(mAmountOfEffect);
 		std::cout << "Fuck you tristan" << std::endl;
 		break;
 	}
@@ -57,7 +60,7 @@ void Buffs::Bleed()
 	case HP:
 	{
 		mAmountOfEffect *= tempC->GetHP();
-		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
+		tempC->TakeDamage(mAmountOfEffect);
 		std::cout << "Bleed" << std::endl;
 		break;
 	}

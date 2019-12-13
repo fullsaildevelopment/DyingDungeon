@@ -17,7 +17,7 @@ void HeroComponent::initialize()
 	SetMana(100);
 	SetHero(true);
 
-	skillList[0] = Skills(10, 5);
+	//skillList[0] = Skills(10, 5);
 }
 
 bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)

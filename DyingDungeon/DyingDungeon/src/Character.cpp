@@ -202,12 +202,9 @@ void Character::SetName(std::string newName)
 *
 *returns : void
 */
-void Character::SetSkills(Skills* newSkillList)
+void Character::SetSkills(Skills newSkillList)
 {
-	skillList[0] = newSkillList[0];
-	skillList[1] = newSkillList[1];
-	skillList[2] = newSkillList[2];
-	skillList[3] = newSkillList[3];
+	skillList[0] = newSkillList;
 }
 /*
 *Function:  GetSkills()

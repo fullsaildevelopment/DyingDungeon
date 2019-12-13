@@ -38,7 +38,7 @@ public:
 	std::string GetName();
 	void SetName(std::string newName);
 	// Skill Functions
-	void SetSkills(Skills* newSkillList);
+	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
 	/////End of Get and Set Functions/////
 protected:
