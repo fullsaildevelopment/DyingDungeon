@@ -16,13 +16,14 @@ class TowerManager : public Odyssey::Component
 	
 public: // Constructors
 	TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam, int _numberOfBattles);
+	virtual ~TowerManager();
 
 public: // Functions
 
 	// Necessary
 	virtual void initialize();
 	virtual void update(double deltaTime);
-
+	
 	//Getters
 	int GetTowerState() { return mTowerState; }
 

@@ -25,6 +25,11 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 	mNumberOfLevels = _numberOfBattles;
 }
 
+TowerManager::~TowerManager()
+{
+	DestroyBattleInstance();
+}
+
 void TowerManager::initialize()
 {
 	onEnable();
@@ -45,7 +50,7 @@ void TowerManager::update(double deltaTime)
 		// If the result of the updated battle was DESTROY, destory the current battle instance
 		if (result == mCurrentBattle->DESTORY)
 		{
-			// Destory the battle instance
+			// Destroy the battle instance
 			DestroyBattleInstance();
 		}
 	}
@@ -65,8 +70,12 @@ void TowerManager::CreateBattleInstance()
 void TowerManager::DestroyBattleInstance()
 {
 	// Destory pointer and set it to a nullptr
-	delete mCurrentBattle;
-
+	if (mCurrentBattle)
+	{
+		delete mCurrentBattle;
+		mCurrentBattle = nullptr;
+	}
+	
 	// Since we destoryed the BattleInstance we will NOT be in combat
 	SetTowerState(NOT_IN_BATTLE);
 
