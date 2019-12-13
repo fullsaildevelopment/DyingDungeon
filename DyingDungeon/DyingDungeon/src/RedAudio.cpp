@@ -27,7 +27,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 		m_end = m_duration = std::stoul(out_string, nullptr, 10);
 	}
 	else {
-		std::cout << "ERROR: RedAudio-RedAudio()-Could not get duration/end song\n";
+		std::cout << "ERROR: RedAudio-RedAudio()-Could not get duration/end song-file:" << m_path << "\n";
 	}
 }
 
@@ -67,7 +67,7 @@ void RedAudio::Close() {
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-Close()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-Close()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 }
 
@@ -88,7 +88,7 @@ void RedAudio::Open()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-Open()-";  std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-Open()-";  std::wcout << out_error; std::cout << "-file:" << m_path <<"\n";
 	}
 }
 
@@ -105,7 +105,7 @@ void RedAudio::Play()
 	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-Play()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-Play()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	m_playing = true;
 }
@@ -125,7 +125,7 @@ void RedAudio::PlayLoop()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlayLoop()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlayLoop()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	m_playing = true;
 	m_looping = true;
@@ -158,7 +158,7 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	m_playing = true;
 	m_segmented = true;
@@ -168,7 +168,7 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 {
 	if (start > end) {
-		std::cout << "ERROR: RedAudio-PlaySegment()-The start " << start << " is greater than end " << end << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-The start " << start << " is greater than end " << end << "-file:" << m_path << "\n";
 		return;
 	}
 	LPTSTR out_string = LPTSTR(new char[60]);
@@ -196,7 +196,7 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	m_playing = true;
 	m_segmented = true;
@@ -217,7 +217,7 @@ void RedAudio::Pause()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	m_playing = false;
 }
@@ -235,7 +235,7 @@ void RedAudio::Stop()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 }
 
@@ -254,7 +254,7 @@ void RedAudio::SeekBegin()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	if (m_playing) {
 		Play();
@@ -276,7 +276,7 @@ void RedAudio::SeekEnd()
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 	if (m_looping) {
 		PlayLoop();
@@ -302,7 +302,7 @@ void RedAudio::SetVolume(unsigned int volume)
 	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "\n";
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 }
 
@@ -325,7 +325,7 @@ void RedAudio::Update()
 			}
 		}
 		else {
-			std::cout << "ERROR: RedAudio-Update()-No position recived\n";
+			std::cout << "ERROR: RedAudio-Update()-No position recived" << "-file:" << m_path << "\n";
 		}
 	}
 }
