@@ -18,7 +18,6 @@ void EnemyComponent::initialize(Odyssey::GameObject* parent)
 	SetHero(false);
 
 	skillList[0] = Skills(5, 5);
-	//Buffs bleed;
 	skillList[1] = Skills(2, 2);
 	skillList[2] = Skills(0, 0);
 	skillList[3] = Skills(1, 1);

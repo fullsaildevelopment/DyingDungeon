@@ -196,3 +196,28 @@ void Character::SetName(std::string newName)
 {
 	name = newName;
 }
+/*
+*Function:  SetSkills(string newWSkillList)
+* --------------------
+* Set the character's skill list
+*
+*returns : void
+*/
+void Character::SetSkills(Skills* newSkillList)
+{
+	skillList[0] = newSkillList[0];
+	skillList[1] = newSkillList[1];
+	skillList[2] = newSkillList[2];
+	skillList[3] = newSkillList[3];
+}
+/*
+*Function:  GetSkills()
+* --------------------
+* Gets the characters skill list.
+*
+*returns : Skills*
+*/
+Skills* Character::GetSkills()
+{
+	return skillList;
+}

@@ -37,23 +37,20 @@ public:
 	// Name Fucntions
 	std::string GetName();
 	void SetName(std::string newName);
+	// Skill Functions
+	void SetSkills(Skills* newSkillList);
+	Skills* GetSkills();
 	/////End of Get and Set Functions/////
-
-
-	std::string name;
 protected:
 	bool mHero;
 	bool mDead;
-	
 	//Stats
 	float mCurrentHP;
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
-
+	std::string name;
 	Skills skillList[4];
-
-
 private:
 
 };
