@@ -286,7 +286,7 @@ void setupPaladin()
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>();
-	gPaladin->getComponent<HeroComponent>()->name = "Paladin";
+	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
 	gMainScene->addSceneObject(gPaladin);
 }
 
@@ -318,10 +318,9 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
-	//gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Death", "assets/animations/Skeleton_Death.dxanim");
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Death", "assets/animations/Skeleton_Idle.dxanim");
 	gSkeleton->addComponent<EnemyComponent>();
-	gSkeleton->getComponent<EnemyComponent>()->name = "Skeleton";
+	gSkeleton->getComponent<EnemyComponent>()->SetName("Skeleton");
 	gMainScene->addSceneObject(gSkeleton);
 }
 

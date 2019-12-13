@@ -34,7 +34,7 @@ int BattleInstance::UpdateBattle()
 		// Check to see if the current charcter is even alive before the character takes its turn
 		if (mCurrentCharacter->getComponent<Character>()->IsDead())
 		{
-			std::cout << mCurrentCharacter->getComponent<Character>()->name  << " Died, R.I.P.\n" << std::endl;
+			std::cout << mCurrentCharacter->getComponent<Character>()->GetName()  << " Died, R.I.P.\n" << std::endl;
 			// Take the current character out of the battle queue
 			mBattleQueue.pop();
 			// Reassign the next character to the 

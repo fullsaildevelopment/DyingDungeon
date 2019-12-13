@@ -5,10 +5,9 @@
 
 CLASS_DEFINITION(Character, HeroComponent)
 
-void HeroComponent::initialize(Odyssey::GameObject* parent)
+void HeroComponent::initialize()
 {
 	onEnable();
-	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
 	mBaseMaxHP = 100.0f;

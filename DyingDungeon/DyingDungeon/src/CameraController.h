@@ -8,7 +8,7 @@ class CameraController : public Odyssey::Component
 
 public:
 	CameraController();
-	virtual void initialize(Odyssey::GameObject* gameObject);
+	virtual void initialize();
 	virtual void update(double deltaTime);
 	~CameraController() = default;
 private:

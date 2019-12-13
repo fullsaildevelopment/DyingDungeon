@@ -4,10 +4,9 @@
 
 CLASS_DEFINITION(Component, Character)
 
-void Character::initialize(Odyssey::GameObject* parent)
+void Character::initialize()
 {
 	onEnable();
-	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
 	SetHP(0);

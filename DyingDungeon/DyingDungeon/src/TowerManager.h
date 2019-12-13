@@ -20,7 +20,7 @@ public: // Constructors
 public: // Functions
 
 	// Necessary
-	virtual void initialize(Odyssey::GameObject* _parent);
+	virtual void initialize();
 	virtual void update(double deltaTime);
 
 	//Getters

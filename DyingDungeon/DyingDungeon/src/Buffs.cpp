@@ -31,10 +31,10 @@ Buffs::~Buffs()
 		break;
 	}
 }
-void Buffs::initialize(Odyssey::GameObject* parent)
+void Buffs::initialize()
 {
 	Character* tempC = nullptr;
-	tempC = parent->getComponent<Character>();
+	tempC = mGameObject->getComponent<Character>();
 	switch (mEffectedStat)
 	{
 	case HP:

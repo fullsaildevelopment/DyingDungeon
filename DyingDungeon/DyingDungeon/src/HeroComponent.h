@@ -9,7 +9,7 @@ class HeroComponent : public Character
 public:
 	HeroComponent() = default;
 
-	virtual void initialize(Odyssey::GameObject* parent);
+	virtual void initialize();
 
 	//Attack Functions
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);

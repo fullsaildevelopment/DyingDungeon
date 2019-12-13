@@ -25,10 +25,9 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 	mNumberOfLevels = _numberOfBattles;
 }
 
-void TowerManager::initialize(Odyssey::GameObject* _parent)
+void TowerManager::initialize()
 {
 	onEnable();
-	mGameObject = _parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
 	// Create the battle on init, but this is TEMPORARY

@@ -10,7 +10,7 @@ class Character : public Odyssey::Component
 public:
 	Character() = default;
 public:
-	virtual void initialize(Odyssey::GameObject* parent);
+	virtual void initialize();
 	virtual void update(double deltaTime);
 
 	//Attack Functions

@@ -21,7 +21,7 @@ public:
 	Buffs() = default;
 	Buffs(int effectedStat, float effect, int duration, bool isBleed);
 	~Buffs();
-	virtual void initialize(Odyssey::GameObject* parent);
+	virtual void initialize();
 	// The function that reapplies the effect of the buff, used for bleeds and regens
 	void Bleed();
 	// Getter and setter for the mDuration

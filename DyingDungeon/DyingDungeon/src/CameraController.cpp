@@ -13,9 +13,8 @@ CameraController::CameraController()
 	mMainCamera = nullptr;
 }
 
-void CameraController::initialize(Odyssey::GameObject* gameObject)
+void CameraController::initialize()
 {
-	mGameObject = gameObject;
 	onEnable();
 	mMainCamera = mGameObject->getComponent<Odyssey::Camera>();
 }

@@ -4,10 +4,9 @@
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
-void EnemyComponent::initialize(Odyssey::GameObject* parent)
+void EnemyComponent::initialize()
 {
 	onEnable();
-	mGameObject = parent;
 	mGameObject->addComponent<Odyssey::Transform>();
 
 	mBaseMaxHP = 100.0f;
