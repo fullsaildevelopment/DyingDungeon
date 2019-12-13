@@ -28,20 +28,22 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 
 int BattleInstance::UpdateBattle()
 {
+
+	// Check to see if the current charcter is even alive before the character takes its turn
+	if (mCurrentCharacter->getComponent<Character>()->IsDead())
+	{
+		std::cout << mCurrentCharacter->getComponent<Character>()->GetName() << " Died, R.I.P.\n" << std::endl;
+		// Take the current character out of the battle queue
+		mBattleQueue.pop();
+		// Reassign the next character to the 
+		mCurrentCharacter = mBattleQueue.front();
+	}
+
 	// Check to see if both teams have at least one character still alive
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
-		// Check to see if the current charcter is even alive before the character takes its turn
-		if (mCurrentCharacter->getComponent<Character>()->IsDead())
-		{
-			std::cout << mCurrentCharacter->getComponent<Character>()->GetName()  << " Died, R.I.P.\n" << std::endl;
-			// Take the current character out of the battle queue
-			mBattleQueue.pop();
-			// Reassign the next character to the 
-			mCurrentCharacter = mBattleQueue.front();
-		}
 		// Has the current player taken it's turn yet
-		else if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mAllCharacters))
+		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mAllCharacters))
 		{
 			// Take the current character out of the front of the line
 			mBattleQueue.pop();
