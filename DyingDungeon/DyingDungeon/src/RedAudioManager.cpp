@@ -24,7 +24,7 @@ RedAudioManager* RedAudioManager::Instance()
 
 RedAudioManager::RedAudioManager()
 {
-	default_audio = new RedAudio("../assets/audio/default_audio.mp3", "DEFAULT");
+	default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
 	default_audio->Open();
 }
 
