@@ -40,11 +40,12 @@ namespace Odyssey
 		static const std::size_t Type;
 		virtual ~Component() = default;
 		virtual bool isClassType(const std::size_t classType) const;
-		virtual void initialize(GameObject* parent) = 0;
+		virtual void initialize() = 0;
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();
 		virtual GameObject* getGameObject();
+		void setGameObject(GameObject* gameObject);
 		void setEnabled(bool enable);
 		bool isEnabled();
 	protected:

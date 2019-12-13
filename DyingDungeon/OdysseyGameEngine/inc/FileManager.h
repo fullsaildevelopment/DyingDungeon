@@ -7,6 +7,8 @@ namespace Odyssey
 	struct Joint;
 	class Mesh;
 	class Texture;
+	class Scene;
+	class Transform;
 
 	class FileManager
 	{
@@ -37,11 +39,15 @@ namespace Odyssey
 		~FileManager() { }
 	public:
 		void initialize(RenderDevice* renderDevice);
+		void importScene(std::shared_ptr<Scene> scene, const char* filename);
 		void importModel(std::shared_ptr<GameObject> gameObject, const char* filename);
 	private:
 		void readMeshData(std::fstream& file, MeshData& meshData);
 		void readMaterialData(std::fstream& file, MaterialData& materialData);
 		void readSkeletonData(std::fstream& file, SkeletonData& skeletonData);
+		void processMeshData(MeshData& meshData, std::shared_ptr<Mesh>& mesh);
+		void processMaterialData(MaterialData& materialData, std::shared_ptr<Material>& material);
+		void constructAABB(Transform* objectTransform, std::shared_ptr<GameObject> gameObject, MeshData& meshData);
 	private:
 		RenderDevice* mRenderDevice;
 		std::map<size_t, std::shared_ptr<Mesh>> meshHashMap;

@@ -53,6 +53,7 @@ namespace Odyssey
 	void GameObject::addComponent(Args&& ...params)
 	{
 		mComponents.emplace_back(std::make_unique<ComponentType>(std::forward<Args>(params)...));
+		mComponents[mComponents.size() - 1]->setGameObject(this);
 	}
 	template<class ComponentType>
 	ComponentType* GameObject::getComponent()
@@ -67,13 +68,15 @@ namespace Odyssey
 	template<class ComponentType>
 	inline ComponentType* GameObject::getRootComponent()
 	{
-		GameObject* parent = mParent;
-
-		while (parent->mParent != nullptr)
+		if (GameObject* parent = mParent)
 		{
-			parent = parent->mParent;
+			while (parent->mParent != nullptr)
+			{
+				parent = parent->mParent;
+			}
+			return parent->getComponent<ComponentType>();
 		}
-		return parent->getComponent<ComponentType>();
+		return getComponent<ComponentType>();
 	}
 	template<class ComponentType>
 	bool GameObject::removeComponent()

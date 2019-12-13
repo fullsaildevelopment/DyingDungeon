@@ -12,7 +12,7 @@ namespace Odyssey
 	public:
 		Camera();
 	public:
-		virtual void initialize(GameObject* gameObject);
+		virtual void initialize();
 	public: // Mutators
 		void setFieldOfView(float angleInDegrees);
 		void setAspectRatio(float aspectRatio);

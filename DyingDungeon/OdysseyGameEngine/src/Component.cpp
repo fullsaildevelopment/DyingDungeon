@@ -30,6 +30,11 @@ namespace Odyssey
 		return mGameObject;
 	}
 
+	void Component::setGameObject(GameObject* gameObject)
+	{
+		mGameObject = gameObject;
+	}
+
 	void Component::setEnabled(bool enable)
 	{
 		mEnabled = enable;

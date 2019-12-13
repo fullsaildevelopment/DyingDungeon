@@ -14,7 +14,7 @@ namespace Odyssey
 		CLASS_DECLARATION(AABB)
 	public:
 		AABB(DirectX::XMFLOAT4X4& transform, std::vector<Vertex> vertexList);
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 		void debugDraw(DirectX::XMFLOAT3 color);
 		DirectX::XMFLOAT3 calculateCenter();
 		DirectX::XMFLOAT3 calculateExtents();

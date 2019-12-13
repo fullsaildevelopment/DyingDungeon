@@ -20,9 +20,8 @@ namespace Odyssey
 		mMaterial = material;
 	}
 
-	void MeshRenderer::initialize(GameObject* parent)
+	void MeshRenderer::initialize()
 	{
-		mGameObject = parent;
 		onEnable();
 	}
 

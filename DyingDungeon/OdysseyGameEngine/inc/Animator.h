@@ -54,7 +54,7 @@ namespace Odyssey
 	public: // Constructors
 		Animator(RenderDevice& renderDevice);
 	public: // Component Inherited Functions
-		virtual void initialize(GameObject* parent);
+		virtual void initialize();
 		virtual void update(double deltaTime);
 		virtual void onEnable();
 		virtual void onDisable();
