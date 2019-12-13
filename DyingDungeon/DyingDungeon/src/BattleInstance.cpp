@@ -3,9 +3,7 @@
 #include "Transform.h"
 #include "Character.h"
 
-CLASS_DEFINITION(Component, BattleInstance)
-
-BattleInstance::BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>> _playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> _enemyTeam)
+BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
@@ -17,31 +15,18 @@ BattleInstance::BattleInstance(std::vector<std::shared_ptr<Odyssey::GameObject>>
 	// Add all of the characters from the enemy's team to the allCharacters vector
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 		mAllCharacters.push_back(mEnemyTeam[i]);
-}
-
-void BattleInstance::initialize(Odyssey::GameObject* _parent)
-{
-	onEnable();
-	mGameObject = _parent;
-	mGameObject->addComponent<Odyssey::Transform>();
 
 	// Set time to be random
 	srand(static_cast<int>(time(NULL)));
-
-	//Set the state of the battle
-	mIsBattleOver = false;
 
 	// Create the battle queue before going to battle
 	GenerateBattleQueue();
 
 	// Set the pCurrentCharacter to the front of the battle queue
 	mCurrentCharacter = mBattleQueue.front();
-
-	// Update Battle State
-	mBattleState = IN_BATTLE;
 }
 
-void BattleInstance::update(double deltaTime)
+int BattleInstance::UpdateBattle()
 {
 	// Check to see if both teams have at least one character still alive
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
@@ -49,6 +34,7 @@ void BattleInstance::update(double deltaTime)
 		// Check to see if the current charcter is even alive before the character takes its turn
 		if (mCurrentCharacter->getComponent<Character>()->IsDead())
 		{
+			std::cout << mCurrentCharacter->getComponent<Character>()->name  << " Died, R.I.P.\n" << std::endl;
 			// Take the current character out of the battle queue
 			mBattleQueue.pop();
 			// Reassign the next character to the 
@@ -70,15 +56,18 @@ void BattleInstance::update(double deltaTime)
 		// The current battle has ended, at least one team is completely dead
 		std::cout << "The battle has ended!\n" << std::endl;
 
-		// Update Battle State
-		mBattleState = BATTLE_OVER;
+		//Return -1 to Destory the BattleInstance object when the battle is over
+		return DESTORY;
 	}
+
+	// Return 1 if there is no change in state and the battle needs to continue
+	return CONTINUE;
 }
 
 void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
-	std::vector<std::shared_ptr<Odyssey::GameObject>> characterPool;
+	GameObjectList characterPool;
 
 	// Add each character from the player's team to the characetr pool 
 	for (int i = 0; i < mPlayerTeam.size(); i++)
@@ -105,7 +94,7 @@ void BattleInstance::GenerateBattleQueue()
 	}
 }
 
-bool BattleInstance::IsTeamAlive(std::vector<std::shared_ptr<Odyssey::GameObject>> _teamToCheck)
+bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 {
 	for (int i = 0; i < _teamToCheck.size(); i++)
 	{
