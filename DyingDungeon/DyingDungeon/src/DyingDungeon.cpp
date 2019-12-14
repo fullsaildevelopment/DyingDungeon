@@ -106,9 +106,9 @@ void setupLighting()
 	gLights[0]->mLightType = Odyssey::LightType::Point;
 	gLights[0]->mWorldPosition = DirectX::XMFLOAT4(0.0, 10.0f, 0.0f, 1.0f);
 	gLights[0]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[0]->mColor = DirectX::XMFLOAT4(0.3f, 0.4f, 0.5f, 1.0f);
-	gLights[0]->mIntensity = 2.0f;
-	gLights[0]->mRange = 20.0f;
+	gLights[0]->mColor = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	gLights[0]->mIntensity = 2.25f;
+	gLights[0]->mRange = 30.0f;
 	gLights[0]->mSpotAngle = 0.0f;
 
 	// World-Space Left Pillar 1
@@ -230,26 +230,6 @@ void setupLighting()
 	gLights[12]->mIntensity = 2.0f;
 	gLights[12]->mRange = 12.5f;
 
-	// Arena-Paladin Spotlight
-	gLights[13] = std::make_shared<Odyssey::Light>();
-	gLights[13]->mLightType = Odyssey::LightType::Spot;
-	gLights[13]->mWorldPosition = DirectX::XMFLOAT4(-1.0f, 5.0f, 5.0f, 1.0f);
-	gLights[13]->mWorldDirection = DirectX::XMFLOAT4(0.1f, -0.95f, -0.25f, 0.0f);
-	gLights[13]->mColor = DirectX::XMFLOAT4(0.3f, 0.3f, 0.8f, 1.0f);
-	gLights[13]->mIntensity = 2.0f;
-	gLights[13]->mRange = 20.0f;
-	gLights[13]->mSpotAngle = 0.75f;
-
-	// Arena-Skeleton Spotlight
-	gLights[14] = std::make_shared<Odyssey::Light>();
-	gLights[14]->mLightType = Odyssey::LightType::Spot;
-	gLights[14]->mWorldPosition = DirectX::XMFLOAT4(-1.0f, 5.0f, -8.0f, 1.0f);
-	gLights[14]->mWorldDirection = DirectX::XMFLOAT4(0.1f, -0.95f, -0.25f, 0.0f);
-	gLights[14]->mColor = DirectX::XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
-	gLights[14]->mIntensity = 2.0f;
-	gLights[14]->mRange = 20.0f;
-	gLights[14]->mSpotAngle = 0.75f;
-
 	gMainScene->addLight(gDirLight);
 	gMainScene->addLight(gLights[0]);
 	gMainScene->addLight(gLights[1]);
@@ -264,16 +244,11 @@ void setupLighting()
 	gMainScene->addLight(gLights[10]);
 	gMainScene->addLight(gLights[11]);
 	gMainScene->addLight(gLights[12]);
-	gMainScene->addLight(gLights[13]);
-	gMainScene->addLight(gLights[14]);
 }
 
 void setupArena()
 {
-	gArena = std::make_shared<Odyssey::GameObject>();
-	gArena->addComponent<Odyssey::Transform>();
-	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
-	gMainScene->addSceneObject(gArena);
+	Odyssey::FileManager::getInstance().importScene(gMainScene, "assets/models/TestArena.dxm");
 }
 
 void setupPaladin()
@@ -283,7 +258,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
+	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>();
 	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
@@ -317,8 +292,10 @@ void setupSkeleton()
 	gSkeleton->addComponent<Odyssey::Transform>();
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
-	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Death", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180,0);
+	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>();
 	gSkeleton->getComponent<EnemyComponent>()->SetName("Skeleton");
 	gMainScene->addSceneObject(gSkeleton);
@@ -361,8 +338,8 @@ int playGame()
 	application.setActiveScene(gMainScene);
 
 	//Play audio
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	RedAudioManager::Instance()->Loop("Background");
+	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	//RedAudioManager::Instance()->Loop("Background");
 
 	// Run the application
 	return application.update();

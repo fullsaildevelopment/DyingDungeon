@@ -82,7 +82,7 @@ namespace Odyssey
 	public: // Debug Functions
 		void setDebugEnabled(bool enabled);
 		bool getDebugEnabled();
-		void debugDraw(DirectX::XMFLOAT3 color);
+		void debugDraw(DirectX::XMFLOAT4X4& worldMatrix, DirectX::XMFLOAT3 color);
 	private: // Helper Functions
 		void updateAnimationTime(AnimationClip& clip, double deltaTime, Keyframe& outPrevKeyframe, Keyframe& outNextKeyframe);
 		void blendKeyframes(Keyframe& keyframeA, Keyframe& keyframeB, float blendFactor, Keyframe& outKeyframe);

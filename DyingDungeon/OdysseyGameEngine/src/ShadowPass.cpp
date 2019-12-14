@@ -67,6 +67,9 @@ namespace Odyssey
 		float sceneRadius = 50.0f;
 		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT4X4 lightTransform = mShadowLight->buildLightTransform(sceneRadius, sceneCenter);
+		DirectX::XMStoreFloat4x4(&args.perFrame.view, DirectX::XMLoadFloat4x4(&lightTransform));
+
+		lightTransform = mShadowLight->buildLightTransformProjection(sceneRadius, sceneCenter);
 		DirectX::XMStoreFloat4x4(&args.perFrame.lightViewProj, DirectX::XMLoadFloat4x4(&lightTransform));
 
 		// Update the per frame buffer
@@ -86,21 +89,28 @@ namespace Odyssey
 
 		// Bind the shaders
 		mVertexShader->bind();
-		mPixelShader->bind();
+		mPixelShader->unbind();
 	}
 
 	void ShadowPass::render(RenderArgs& args)
 	{
+		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
+
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
+		DirectX::XMFLOAT4X4 globalTransform;
+
+		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
+		mDeviceContext->QueryInterface(__uuidof(performance), &performance);
+		performance->BeginEvent(L"Shadow Pass");
+
 		// Iterate over each scene object in the render list
 		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
-			// If the object has an animator, bind it to the vertex shader
-			if (Animator* animator = renderObject->getComponent<Animator>())
+			if (Animator* rootAnimator = renderObject->getRootComponent<Animator>())
 			{
-				animator->bind();
+				rootAnimator->bind();
 			}
 
-			// If the object has a mesh renderer, render it
 			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
 			{
 				if (meshRenderer->getActive())
@@ -109,10 +119,8 @@ namespace Odyssey
 				}
 			}
 
-			// Iterate through the object's children and perform the same rendering checks
 			for (std::shared_ptr<GameObject> child : renderObject->getChildren())
 			{
-				// If the object has a mesh renderer, render it
 				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
 				{
 					if (meshRenderer->getActive())
@@ -121,13 +129,13 @@ namespace Odyssey
 					}
 				}
 			}
-
-			// If the original render object has an animator, unbind it to the vertex shader
-			if (Animator* animator = renderObject->getComponent<Animator>())
+			if (Animator* rootAnimator = renderObject->getRootComponent<Animator>())
 			{
-				animator->unbind();
+				rootAnimator->unbind();
 			}
 		}
+
+		performance->EndEvent();
 
 		// Unbind the render target from the pipeline
 		mRenderTarget->unBind();

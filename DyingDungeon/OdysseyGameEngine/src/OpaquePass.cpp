@@ -107,8 +107,8 @@ namespace Odyssey
 					{
 						// Depth sorting
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
-						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(view.r[3]);
+						DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
 					}
 				}
@@ -124,8 +124,8 @@ namespace Odyssey
 						{
 							// Depth Sorting
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
-							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-							float depth = DirectX::XMVectorGetZ(view.r[3]);
+							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
 						}
 					}

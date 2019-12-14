@@ -249,7 +249,7 @@ namespace Odyssey
 		return mIsActive;
 	}
 
-	void Animator::debugDraw(DirectX::XMFLOAT3 color)
+	void Animator::debugDraw(DirectX::XMFLOAT4X4& worldMatrix, DirectX::XMFLOAT3 color)
 	{
 		// Don't debug inactive animators
 		if (mIsActive == false) { return; }
@@ -260,7 +260,7 @@ namespace Odyssey
 		{
 			// Get the joint's position in the current frame and transform it into world space
 			DirectX::XMFLOAT3 jointPos = { mCurrentClip.currentFrame.jointTransforms[i].m[3][0], mCurrentClip.currentFrame.jointTransforms[i].m[3][1], mCurrentClip.currentFrame.jointTransforms[i].m[3][2] };
-			DirectX::XMStoreFloat3(&jointPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&jointPos), DirectX::XMLoadFloat4x4(&mWorldMatrix)));
+			DirectX::XMStoreFloat3(&jointPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&jointPos), DirectX::XMLoadFloat4x4(&worldMatrix)));
 
 			// Get the index of the parent joint
 			int pIndex = mSkeleton[i].parentIndex;
@@ -270,7 +270,7 @@ namespace Odyssey
 			{
 				// Get the joint's parent's position in the current frame and transform it into world space
 				DirectX::XMFLOAT3 parentPos = { mCurrentClip.currentFrame.jointTransforms[pIndex].m[3][0], mCurrentClip.currentFrame.jointTransforms[pIndex].m[3][1], mCurrentClip.currentFrame.jointTransforms[pIndex].m[3][2] };
-				DirectX::XMStoreFloat3(&parentPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&parentPos), DirectX::XMLoadFloat4x4(&mWorldMatrix)));
+				DirectX::XMStoreFloat3(&parentPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&parentPos), DirectX::XMLoadFloat4x4(&worldMatrix)));
 
 				// Draw a line from the joint to it's parent
 				DebugManager::getInstance().addLine(jointPos, parentPos, color, color);

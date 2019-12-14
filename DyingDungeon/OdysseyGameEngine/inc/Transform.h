@@ -30,6 +30,7 @@ namespace Odyssey
 		void getLocalTransform(DirectX::XMFLOAT4X4& localTransform);
 		void getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform);
 	private:
+		void calculateEulerRotations();
 		void recalculateWorldMatrix();
 	private:
 		DirectX::XMFLOAT3 mPosition;
