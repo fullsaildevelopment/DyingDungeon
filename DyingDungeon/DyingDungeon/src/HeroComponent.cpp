@@ -60,5 +60,5 @@ void HeroComponent::Die()
  */
 void HeroComponent::BasicAttack(Character* target)
 {
-	skillList[0].Use(*mGameObject->getComponent<Character>(), *target);
+	mSkillList[0].Use(*mGameObject->getComponent<Character>(), *target);
 }

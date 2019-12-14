@@ -25,6 +25,7 @@ public:
 	//HP Functions
 	float GetHP();
 	void SetHP(float m_HP);
+	float GetMaxHP();
 	//Mana Functions
 	float GetMana();
 	void SetMana(float Mana);
@@ -40,6 +41,8 @@ public:
 	// Skill Functions
 	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
+	// Status effect functions
+	void ManageStatusEffects();
 	/////End of Get and Set Functions/////
 protected:
 	bool mHero;
@@ -49,8 +52,8 @@ protected:
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
-	std::string name;
-	Skills skillList[4];
+	std::string mName;
+	Skills mSkillList[4];
 private:
 
 };
