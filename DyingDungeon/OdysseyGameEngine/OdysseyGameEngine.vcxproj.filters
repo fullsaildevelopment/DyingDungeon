@@ -177,6 +177,9 @@
     <ClInclude Include="inc\InputManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="src\AnimatorDX11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\DebugPixelShader.hlsl">
@@ -335,6 +338,9 @@
     </ClCompile>
     <ClCompile Include="src\InputManager.cpp">
       <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnimatorDX11.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

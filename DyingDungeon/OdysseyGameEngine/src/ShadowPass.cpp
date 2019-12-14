@@ -4,7 +4,6 @@
 #include "RenderState.h"
 #include "Buffer.h"
 #include "GameObject.h"
-#include "Animator.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Transform.h"
@@ -13,6 +12,7 @@
 #include "Frustum.h"
 #include "AABB.h"
 #include "Camera.h"
+#include "AnimatorDX11.h"
 
 namespace Odyssey
 {
@@ -97,7 +97,6 @@ namespace Odyssey
 		std::multimap<float, std::shared_ptr<GameObject>> renderMap;
 
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
-		DirectX::XMFLOAT4X4 globalTransform;
 
 		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
 		mDeviceContext->QueryInterface(__uuidof(performance), &performance);
@@ -106,7 +105,7 @@ namespace Odyssey
 		// Iterate over each scene object in the render list
 		for (std::shared_ptr<GameObject> renderObject : args.renderList)
 		{
-			if (Animator* rootAnimator = renderObject->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->bind();
 			}
@@ -129,7 +128,7 @@ namespace Odyssey
 					}
 				}
 			}
-			if (Animator* rootAnimator = renderObject->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->unbind();
 			}

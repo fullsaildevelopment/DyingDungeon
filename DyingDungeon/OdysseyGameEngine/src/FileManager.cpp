@@ -1,13 +1,15 @@
 #include "GameObject.h"
 #include "FileManager.h"
 #include <fstream>
+#include <iostream>
+#include <string>
 #include "Material.h"
 #include "Transform.h"
-#include "Mesh.h"
 #include "AABB.h"
 #include "RenderDevice.h"
-#include "Animator.h"
+#include "AnimatorDX11.h"
 #include "Scene.h"
+#include "Mesh.h"
 
 namespace Odyssey
 {
@@ -109,8 +111,8 @@ namespace Odyssey
 		// If a skeleton was read add an Animator component and set the skeleton
 		if (skeletonData.hasSkeleton)
 		{
-			gameObject->addComponent<Animator>(*mRenderDevice);
-			gameObject->getComponent<Animator>()->setSkeleton(skeletonData.skeleton);
+			gameObject->addComponent<AnimatorDX11>(*mRenderDevice);
+			gameObject->getComponent<AnimatorDX11>()->setSkeleton(skeletonData.skeleton);
 		}
 
 		// Close the file

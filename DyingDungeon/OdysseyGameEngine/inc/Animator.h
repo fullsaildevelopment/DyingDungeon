@@ -51,54 +51,78 @@ namespace Odyssey
 	class Animator : public Component
 	{
 		CLASS_DECLARATION(Animator)
-	public: // Constructors
-		Animator(RenderDevice& renderDevice);
-	public: // Component Inherited Functions
-		virtual void initialize();
-		virtual void update(double deltaTime);
-		virtual void onEnable();
-		virtual void onDisable();
-	public: // Import Functions
+	public:
+		/**
+		 *	Import an animation clip into the Animator component.
+		 *	@param[in] animationName The custom string name of the animation clip.
+		 *	@param[in] filename The file path and name of the animation clip file.
+		 *	@return void
+		 */
 		void importAnimation(const char* animationName, const char* filename);
-	public: // Mutators
-		void setSkeleton(std::vector<Joint> skeleton);
-		void setWorldMatrix(DirectX::XMFLOAT4X4 worldMatrix);
-		void setAnimationClip(const char* clipToPlay);
-		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
-	public: // Interactions
 
-	public: // Update Functions
-		void updateSequence(double deltaTime);
+		/**
+		 *	Set the skeleton attached to the Animator component
+		 *	@param[in] skeleton The container of joints associated with the skeelton.
+		 *	@return void
+		 */
+		void setAnimationClip(const char* clipToPlay);
+
+		/**
+		 *	Set current animation sequence.
+		 *	@param[in] clipA The string ID of the first animation clip.
+		 *	@param[in] clipB The string ID of the second animation clip.
+		 *	@param[in] blendFactor The amount of blending to apply to the animation sequence.
+		 *	@return void
+		 */
+		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
+
+		/**
+		 *	Play the current animation clip, if one is set.
+		 *	@param[in] void
+		 *	@return void
+		 */
 		void play();
+
+		/**
+		 *	Pause the current animation clip, if one is set.
+		 *	@param[in] void
+		 *	@return void
+		 */
 		void pause();
+
+		/**
+		 *	Reset the current animation clip to the first frame, if one is set.
+		 *	@param[in] void
+		 *	@return void
+		 */
 		void reset();
-	public: // Rendering
-		void bind();
-		void unbind();
-	public: // Mutators
-		void addAnimationBlend(float addition);
-	public: // Accessors
+
+		/**
+		 *	Get the active state of the Animator component.
+		 *	@param[in] void
+		 *	@return bool The active state of the Animator component.
+		 */
 		bool getActive();
-	public: // Debug Functions
+
+		/**
+		 *	Set the debug state of the Animator component.
+		 *	@param[in] enabled The new debug state.
+		 *	@return void
+		 */
 		void setDebugEnabled(bool enabled);
-		bool getDebugEnabled();
-		void debugDraw(DirectX::XMFLOAT4X4& worldMatrix, DirectX::XMFLOAT3 color);
-	private: // Helper Functions
-		void updateAnimationTime(AnimationClip& clip, double deltaTime, Keyframe& outPrevKeyframe, Keyframe& outNextKeyframe);
-		void blendKeyframes(Keyframe& keyframeA, Keyframe& keyframeB, float blendFactor, Keyframe& outKeyframe);
-		void updateAnimationBuffer(Keyframe& animationKeyframe);
-		DirectX::XMFLOAT4X4 interpolateJointMatrix(DirectX::XMFLOAT4X4 before, DirectX::XMFLOAT4X4 after, float ratio);
-	private: // Framework variables
-		std::shared_ptr<Buffer> mAnimationBuffer;
-		AnimationBuffer mAnimationData;
-		std::vector<Joint> mSkeleton;
-	private: // Animation clips
+
+		/**
+		 *	Get the debug state of the Animator component.
+		 *	@param[in] void
+		 *	@return bool The debug state of the Animator component.
+		 */
+		bool getDebugEnabled();	
+	protected: // Animation clips
 		AnimationSequence mSequence;
 		AnimationClip mCurrentClip;
 		bool mIsActive;
 		bool mIsPlaying;
 		bool mDebugEnabled;
-		DirectX::XMFLOAT4X4 mWorldMatrix;
 		std::map<const char*, AnimationClip> mAnimationMap;
 	};
 }

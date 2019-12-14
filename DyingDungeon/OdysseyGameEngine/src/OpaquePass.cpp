@@ -14,6 +14,7 @@
 #include "Buffer.h"
 #include "Camera.h"
 #include "RenderDevice.h"
+#include "AnimatorDX11.h"
 
 namespace Odyssey
 {
@@ -137,13 +138,13 @@ namespace Odyssey
 		{
 			updateLightingBuffer(itr->second, args);
 
-			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->bind();
 			}
 			updateLightingBuffer(itr->second, args);
 			renderSceneObject(itr->second, args);
-			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->unbind();
 			}
