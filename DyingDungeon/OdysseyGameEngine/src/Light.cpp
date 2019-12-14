@@ -24,6 +24,23 @@ namespace Odyssey
 
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(lightPos, targetPos, up);
 
+		DirectX::XMFLOAT4X4 retMat;
+		DirectX::XMStoreFloat4x4(&retMat, view);
+		return retMat;
+	}
+
+	DirectX::XMFLOAT4X4 Light::buildLightTransformProjection(float sceneRadius, DirectX::XMFLOAT3 sceneCenter)
+	{
+		float distance = -2.0f * sceneRadius;
+		DirectX::XMVECTOR lightPos = { mWorldDirection.x * distance, mWorldDirection.y * distance, mWorldDirection.z * distance, 1.0f };
+
+		DirectX::XMStoreFloat4(&mWorldPosition, lightPos);
+
+		DirectX::XMVECTOR targetPos = { 0.0f, 0.0f, 0.0f, 1.0f };
+		DirectX::XMVECTOR up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(lightPos, targetPos, up);
+
 		DirectX::XMVECTOR sphereCenterLS = DirectX::XMVector3TransformCoord(targetPos, view);
 
 		float l = DirectX::XMVectorGetX(sphereCenterLS) - sceneRadius;

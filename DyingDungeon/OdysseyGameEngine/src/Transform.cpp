@@ -16,6 +16,9 @@ namespace Odyssey
 	Transform::Transform(DirectX::XMFLOAT4X4 worldMatrix)
 	{
 		mWorldMatrix = worldMatrix;
+		mPosition = { mWorldMatrix.m[3][0], mWorldMatrix.m[3][1], mWorldMatrix.m[3][2] };
+		mScale = { std::fabsf(mWorldMatrix.m[0][0]), std::fabsf(mWorldMatrix.m[1][1]), std::fabsf(mWorldMatrix.m[2][2]) };
+		calculateEulerRotations();
 	}
 
 	void Transform::initialize()
@@ -115,6 +118,35 @@ namespace Odyssey
 		}
 
 		DirectX::XMStoreFloat4x4(&globalTransform, transform);
+	}
+
+	void Transform::calculateEulerRotations()
+	{
+		if (mWorldMatrix.m[2][0] != 1 && mWorldMatrix.m[2][0] != -1)
+		{
+			float x = -std::asin(mWorldMatrix.m[2][0]);
+			float cosX = std::cos(x);
+			float y = std::atan2(mWorldMatrix.m[2][1] / cosX, mWorldMatrix.m[2][2] / cosX);
+			float z = std::atan2(mWorldMatrix.m[1][0] / cosX, mWorldMatrix.m[0][0] / cosX);
+			mRotation = DirectX::XMFLOAT3(x, y, z);
+		}
+		else
+		{
+			float x = 0.0f;
+			float y = 0.0f;
+			float z = 0.0f;
+			if (mWorldMatrix.m[2][0] == -1)
+			{
+				x = DirectX::g_XMPi.f[0] / 2.0f;
+				y = x + std::atan2(mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+			}
+			else
+			{
+				x = -DirectX::g_XMPi.f[0] / 2.0f;
+				y = -x + std::atan2(-mWorldMatrix.m[0][1], -mWorldMatrix.m[0][2]);
+			}
+			mRotation = DirectX::XMFLOAT3(x, y, z);
+		}
 	}
 
 	void Transform::recalculateWorldMatrix()

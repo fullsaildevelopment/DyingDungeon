@@ -17,6 +17,7 @@ namespace Odyssey
 	public: // Public functions
 		void debugDraw();
 		DirectX::XMFLOAT4X4 buildLightTransform(float sceneRadius, DirectX::XMFLOAT3 sceneCenter);
+		DirectX::XMFLOAT4X4 buildLightTransformProjection(float sceneRadius, DirectX::XMFLOAT3 sceneCenter);
 		void addRange(float range);
 		void setPosition(float x, float y, float z);
 		void addPosition(float x, float y, float z);
