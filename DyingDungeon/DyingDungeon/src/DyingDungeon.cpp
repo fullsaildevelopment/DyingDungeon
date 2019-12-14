@@ -288,8 +288,8 @@ void setupPaladin()
 	gPaladin->addComponent<HeroComponent>();
 	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
 	//Buffs* paladinBuff = new Buffs(0, 0.05f, 2, true);
-	Skills* skill1 = new Skills(5.0f, 5.0f, Buffs(0, 0.05f, 2, true,false));
-	gPaladin->getComponent<HeroComponent>()->SetSkills(*skill1);
+	//Skills* skill1 = new Skills(5.0f, 5.0f, paladinBuff);
+	//gPaladin->getComponent<HeroComponent>()->SetSkills(*skill1);
 	gMainScene->addSceneObject(gPaladin);
 }
 
