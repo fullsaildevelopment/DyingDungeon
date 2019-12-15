@@ -4,6 +4,7 @@ namespace Odyssey
 {
 	InputManager& InputManager::getInstance()
 	{
+		// Create the static Singleton instance and return it.
 		static InputManager instance;
 		return instance;
 	}
@@ -31,26 +32,35 @@ namespace Odyssey
 
 	bool InputManager::getKeyPress(char input)
 	{
+		// Check if the map contains the key press
 		if (mKeyPressMap[input])
 		{
+			// Consume the key press event and return true
 			mKeyPressMap[input] = false;
 			return true;
 		}
+
+		// The key was not found in the map, no key press
 		return false;
 	}
 
 	bool InputManager::getKeyDown(char input)
 	{
+		// Return the key down state of the input
 		return mKeyDownMap[input];
 	}
 
 	bool InputManager::getKeyUp(char input)
 	{
+		// Check if the map contains the key up
 		if (mKeyUpMap[input])
 		{
+			// Consume the key up event and return true
 			mKeyUpMap[input] = false;
 			return true;
 		}
+
+		// The key was not found in the map, no key up
 		return mKeyUpMap[input];
 	}
 }

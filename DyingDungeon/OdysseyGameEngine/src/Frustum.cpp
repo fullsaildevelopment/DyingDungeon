@@ -46,9 +46,15 @@ namespace Odyssey
 	int Frustum::classifyAABBToPlane(AABB& aabb, Plane& plane)
 	{
 		Sphere aabbSphere;
-		aabbSphere.center = aabb.calculateCenter();
+
+		// Calculate the center position of the AABB and store it as the sphere's center
+		aabb.calculateCenter(aabbSphere.center);
+		// Calculate the extents of the AABB
+		DirectX::XMFLOAT3 aabbExtents;
+		aabb.calculateExtents(aabbExtents);
+
 		// Radius = aabb.extents dot abs(plane.normal)
-		aabbSphere.radius = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat3(&aabb.calculateExtents()), DirectX::XMVectorAbs(XMLoadFloat3(&plane.normal))));
+		aabbSphere.radius = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat3(&aabbExtents), DirectX::XMVectorAbs(XMLoadFloat3(&plane.normal))));
 
 		return classifySphereToPlane(aabbSphere, plane);
 	}

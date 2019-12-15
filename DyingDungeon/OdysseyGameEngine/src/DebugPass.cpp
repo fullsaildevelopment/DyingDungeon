@@ -9,6 +9,7 @@
 #include "RenderDevice.h"
 #include "Shader.h"
 #include "Transform.h"
+#include "AnimatorDX11.h"
 
 namespace Odyssey
 {
@@ -61,11 +62,13 @@ namespace Odyssey
 	{
 		for (std::shared_ptr<GameObject> debugObject : args.renderList)
 		{
-			if (Animator* animator = debugObject->getComponent<Animator>())
+			if (AnimatorDX11* animator = debugObject->getComponent<AnimatorDX11>())
 			{
 				if (animator->getDebugEnabled())
 				{
-					animator->debugDraw({ 1.0f, 0.0f, 0.0f });
+					DirectX::XMFLOAT4X4 transform;
+					debugObject->getComponent<Transform>()->getGlobalTransform(transform);
+					animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
 				}
 			}
 
@@ -76,11 +79,13 @@ namespace Odyssey
 
 			for (std::shared_ptr<GameObject> child : debugObject->getChildren())
 			{
-				if (Animator* animator = child->getComponent<Animator>())
+				if (AnimatorDX11* animator = child->getComponent<AnimatorDX11>())
 				{
 					if (animator->getDebugEnabled())
 					{
-						animator->debugDraw({ 1.0f, 0.0f, 0.0f });
+						DirectX::XMFLOAT4X4 transform;
+						child->getComponent<Transform>()->getGlobalTransform(transform);
+						animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
 					}
 				}
 

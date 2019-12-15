@@ -35,7 +35,7 @@ namespace Odyssey
 
 	std::shared_ptr<Scene> RenderDevice::createScene()
 	{
-		std::shared_ptr<Scene> scene = std::make_shared<Scene>(*this);
+		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 		return scene;
 	}
 

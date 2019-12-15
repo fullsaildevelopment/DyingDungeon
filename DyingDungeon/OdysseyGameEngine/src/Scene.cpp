@@ -4,7 +4,6 @@
 #include "MeshRenderer.h"
 #include "GameObject.h"
 #include "RenderPass.h"
-#include "RenderPipelineManager.h"
 #include "ParticleSystem.h"
 #include "Buffer.h"
 #include "Component.h"
@@ -12,16 +11,6 @@
 
 namespace Odyssey
 {
-	Scene::Scene(RenderDevice& renderDevice)
-		: mDevice(renderDevice)
-	{
-		mPerFrameBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
-			static_cast<UINT>(sizeof(PerFrameBuffer)), nullptr);
-
-		mPerObjectBuffer = mDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
-			static_cast<UINT>(sizeof(PerObjectBuffer)), nullptr);
-	}
-
 	void Scene::addLight(std::shared_ptr<Light> light)
 	{
 		mSceneLights.push_back(light);
@@ -55,13 +44,6 @@ namespace Odyssey
 				}
 			}
 		}
-
-		// Update the render args lists
-		renderArgs.perFrameBuffer = mPerFrameBuffer.get();
-		renderArgs.perObjectBuffer = mPerObjectBuffer.get();
-		renderArgs.camera = mMainCamera.get();
-		renderArgs.lightList = mSceneLights;
-		renderArgs.renderList = mSceneObjectList;
 	}
 
 	void Scene::update()
@@ -73,9 +55,6 @@ namespace Odyssey
 
 		// Update the scene
 		updateScene();
-
-		// Render the scene
-		RenderPipelineManager::getInstance().render(renderArgs);
 	}
 
 	double Scene::getDeltaTime()
@@ -86,6 +65,16 @@ namespace Odyssey
 	std::shared_ptr<Light> Scene::getLight(int index)
 	{
 		return mSceneLights[index];
+	}
+
+	std::vector<std::shared_ptr<Light>> Scene::getSceneLights()
+	{
+		return mSceneLights;
+	}
+
+	std::vector<std::shared_ptr<GameObject>> Scene::getGameObjects()
+	{
+		return mSceneObjectList;
 	}
 
 	void Scene::updateScene()

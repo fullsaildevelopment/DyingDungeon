@@ -1,13 +1,15 @@
 #include "GameObject.h"
 #include "FileManager.h"
 #include <fstream>
+#include <iostream>
+#include <string>
 #include "Material.h"
 #include "Transform.h"
-#include "Mesh.h"
 #include "AABB.h"
 #include "RenderDevice.h"
-#include "Animator.h"
+#include "AnimatorDX11.h"
 #include "Scene.h"
+#include "Mesh.h"
 
 namespace Odyssey
 {
@@ -21,7 +23,9 @@ namespace Odyssey
 	{
 		mRenderDevice = renderDevice;
 	}
-
+	// TODO:
+	// FileManager::importScene(std::shared_ptr<Scene>, const char*)
+	// Each mesh inside the file is a new gameobject
 	void FileManager::importScene(std::shared_ptr<Scene> scene, const char* filename)
 	{
 		// Open the model file
@@ -37,54 +41,23 @@ namespace Odyssey
 		// Iterate through all of the meshes in the file
 		for (int i = 0; i < numMeshes; i++)
 		{
-			// Gameobject Data
-			std::shared_ptr<GameObject> gameObject;
-			DirectX::XMFLOAT4X4 transform;
-			// Mesh Data
-			std::shared_ptr<Mesh> mesh;
-			MeshData meshData;
-			// Material Data
-			std::shared_ptr<Material> material;
-			MaterialData materialData;
-
-			// Make a game object to hold the mesh
-			gameObject = std::make_shared<GameObject>();
+			// Each mesh in the file becomes its own GameObject with no parent
+			std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>();
 			gameObject->setParent(nullptr);
 
-			// Read  in the transform data
-			file.read((char*)&transform, sizeof(DirectX::XMFLOAT4X4));
+			// Construct the GameObject from the file data
+			constructGameObject(file, gameObject);
 
-			// Read in and process the mesh data
-			readMeshData(file, meshData);
-			processMeshData(meshData, mesh);
-
-			// Read in and process material data
-			readMaterialData(file, materialData);
-			processMaterialData(materialData, material);
-
-			// Add the Transform component
-			gameObject->addComponent<Transform>(transform);
-
-			// Add the MeshRenderer component
-			gameObject->addComponent<MeshRenderer>(mesh, material);
-
-			// Add the AABB component
-			DirectX::XMFLOAT4X4 globalTransform;
-			gameObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
-			gameObject->addComponent<AABB>(globalTransform, meshData.vertexList);
-
-			// Add the gameobject to the scene
+			// Add the GameObject to the scene
 			scene->addSceneObject(gameObject);
 		}
 	}
 
 	// TODO:
-	// FileManager::importScene(std::shared_ptr<Scene>, const char*)
-	// Each mesh inside the file is a new gameobject
-
-	// TODO:
 	// FileManager::importMesh(std::shared_ptr<GameObject>, const char*)
 	// A singular mesh without a skeleton
+
+	
 
 	// TODO:
 	// FileManager::importModel(std::shared_ptr<GameObject>, const char*)
@@ -93,7 +66,7 @@ namespace Odyssey
 	// An animator is attached and sent the joint index -> transform map
 	// On animator update, map[animated joint index]->setWorldMatrix(animatedTransform);
 	// For more extendability, track previous animated frame's position and rotation, find the delta and set.
-	void FileManager::importModel(std::shared_ptr<GameObject> gameObject, const char* filename)
+	void FileManager::importModel(std::shared_ptr<GameObject> gameObject, const char* filename, bool isMultiMesh)
 	{
 		// Open the model file
 		std::fstream file{ filename, std::ios_base::in | std::ios_base::binary };
@@ -105,45 +78,30 @@ namespace Odyssey
 		uint64_t numMeshes;
 		file.read((char*)&numMeshes, sizeof(uint64_t));
 
-		// Each mesh will become a child game object with the parameter gameobject as the parent
-		for (int i = 0; i < numMeshes; i++)
+		int begin = 0;
+		if (isMultiMesh == false)
 		{
-			// Gameobject Data
-			std::shared_ptr<GameObject> child;
-			DirectX::XMFLOAT4X4 transform;
-			// Mesh Data
-			std::shared_ptr<Mesh> mesh;
-			MeshData meshData;
-			// Material Data
-			std::shared_ptr<Material> material;
-			MaterialData materialData;
+			begin = 1;
 
-			// Make a game object to hold the mesh
-			child = std::make_shared<GameObject>();
+			// Import the first mesh and assign it to the parameter gameobject
+			gameObject->setParent(nullptr);
+			constructGameObject(file, gameObject);
+		}
+		
+		// Iterate over all other meshes in the file
+		for (int i = begin; i < numMeshes; i++)
+		{
+			// Each additional mesh in the file becomes a child to the first mesh
+			std::shared_ptr<GameObject> child = std::make_shared<GameObject>();
+
+			// Set the parent of the mesh to the first mesh GameObject
 			child->setParent(gameObject.get());
+
+			// Add the child to the first mesh GameObject
 			gameObject->addChild(child);
 
-			// Read  in the transform data
-			file.read((char*)&transform, sizeof(DirectX::XMFLOAT4X4));
-
-			// Read in and process the mesh data
-			readMeshData(file, meshData);
-			processMeshData(meshData, mesh);
-
-			// Read in and process material data
-			readMaterialData(file, materialData);
-			processMaterialData(materialData, material);
-
-			// Add the Transform component
-			child->addComponent<Transform>(transform);
-
-			// Add the MeshRenderer component
-			child->addComponent<MeshRenderer>(mesh, material);
-
-			// Add the AABB component
-			DirectX::XMFLOAT4X4 globalTransform;
-			child->getComponent<Transform>()->getGlobalTransform(globalTransform);
-			child->addComponent<AABB>(globalTransform, meshData.vertexList);
+			// Construct the GameObject from the file data
+			constructGameObject(file, child);
 		}
 
 		// Check for skeleton data in the file
@@ -153,8 +111,8 @@ namespace Odyssey
 		// If a skeleton was read add an Animator component and set the skeleton
 		if (skeletonData.hasSkeleton)
 		{
-			gameObject->addComponent<Animator>(*mRenderDevice);
-			gameObject->getComponent<Animator>()->setSkeleton(skeletonData.skeleton);
+			gameObject->addComponent<AnimatorDX11>(*mRenderDevice);
+			gameObject->getComponent<AnimatorDX11>()->setSkeleton(skeletonData.skeleton);
 		}
 
 		// Close the file
@@ -307,6 +265,72 @@ namespace Odyssey
 			}
 		}
 	}
+
+	void FileManager::constructGameObject(std::fstream& file, std::shared_ptr<GameObject> gameObject)
+	{
+		DirectX::XMFLOAT4X4 transform;
+		// Mesh Data
+		std::shared_ptr<Mesh> mesh;
+		MeshData meshData;
+		// Material Data
+		std::shared_ptr<Material> material;
+		MaterialData materialData;
+
+		// Read  in the transform data
+		file.read((char*)&transform, sizeof(DirectX::XMFLOAT4X4));
+
+		// Read in and process the mesh data
+		readMeshData(file, meshData);
+		processMeshData(meshData, mesh);
+
+		// Read in and process material data
+		readMaterialData(file, materialData);
+		processMaterialData(materialData, material);
+
+		// Add the Transform component
+		if (Transform* tComponent = gameObject->getComponent<Transform>())
+		{
+			// Get the position of the attached transform
+			DirectX::XMFLOAT3 pos;
+			tComponent->getPosition(pos);
+
+			// Get the rotation of the attached transform
+			DirectX::XMFLOAT3 rot;
+			tComponent->getEulerRotation(rot);
+
+			// Get the scale of the attached transform
+			DirectX::XMFLOAT3 scale;
+			tComponent->getScale(scale);
+
+			// Remove the previously attached transform component
+			gameObject->removeComponent<Transform>(tComponent);
+
+			// Add a new transform component with the transform read from the file
+			gameObject->addComponent<Transform>(transform);
+
+			// Add the previous position, rotation and scale to the new transform component
+			if (tComponent = gameObject->getComponent<Transform>())
+			{
+				tComponent->addPosition(pos.x, pos.y, pos.z);
+				tComponent->addRotation(rot.x, rot.y, rot.z);
+				tComponent->setScale(scale.x, scale.y, scale.z);
+			}
+		}
+		else
+		{
+			gameObject->addComponent<Transform>(transform);
+		}
+		
+
+		// Add the MeshRenderer component
+		gameObject->addComponent<MeshRenderer>(mesh, material);
+
+		// Add the AABB component
+		DirectX::XMFLOAT4X4 globalTransform;
+		gameObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+		gameObject->addComponent<AABB>(globalTransform, meshData.vertexList);
+	}
+
 	void FileManager::constructAABB(Transform* objectTransform, std::shared_ptr<GameObject> gameObject, MeshData& meshData)
 	{
 		DirectX::XMFLOAT4X4 localTransform;

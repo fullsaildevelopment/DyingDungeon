@@ -37,6 +37,7 @@ namespace Odyssey
 	class Component
 	{
 	public:
+		// Static type ID of the component
 		static const std::size_t Type;
 		virtual ~Component() = default;
 		virtual bool isClassType(const std::size_t classType) const;

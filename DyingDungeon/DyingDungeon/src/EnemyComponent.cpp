@@ -7,8 +7,6 @@ CLASS_DEFINITION(Character, EnemyComponent)
 void EnemyComponent::initialize()
 {
 	onEnable();
-	mGameObject->addComponent<Odyssey::Transform>();
-
 	mBaseMaxHP = 100.0f;
 	mBaseMaxMana = 100.0f;
 

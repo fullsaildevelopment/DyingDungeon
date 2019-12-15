@@ -14,6 +14,7 @@
 #include "Buffer.h"
 #include "Camera.h"
 #include "RenderDevice.h"
+#include "AnimatorDX11.h"
 
 namespace Odyssey
 {
@@ -107,8 +108,8 @@ namespace Odyssey
 					{
 						// Depth sorting
 						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
-						view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(view.r[3]);
+						DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
 					}
 				}
@@ -124,8 +125,8 @@ namespace Odyssey
 						{
 							// Depth Sorting
 							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
-							view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-							float depth = DirectX::XMVectorGetZ(view.r[3]);
+							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
 						}
 					}
@@ -137,13 +138,13 @@ namespace Odyssey
 		{
 			updateLightingBuffer(itr->second, args);
 
-			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->bind();
 			}
 			updateLightingBuffer(itr->second, args);
 			renderSceneObject(itr->second, args);
-			if (Animator* rootAnimator = itr->second->getRootComponent<Animator>())
+			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->unbind();
 			}
@@ -163,15 +164,15 @@ namespace Odyssey
 		sceneLighting.numLights = 0;
 
 		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = args.camera->getComponent<Transform>()->getPosition();
+		args.camera->getComponent<Transform>()->getPosition(sceneLighting.camPos);
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{
-			if (light->mLightType == LightType::Point)
+			if (light->getLightType() == LightType::Point)
 			{
 				Sphere sphere;
-				sphere.center = light->getPosition();
-				sphere.radius = light->mRange;
+				light->getPosition(sphere.center);
+				sphere.radius = light->getRange();
 				if (gameObject->getComponent<AABB>()->testAABBtoSphere(sphere))
 				{
 					sceneLighting.sceneLights[sceneLighting.numLights] = *light;

@@ -72,7 +72,7 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice)
 	Odyssey::RenderPipelineManager::getInstance().addPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 2048, 2048);
+	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
 	Odyssey::RenderPipelineManager::getInstance().addPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
@@ -92,163 +92,143 @@ void setupLighting()
 {
 	// Set up a directional light
 	gDirLight = std::make_shared<Odyssey::Light>();
-	gDirLight->mLightType = Odyssey::LightType::Directional;
-	gDirLight->mWorldPosition = DirectX::XMFLOAT4(0, 0, 0, 1);
-	gDirLight->mWorldDirection = DirectX::XMFLOAT4(0.75f, -0.45f, -0.055f, 0.0f);
-	gDirLight->mColor = DirectX::XMFLOAT4(0.4f, 0.5f, 0.7f, 1.0f);
-	gDirLight->mIntensity = 1.0f;
-	gDirLight->mRange = 0.0f;
-	gDirLight->mSpotAngle = 0.0f;
+	gDirLight->setLightType(Odyssey::LightType::Directional);
+	gDirLight->setPosition(0, 0, 0);
+	gDirLight->setDirection(0.75f, -0.45f, -0.055f);
+	gDirLight->setColor(0.4f, 0.5f, 0.7f);
+	gDirLight->setIntensity(1.0f);
+	gDirLight->setRange(0.0f);
+	gDirLight->setSpotAngle(0.0f);
 
 	// First Level Arena Lights
 	// Arena ambient
 	gLights[0] = std::make_shared<Odyssey::Light>();
-	gLights[0]->mLightType = Odyssey::LightType::Point;
-	gLights[0]->mWorldPosition = DirectX::XMFLOAT4(0.0, 10.0f, 0.0f, 1.0f);
-	gLights[0]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[0]->mColor = DirectX::XMFLOAT4(0.3f, 0.4f, 0.5f, 1.0f);
-	gLights[0]->mIntensity = 2.0f;
-	gLights[0]->mRange = 20.0f;
-	gLights[0]->mSpotAngle = 0.0f;
+	gLights[0]->setLightType(Odyssey::LightType::Point);
+	gLights[0]->setPosition(0.0, 10.0f, 0.0f);
+	gLights[0]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[0]->setColor(0.5f, 0.5f, 0.5f);
+	gLights[0]->setIntensity(2.25f);
+	gLights[0]->setRange(30.0f);
+	gLights[0]->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 1
 	gLights[1] = std::make_shared<Odyssey::Light>();
-	gLights[1]->mLightType = Odyssey::LightType::Point;
-	gLights[1]->mWorldPosition = DirectX::XMFLOAT4(-5.45f, 4.75f, 14.4f, 1.0f);
-	gLights[1]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[1]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[1]->mIntensity = 2.0f;
-	gLights[1]->mRange = 5.0f;
-	gLights[1]->mSpotAngle = 0.0f;
+	gLights[1]->setLightType(Odyssey::LightType::Point);
+	gLights[1]->setPosition(-5.45f, 4.75f, 14.4f);
+	gLights[1]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[1]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[1]->setIntensity(2.0f);
+	gLights[1]->setRange(5.0f);
+	gLights[1]->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 2
 	gLights[2] = std::make_shared<Odyssey::Light>();
-	gLights[2]->mLightType = Odyssey::LightType::Point;
-	gLights[2]->mWorldPosition = DirectX::XMFLOAT4(-5.45f, 4.75f, 7.5f, 1.0f);
-	gLights[2]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[2]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[2]->mIntensity = 2.0f;
-	gLights[2]->mRange = 5.0f;
-	gLights[2]->mSpotAngle = 0.0f;
+	gLights[2]->setLightType(Odyssey::LightType::Point);
+	gLights[2]->setPosition(-5.45f, 4.75f, 7.5f);
+	gLights[2]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[2]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[2]->setIntensity(2.0f);
+	gLights[2]->setRange(5.0f);
+	gLights[2]->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 3
 	gLights[3] = std::make_shared<Odyssey::Light>();
-	gLights[3]->mLightType = Odyssey::LightType::Point;
-	gLights[3]->mWorldPosition = DirectX::XMFLOAT4(-5.45f, 4.75f, -6.22f, 1.0f);
-	gLights[3]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[3]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[3]->mIntensity = 2.0f;
-	gLights[3]->mRange = 5.0f;
-	gLights[3]->mSpotAngle = 0.0f;
+	gLights[3]->setLightType(Odyssey::LightType::Point);
+	gLights[3]->setPosition(-5.45f, 4.75f, -6.22f);
+	gLights[3]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[3]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[3]->setIntensity(2.0f);
+	gLights[3]->setRange(5.0f);
+	gLights[3]->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 4
 	gLights[4] = std::make_shared<Odyssey::Light>();
-	gLights[4]->mLightType = Odyssey::LightType::Point;
-	gLights[4]->mWorldPosition = DirectX::XMFLOAT4(-5.45f, 4.75f, -13.22f, 1.0f);
-	gLights[4]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[4]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[4]->mIntensity = 2.0f;
-	gLights[4]->mRange = 5.0f;
-	gLights[4]->mSpotAngle = 0.0f;
+	gLights[4]->setLightType(Odyssey::LightType::Point);
+	gLights[4]->setPosition(-5.45f, 4.75f, -13.22f);
+	gLights[4]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[4]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[4]->setIntensity(2.0f);
+	gLights[4]->setRange(5.0f);
+	gLights[4]->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 1
 	gLights[5] = std::make_shared<Odyssey::Light>();
-	gLights[5]->mLightType = Odyssey::LightType::Point;
-	gLights[5]->mWorldPosition = DirectX::XMFLOAT4(5.45f, 4.75f, 14.4f, 1.0f);
-	gLights[5]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[5]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[5]->mIntensity = 2.0f;
-	gLights[5]->mRange = 5.0f;
-	gLights[5]->mSpotAngle = 0.0f;
+	gLights[5]->setLightType(Odyssey::LightType::Point);
+	gLights[5]->setPosition(5.45f, 4.75f, 14.4f);
+	gLights[5]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[5]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[5]->setIntensity(2.0f);
+	gLights[5]->setRange(5.0f);
+	gLights[5]->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 2
 	gLights[6] = std::make_shared<Odyssey::Light>();
-	gLights[6]->mLightType = Odyssey::LightType::Point;
-	gLights[6]->mWorldPosition = DirectX::XMFLOAT4(5.45f, 4.75f, 7.5f, 1.0f);
-	gLights[6]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[6]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[6]->mIntensity = 2.0f;
-	gLights[6]->mRange = 5.0f;
-	gLights[6]->mSpotAngle = 0.0f;
+	gLights[6]->setLightType(Odyssey::LightType::Point);
+	gLights[6]->setPosition(5.45f, 4.75f, 7.5f);
+	gLights[6]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[6]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[6]->setIntensity(2.0f);
+	gLights[6]->setRange(5.0f);
+	gLights[6]->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 3
 	gLights[7] = std::make_shared<Odyssey::Light>();
-	gLights[7]->mLightType = Odyssey::LightType::Point;
-	gLights[7]->mWorldPosition = DirectX::XMFLOAT4(5.45f, 4.75f, -13.22f, 1.0f);
-	gLights[7]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[7]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[7]->mIntensity = 2.0f;
-	gLights[7]->mRange = 5.0f;
-	gLights[7]->mSpotAngle = 0.0f;
+	gLights[7]->setLightType(Odyssey::LightType::Point);
+	gLights[7]->setPosition(5.45f, 4.75f, -13.22f);
+	gLights[7]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[7]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[7]->setIntensity(2.0f);
+	gLights[7]->setRange(5.0f);
+	gLights[7]->setSpotAngle(0.0f);
 
 	// World-Space Left Door Light 1
 	gLights[8] = std::make_shared<Odyssey::Light>();
-	gLights[8]->mLightType = Odyssey::LightType::Point;
-	gLights[8]->mWorldPosition = DirectX::XMFLOAT4(-12.0f, 4.75f, -6.7f, 1.0f);
-	gLights[8]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[8]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[8]->mIntensity = 2.0f;
-	gLights[8]->mRange = 5.0f;
-	gLights[8]->mSpotAngle = 0.0f;
+	gLights[8]->setLightType(Odyssey::LightType::Point);
+	gLights[8]->setPosition(-12.0f, 4.75f, -6.7f);
+	gLights[8]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[8]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[8]->setIntensity(2.0f);
+	gLights[8]->setRange(5.0f);
+	gLights[8]->setSpotAngle(0.0f);
 
 	// World-Space Left Door Light 2
 	gLights[9] = std::make_shared<Odyssey::Light>();
-	gLights[9]->mLightType = Odyssey::LightType::Point;
-	gLights[9]->mWorldPosition = DirectX::XMFLOAT4(-12.0f, 4.75f, 1.2f, 1.0f);
-	gLights[9]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[9]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[9]->mIntensity = 2.0f;
-	gLights[9]->mRange = 5.0f;
-	gLights[9]->mSpotAngle = 0.0f;
+	gLights[9]->setLightType(Odyssey::LightType::Point);
+	gLights[9]->setPosition(-12.0f, 4.75f, 1.2f);
+	gLights[9]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[9]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[9]->setIntensity(2.0f);
+	gLights[9]->setRange(5.0f);
+	gLights[9]->setSpotAngle(0.0f);
 
 	// World-Space Right Door Light 1
 	gLights[10] = std::make_shared<Odyssey::Light>();
-	gLights[10]->mLightType = Odyssey::LightType::Point;
-	gLights[10]->mWorldPosition = DirectX::XMFLOAT4(12.74f, 5.0f, -2.85f, 1.0f);
-	gLights[10]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[10]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[10]->mIntensity = 2.0f;
-	gLights[10]->mRange = 5.0f;
-	gLights[10]->mSpotAngle = 0.0f;
+	gLights[10]->setLightType(Odyssey::LightType::Point);
+	gLights[10]->setPosition(12.74f, 5.0f, -2.85f);
+	gLights[10]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[10]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[10]->setIntensity(2.0f);
+	gLights[10]->setRange(5.0f);
+	gLights[10]->setSpotAngle(0.0f);
 
 	// World-Space Right Door Light 2
 	gLights[11] = std::make_shared<Odyssey::Light>();
-	gLights[11]->mLightType = Odyssey::LightType::Point;
-	gLights[11]->mWorldPosition = DirectX::XMFLOAT4(12.74f, 5.0f, 4.25f, 1.0f);
-	gLights[11]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[11]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[11]->mIntensity = 2.0f;
-	gLights[11]->mRange = 5.0f;
-	gLights[11]->mSpotAngle = 0.0f;
+	gLights[11]->setLightType(Odyssey::LightType::Point);
+	gLights[11]->setPosition(12.74f, 5.0f, 4.25f);
+	gLights[11]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[11]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[11]->setIntensity(2.0f);
+	gLights[11]->setRange(5.0f);
+	gLights[11]->setSpotAngle(0.0f);
 
 	// Library-Area Candle Light
 	gLights[12] = std::make_shared<Odyssey::Light>();
-	gLights[12]->mLightType = Odyssey::LightType::Point;
-	gLights[12]->mWorldPosition = DirectX::XMFLOAT4(-1.25f, 12.5f, -35.0f, 1.0f);
-	gLights[12]->mWorldDirection = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	gLights[12]->mColor = DirectX::XMFLOAT4(0.8f, 0.5f, 0.4f, 1.0f);
-	gLights[12]->mIntensity = 2.0f;
-	gLights[12]->mRange = 12.5f;
-
-	// Arena-Paladin Spotlight
-	gLights[13] = std::make_shared<Odyssey::Light>();
-	gLights[13]->mLightType = Odyssey::LightType::Spot;
-	gLights[13]->mWorldPosition = DirectX::XMFLOAT4(-1.0f, 5.0f, 5.0f, 1.0f);
-	gLights[13]->mWorldDirection = DirectX::XMFLOAT4(0.1f, -0.95f, -0.25f, 0.0f);
-	gLights[13]->mColor = DirectX::XMFLOAT4(0.3f, 0.3f, 0.8f, 1.0f);
-	gLights[13]->mIntensity = 2.0f;
-	gLights[13]->mRange = 20.0f;
-	gLights[13]->mSpotAngle = 0.75f;
-
-	// Arena-Skeleton Spotlight
-	gLights[14] = std::make_shared<Odyssey::Light>();
-	gLights[14]->mLightType = Odyssey::LightType::Spot;
-	gLights[14]->mWorldPosition = DirectX::XMFLOAT4(-1.0f, 5.0f, -8.0f, 1.0f);
-	gLights[14]->mWorldDirection = DirectX::XMFLOAT4(0.1f, -0.95f, -0.25f, 0.0f);
-	gLights[14]->mColor = DirectX::XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
-	gLights[14]->mIntensity = 2.0f;
-	gLights[14]->mRange = 20.0f;
-	gLights[14]->mSpotAngle = 0.75f;
+	gLights[12]->setLightType(Odyssey::LightType::Point);
+	gLights[12]->setPosition(-1.25f, 12.5f, -35.0f);
+	gLights[12]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[12]->setColor(0.8f, 0.5f, 0.4f);
+	gLights[12]->setIntensity(2.0f);
+	gLights[12]->setRange(12.5f);
 
 	gMainScene->addLight(gDirLight);
 	gMainScene->addLight(gLights[0]);
@@ -264,16 +244,11 @@ void setupLighting()
 	gMainScene->addLight(gLights[10]);
 	gMainScene->addLight(gLights[11]);
 	gMainScene->addLight(gLights[12]);
-	gMainScene->addLight(gLights[13]);
-	gMainScene->addLight(gLights[14]);
 }
 
 void setupArena()
 {
-	gArena = std::make_shared<Odyssey::GameObject>();
-	gArena->addComponent<Odyssey::Transform>();
-	Odyssey::FileManager::getInstance().importModel(gArena, "assets/models/TestArena.dxm");
-	gMainScene->addSceneObject(gArena);
+	Odyssey::FileManager::getInstance().importScene(gMainScene, "assets/models/TestArena.dxm");
 }
 
 void setupPaladin()
@@ -283,7 +258,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm");
+	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>();
 	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
@@ -320,8 +295,10 @@ void setupSkeleton()
 	gSkeleton->addComponent<Odyssey::Transform>();
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
-	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Death", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180,0);
+	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
+	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>();
 	gSkeleton->getComponent<EnemyComponent>()->SetName("Skeleton");
 	gMainScene->addSceneObject(gSkeleton);
@@ -364,8 +341,8 @@ int playGame()
 	application.setActiveScene(gMainScene);
 
 	//Play audio
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	RedAudioManager::Instance()->Loop("Background");
+	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	//RedAudioManager::Instance()->Loop("Background");
 
 	// Run the application
 	return application.update();

@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "Component.h"
 #include "Transform.h"
+#include "RenderPass.h"
+#include "RenderPipeline.h"
 
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
@@ -15,31 +17,33 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	switch (message)
 	{
-	case WM_KEYDOWN:
-	{
-		Odyssey::InputManager::getInstance().registerKeyDown(static_cast<int>(wParam));
-	}
-	break;
-	case WM_KEYUP:
-	{
-		Odyssey::InputManager::getInstance().registerKeyUp(static_cast<int>(wParam));
-	}
-	break;
-	case WM_PAINT:
-	{
-		PAINTSTRUCT paintStruct;
-		HDC hDC;
+		case WM_KEYDOWN:
+		{
+			// Register the input as key down with the input manager
+			Odyssey::InputManager::getInstance().registerKeyDown(static_cast<int>(wParam));
+		}
+		break;
+		case WM_KEYUP:
+		{
+			// Register the input as key up with the input manager
+			Odyssey::InputManager::getInstance().registerKeyUp(static_cast<int>(wParam));
+		}
+		break;
+		case WM_PAINT:
+		{
+			PAINTSTRUCT paintStruct;
+			HDC hDC;
 
-		hDC = BeginPaint(hwnd, &paintStruct);
-		EndPaint(hwnd, &paintStruct);
-	}
-	break;
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-	}
-	break;
-	}
+			hDC = BeginPaint(hwnd, &paintStruct);
+			EndPaint(hwnd, &paintStruct);
+		}
+		break;
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
+		}
+		break;
+		}
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
@@ -47,10 +51,11 @@ namespace Odyssey
 {
 	Application::Application()
 	{
+		// Get the module handle assocaited with the application
 		mHandleInstance = ::GetModuleHandle(NULL);
 
+		// Create a default blank window for rendering
 		WNDCLASS renderWindowClass = { };
-
 		renderWindowClass.style = CS_HREDRAW | CS_VREDRAW;
 		renderWindowClass.lpfnWndProc = &WndProc;
 		renderWindowClass.cbClsExtra = 0;
@@ -62,28 +67,38 @@ namespace Odyssey
 		renderWindowClass.lpszMenuName = NULL;
 		renderWindowClass.lpszClassName = RENDER_WINDOW_CLASS_NAME;
 
+		// Register the window
 		RegisterClass(&renderWindowClass);
 
+		// Create the RenderDevice for this application
 		mRenderDevice = std::make_unique<RenderDevice>(*this);
+		mRenderPipeline = std::make_unique<RenderPipeline>(*(mRenderDevice.get()));
 
+		// Initialize the debug renderer
 		DebugManager::getInstance().initialize(*mRenderDevice);
 	}
 
 	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::string& title, int windowWidth, int windowHeight)
 	{
+		// Get the width and height of the screen
 		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 		int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
+		// Initialize a window rect
 		RECT windowRect = { 0, 0, windowWidth, windowHeight };
 
+		// Adjust the window rect
 		AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
+		// Calculate a new window width and height
 		windowWidth = windowRect.right - windowRect.left;
 		windowHeight = windowRect.bottom - windowRect.top;
 
+		// Calculate the window's x and y
 		int windowX = (screenWidth - windowWidth) / 2;
 		int windowY = (screenHeight - windowHeight) / 2;
 
+		// Create the window
 		HWND hWindow = CreateWindowEx(NULL,
 			RENDER_WINDOW_CLASS_NAME,
 			L"Render Window",
@@ -97,30 +112,50 @@ namespace Odyssey
 			mHandleInstance,
 			NULL);
 
+		// Create a new RenderWindow associated with the window
 		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindow>(*(mRenderDevice.get()), hWindow);
 
+		// Store the window in the list of windows
+		mWindows.emplace_back(window);
+
+		// If there are no active windows, this becomes our new active window
 		if (mActiveWindow == nullptr)
 		{
 			mActiveWindow = window;
 		}
+
+		// Update and show the window
 		UpdateWindow(hWindow);
 		ShowWindow(hWindow, SW_SHOWDEFAULT);
+
+		// Return the RenderWindow
 		return window;
 	}
 
 	void Application::setActiveScene(std::shared_ptr<Scene> scene)
 	{
+		// Set the new active scene
 		mActiveScene = scene;
 	}
 
-	int Application::update()
+	void Application::addRenderPass(std::shared_ptr<RenderPass> renderPass)
 	{
+		// Push the render pass into the back of the list
+		mRenderPipeline->addRenderPass(renderPass);
+	}
+
+	int Application::run()
+	{
+		// Set the running state
 		mIsRunning = true;
+
+		// Initialize the active scene and it's contained components
 		if (mActiveScene)
 			mActiveScene->initialize();
 
 		MSG msg;
 
+		// Update loop
 		while (mIsRunning)
 		{
 			while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -133,10 +168,16 @@ namespace Odyssey
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
+			// else
 			{
+				// Update the scene
 				if (mActiveScene)
 					mActiveScene->update();
 
+				// Render the scene
+				mRenderPipeline->render(mActiveScene);
+
+				// Present the window
 				mActiveWindow->present();
 			}
 		}
@@ -146,16 +187,19 @@ namespace Odyssey
 
 	void Application::stop()
 	{
+		// Exit the application gracefully
 		PostQuitMessage(0);
 	}
 
 	RenderDevice* Application::getRenderDevice()
 	{
+		// Return a raw pointer to the RenderDevice
 		return mRenderDevice.get();
 	}
 
 	HINSTANCE Application::GetModuleHandle() const
 	{
+		// Return the module handle
 		return mHandleInstance;
 	}
 }
