@@ -5,9 +5,9 @@ Skills::Skills(float dps, float mana)
 {
 	mDamage = dps;
 	mMpCost = mana;
-	mBuff = nullptr;
+	mBuff = Buffs(-1, -1.0f, 0, false, false);
 }
-Skills::Skills(float dps, float mana,Buffs* buff)
+Skills::Skills(float dps, float mana,Buffs buff)
 {
 	mDamage = dps;
 	mMpCost = mana;
@@ -44,8 +44,10 @@ void Skills::Use(Character& caster,Character& target)
     caster.DepleteMana(mMpCost);
 	target.TakeDamage(mDamage);
 	// Attach buff/debuff using the skills stored buff/debuff
-	if (mBuff != nullptr)
-		target.getGameObject()->addComponent<Buffs>(mBuff->GetEffectedStat(),mBuff->GetAmountOfEffect(),mBuff->GetDuration(),mBuff->IsBleed());
+	if (mBuff.GetEffectedStat() != -1)
+	{
+		target.getGameObject()->addComponent<Buffs>(mBuff.GetEffectedStat(), mBuff.GetAmountOfEffect(), mBuff.GetDuration(), mBuff.IsBleed(), true);
+	}
 	// Put info to console
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
@@ -55,8 +57,7 @@ void Skills::Use(Character& caster,Character& target)
 		target.Die();
 	}
 }
-
-Buffs* Skills::GetBuff()
+Buffs Skills::GetBuff()
 {
 	return mBuff;
 }

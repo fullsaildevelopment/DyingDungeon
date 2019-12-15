@@ -1,47 +1,54 @@
 #include "Buffs.h"
 #include "Character.h"
 
-
 CLASS_DEFINITION(Component, Buffs)
 
-Buffs::Buffs(int effectedStat, float effect, int duration, bool isBleed)
+Buffs::Buffs(int effectedStat, float effect, int duration, bool isBleed, bool alive)
 {
 	mAmountOfEffect = effect;
 	mDuration = duration;
 	mEffectedStat = effectedStat;
 	mBleed = isBleed;
+	setEnabled(alive);
 }
 Buffs::~Buffs()
 {
-	Character* tempC = nullptr;
-	tempC = mGameObject->getComponent<Character>();
+}
+void Buffs::initialize()
+{
+	InitalEffect();
+}
+void Buffs::onEnable()
+{
+	InitalEffect();
+}
+void Buffs::InitalEffect()
+{
 	switch (mEffectedStat)
 	{
-	case HP:
+	case Buffs::HP:
 	{
-		if (mBleed == false)
-		{
-			mAmountOfEffect *= tempC->GetHP();
-			tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
-			std::cout << "Dab the buff is gone" << std::endl;
-		}
+		std::cout << "Bleed on" << std::endl;
+		break;
+	}
+	case Buffs::MP:
+	{
 		break;
 	}
 	default:
 		break;
 	}
 }
-void Buffs::initialize()
+void Buffs::RevertEffect()
 {
-	Character* tempC = nullptr;
-	tempC = mGameObject->getComponent<Character>();
 	switch (mEffectedStat)
 	{
-	case HP:
+	case Buffs::HP:
 	{
-		mAmountOfEffect *= tempC->GetHP();
-		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
-		std::cout << "Fuck you tristan" << std::endl;
+		break;
+	}
+	case Buffs::MP:
+	{
 		break;
 	}
 	default:
@@ -50,15 +57,17 @@ void Buffs::initialize()
 }
 void Buffs::Bleed()
 {
-	Character* tempC = nullptr;
-	tempC = mGameObject->getComponent<Character>();
+	Character* tempC = mGameObject->getComponent<Character>();
 	switch (mEffectedStat)
 	{
-	case HP:
+	case Buffs::HP:
 	{
-		mAmountOfEffect *= tempC->GetHP();
-		tempC->SetHP(tempC->GetHP() + mAmountOfEffect);
-		std::cout << "Bleed" << std::endl;
+		tempC->TakeDamage(mAmountOfEffect * tempC->GetMaxHP());
+		std::cout << tempC->GetName() << " Took " << mAmountOfEffect * tempC->GetMaxHP() << "Damage in bleeding"  << tempC->GetName() << " now has " << tempC->GetHP() << "HP\n" << std::endl;
+		break;
+	}
+	case Buffs::MP:
+	{
 		break;
 	}
 	default:

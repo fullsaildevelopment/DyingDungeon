@@ -96,6 +96,11 @@ void Character::SetHP(float HP)
         mCurrentHP = mBaseMaxHP;
 }
 
+float Character::GetMaxHP()
+{
+	return mBaseMaxHP;
+}
+
 /*
  * Function:  GetMana()
  * --------------------
@@ -181,7 +186,7 @@ void Character::SetHero(bool heroStat)
  */
 std::string Character::GetName()
 {
-	return name;
+	return mName;
 }
 
 /*
@@ -193,7 +198,7 @@ std::string Character::GetName()
  */
 void Character::SetName(std::string newName)
 {
-	name = newName;
+	mName = newName;
 }
 /*
 *Function:  SetSkills(string newWSkillList)
@@ -202,12 +207,9 @@ void Character::SetName(std::string newName)
 *
 *returns : void
 */
-void Character::SetSkills(Skills* newSkillList)
+void Character::SetSkills(Skills newSkillList)
 {
-	skillList[0] = newSkillList[0];
-	skillList[1] = newSkillList[1];
-	skillList[2] = newSkillList[2];
-	skillList[3] = newSkillList[3];
+	mSkillList[0] = newSkillList;
 }
 /*
 *Function:  GetSkills()
@@ -218,5 +220,21 @@ void Character::SetSkills(Skills* newSkillList)
 */
 Skills* Character::GetSkills()
 {
-	return skillList;
+	return mSkillList;
+}
+
+void Character::ManageStatusEffects()
+{
+	for (Buffs* b : mGameObject->getComponents<Buffs>())
+	{
+		b->ReduceDuration(1);
+		if (b->GetDuration() <= 0)
+		{
+			if (!b->IsBleed())
+				b->RevertEffect();
+			mGameObject->removeComponent<Buffs>(b);
+		}
+		else if(b->IsBleed())
+			b->Bleed();
+	}
 }

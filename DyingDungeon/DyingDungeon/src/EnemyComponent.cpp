@@ -16,10 +16,10 @@ void EnemyComponent::initialize()
 	SetMana(100);
 	SetHero(false);
 
-	skillList[0] = Skills(5, 5);
-	skillList[1] = Skills(2, 2);
-	skillList[2] = Skills(0, 0);
-	skillList[3] = Skills(1, 1);
+	mSkillList[0] = Skills(5, 5);
+	mSkillList[1] = Skills(2, 2);
+	mSkillList[2] = Skills(0, 0);
+	mSkillList[3] = Skills(1, 1);
 }
 
 EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
@@ -35,7 +35,7 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 			}
 		}
 	}
-	Skills* skill = &skillList[0];
+	Skills* skill = &mSkillList[0];
 	Move bestMove;
 	bestMove.skill = skill;
 	bestMove.target = target;
@@ -55,18 +55,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	// Use the best move
 	bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
 	// If i have any buffs manage them 
-	for (Buffs* b : mGameObject->getComponents<Buffs>())
-	{
-		//reduce its duration by 1
-		b->ReduceDuration(1);
-		// Check if my buff is over, else see if it need to bleed its effect
-		if (b->GetDuration() == 0)
-		{
-			mGameObject->removeComponent(b);
-		}
-		else if(b->IsBleed())
-			b->Bleed();
-	}
+	ManageStatusEffects();
 	return true;
 }
 
