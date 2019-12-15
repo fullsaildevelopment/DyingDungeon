@@ -5,7 +5,6 @@
 #include "Animator.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "RenderPipelineManager.h"
 #include "OpaquePass.h"
 #include "SkyboxPass.h"
 #include "ShadowPass.h"
@@ -52,8 +51,9 @@ namespace
 
 // Forward declarations
 int playGame();
-void setupPipeline(Odyssey::RenderDevice* renderDevice);
+void setupPipeline(Odyssey::RenderDevice* renderDevice, Odyssey::Application& application);
 void setupLighting();
+void setupCamera();
 void setupArena();
 void setupPaladin();
 void setupSkeleton();
@@ -61,31 +61,75 @@ void setupSkeleton();
 //Tristen's Stuff
 void setUpTowerManager();
 
-void setupPipeline(Odyssey::RenderDevice* renderDevice)
+int playGame()
+{
+	// Set up the application and create a render window
+	Odyssey::Application application;
+	gMainWindow = application.createRenderWindow("Dying Dungeon", 1920, 1080);
+
+	// Get the render device
+	Odyssey::RenderDevice* renderDevice = application.getRenderDevice();
+
+	// Create the main scene
+	gMainScene = renderDevice->createScene();
+
+	// Set up the scene lighting
+	setupLighting();
+
+	// Set up the default rendering pipeline
+	setupPipeline(renderDevice, application);
+
+	// Set up camera
+	setupCamera();
+
+	// Load the arena scene
+	setupArena();
+
+	// Set up the paladin
+	setupPaladin();
+
+	// Set up the skeleton
+	setupSkeleton();
+
+	// Set up the tower manager
+	setUpTowerManager();
+
+	// Set the active scene
+	application.setActiveScene(gMainScene);
+
+	//Play audio
+	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	//RedAudioManager::Instance()->Loop("Background");
+
+	// Run the application
+	return application.run();
+}
+
+void setupPipeline(Odyssey::RenderDevice* renderDevice, Odyssey::Application& application)
 {
 	// Create a clear render target pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
-	Odyssey::RenderPipelineManager::getInstance().addPass(rtvPass);
+	application.addRenderPass(rtvPass);
 
 	// Create a skybox pass and add it to the render pipeline 
 	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
-	Odyssey::RenderPipelineManager::getInstance().addPass(skyboxPass);
+	application.addRenderPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
-	Odyssey::RenderPipelineManager::getInstance().addPass(shadowPass);
+	application.addRenderPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
-	Odyssey::RenderPipelineManager::getInstance().addPass(opaquePass);
+	application.addRenderPass(opaquePass);
 
 	// Create a transparent pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
-	Odyssey::RenderPipelineManager::getInstance().addPass(transparentPass);
+	application.addRenderPass(transparentPass);
 
 	// Create a debugging pass and add it to the render pipeline
 	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
-	//Odyssey::RenderPipelineManager::getInstance().addPass(debugPass);
+	//application.addRenderPass(debugPass);
 }
 
 void setupLighting()
@@ -246,6 +290,18 @@ void setupLighting()
 	gMainScene->addLight(gLights[12]);
 }
 
+void setupCamera()
+{
+	gMainCamera = std::make_shared<Odyssey::GameObject>();
+	gMainCamera->addComponent<Odyssey::Transform>();
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(7.44f, 6.13f, 4.03f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(23.5f, -129.55f, 0.0f);
+	gMainCamera->addComponent<Odyssey::Camera>();
+	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	gMainCamera->addComponent<CameraController>();
+	gMainScene->addSceneObject(gMainCamera);
+}
+
 void setupArena()
 {
 	Odyssey::FileManager::getInstance().importScene(gMainScene, "assets/models/TestArena.dxm");
@@ -268,34 +324,13 @@ void setupPaladin()
 	gMainScene->addSceneObject(gPaladin);
 }
 
-void setUpTowerManager()
-{
-	gPlayerUnit.push_back(gPaladin);
-	gEnemyUnit.push_back(gSkeleton);
-	gCurrentTower = std::make_shared<Odyssey::GameObject>();
-	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
-	gMainScene->addSceneObject(gCurrentTower);
-}
-
-void setUpCamera()
-{
-	gMainCamera = std::make_shared<Odyssey::GameObject>();
-	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(7.44f, 6.13f, 4.03f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(23.5f, -129.55f, 0.0f);
-	gMainCamera->addComponent<Odyssey::Camera>();
-	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
-	gMainCamera->addComponent<CameraController>();
-	gMainScene->addSceneObject(gMainCamera);
-}
-
 void setupSkeleton()
 {
 	gSkeleton = std::make_shared<Odyssey::GameObject>();
 	gSkeleton->addComponent<Odyssey::Transform>();
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
-	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180,0);
+	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180, 0);
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
@@ -304,48 +339,13 @@ void setupSkeleton()
 	gMainScene->addSceneObject(gSkeleton);
 }
 
-int playGame()
+void setUpTowerManager()
 {
-	// Set up the application and create a render window
-	Odyssey::Application application;
-	gMainWindow = application.createRenderWindow("Dying Dungeon", 1920, 1080);
-
-	// Get the render device
-	Odyssey::RenderDevice* renderDevice = application.getRenderDevice();
-
-	// Create the main scene
-	gMainScene = renderDevice->createScene();
-
-	// Set up the scene lighting
-	setupLighting();
-
-	// Set up the default rendering pipeline
-	setupPipeline(renderDevice);
-
-	// Load the arena scene
-	setupArena();
-
-	// Set up the paladin
-	setupPaladin();
-
-	// Set up the skeleton
-	setupSkeleton();
-
-	// Set up the tower manager
-	setUpTowerManager();
-
-	// Set up camera
-	setUpCamera();
-
-	// Set the active scene
-	application.setActiveScene(gMainScene);
-
-	//Play audio
-	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	//RedAudioManager::Instance()->Loop("Background");
-
-	// Run the application
-	return application.update();
+	gPlayerUnit.push_back(gPaladin);
+	gEnemyUnit.push_back(gSkeleton);
+	gCurrentTower = std::make_shared<Odyssey::GameObject>();
+	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
+	gMainScene->addSceneObject(gCurrentTower);
 }
 
 int main()

@@ -41,7 +41,7 @@
     <ClInclude Include="inc\ParticleSystem.h" />
     <ClInclude Include="inc\RenderDevice.h" />
     <ClInclude Include="inc\RenderPass.h" />
-    <ClInclude Include="inc\RenderPipelineManager.h" />
+    <ClInclude Include="inc\RenderPipeline.h" />
     <ClInclude Include="inc\RenderState.h" />
     <ClInclude Include="inc\RenderTarget.h" />
     <ClInclude Include="inc\RenderTypes.h" />
@@ -172,7 +172,7 @@
     <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\RenderDevice.cpp" />
     <ClCompile Include="src\RenderPass.cpp" />
-    <ClCompile Include="src\RenderPipelineManager.cpp" />
+    <ClCompile Include="src\RenderPipeline.cpp" />
     <ClCompile Include="src\RenderState.cpp" />
     <ClCompile Include="src\RenderTarget.cpp" />
     <ClCompile Include="src\RenderWindow.cpp" />
