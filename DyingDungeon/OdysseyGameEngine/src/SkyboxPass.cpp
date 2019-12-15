@@ -68,7 +68,8 @@ namespace Odyssey
 	void SkyboxPass::render(RenderArgs& args)
 	{
 		// Get the camera's position
-		DirectX::XMFLOAT3 camPos = args.camera->getComponent<Transform>()->getPosition();
+		DirectX::XMFLOAT3 camPos;
+		args.camera->getComponent<Transform>()->getPosition(camPos);
 
 		// Set the skybox to the camera's position
 		mSkyBox->addComponent<Transform>();

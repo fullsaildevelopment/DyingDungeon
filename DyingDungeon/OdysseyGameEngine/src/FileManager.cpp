@@ -290,11 +290,25 @@ namespace Odyssey
 		// Add the Transform component
 		if (Transform* tComponent = gameObject->getComponent<Transform>())
 		{
-			DirectX::XMFLOAT3 pos = tComponent->getPosition();
-			DirectX::XMFLOAT3 rot = tComponent->getRotation();
-			DirectX::XMFLOAT3 scale = tComponent->getScale();
+			// Get the position of the attached transform
+			DirectX::XMFLOAT3 pos;
+			tComponent->getPosition(pos);
+
+			// Get the rotation of the attached transform
+			DirectX::XMFLOAT3 rot;
+			tComponent->getEulerRotation(rot);
+
+			// Get the scale of the attached transform
+			DirectX::XMFLOAT3 scale;
+			tComponent->getScale(scale);
+
+			// Remove the previously attached transform component
 			gameObject->removeComponent<Transform>(tComponent);
+
+			// Add a new transform component with the transform read from the file
 			gameObject->addComponent<Transform>(transform);
+
+			// Add the previous position, rotation and scale to the new transform component
 			if (tComponent = gameObject->getComponent<Transform>())
 			{
 				tComponent->addPosition(pos.x, pos.y, pos.z);

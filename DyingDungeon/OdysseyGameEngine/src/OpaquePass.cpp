@@ -164,7 +164,7 @@ namespace Odyssey
 		sceneLighting.numLights = 0;
 
 		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = args.camera->getComponent<Transform>()->getPosition();
+		args.camera->getComponent<Transform>()->getPosition(sceneLighting.camPos);
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{
