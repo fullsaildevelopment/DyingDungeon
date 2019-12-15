@@ -168,11 +168,11 @@ namespace Odyssey
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{
-			if (light->mLightType == LightType::Point)
+			if (light->getLightType() == LightType::Point)
 			{
 				Sphere sphere;
-				sphere.center = light->getPosition();
-				sphere.radius = light->mRange;
+				light->getPosition(sphere.center);
+				sphere.radius = light->getRange();
 				if (gameObject->getComponent<AABB>()->testAABBtoSphere(sphere))
 				{
 					sceneLighting.sceneLights[sceneLighting.numLights] = *light;

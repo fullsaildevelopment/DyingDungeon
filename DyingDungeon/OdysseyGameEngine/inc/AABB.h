@@ -36,7 +36,7 @@ namespace Odyssey
 		virtual void initialize();
 
 		/**
-		 *	Draw the AABB component in wireframe using the DebugRenderer.
+		 *	Draw the AABB component in wireframe using the debug renderer.
 		 *	@param[in] color The color used to render the AABB.
 		 *	@return void
 		 */
