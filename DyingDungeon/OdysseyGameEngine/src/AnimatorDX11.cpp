@@ -9,6 +9,7 @@ namespace Odyssey
 
 	AnimatorDX11::AnimatorDX11(RenderDevice& renderDevice)
 	{
+		// Set default values
 		mCurrentClip.nextFrame = 0;
 		mCurrentClip.prevFrame = 0;
 		mCurrentClip.maxFrames = 0;
@@ -38,6 +39,7 @@ namespace Odyssey
 			return;
 		}
 
+		// If there is a sequence, update it
 		if (mSequence.isBlend)
 		{
 			updateSequence(deltaTime);
@@ -47,18 +49,10 @@ namespace Odyssey
 		// Convert the delta time from seconds to milliseconds to match the animation units
 		deltaTime *= 1000.0;
 
-		// Create the containers for the previous and next frames of the current clip
-		Keyframe prevFrame, nextFrame;
+		// Process the current animation clip and update it to the current frame
+		processAnimationClip(mCurrentClip, deltaTime, mCurrentClip.currentFrame);
 
-		// Advance the animation forward in time and get the appropriate previous and next frames
-		updateAnimationTime(mCurrentClip, deltaTime, prevFrame, nextFrame);
-
-		// Calculate the interpolation ratio
-		float totalTime = (mCurrentClip.nextFrame == 0) ? static_cast<float>(mCurrentClip.duration) : static_cast<float>(nextFrame.time);
-		float ratio = static_cast<float>(mCurrentClip.currentTime - prevFrame.time) / (totalTime - static_cast<float>(prevFrame.time));
-
-		blendKeyframes(prevFrame, nextFrame, ratio, mCurrentClip.currentFrame);
-
+		// Send the current keyframe to the shader for skinning
 		updateAnimationBuffer(mCurrentClip.currentFrame);
 	}
 
@@ -126,29 +120,15 @@ namespace Odyssey
 		// Convert the delta time from seconds to milliseconds to match the animation units
 		deltaTime *= 1000.0;
 
-		// Create the containers for the previous and next frames of the current clip
-		Keyframe prevFrameA, nextFrameA;
+		// Process the sequence's two animation clips and update them to the current frame
+		processAnimationClip(mSequence.blendA, deltaTime, mSequence.blendA.currentFrame);
+		processAnimationClip(mSequence.blendB, deltaTime, mSequence.blendB.currentFrame);
 
-		// Advance the animation forward in time and get the appropriate previous and next frames
-		updateAnimationTime(mSequence.blendA, deltaTime, prevFrameA, nextFrameA);
-
-		// Calculate the interpolation ratio
-		float totalTime = (mSequence.blendA.nextFrame == 0) ? static_cast<float>(mSequence.blendA.duration) : static_cast<float>(nextFrameA.time);
-		float ratio = static_cast<float>(mSequence.blendA.currentTime - prevFrameA.time) / (totalTime - static_cast<float>(prevFrameA.time));
-
-		blendKeyframes(prevFrameA, nextFrameA, ratio, mSequence.blendA.currentFrame);
-
-		Keyframe prevFrameB, nextFrameB;
-		updateAnimationTime(mSequence.blendB, deltaTime, prevFrameB, nextFrameB);
-
-		// Calculate the interpolation ratio
-		totalTime = (mSequence.blendB.nextFrame == 0) ? static_cast<float>(mSequence.blendB.duration) : static_cast<float>(nextFrameB.time);
-		ratio = static_cast<float>(mSequence.blendB.currentTime - prevFrameB.time) / (totalTime - static_cast<float>(prevFrameB.time));
-
-		blendKeyframes(prevFrameB, nextFrameB, ratio, mSequence.blendB.currentFrame);
 		Keyframe outFrame;
+		// Blend together the two current keyframes from the animation clips based on the sequence's blend factor
 		blendKeyframes(mSequence.blendA.currentFrame, mSequence.blendB.currentFrame, mSequence.blendFactor, outFrame);
 
+		// Send the blended current frame to the shader for skinning
 		updateAnimationBuffer(outFrame);
 	}
 
@@ -178,6 +158,22 @@ namespace Odyssey
 		// Assign the appropriate out keyframes
 		outPrevKeyframe = clip.keyframes[clip.prevFrame];
 		outNextKeyframe = clip.keyframes[clip.nextFrame];
+	}
+
+	void AnimatorDX11::processAnimationClip(AnimationClip& clip, double deltaTime, Keyframe& processedKeyframe)
+	{
+		// Create the containers for the previous and next frames of the current clip
+		Keyframe prevFrame, nextFrame;
+
+		// Advance the animation forward in time and get the appropriate previous and next frames
+		updateAnimationTime(clip, deltaTime, prevFrame, nextFrame);
+
+		// Calculate the interpolation ratio
+		float totalTime = (clip.nextFrame == 0) ? static_cast<float>(clip.duration) : static_cast<float>(nextFrame.time);
+		float ratio = static_cast<float>(clip.currentTime - prevFrame.time) / (totalTime - static_cast<float>(prevFrame.time));
+
+		// Blend the two keyframes and store it as the "current" keyframe
+		blendKeyframes(prevFrame, nextFrame, ratio, processedKeyframe);
 	}
 
 	void AnimatorDX11::blendKeyframes(Keyframe& keyframeA, Keyframe& keyframeB, float blendFactor, Keyframe& outKeyframe)

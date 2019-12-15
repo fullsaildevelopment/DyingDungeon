@@ -79,6 +79,16 @@ namespace Odyssey
 		void updateAnimationTime(AnimationClip& clip, double deltaTime, Keyframe& outPrevKeyframe, Keyframe& outNextKeyframe);
 
 		/**
+		 *	Process an animation clip and update it to the current frame.
+		 *	Performs proper time keyframe interpolation and blending.
+		 *	@param[in] clip The animation clip to update.
+		 *	@param[in] deltaTime The time between frames.
+		 *	@param[out] processedKeyframe The resulting current keyframe.
+		 *	@return void
+		 */
+		void processAnimationClip(AnimationClip& clip, double deltaTime, Keyframe& processedKeyframe);
+
+		/**
 		 *	Blend two keyframes of an animation clip based on a blend factor.
 		 *	@param[in] keyframeA The first keyframe for blending.
 		 *	@param[in] keyframeB The second keyframe for blending.
