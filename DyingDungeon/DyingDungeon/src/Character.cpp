@@ -8,7 +8,6 @@ void Character::initialize()
 {
 	onEnable();
 	mGameObject->addComponent<Odyssey::Transform>();
-
 	SetHP(0);
 	SetMana(0);
 	SetDead(false);
@@ -223,18 +222,30 @@ Skills* Character::GetSkills()
 	return mSkillList;
 }
 
+// Adds a new status effect to the list of status effects
+void Character::AddStatusEffect(Buffs* newEffect)
+{
+	mStatusEffects.push_back(newEffect);
+}
+
+// Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
 void Character::ManageStatusEffects()
 {
-	for (Buffs* b : mGameObject->getComponents<Buffs>())
+	std::vector<Buffs*>::iterator it;
+	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
 	{
-		b->ReduceDuration(1);
-		if (b->GetDuration() <= 0)
+		if((*it)->IsBleed())
+			(*it)->Bleed();
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
 		{
-			if (!b->IsBleed())
-				b->RevertEffect();
-			mGameObject->removeComponent<Buffs>(b);
+			if (!(*it)->IsBleed())
+				(*it)->RevertEffect();
+			delete((*it));
+			(*it) = nullptr;
+			it = mStatusEffects.erase(it);
 		}
-		else if(b->IsBleed())
-			b->Bleed();
+		else
+			it++;
 	}
 }
