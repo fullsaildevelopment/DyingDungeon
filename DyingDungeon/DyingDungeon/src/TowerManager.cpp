@@ -1,7 +1,7 @@
 #include "TowerManager.h"
-#include "GameObject.h"
 #include "Transform.h"
 #include "Character.h"
+#include "HeroComponent.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 

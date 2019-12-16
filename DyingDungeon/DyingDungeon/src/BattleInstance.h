@@ -1,7 +1,12 @@
 #pragma once
-#include "MyTypeDefs.h"
+#include "GameObject.h"
+#include <vector>
 #include <queue>
 #include <time.h>
+
+typedef std::vector<std::shared_ptr<Odyssey::GameObject>> GameObjectList; //This will contain a list off shared pointer game objects
+
+typedef std::queue<std::shared_ptr<Odyssey::GameObject>> GameObjectQueue; //This will contain a queue off shared pointer game objects
 
 class BattleInstance
 {
