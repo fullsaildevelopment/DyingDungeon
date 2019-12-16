@@ -287,9 +287,8 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>();
 	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
-	//Buffs* paladinBuff = new Buffs(0, 0.05f, 2, true);
-	//Skills* skill1 = new Skills(5.0f, 5.0f, paladinBuff);
-	//gPaladin->getComponent<HeroComponent>()->SetSkills(*skill1);
+	Skills* skill1 = new Skills(25.0f, 0.0f, nullptr);
+	gPaladin->getComponent<HeroComponent>()->SetSkills(*skill1);
 	gMainScene->addSceneObject(gPaladin);
 }
 
