@@ -7,10 +7,6 @@ CLASS_DEFINITION(Component, Character)
 void Character::initialize()
 {
 	onEnable();
-	mGameObject->addComponent<Odyssey::Transform>();
-	SetHP(0);
-	SetMana(0);
-	SetDead(false);
 }
 
 void Character::update(double deltaTime)
@@ -47,7 +43,8 @@ void Character::Die()
 void Character::TakeDamage(float dmg)
 {
     //TODO calculate damage reduction here
-
+	if(dmg > 0)
+		dmg = dmg - (dmg * mDefense);
     //Take Damage
     SetHP(GetHP() - dmg);
 }
@@ -128,6 +125,18 @@ void Character::SetMana(float Mana)
         mCurrentMana = mBaseMaxMana;
 }
 
+// Returns the Attack mod
+float Character::GetAtk()
+{
+	return mAttack;
+}
+
+
+// Returns the Defense mod
+float Character::GetDef()
+{
+	return mDefense;
+}
 /*
  * Function:  IsDead()
  * --------------------
@@ -150,6 +159,12 @@ bool Character::IsDead()
 void Character::SetDead(bool deadStatus)
 {
 	mDead = deadStatus;
+}
+
+// Adds Exp to the charater
+void Character::AddExp(float exp)
+{
+	mEXP += exp;
 }
 
 /*

@@ -5,19 +5,31 @@
 
 CLASS_DEFINITION(Character, HeroComponent)
 
-void HeroComponent::initialize()
+HeroComponent::HeroComponent(HEROID id)
 {
-	onEnable();
-	mGameObject->addComponent<Odyssey::Transform>();
-
-	mBaseMaxHP = 100.0f;
-	mBaseMaxMana = 100.0f;
-
-	SetHP(100);
-	SetMana(100);
 	SetHero(true);
-
-	mSkillList[0] = Skills(10, 5, Buffs(0,0.05f,2,true,nullptr));
+	mEXP = 0;
+	switch (id)
+	{
+	case HEROID::Paladin:
+	{
+		mBaseMaxHP = mCurrentHP = 150.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
+		mAttack = 0.0f;
+		mDefense = 0.30f;
+		// Basic Attack
+		mSkillList[0] = Skills(10, 0, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
+		// Skill 1 (Raise Attack)
+		mSkillList[1] = Skills(0, 10, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up");
+		// Skill 2 (Raise Defense)
+		mSkillList[2] = Skills(0, 10, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up");
+		// Skill 3 (Bleed Target HP)
+		mSkillList[3] = Skills(5, 20, Buffs(STATS::HP, 0.05f, 3, true, nullptr), "Bleed Target");
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
@@ -34,7 +46,6 @@ bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> c
 			}
 		}
 	}
-
 	return false;
 }
 

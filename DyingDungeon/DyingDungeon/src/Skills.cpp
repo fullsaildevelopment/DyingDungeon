@@ -1,17 +1,19 @@
 #include "Skills.h"
 #include "Character.h"
 
-Skills::Skills(float dps, float mana)
+Skills::Skills(float dps, float mana,std::string skillName)
 {
 	mDamage = dps;
 	mMpCost = mana;
-	mBuff = Buffs(-1, -1.0f, 0, false, false);
+	mBuff = Buffs(STATS::NONE, -1.0f, 0, false, false);
+	mName = skillName;
 }
-Skills::Skills(float dps, float mana,Buffs buff)
+Skills::Skills(float dps, float mana,Buffs buff, std::string skillName)
 {
 	mDamage = dps;
 	mMpCost = mana;
 	mBuff = buff;
+	mName = skillName;
 }
 Skills::~Skills()
 {
@@ -42,9 +44,10 @@ void Skills::Use(Character& caster,Character& target)
 		return;
 	// Deal damage and deduct MP
     caster.DepleteMana(mMpCost);
-	target.TakeDamage(mDamage);
+	float totalDps = mDamage + (mDamage * caster.GetAtk());
+	target.TakeDamage(totalDps);
 	// Attach buff/debuff using the skills stored buff/debuff
-	if (mBuff.GetEffectedStat() != -1)
+	if (mBuff.GetEffectedStat() != STATS::NONE)
 	{
 		Buffs* newBuff = new Buffs(mBuff.GetEffectedStat(), mBuff.GetAmountOfEffect(), mBuff.GetDuration(), mBuff.IsBleed(), &target);
 		newBuff->InitalEffect();
@@ -62,4 +65,10 @@ void Skills::Use(Character& caster,Character& target)
 Buffs Skills::GetBuff()
 {
 	return mBuff;
+}
+
+// Get skill name 
+std::string Skills::GetName()
+{
+	return mName;
 }
