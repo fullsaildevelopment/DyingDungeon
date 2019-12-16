@@ -110,19 +110,19 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, Odyssey::Application& ap
 	// Create a clear render target pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
 	application.addRenderPass(rtvPass);
-
+	//
 	// Create a skybox pass and add it to the render pipeline 
 	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
 	application.addRenderPass(skyboxPass);
-
+	//
 	// Create a shadow pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
 	application.addRenderPass(shadowPass);
-
+	
 	// Create an opaque pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
 	application.addRenderPass(opaquePass);
-
+	
 	// Create a transparent pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
 	application.addRenderPass(transparentPass);

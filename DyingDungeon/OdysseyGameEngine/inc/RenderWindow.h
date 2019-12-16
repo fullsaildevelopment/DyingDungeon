@@ -14,11 +14,12 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID3D11Resource> getBackBuffer();
 		float getAspectRatio();
 		std::shared_ptr<RenderTarget> getRenderTarget();
+		HWND* getWindowHandle();
 		~RenderWindow();
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain2> mSwapChain;
 		std::shared_ptr<RenderTarget> mRenderTarget;
-		HWND& mWindowHandle;
+		std::shared_ptr<HWND> mWindowHandle;
 	public:
 		struct Window
 		{

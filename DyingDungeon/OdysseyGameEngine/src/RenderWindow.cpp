@@ -7,7 +7,6 @@ namespace Odyssey
 	static DXGI_RATIONAL QueryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync);
 
 	RenderWindow::RenderWindow(RenderDevice& renderDevice, HWND& hWnd)
-		: mWindowHandle(hWnd)
 	{
 		// Get the window properties
 		RECT mainWinRect;
@@ -46,11 +45,13 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		mRenderTarget = renderDevice.createRenderTarget(mMainWindow.width, mMainWindow.height, true, this);
+
+		mWindowHandle = std::make_shared<HWND>(hWnd);
 	}
 
 	void RenderWindow::present()
 	{
-		mSwapChain->Present(0, 0);
+		mSwapChain->Present(1, 0);
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> RenderWindow::getBackBuffer()
@@ -68,6 +69,12 @@ namespace Odyssey
 	std::shared_ptr<RenderTarget> RenderWindow::getRenderTarget()
 	{
 		return mRenderTarget;
+	}
+
+	HWND* RenderWindow::getWindowHandle()
+	{
+		// TODO: insert return statement here
+		return mWindowHandle.get();
 	}
 
 	RenderWindow::~RenderWindow()

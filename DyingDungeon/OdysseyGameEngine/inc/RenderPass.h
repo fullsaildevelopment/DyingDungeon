@@ -7,6 +7,7 @@ namespace Odyssey
 	class Camera;
 	class Light;
 	class GameObject;
+	class RenderWindow;
 
 	struct RenderArgs
 	{

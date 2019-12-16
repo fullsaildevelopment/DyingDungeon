@@ -14,6 +14,12 @@
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
+// Direct2D Includes
+#include <d2d1.h>
+#include <d2d1helper.h>
+#include <dwrite.h>
+#include <wincodec.h>
+#pragma comment(lib, "d2d1")
 // STL
 #include <iostream>
 #include <vector>

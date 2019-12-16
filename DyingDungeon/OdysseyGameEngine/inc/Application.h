@@ -65,6 +65,8 @@ namespace Odyssey
 		 *	@return HINSTANCE The module handle associated with the Application.
 		 */
 		HINSTANCE GetModuleHandle() const;
+
+		static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	private:
 		// Window Management
 		std::vector<std::shared_ptr<RenderWindow>> mWindows;

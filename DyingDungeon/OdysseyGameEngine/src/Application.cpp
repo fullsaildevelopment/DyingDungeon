@@ -13,10 +13,12 @@
 
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+namespace Odyssey
 {
-	switch (message)
+	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
+		switch (message)
+		{
 		case WM_KEYDOWN:
 		{
 			// Register the input as key down with the input manager
@@ -33,7 +35,6 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		{
 			PAINTSTRUCT paintStruct;
 			HDC hDC;
-
 			hDC = BeginPaint(hwnd, &paintStruct);
 			EndPaint(hwnd, &paintStruct);
 		}
@@ -44,11 +45,9 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		}
 		break;
 		}
-	return DefWindowProc(hwnd, message, wParam, lParam);
-}
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
 
-namespace Odyssey
-{
 	Application::Application()
 	{
 		// Get the module handle assocaited with the application
@@ -57,7 +56,7 @@ namespace Odyssey
 		// Create a default blank window for rendering
 		WNDCLASS renderWindowClass = { };
 		renderWindowClass.style = CS_HREDRAW | CS_VREDRAW;
-		renderWindowClass.lpfnWndProc = &WndProc;
+		renderWindowClass.lpfnWndProc = Application::WndProc;
 		renderWindowClass.cbClsExtra = 0;
 		renderWindowClass.cbWndExtra = 0;
 		renderWindowClass.hInstance = mHandleInstance;
@@ -110,7 +109,9 @@ namespace Odyssey
 			NULL,
 			NULL,
 			mHandleInstance,
-			NULL);
+			this);
+
+		HRESULT hr = hWindow ? S_OK : E_FAIL;
 
 		// Create a new RenderWindow associated with the window
 		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindow>(*(mRenderDevice.get()), hWindow);

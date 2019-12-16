@@ -82,6 +82,11 @@ namespace Odyssey
 		mDSVTexture->unbind();
 	}
 
+	Texture* RenderTarget::getRenderTexture()
+	{
+		return mRTVTexture.get();
+	}
+
 	void RenderTarget::createDepthTarget(UINT bindFlags, int width, int height)
 	{
 		mDSVTexture = mRenderDevice.createRenderTexture();

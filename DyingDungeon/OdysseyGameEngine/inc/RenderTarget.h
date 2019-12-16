@@ -21,6 +21,7 @@ namespace Odyssey
 		void bindDepthTexture();
 		void unBind();
 		void unbindDepthTexture();
+		Texture* getRenderTexture();
 		Texture* getDepthTexture();
 		void clearRenderView();
 		void clearDepth();
