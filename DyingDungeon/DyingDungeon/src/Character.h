@@ -42,6 +42,7 @@ public:
 	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
 	// Status effect functions
+	void AddStatusEffect(Buffs* newEffect);
 	void ManageStatusEffects();
 	/////End of Get and Set Functions/////
 protected:
@@ -54,6 +55,7 @@ protected:
 	float mBaseMaxMana;
 	std::string mName;
 	Skills mSkillList[4];
+	std::vector<Buffs*> mStatusEffects;
 private:
 
 };

@@ -46,7 +46,9 @@ void Skills::Use(Character& caster,Character& target)
 	// Attach buff/debuff using the skills stored buff/debuff
 	if (mBuff.GetEffectedStat() != -1)
 	{
-		target.getGameObject()->addComponent<Buffs>(mBuff.GetEffectedStat(), mBuff.GetAmountOfEffect(), mBuff.GetDuration(), mBuff.IsBleed(), true);
+		Buffs* newBuff = new Buffs(mBuff.GetEffectedStat(), mBuff.GetAmountOfEffect(), mBuff.GetDuration(), mBuff.IsBleed(), &target);
+		newBuff->InitalEffect();
+		target.AddStatusEffect(newBuff);
 	}
 	// Put info to console
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;

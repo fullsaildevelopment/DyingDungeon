@@ -4,10 +4,8 @@
 
 class Character;
 
-class Buffs : public Odyssey::Component
+class Buffs
 {
-	CLASS_DECLARATION(Buffs)
-
 	// public and private variables
 public:
 	enum STATS { HP = 0, MP };
@@ -16,31 +14,31 @@ private:
 	int mDuration;
 	int mEffectedStat;
 	bool mBleed;
+	Character* mRecipient;
 	// public and private functions
 public:
 	// Constructors, Deconstructors
 	Buffs() = default;
-	Buffs(int effectedStat, float effect, int duration, bool isBleed, bool alive);
+	Buffs(int effectedStat, float effect, int duration, bool isBleed, Character* recipient);
 	~Buffs();
-	virtual void initialize();
-	virtual void onEnable();
-	// Apply the intial effect
+	// Apply the buff effect functions
 	void InitalEffect();
-	// revert stats back to the way they were
 	void RevertEffect();
-	// The function that reapplies the effect of the buff, used for bleeds and regens
 	void Bleed();
-	// Getter and setter for the mDuration
+	//  mDuration functions
 	int GetDuration();
 	void SetDuration(int newDuration);
 	void ReduceDuration(int deduction);
-	//Getter and setter for mBleed
+	// mBleed functions
 	bool IsBleed();
-	// Getter and setter for stat to be affected
+	// mEffectedStat functions
 	int GetEffectedStat();
 	void SetEffectedStat(int statEffected);
-	// Getter and setter for amount to effect by
+	// mAmountOfEffect functions
 	float GetAmountOfEffect();
+	// mRecipient functions
+	Character* GetRecipient();
+	void SetRecipient(Character* recipient);
 private:
 };
 
