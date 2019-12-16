@@ -1,6 +1,7 @@
 #include "TowerManager.h"
-#include "GameObject.h"
 #include "Transform.h"
+#include "Character.h"
+#include "HeroComponent.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -9,6 +10,7 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 	// Assign the player team and the enemy team
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
+
 
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
@@ -37,6 +39,8 @@ void TowerManager::initialize()
 
 	// Create the battle on init, but this is TEMPORARY
 	CreateBattleInstance();
+
+	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 }
 
 void TowerManager::update(double deltaTime)
@@ -52,6 +56,28 @@ void TowerManager::update(double deltaTime)
 		{
 			// Destroy the battle instance
 			DestroyBattleInstance();
+
+			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
+			// This will show a sim of entering a new battle
+			for (int i = 0; i < mEnemyTeam.size(); i++)
+			{
+				mEnemyTeam[i]->getComponent<Character>()->SetHP(100);
+				mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
+			}
+
+			// Update to the next level
+			mCurrentLevel++;
+
+			// Check to see if that was our last level for completing the tower
+			if (mCurrentLevel > mNumberOfLevels)
+			{
+				std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+			}
+			else
+			{
+				std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
+				CreateBattleInstance();
+			}
 		}
 	}
 }
@@ -65,6 +91,20 @@ void TowerManager::CreateBattleInstance()
 	SetTowerState(IN_BATTLE);
 
 	std::cout << "Created a battle instance\n" << std::endl;
+	std::cout << "- Player Team\n" << std::endl;
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
+		std::cout << "- - " << myChar->GetName() <<  " - HP: " << myChar->GetHP() << "\n" << std::endl;
+	}
+
+	std::cout << "- Enemy Team\n" << std::endl;
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
+		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
+	}
+
 }
 
 void TowerManager::DestroyBattleInstance()

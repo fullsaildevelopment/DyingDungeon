@@ -1,8 +1,7 @@
 #pragma once
-#include "MyTypeDefs.h"
+#include "Component.h"
 #include "BattleInstance.h"
 #include "Buffs.h"
-#include <time.h>
 
 enum TOWER_STATE
 {
