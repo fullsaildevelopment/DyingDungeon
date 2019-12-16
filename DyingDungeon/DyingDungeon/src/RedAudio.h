@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <MMSystem.h>
 #include <vector>
+#include <time.h>
 #include <string>
 #include <assert.h>
 
@@ -46,6 +47,10 @@ class RedAudio
 		/// <param name="start"></param>
 		/// <param name="end"></param>
 		void PlaySegmentLoop(unsigned int start, unsigned int end);
+		/// <summary>
+		///		<para>PlayInstance</para> plays track under diffrent alias and closes track when done 
+		/// </summary>
+		void PlayInstance();
 		/// <summary>
 		///		<para><c>Pause</c> stops the audio file playing and holds it's current place</para>
 		/// </summary>
@@ -98,7 +103,6 @@ class RedAudio
 		///		<para><c>Open</c> opens the audio file for use by other RedAudio functions</para>
 		/// </summary>
 		void Open();
-		void SetTimeFormat();
 
 		/// <summary>
 		/// <para><c>SetPath</c> changes the objects address of the audio file</para>
