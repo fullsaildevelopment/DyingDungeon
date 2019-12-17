@@ -195,6 +195,7 @@
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransparentPass.cpp" />
     <ClCompile Include="src\UICanvas.cpp" />
+    <ClCompile Include="src\UIElement.cpp" />
     <ClCompile Include="src\Viewport.cpp" />
     <ClCompile Include="src\WICTextureLoader.cpp" />
     <ClCompile Include="src\XTime.cpp" />

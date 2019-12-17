@@ -167,6 +167,7 @@
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
     <ClCompile Include="src\HeroComponent.cpp" />
+    <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\MenuManager.cpp" />
     <ClCompile Include="src\MenuScreen.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
     <ClInclude Include="src\HeroComponent.h" />
+    <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MenuManager.h" />
     <ClInclude Include="src\MenuScreen.h" />
     <ClInclude Include="src\RedAudio.h" />

@@ -381,5 +381,8 @@
     <ClCompile Include="src\Rectangle2D.cpp">
       <Filter>Source Files\UI Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\UIElement.cpp">
+      <Filter>Source Files\UI Components</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

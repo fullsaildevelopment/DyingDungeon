@@ -23,6 +23,10 @@
 #include "UICanvas.h"
 #include "Sprite2DPass.h"
 #include "MenuManager.h"
+#include "MainMenuController.h"
+#include "Sprite2D.h"
+#include "Rectangle2D.h"
+#include "Text2D.h"
 
 // Game Includes
 #include "TowerManager.h"
@@ -57,7 +61,7 @@ int playGame();
 void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application);
 void setupLighting();
 void setupCamera();
-void setupMainMenu(Odyssey::RenderDevice* renderDevice);
+void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupArena();
 void setupPaladin();
 void setupSkeleton();
@@ -88,7 +92,7 @@ int playGame()
 	// Set up camera
 	setupCamera();
 
-	setupMainMenu(renderDevice);
+	setupMainMenu(renderDevice, application.get());
 
 	// Load the arena scene
 	setupArena();
@@ -108,8 +112,8 @@ int playGame()
 	application->setActiveScene("MainMenu");
 
 	//Play audio
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	RedAudioManager::Instance()->Loop("Background");
+	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	//RedAudioManager::Instance()->Loop("Background");
 
 	// Run the application
 	return application->run();
@@ -315,18 +319,21 @@ void setupCamera()
 	gGameScene->addSceneObject(gMainCamera);
 }
 
-void setupMainMenu(Odyssey::RenderDevice* renderDevice)
+void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
 {
 	gMainMenu = renderDevice->createScene();
 	gMenu = std::make_shared<Odyssey::GameObject>();
 	gMenu->addComponent<Odyssey::Transform>();
 	gMenu->addComponent<Odyssey::UICanvas>();
 	gMenu->addComponent<Odyssey::Camera>();
-	gMenu->addComponent<CameraController>();
 	gMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	float width = gMainWindow->mMainWindow.width;
 	float height = gMainWindow->mMainWindow.height;
-	gMenu->getComponent<Odyssey::UICanvas>()->addSprite2D({ 0.0f, 0.0f }, L"assets/images/MainMenu.png", width, height);
+	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/MainMenu.png", width, height);
+	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Hello World", 50.0f, width, height);
+	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 200.0f, 100.0f);
+	gMenu->addComponent<MainMenuController>(application);
+	gMenu->getComponent<MainMenuController>()->mRect = gMenu->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
 	gMainMenu->addSceneObject(gMenu);
 }
 

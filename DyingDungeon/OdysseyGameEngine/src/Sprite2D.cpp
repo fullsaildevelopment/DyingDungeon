@@ -2,6 +2,8 @@
 
 namespace Odyssey
 {
+	ELEMENT_DEFINITION( UIElement, Sprite2D ) 
+
 	Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, float width, float height)
 	{
 		// Create the WIC factory
