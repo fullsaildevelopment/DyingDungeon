@@ -37,6 +37,8 @@ public: // Functions
 
 	int GetCurrentLevel() { return mCurrentLevel; }
 
+	BattleInstance* GetBattleInstance() { return mCurrentBattle; }
+
 	//Setters
 	void SetTowerState(TOWER_STATE _newTowerState) { mTowerState = _newTowerState; }
 
