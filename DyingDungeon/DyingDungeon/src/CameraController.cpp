@@ -32,10 +32,7 @@ void CameraController::update(double deltaTime)
 				transform->setRotation(23.5f, -129.55f, 0.0f);
 			}
 		}
-		if (Odyssey::InputManager::getInstance().getKeyDown(VK_F3))
-		{
-			MenuManager::GetInstance().loadScene("Game");
-		}
+
 		updateMovement(deltaTime);
 		updateRotation(deltaTime);
 	}

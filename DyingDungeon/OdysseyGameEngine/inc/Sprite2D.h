@@ -4,8 +4,10 @@
 
 namespace Odyssey
 {
+
 	class Sprite2D : public UIElement
 	{
+	ELEMENT_DECLARATION(Sprite2D)
 	public:
 		Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, float width = 0.0f, float height = 0.0f);
 		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);

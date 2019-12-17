@@ -37,7 +37,7 @@ namespace Odyssey
 	{
 		for (UICanvas* canvas : args.canvasList)
 		{
-			for (std::shared_ptr<UIElement> element : canvas->getUIElements())
+			for (auto element : canvas->getElements<UIElement>())
 			{
 				element->draw(mRenderTarget);
 			}
