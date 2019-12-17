@@ -31,6 +31,9 @@ public:
 	// Mana Functions
 	float GetMana();
 	void SetMana(float Mana);
+	// Shield Functions
+	float GetShielding();
+	void AddShielding(float shield);
 	// Attack Functions
 	float GetAtk();
 	void IncreaseAtk(float statIncrease);
@@ -69,6 +72,7 @@ protected:
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
+	float mShielding;
 	float mAttack;
 	float mDefense;
 	float mSpeed;

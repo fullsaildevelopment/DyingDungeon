@@ -27,8 +27,8 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up");
 		// Skill 2 (Raise Defense)
 		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up");
-		// Skill 3 (Bleed Target HP)
-		mSkillList[3] = Skills(5, 20, true, Buffs(STATS::HP, 0.05f, 3, true, nullptr), "Bleed Target");
+		// Skill 3 (Regen HP)
+		mSkillList[3] = Skills(0, 0, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen");
 		break;
 	}
 	default:
