@@ -115,6 +115,7 @@ void Buffs::Bleed()
 	}
 	case STATS::Shd:
 	{
+		//Fix this to be an inital effect
 		mRecipient->AddShielding(mAmountOfEffect);
 		std::cout << mRecipient->GetName() << " received " << mAmountOfEffect << " shielding" << std::endl;
 		break;

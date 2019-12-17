@@ -26,6 +26,8 @@ public:
 
 private:
 	bool mSkillSelected;
+	bool mTargetSelectd;
+	bool mTurnOver;
 	Skills* mCurrentSkill;
 	Character* mCurrentTarget;
 };
