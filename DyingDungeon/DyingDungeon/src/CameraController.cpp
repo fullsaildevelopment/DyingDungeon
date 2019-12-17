@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "InputManager.h"
 #include "Transform.h"
+#include "MenuManager.h"
 
 CLASS_DEFINITION(Odyssey::Component, CameraController)
 
@@ -31,7 +32,10 @@ void CameraController::update(double deltaTime)
 				transform->setRotation(23.5f, -129.55f, 0.0f);
 			}
 		}
-
+		if (Odyssey::InputManager::getInstance().getKeyDown(VK_F3))
+		{
+			MenuManager::GetInstance().loadScene("Game");
+		}
 		updateMovement(deltaTime);
 		updateRotation(deltaTime);
 	}

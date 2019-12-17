@@ -15,6 +15,7 @@ namespace Odyssey
 		MeshRenderer();
 		MeshRenderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 
+	public:
 		/**
 		 *	Initialize the MeshRenderer with default values. Called once when the scene is loaded.
 		 *	@param[in] void

@@ -77,6 +77,14 @@ namespace Odyssey
 		DebugManager::getInstance().initialize(*mRenderDevice);
 	}
 
+	Application::~Application()
+	{
+		if (mActiveScene)
+		{
+			mActiveScene = nullptr;
+		}
+	}
+
 	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::string& title, int windowWidth, int windowHeight)
 	{
 		// Get the width and height of the screen
@@ -133,10 +141,19 @@ namespace Odyssey
 		return window;
 	}
 
-	void Application::setActiveScene(std::shared_ptr<Scene> scene)
+	void Application::addScene(std::string name, std::shared_ptr<Scene> scene)
+	{
+		mSceneMap[name] = scene;
+	}
+
+	void Application::setActiveScene(std::string scene)
 	{
 		// Set the new active scene
-		mActiveScene = scene;
+		if (mActiveScene)
+		{
+			mSceneMap[scene]->initialize();
+		}
+		mActiveScene = mSceneMap[scene];
 	}
 
 	void Application::addRenderPass(std::shared_ptr<RenderPass> renderPass)

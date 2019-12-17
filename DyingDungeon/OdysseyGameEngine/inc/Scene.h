@@ -21,6 +21,7 @@ namespace Odyssey
 	{
 	public:
 		Scene() = default;
+		~Scene();
 		void initialize();
 		void addLight(std::shared_ptr<Light> light);
 		void addSceneObject(std::shared_ptr<GameObject> sceneObject);

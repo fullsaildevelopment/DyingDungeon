@@ -125,22 +125,12 @@ namespace Odyssey
 
 		int numRemoved = 0;
 
-		bool success = true;
-
-		while (success)
+		for (int i = 0; i < mComponents.size(); i++)
 		{
-			auto& index = std::find_if(
-				mComponents.begin(),
-				mComponents.end(),
-				[classType = ComponentType::Type](auto& component)
-			{ return component->isClassType(classType); });
-
-			success = index != mComponents.end();
-
-			if (success)
+			if (mComponents[i]->isClassType(ComponentType::Type))
 			{
-				mComponents.erase(index);
-				++numRemoved;
+				mComponents.erase(mComponents.begin() + i);
+				return numRemoved++;
 			}
 		}
 		return numRemoved;

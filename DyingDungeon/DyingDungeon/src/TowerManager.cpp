@@ -35,7 +35,6 @@ TowerManager::~TowerManager()
 void TowerManager::initialize()
 {
 	onEnable();
-	mGameObject->addComponent<Odyssey::Transform>();
 
 	// Create the battle on init, but this is TEMPORARY
 	CreateBattleInstance();

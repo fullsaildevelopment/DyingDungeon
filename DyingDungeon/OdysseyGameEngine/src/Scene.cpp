@@ -26,6 +26,14 @@ namespace Odyssey
 		}
 	}
 
+	Scene::~Scene()
+	{
+		for (std::shared_ptr<GameObject> gameObject : mSceneObjectList)
+		{
+			gameObject->removeComponents<Component>();
+		}
+	}
+
 	void Scene::initialize()
 	{
 		mXTimer.Restart();

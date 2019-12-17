@@ -39,6 +39,7 @@
     <ClInclude Include="inc\MeshRenderer.h" />
     <ClInclude Include="inc\OpaquePass.h" />
     <ClInclude Include="inc\ParticleSystem.h" />
+    <ClInclude Include="inc\Rectangle2D.h" />
     <ClInclude Include="inc\RenderDevice.h" />
     <ClInclude Include="inc\RenderPass.h" />
     <ClInclude Include="inc\RenderPipeline.h" />
@@ -51,9 +52,14 @@
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\ShadowPass.h" />
     <ClInclude Include="inc\SkyboxPass.h" />
+    <ClInclude Include="inc\Sprite2D.h" />
+    <ClInclude Include="inc\Sprite2DPass.h" />
+    <ClInclude Include="inc\Text2D.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\Transform.h" />
     <ClInclude Include="inc\TransparentPass.h" />
+    <ClInclude Include="inc\UICanvas.h" />
+    <ClInclude Include="inc\UIElement.h" />
     <ClInclude Include="inc\Viewport.h" />
     <ClInclude Include="src\AnimatorDX11.h" />
     <ClInclude Include="src\XTime.h" />
@@ -170,6 +176,7 @@
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\OpaquePass.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
+    <ClCompile Include="src\Rectangle2D.cpp" />
     <ClCompile Include="src\RenderDevice.cpp" />
     <ClCompile Include="src\RenderPass.cpp" />
     <ClCompile Include="src\RenderPipeline.cpp" />
@@ -181,9 +188,13 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShadowPass.cpp" />
     <ClCompile Include="src\SkyboxPass.cpp" />
+    <ClCompile Include="src\Sprite2D.cpp" />
+    <ClCompile Include="src\Sprite2DPass.cpp" />
+    <ClCompile Include="src\Text2D.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransparentPass.cpp" />
+    <ClCompile Include="src\UICanvas.cpp" />
     <ClCompile Include="src\Viewport.cpp" />
     <ClCompile Include="src\WICTextureLoader.cpp" />
     <ClCompile Include="src\XTime.cpp" />

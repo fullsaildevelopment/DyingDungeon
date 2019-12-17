@@ -55,7 +55,7 @@ namespace Odyssey
 		DirectX::XMVECTOR max = { mMax.x, mMax.y, mMax.z, 0.0f };
 
 		// Calulcate the extents and store it in the extents variable
-		XMStoreFloat3(&extents, DirectX::XMVectorScale(DirectX::XMVectorSubtract(max, min), 2.0f));
+		XMStoreFloat3(&extents, DirectX::XMVectorScale(DirectX::XMVectorSubtract(max, min), 0.5f));
 	}
 
 	bool AABB::testAABBtoSphere(Sphere toTest)

@@ -13,6 +13,7 @@ namespace Odyssey
 	{
 	public:
 		Application();
+		~Application();
 	public:
 		/**
 		 *	Create a new window for rendering objects.
@@ -24,11 +25,19 @@ namespace Odyssey
 		std::shared_ptr<RenderWindow> createRenderWindow(const std::string& title, int windowWidth, int windowHeight);
 
 		/**
+		 *	Add a scene to the scene map.
+		 *	@param[in] name The name identifier of the scene.
+		 *	@param[in] scene The scene pointer
+		 *	@return void
+		 */
+		void addScene(std::string name, std::shared_ptr<Scene> scene);
+
+		/**
 		 *	Set the active scene to be initialized and updated.
 		 *	@param[in] scene The scene to set as active.
 		 *	@return void
 		 */
-		void setActiveScene(std::shared_ptr<Scene> scene);
+		void setActiveScene(std::string scene);
 
 		/**
 		 *	Add a rendering pass to the rendering pipeline.
@@ -73,7 +82,7 @@ namespace Odyssey
 		std::shared_ptr<RenderWindow> mActiveWindow;
 		HINSTANCE mHandleInstance;
 		// Scene Management
-		std::vector<std::shared_ptr<Scene>> mScenes;
+		std::map<std::string, std::shared_ptr<Scene>> mSceneMap;
 		std::shared_ptr<Scene> mActiveScene;
 		// Rendering Management
 		std::unique_ptr<RenderDevice> mRenderDevice;

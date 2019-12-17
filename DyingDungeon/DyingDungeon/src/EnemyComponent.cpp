@@ -33,11 +33,14 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObjec
 	Character* target = nullptr;
 	for (std::shared_ptr<Odyssey::GameObject> t : targets)
 	{
-		if(target = t->getComponent<Character>())
+		if (t)
 		{
-			if (target->IsHero() == true && target->IsDead() == false)
+			if (target = t->getComponent<Character>())
 			{
-				break;
+				if (target->IsHero() == true && target->IsDead() == false)
+				{
+					break;
+				}
 			}
 		}
 	}
@@ -76,10 +79,10 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 	return score;
 }
 
-bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
 {
 	// Find my best option
-	bool done = FindBestMove(targets);
+	bool done = FindBestMove(playerTeam);
 
 	if (done)
 	{
