@@ -56,7 +56,7 @@ void Skills::Use(Character& caster,Character& target)
 		target.AddStatusEffect(newBuff);
 	}
 	// Put info to console
-	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
+	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << totalDps - (totalDps * target.GetDef()) << std::endl;
 	std::cout << caster.GetName() << " used " << GetName() << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
 	// If target is dead kill him

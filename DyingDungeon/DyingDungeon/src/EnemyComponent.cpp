@@ -4,13 +4,14 @@
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
-void EnemyComponent::initialize(ENEMYID enemyID)
+EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
 	SetHero(false);
-	switch (enemyID)
+	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
+		mName = "Skeleton";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.15f;
@@ -20,12 +21,17 @@ void EnemyComponent::initialize(ENEMYID enemyID)
 		// Skill 1 (Bleed)
 		mSkillList[1] = Skills(10, 10, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Skeletal Slash");
 		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, true , Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
+		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
 		break;
 	}
 	default:
 		break;
 	}
+}
+
+void EnemyComponent::initialize()
+{
+
 }
 
 bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
