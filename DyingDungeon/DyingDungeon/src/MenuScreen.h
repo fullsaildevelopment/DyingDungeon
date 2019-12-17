@@ -10,7 +10,6 @@ public: // Constructors
 
 public: // Functions
 
-
 	//Getters
 	std::string GetMenuName() { return mMenuName; }
 

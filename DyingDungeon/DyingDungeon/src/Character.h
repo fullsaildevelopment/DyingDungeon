@@ -17,7 +17,7 @@ public:
 	virtual void update(double deltaTime);
 
 	//Attack Functions
-	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> _allCharacters);
+	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam);
 	virtual void Die();
 
 	void TakeDamage(float dmg);

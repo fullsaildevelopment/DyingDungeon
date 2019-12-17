@@ -57,7 +57,7 @@ int BattleInstance::UpdateBattle()
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
 		// Has the current player taken it's turn yet
-		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mAllCharacters))
+		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
 		{
 			// Take the current character out of the front of the line
 			mBattleQueue.pop();

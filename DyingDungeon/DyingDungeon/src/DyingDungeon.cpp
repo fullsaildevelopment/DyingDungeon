@@ -20,6 +20,9 @@
 #include "Material.h"
 #include "Camera.h"
 #include "RedAudioManager.h"
+#include "UICanvas.h"
+#include "Sprite2DPass.h"
+#include "MenuManager.h"
 
 // Game Includes
 #include "TowerManager.h"
@@ -33,11 +36,11 @@ namespace
 	std::shared_ptr<Odyssey::RenderWindow> gMainWindow;
 	std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
 	// Scene resources
-		//Scene
-	std::shared_ptr<Odyssey::Scene> gMainScene;
+	std::shared_ptr<Odyssey::Scene> gGameScene;
+	std::shared_ptr<Odyssey::Scene> gMainMenu;
 	std::shared_ptr<Odyssey::GameObject> gMainCamera;
 	//Game Objects
-	std::shared_ptr<Odyssey::GameObject> gArena;
+	std::shared_ptr<Odyssey::GameObject> gMenu;
 	std::shared_ptr<Odyssey::GameObject> gPaladin;
 	std::shared_ptr<Odyssey::GameObject> gSkeleton;
 	std::shared_ptr<Odyssey::GameObject> gCurrentTower;
@@ -51,9 +54,10 @@ namespace
 
 // Forward declarations
 int playGame();
-void setupPipeline(Odyssey::RenderDevice* renderDevice, Odyssey::Application& application);
+void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application);
 void setupLighting();
 void setupCamera();
+void setupMainMenu(Odyssey::RenderDevice* renderDevice);
 void setupArena();
 void setupPaladin();
 void setupSkeleton();
@@ -64,14 +68,16 @@ void setUpTowerManager();
 int playGame()
 {
 	// Set up the application and create a render window
-	Odyssey::Application application;
-	gMainWindow = application.createRenderWindow("Dying Dungeon", 1920, 1080);
+	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
+	gMainWindow = application->createRenderWindow("Dying Dungeon", 1920, 1080);
+
+	MenuManager::GetInstance().initialize(application.get());
 
 	// Get the render device
-	Odyssey::RenderDevice* renderDevice = application.getRenderDevice();
+	Odyssey::RenderDevice* renderDevice = application->getRenderDevice();
 
 	// Create the main scene
-	gMainScene = renderDevice->createScene();
+	gGameScene = renderDevice->createScene();
 
 	// Set up the scene lighting
 	setupLighting();
@@ -81,6 +87,8 @@ int playGame()
 
 	// Set up camera
 	setupCamera();
+
+	setupMainMenu(renderDevice);
 
 	// Load the arena scene
 	setupArena();
@@ -95,41 +103,46 @@ int playGame()
 	setUpTowerManager();
 
 	// Set the active scene
-	application.setActiveScene(gMainScene);
+	application->addScene("MainMenu", gMainMenu);
+	application->addScene("Game", gGameScene);
+	application->setActiveScene("MainMenu");
 
 	//Play audio
-	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	//RedAudioManager::Instance()->Loop("Background");
+	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	RedAudioManager::Instance()->Loop("Background");
 
 	// Run the application
-	return application.run();
+	return application->run();
 }
 
-void setupPipeline(Odyssey::RenderDevice* renderDevice, Odyssey::Application& application)
+void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application)
 {
 	// Create a clear render target pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
-	application.addRenderPass(rtvPass);
+	application->addRenderPass(rtvPass);
 	//
 	// Create a skybox pass and add it to the render pipeline 
 	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
-	application.addRenderPass(skyboxPass);
+	application->addRenderPass(skyboxPass);
 	//
 	// Create a shadow pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
-	application.addRenderPass(shadowPass);
+	application->addRenderPass(shadowPass);
 	
 	// Create an opaque pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
-	application.addRenderPass(opaquePass);
+	application->addRenderPass(opaquePass);
 	
 	// Create a transparent pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
-	application.addRenderPass(transparentPass);
+	application->addRenderPass(transparentPass);
+
+	std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
+	application->addRenderPass(spritePass);
 
 	// Create a debugging pass and add it to the render pipeline
 	//std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
-	//application.addRenderPass(debugPass);
+	//application->addRenderPass(debugPass);
 }
 
 void setupLighting()
@@ -274,20 +287,20 @@ void setupLighting()
 	gLights[12]->setIntensity(2.0f);
 	gLights[12]->setRange(12.5f);
 
-	gMainScene->addLight(gDirLight);
-	gMainScene->addLight(gLights[0]);
-	gMainScene->addLight(gLights[1]);
-	gMainScene->addLight(gLights[2]);
-	gMainScene->addLight(gLights[3]);
-	gMainScene->addLight(gLights[4]);
-	gMainScene->addLight(gLights[5]);
-	gMainScene->addLight(gLights[6]);
-	gMainScene->addLight(gLights[7]);
-	gMainScene->addLight(gLights[8]);
-	gMainScene->addLight(gLights[9]);
-	gMainScene->addLight(gLights[10]);
-	gMainScene->addLight(gLights[11]);
-	gMainScene->addLight(gLights[12]);
+	gGameScene->addLight(gDirLight);
+	gGameScene->addLight(gLights[0]);
+	gGameScene->addLight(gLights[1]);
+	gGameScene->addLight(gLights[2]);
+	gGameScene->addLight(gLights[3]);
+	gGameScene->addLight(gLights[4]);
+	gGameScene->addLight(gLights[5]);
+	gGameScene->addLight(gLights[6]);
+	gGameScene->addLight(gLights[7]);
+	gGameScene->addLight(gLights[8]);
+	gGameScene->addLight(gLights[9]);
+	gGameScene->addLight(gLights[10]);
+	gGameScene->addLight(gLights[11]);
+	gGameScene->addLight(gLights[12]);
 }
 
 void setupCamera()
@@ -299,12 +312,27 @@ void setupCamera()
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
-	gMainScene->addSceneObject(gMainCamera);
+	gGameScene->addSceneObject(gMainCamera);
+}
+
+void setupMainMenu(Odyssey::RenderDevice* renderDevice)
+{
+	gMainMenu = renderDevice->createScene();
+	gMenu = std::make_shared<Odyssey::GameObject>();
+	gMenu->addComponent<Odyssey::Transform>();
+	gMenu->addComponent<Odyssey::UICanvas>();
+	gMenu->addComponent<Odyssey::Camera>();
+	gMenu->addComponent<CameraController>();
+	gMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	float width = gMainWindow->mMainWindow.width;
+	float height = gMainWindow->mMainWindow.height;
+	gMenu->getComponent<Odyssey::UICanvas>()->addSprite2D({ 0.0f, 0.0f }, L"assets/images/MainMenu.png", width, height);
+	gMainMenu->addSceneObject(gMenu);
 }
 
 void setupArena()
 {
-	Odyssey::FileManager::getInstance().importScene(gMainScene, "assets/models/TestArena.dxm");
+	Odyssey::FileManager::getInstance().importScene(gGameScene, "assets/models/TestArena.dxm");
 }
 
 void setupPaladin()
@@ -318,7 +346,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>();
 	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
-	gMainScene->addSceneObject(gPaladin);
+	gGameScene->addSceneObject(gPaladin);
 }
 
 void setupSkeleton()
@@ -333,7 +361,7 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>();
 	gSkeleton->getComponent<EnemyComponent>()->SetName("Skeleton");
-	gMainScene->addSceneObject(gSkeleton);
+	gGameScene->addSceneObject(gSkeleton);
 }
 
 void setUpTowerManager()
@@ -342,17 +370,10 @@ void setUpTowerManager()
 	gEnemyUnit.push_back(gSkeleton);
 	gCurrentTower = std::make_shared<Odyssey::GameObject>();
 	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
-	gMainScene->addSceneObject(gCurrentTower);
+	gGameScene->addSceneObject(gCurrentTower);
 }
 
 int main()
 {
-	wWinMain(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOWNORMAL);
-}
-
-#pragma region WINDOWS CODE
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
-{
 	return playGame();
 }
-#pragma endregion
