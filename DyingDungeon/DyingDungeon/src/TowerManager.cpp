@@ -11,7 +11,6 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 
-
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 		mAllCharacters.push_back(mPlayerTeam[i]);
@@ -21,7 +20,6 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Set the current level to 1
-
 	SetCurrentLevel(1);
 
 	// Set the number of levels for this tower
