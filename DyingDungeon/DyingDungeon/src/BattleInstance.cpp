@@ -7,13 +7,28 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 
+	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
+	// This will help for determining if a slot is even available to attack
+	mPlayerTeam.resize(4);
+	mEnemyTeam.resize(4);
+
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
-		mAllCharacters.push_back(mPlayerTeam[i]);
+	{
+		if (mPlayerTeam[i] != nullptr)
+		{
+			mAllCharacters.push_back(mPlayerTeam[i]);
+		}
+	}
 
 	// Add all of the characters from the enemy's team to the allCharacters vector
 	for (int i = 0; i < mEnemyTeam.size(); i++)
-		mAllCharacters.push_back(mEnemyTeam[i]);
+	{
+		if (mEnemyTeam[i] != nullptr)
+		{
+			mAllCharacters.push_back(mEnemyTeam[i]);
+		}
+	}
 
 	// Set time to be random
 	srand(static_cast<int>(time(NULL)));
@@ -68,15 +83,7 @@ int BattleInstance::UpdateBattle()
 void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
-	GameObjectList characterPool;
-
-	// Add each character from the player's team to the characetr pool 
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-		characterPool.push_back(mPlayerTeam[i]);
-
-	// Add each character from the enemy's team to the characetr pool 
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-		characterPool.push_back(mEnemyTeam[i]);
+	GameObjectList characterPool = mAllCharacters;
 
 	// Get the beginning count of the character pool
 	int numOfCharacters = static_cast<int>(characterPool.size());
@@ -93,17 +100,47 @@ void BattleInstance::GenerateBattleQueue()
 		// Remove the character from the character pool so he won't be added to the battle queue multiple times
 		characterPool.erase(characterPool.begin() + rndIndex);
 	}
+
+	//// Setting Battle Order from highest speed to lowest speed
+	//for (int i = 0; i < numOfCharacters; i++)
+	//{
+	//	std::shared_ptr<Odyssey::GameObject> highestSpeedCharacter;
+	//	int indexOfCharacter = -1;
+	//	float highestSpeed = -1.0f;
+	//
+	//	for (int j = 0; j < characterPool.size(); j++)
+	//	{
+	//		if (characterPool[j]->getComponent<Character>()->GetSpeed() > highestSpeed)
+	//		{
+	//			// Set the new highest speed
+	//			highestSpeed = characterPool[j]->getComponent<Character>()->GetSpeed();
+	//			// Set the Character with the current highest speed
+	//			highestSpeedCharacter = characterPool[j];
+	//			// Set the index of the character with the highest speed
+	//			indexOfCharacter = j;
+	//		}
+	//	}
+	//
+	//	// Add the character into the battle queue
+	//	mBattleQueue.push(highestSpeedCharacter);
+	//
+	//	// Remove the character from the character pool so he won't be added to the battle queue multiple times
+	//	characterPool.erase(characterPool.begin() + indexOfCharacter);
+	//}
 }
 
 bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 {
 	for (int i = 0; i < _teamToCheck.size(); i++)
 	{
-		// Check to see if current character on the team is alive
-		if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+		if (_teamToCheck[i] != nullptr)
 		{
-			// That person was alive so return true, we just need to make sure that at least one player is still alive
-			return true;
+			// Check to see if current character on the team is alive
+			if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+			{
+				// That person was alive so return true, we just need to make sure that at least one player is still alive
+				return true;
+			}
 		}
 	}
 
