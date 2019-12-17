@@ -29,6 +29,7 @@ namespace Odyssey
 		double currentTime;
 		unsigned int prevFrame;
 		unsigned int nextFrame;
+		float progress;
 	};
 
 	struct AnimationBuffer
@@ -58,30 +59,14 @@ namespace Odyssey
 		 *	@param[in] filename The file path and name of the animation clip file.
 		 *	@return void
 		 */
-		void importAnimation(const char* animationName, const char* filename);
-
-		/**
-		 *	Set the skeleton attached to the Animator component
-		 *	@param[in] skeleton The container of joints associated with the skeelton.
-		 *	@return void
-		 */
-		void setAnimationClip(const char* clipToPlay);
-
-		/**
-		 *	Set current animation sequence.
-		 *	@param[in] clipA The string ID of the first animation clip.
-		 *	@param[in] clipB The string ID of the second animation clip.
-		 *	@param[in] blendFactor The amount of blending to apply to the animation sequence.
-		 *	@return void
-		 */
-		void setAnimationSequence(const char* clipA, const char* clipB, float blendFactor);
+		void importAnimation(std::string animationName, const char* filename);
 
 		/**
 		 *	Play the current animation clip, if one is set.
 		 *	@param[in] void
 		 *	@return void
 		 */
-		void play();
+		void playClip(std::string animation);
 
 		/**
 		 *	Pause the current animation clip, if one is set.
@@ -96,6 +81,13 @@ namespace Odyssey
 		 *	@return void
 		 */
 		void reset();
+
+		/**
+		 *	Get the progress of the current animation clip time.
+		 *	@param[in] void
+		 *	@return void
+		 */
+		float getProgress();
 
 		/**
 		 *	Get the active state of the Animator component.
@@ -123,6 +115,6 @@ namespace Odyssey
 		bool mIsActive;
 		bool mIsPlaying;
 		bool mDebugEnabled;
-		std::map<const char*, AnimationClip> mAnimationMap;
+		std::map<std::string, AnimationClip> mAnimationMap;
 	};
 }
