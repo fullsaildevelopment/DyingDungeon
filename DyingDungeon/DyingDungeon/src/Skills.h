@@ -19,13 +19,15 @@ private:
 	bool mAttack;
 	// Name of skill
 	std::string mName;
+	// Animation ID
+	std::string mAnimationId;
 //public and private functions
 public:
 	Skills() = default;
 	//constructor, give how much damage you want the skill to do and how much mana you want it to cost 
-	Skills(float dps, float mana,bool attack, std::string skillName);
+	Skills(float dps, float mana,bool attack, std::string skillName, std::string animationID);
 	//additionally if it has a buff/debuff give it here 
-	Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName);
+	Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName, std::string animationID);
 	//deconstructor
 	~Skills();
 	//get how much mana the skill cost

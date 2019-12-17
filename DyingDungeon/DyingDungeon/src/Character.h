@@ -3,7 +3,7 @@
 #include "Skills.h"
 #include <vector>
 
-#define TOTALSKILLS 5
+#define TOTALSKILLS 6
 
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
