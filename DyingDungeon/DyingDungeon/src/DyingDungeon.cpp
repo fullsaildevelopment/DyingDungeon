@@ -344,8 +344,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
-	gPaladin->addComponent<HeroComponent>();
-	gPaladin->getComponent<HeroComponent>()->SetName("Paladin");
+	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addSceneObject(gPaladin);
 }
 
@@ -359,8 +358,7 @@ void setupSkeleton()
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton_Idle.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
-	gSkeleton->addComponent<EnemyComponent>();
-	gSkeleton->getComponent<EnemyComponent>()->SetName("Skeleton");
+	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 	gGameScene->addSceneObject(gSkeleton);
 }
 
