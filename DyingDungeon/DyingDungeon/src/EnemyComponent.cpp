@@ -19,9 +19,9 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		// Basic Attack
 		mSkillList[0] = Skills(5, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
 		// Skill 1 (Bleed)
-		mSkillList[1] = Skills(10, 10, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Skeletal Slash");
+		mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.02f, 2, true, nullptr), "Skeletal Slash");
 		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
+		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.07f, 3, true, nullptr), "Necrotic Infection");
 		break;
 	}
 	default:
