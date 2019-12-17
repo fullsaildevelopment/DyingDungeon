@@ -350,7 +350,13 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin_Idle.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("AttackUp",	"assets/animations/Paladin/Paladin_AttackUp.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BasicAttack", "assets/animations/Paladin/Paladin_BasicAttack.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BigAttack",	"assets/animations/Paladin/Paladin_BigAttack.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Defense",		"assets/animations/Paladin/Paladin_Defense.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Heal",		"assets/animations/Paladin/Paladin_Heal.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield",		"assets/animations/Paladin/Paladin_Shield.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle",		"assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addSceneObject(gPaladin);
 }

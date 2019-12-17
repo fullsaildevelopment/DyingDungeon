@@ -14,6 +14,7 @@ namespace Odyssey
 		mCurrentClip.prevFrame = 0;
 		mCurrentClip.maxFrames = 0;
 		mCurrentClip.currentTime = 0.0f;
+		mCurrentClip.progress = 0.0f;
 		mIsActive = false;
 		mIsPlaying = false;
 		mDebugEnabled = false;
@@ -153,6 +154,15 @@ namespace Odyssey
 
 			// Set the time to the passed frame's time
 			clip.currentTime = clip.keyframes[clip.prevFrame].time;
+
+			if (clip.duration != mAnimationMap["Idle"].duration && clip.prevFrame == 0)
+			{
+				clip = mAnimationMap["Idle"];
+				clip.nextFrame = 1;
+				clip.prevFrame = 0;
+				clip.progress = 0.0f;
+				clip.currentTime = 0.0f;
+			}
 		}
 
 		// Assign the appropriate out keyframes
@@ -171,6 +181,7 @@ namespace Odyssey
 		// Calculate the interpolation ratio
 		float totalTime = (clip.nextFrame == 0) ? static_cast<float>(clip.duration) : static_cast<float>(nextFrame.time);
 		float ratio = static_cast<float>(clip.currentTime - prevFrame.time) / (totalTime - static_cast<float>(prevFrame.time));
+		clip.progress = clip.currentTime / clip.duration;
 
 		// Blend the two keyframes and store it as the "current" keyframe
 		blendKeyframes(prevFrame, nextFrame, ratio, processedKeyframe);

@@ -8,7 +8,7 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Animator)
 
-	void Animator::importAnimation(const char* animationName, const char* filename)
+	void Animator::importAnimation(std::string animationName, const char* filename)
 	{
 		// Open/Create the mesh file
 		std::fstream animFile(filename, std::ios_base::in | std::ios_base::binary);
@@ -78,9 +78,13 @@ namespace Odyssey
 		reset();
 	}
 
-	void Animator::play()
+	void Animator::playClip(std::string animation)
 	{
-		mIsPlaying = true;
+		if (mAnimationMap.count(animation))
+		{
+			mCurrentClip = mAnimationMap[animation];
+			mIsPlaying = true;
+		}
 	}
 
 	void Animator::pause()
@@ -98,19 +102,9 @@ namespace Odyssey
 		mCurrentClip.maxFrames = static_cast<int>(mCurrentClip.keyframes.size());
 	}
 
-	void Animator::setAnimationClip(const char* clipToPlay)
+	float Animator::getProgress()
 	{
-		// Add the animation clip to the map and set the clip to the beginning
-		mCurrentClip = mAnimationMap[clipToPlay];
-		reset();
-	}
-
-	void Animator::setAnimationSequence(const char* clipA, const char* clipB, float blendFactor)
-	{
-		mSequence.isBlend = true;
-		mSequence.blendA = mAnimationMap[clipA];
-		mSequence.blendB = mAnimationMap[clipB];
-		mSequence.blendFactor = blendFactor;
+		return mCurrentClip.progress;
 	}
 
 	bool Animator::getActive()

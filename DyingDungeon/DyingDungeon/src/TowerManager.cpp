@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "Character.h"
 #include "HeroComponent.h"
+#include "InputManager.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -50,6 +51,16 @@ void TowerManager::update(double deltaTime)
 	{
 		// Update the current battle
 		int result = mCurrentBattle->UpdateBattle();
+
+		if (Odyssey::InputManager::getInstance().getKeyPress(VK_F2))
+		{
+			mPlayerTeam[0]->getComponent<Odyssey::Animator>()->playClip("BigAttack");
+		}
+
+		if (Odyssey::InputManager::getInstance().getKeyPress(VK_F3))
+		{
+			mPlayerTeam[0]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
+		}
 
 		// If the result of the updated battle was DESTROY, destory the current battle instance
 		if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
