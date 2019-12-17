@@ -44,6 +44,11 @@ void RedAudioManager::Play(const char* alias)
 	FindAudio(alias)->Play();
 }
 
+void RedAudioManager::PlaySFX(const char* alias)
+{
+	FindAudio(alias)->PlayInstance();
+}
+
 void RedAudioManager::Loop(const char* alias)
 {
 	FindAudio(alias)->PlayLoop();

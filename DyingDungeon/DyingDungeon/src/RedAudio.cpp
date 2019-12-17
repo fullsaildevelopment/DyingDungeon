@@ -73,6 +73,9 @@ void RedAudio::Close() {
 		std::cout << "ERROR: RedAudio-Close()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	m_playing = false;
+	m_segmented = false;
+	m_looping = false;
 }
 
 void RedAudio::Open()
@@ -216,6 +219,32 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 	m_segmented = true;
 	m_looping = true;
 
+}
+
+void RedAudio::PlayInstance() {
+	srand(time(NULL));
+	char* cmd = new char[(strlen(m_path) + strlen(m_alias) + 13)];
+	strcpy_s(cmd, 6, "open ");
+	strcat_s(cmd, (strlen(m_path) + 1) + strlen(cmd), m_path);
+	cmd[strlen(cmd)] = '\0';
+	strcat_s(cmd, 8 + strlen(cmd), " alias ");
+	std::string rnd = std::to_string((rand() % (999 - 100 + 1) + 100));
+	char* newAlias = new char[strlen(m_alias) + 4];
+	strcpy_s(newAlias, (strlen(m_alias) + 1), m_alias);
+	strcat_s(newAlias, (strlen(m_alias) + 1) + 3, rnd.c_str());
+	strcat_s(cmd, strlen(cmd) + strlen(newAlias) + 1, newAlias);
+	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+
+	cmd = new char[strlen(newAlias) + 11];
+	strcpy_s(cmd, 6, "play ");
+	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
+	strcat_s(cmd, strlen(newAlias) + 11, " wait");
+	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+
+	cmd = new char[strlen(newAlias) + 6];
+	strcpy_s(cmd, 6, "close ");
+	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
+	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
 }
 
 void RedAudio::Pause()
