@@ -4,22 +4,24 @@
 
 class Character;
 
+// enum used for readablity 
+enum class STATS { NONE = 0,HP, MP, Atk, Def, Spd };
+
 class Buffs
 {
 	// public and private variables
 public:
-	enum STATS { HP = 0, MP };
 private:
 	float mAmountOfEffect;
 	int mDuration;
-	int mEffectedStat;
+	STATS mEffectedStat;
 	bool mBleed;
 	Character* mRecipient;
 	// public and private functions
 public:
 	// Constructors, Deconstructors
 	Buffs() = default;
-	Buffs(int effectedStat, float effect, int duration, bool isBleed, Character* recipient);
+	Buffs(STATS effectedStat, float effect, int duration, bool isBleed, Character* recipient);
 	~Buffs();
 	// Apply the buff effect functions
 	void InitalEffect();
@@ -32,8 +34,8 @@ public:
 	// mBleed functions
 	bool IsBleed();
 	// mEffectedStat functions
-	int GetEffectedStat();
-	void SetEffectedStat(int statEffected);
+	STATS GetEffectedStat();
+	void SetEffectedStat(STATS statEffected);
 	// mAmountOfEffect functions
 	float GetAmountOfEffect();
 	// mRecipient functions

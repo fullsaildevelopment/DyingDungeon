@@ -7,10 +7,6 @@ CLASS_DEFINITION(Component, Character)
 void Character::initialize()
 {
 	onEnable();
-	mGameObject->addComponent<Odyssey::Transform>();
-	SetHP(0);
-	SetMana(0);
-	SetDead(false);
 }
 
 void Character::update(double deltaTime)
@@ -47,7 +43,8 @@ void Character::Die()
 void Character::TakeDamage(float dmg)
 {
     //TODO calculate damage reduction here
-
+	if(dmg > 0)
+		dmg = dmg - (dmg * mDefense);
     //Take Damage
     SetHP(GetHP() - dmg);
 }
@@ -128,6 +125,60 @@ void Character::SetMana(float Mana)
         mCurrentMana = mBaseMaxMana;
 }
 
+// Returns the Attack mod
+float Character::GetAtk()
+{
+	return mAttack;
+}
+
+// Increases the Attack stat
+void Character::IncreaseAtk(float statIncrease)
+{
+	mAttack += statIncrease;
+}
+
+// Decreases the Attack stat
+void Character::DecreaseAtk(float statDecrease)
+{
+	mAttack -= statDecrease;
+}
+
+// Returns the Defense mod
+float Character::GetDef()
+{
+	return mDefense;
+}
+
+// Increases the Defense stat
+void Character::IncreaseDef(float statIncrease)
+{
+	mDefense += statIncrease;
+}
+
+// Decreases the Defense stat
+void Character::DecreaseDef(float statDecrease)
+{
+	mDefense -= statDecrease;
+}
+
+// Returns the Speed stat
+float Character::GetSpeed()
+{
+	return mSpeed;
+}
+
+// Increases the Speed stat
+void Character::IncreaseSpd(float statIncrease)
+{
+	mSpeed += statIncrease;
+}
+
+// Decreases the Speed stat
+void Character::DecreaseSpd(float statDecrease)
+{
+	mSpeed -= statDecrease;
+}
+
 /*
  * Function:  IsDead()
  * --------------------
@@ -150,6 +201,12 @@ bool Character::IsDead()
 void Character::SetDead(bool deadStatus)
 {
 	mDead = deadStatus;
+}
+
+// Adds Exp to the charater
+void Character::AddExp(float exp)
+{
+	mEXP += exp;
 }
 
 /*

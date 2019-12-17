@@ -2,18 +2,17 @@
 #include "Character.h"
 #include "InputManager.h"
 
+typedef std::vector<std::shared_ptr<Odyssey::GameObject>> GameObjectList;
 class HeroComponent : public Character
 {
 	CLASS_DECLARATION(HeroComponent)
 
 public:
 	HeroComponent() = default;
-
-	virtual void initialize();
+	HeroComponent(HEROID id);
 
 	//Attack Functions
-	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters);
-	void BasicAttack(Character* target);
+	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
 
 	//Death Check
 	virtual void Die();
@@ -26,6 +25,8 @@ public:
 	/////End of Get and Set Functions/////
 
 private:
-
+	bool mSkillSelected;
+	Skills* mCurrentSkill;
+	Character* mCurrentTarget;
 };
 

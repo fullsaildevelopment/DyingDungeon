@@ -2,7 +2,7 @@
 #include "Character.h"
 
 // Constructors and destructors
-Buffs::Buffs(int effectedStat, float effect, int duration, bool isBleed, Character* recipient)
+Buffs::Buffs(STATS effectedStat, float effect, int duration, bool isBleed, Character* recipient)
 {
 	mAmountOfEffect = effect;
 	mDuration = duration;
@@ -20,12 +20,30 @@ void Buffs::InitalEffect()
 {
 	switch (mEffectedStat)
 	{
-	case Buffs::HP:
+	case STATS::HP:
 	{
 		break;
 	}
-	case Buffs::MP:
+	case STATS::MP:
 	{
+		break;
+	}
+	case STATS::Atk:
+	{
+		std::cout << "Attack Buff on " << mRecipient->GetName() << std::endl;
+		mRecipient->IncreaseAtk(mAmountOfEffect);
+		break;
+	}
+	case STATS::Def:
+	{
+		std::cout << "Defense Buff on " << mRecipient->GetName() << std::endl;
+		mRecipient->IncreaseDef(mAmountOfEffect);
+		break;
+	}
+	case STATS::Spd:
+	{
+		std::cout << "Speed Buff on " << mRecipient->GetName() << std::endl;
+		mRecipient->IncreaseSpd(mAmountOfEffect);
 		break;
 	}
 	default:
@@ -38,12 +56,31 @@ void Buffs::RevertEffect()
 {
 	switch (mEffectedStat)
 	{
-	case Buffs::HP:
+	case STATS::HP:
+	{
+		std::cout << "Bleed fell off " << mRecipient->GetName() << std::endl;
+		break;
+	}
+	case STATS::MP:
 	{
 		break;
 	}
-	case Buffs::MP:
+	case STATS::Atk:
 	{
+		std::cout << "Attack Buff off " << mRecipient->GetName() << std::endl;
+		mRecipient->DecreaseAtk(mAmountOfEffect);
+		break;
+	}
+	case STATS::Def:
+	{
+		std::cout << "Defense Buff off " << mRecipient->GetName() << std::endl;
+		mRecipient->DecreaseDef(mAmountOfEffect);
+		break;
+	}
+	case STATS::Spd:
+	{
+		std::cout << "Speed Buff off " << mRecipient->GetName() << std::endl;
+		mRecipient->DecreaseSpd(mAmountOfEffect);
 		break;
 	}
 	default:
@@ -56,13 +93,21 @@ void Buffs::Bleed()
 {
 	switch (mEffectedStat)
 	{
-	case Buffs::HP:
+	case STATS::HP:
 	{
 		mRecipient->TakeDamage(mAmountOfEffect * mRecipient->GetMaxHP());
-		std::cout << mRecipient->GetName() << " took " << mAmountOfEffect * mRecipient->GetMaxHP() << "damage in bleeding"  << mRecipient->GetName() << " now has " << mRecipient->GetHP() << "HP\n" << std::endl;
+		std::cout << mRecipient->GetName() << " took " << mAmountOfEffect * mRecipient->GetMaxHP() << " damage in bleeding "  << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
 		break;
 	}
-	case Buffs::MP:
+	case STATS::MP:
+	{
+		break;
+	}
+	case STATS::Atk:
+	{
+		break;
+	}
+	case STATS::Def:
 	{
 		break;
 	}
@@ -96,13 +141,13 @@ bool Buffs::IsBleed()
 }
 
 // Get what stat is effected by this buff
-int Buffs::GetEffectedStat()
+STATS Buffs::GetEffectedStat()
 {
 	return mEffectedStat;
 }
 
 // Set which stat is effected by this buff
-void Buffs::SetEffectedStat(int statEffected)
+void Buffs::SetEffectedStat(STATS statEffected)
 {
 	mEffectedStat = statEffected;
 }

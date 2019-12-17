@@ -1,17 +1,21 @@
 #include "Skills.h"
 #include "Character.h"
 
-Skills::Skills(float dps, float mana)
+Skills::Skills(float dps, float mana, bool attack, std::string skillName)
 {
 	mDamage = dps;
 	mMpCost = mana;
-	mBuff = Buffs(-1, -1.0f, 0, false, false);
+	mAttack = attack;
+	mBuff = Buffs(STATS::NONE, -1.0f, 0, false, false);
+	mName = skillName;
 }
-Skills::Skills(float dps, float mana,Buffs buff)
+Skills::Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName)
 {
 	mDamage = dps;
 	mMpCost = mana;
+	mAttack = attack;
 	mBuff = buff;
+	mName = skillName;
 }
 Skills::~Skills()
 {
@@ -42,9 +46,10 @@ void Skills::Use(Character& caster,Character& target)
 		return;
 	// Deal damage and deduct MP
     caster.DepleteMana(mMpCost);
-	target.TakeDamage(mDamage);
+	float totalDps = mDamage + (mDamage * caster.GetAtk());
+	target.TakeDamage(totalDps);
 	// Attach buff/debuff using the skills stored buff/debuff
-	if (mBuff.GetEffectedStat() != -1)
+	if (mBuff.GetEffectedStat() != STATS::NONE)
 	{
 		Buffs* newBuff = new Buffs(mBuff.GetEffectedStat(), mBuff.GetAmountOfEffect(), mBuff.GetDuration(), mBuff.IsBleed(), &target);
 		newBuff->InitalEffect();
@@ -52,6 +57,7 @@ void Skills::Use(Character& caster,Character& target)
 	}
 	// Put info to console
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
+	std::cout << caster.GetName() << " used " << GetName() << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
 	// If target is dead kill him
 	if (target.GetHP() <= 0)
@@ -62,4 +68,22 @@ void Skills::Use(Character& caster,Character& target)
 Buffs Skills::GetBuff()
 {
 	return mBuff;
+}
+
+// Get skill name 
+std::string Skills::GetName()
+{
+	return mName;
+}
+
+// Returns the damage of the skill
+float Skills::GetDamage()
+{
+	return mDamage;
+}
+
+// Returns if it's an attack or support skill
+bool Skills::IsAttack()
+{
+	return mAttack;
 }

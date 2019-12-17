@@ -7,14 +7,15 @@ class EnemyComponent : public Character
 
 public:
 	EnemyComponent() = default;
-	virtual void initialize();
+	virtual void initialize(ENEMYID enemyID);
 	struct Move 
 	{
 		Character* target;
 		Skills* skill;
+		float score = -100;
 	};
 	//Attack Functions
-	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
+	bool FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	float ScoreMove(Skills skillOption, Character* target);
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
 	//Death Functions
@@ -22,6 +23,7 @@ public:
 	/////Get and Set Functions/////
 	/////End of Get and Set Functions/////
 private:
-
+	Move bestMove;
+	float currentSkillMoveCheck = 0;
 };
 

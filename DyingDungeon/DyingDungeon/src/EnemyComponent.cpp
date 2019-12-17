@@ -4,23 +4,31 @@
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
-void EnemyComponent::initialize()
+void EnemyComponent::initialize(ENEMYID enemyID)
 {
-	onEnable();
-	mBaseMaxHP = 100.0f;
-	mBaseMaxMana = 100.0f;
-
-	SetHP(100);
-	SetMana(100);
 	SetHero(false);
-
-	mSkillList[0] = Skills(5, 5);
-	mSkillList[1] = Skills(2, 2);
-	mSkillList[2] = Skills(0, 0);
-	mSkillList[3] = Skills(1, 1);
+	switch (enemyID)
+	{
+	case ENEMYID::Skeleton:
+	{
+		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
+		mAttack = 0.15f;
+		mDefense = 0.05f;
+		// Basic Attack
+		mSkillList[0] = Skills(5, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
+		// Skill 1 (Bleed)
+		mSkillList[1] = Skills(10, 10, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Skeletal Slash");
+		// Skill 2 (Big Damage & Bleed)
+		mSkillList[2] = Skills(25, 40, true , Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
+		break;
+	}
+	default:
+		break;
+	}
 }
 
-EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	Character* target = nullptr;
 	for (std::shared_ptr<Odyssey::GameObject> t : targets)
@@ -33,28 +41,59 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 			}
 		}
 	}
-	Skills* skill = &mSkillList[0];
-	Move bestMove;
-	bestMove.skill = skill;
-	bestMove.target = target;
-	return bestMove;
+
+	for (int i = currentSkillMoveCheck; i < 4;)
+	{
+		float score = ScoreMove(mSkillList[i], target);
+
+		if (score > bestMove.score)
+		{
+			bestMove.skill = &mSkillList[i];
+			bestMove.target = target;
+			bestMove.score = score;
+		}
+
+		currentSkillMoveCheck++;
+		if (currentSkillMoveCheck >= 4)
+		{
+			currentSkillMoveCheck = 0;
+			return true;
+		}
+
+		return false;
+	}
 }
 
 float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 {
-	float bestScore = 0;
-	return bestScore;
+	float score = skillOption.GetDamage() - skillOption.GetManaCost();
+	if (target->GetHP() - skillOption.GetDamage() == 0 && GetMana() >= skillOption.GetManaCost())
+		score += 1000;
+	if (GetHP() > 60 && skillOption.GetName() == "Necrotic Infection" && GetMana() >= skillOption.GetManaCost())
+		score += 25;
+	if (GetMana() - skillOption.GetManaCost() <= 10)
+		score -= 10;
+	return score;
 }
 
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	// Find my best option
-	Move bestMove = findBestMove(targets);
-	// Use the best move
-	bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
-	// If i have any buffs manage them 
-	ManageStatusEffects();
-	return true;
+	bool done = FindBestMove(targets);
+
+	if (done)
+	{
+		// Use the best move
+		bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+		// If i have any buffs manage them 
+		ManageStatusEffects();
+		//Reset best move score
+		bestMove.score = -1000;
+		//Return true if we finished our turn
+		return true;
+	}
+
+	return false;
 }
 
 void EnemyComponent::Die()
