@@ -6,7 +6,7 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
-	
+
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
 	mPlayerTeam.resize(4);
@@ -14,11 +14,21 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
-		mAllCharacters.push_back(mPlayerTeam[i]);
+	{
+		if (mPlayerTeam[i] != nullptr)
+		{
+			mAllCharacters.push_back(mPlayerTeam[i]);
+		}
+	}
 
 	// Add all of the characters from the enemy's team to the allCharacters vector
 	for (int i = 0; i < mEnemyTeam.size(); i++)
-		mAllCharacters.push_back(mEnemyTeam[i]);
+	{
+		if (mEnemyTeam[i] != nullptr)
+		{
+			mAllCharacters.push_back(mEnemyTeam[i]);
+		}
+	}
 
 	// Set time to be random
 	srand(static_cast<int>(time(NULL)));
@@ -123,11 +133,14 @@ bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 {
 	for (int i = 0; i < _teamToCheck.size(); i++)
 	{
-		// Check to see if current character on the team is alive
-		if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+		if (_teamToCheck[i] != nullptr)
 		{
-			// That person was alive so return true, we just need to make sure that at least one player is still alive
-			return true;
+			// Check to see if current character on the team is alive
+			if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+			{
+				// That person was alive so return true, we just need to make sure that at least one player is still alive
+				return true;
+			}
 		}
 	}
 
