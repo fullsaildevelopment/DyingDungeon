@@ -68,15 +68,7 @@ int BattleInstance::UpdateBattle()
 void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
-	GameObjectList characterPool;
-
-	// Add each character from the player's team to the characetr pool 
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-		characterPool.push_back(mPlayerTeam[i]);
-
-	// Add each character from the enemy's team to the characetr pool 
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-		characterPool.push_back(mEnemyTeam[i]);
+	GameObjectList characterPool = mAllCharacters;
 
 	// Get the beginning count of the character pool
 	int numOfCharacters = static_cast<int>(characterPool.size());
