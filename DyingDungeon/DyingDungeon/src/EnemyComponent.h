@@ -7,7 +7,8 @@ class EnemyComponent : public Character
 
 public:
 	EnemyComponent() = default;
-	virtual void initialize(ENEMYID enemyID);
+	EnemyComponent(ENEMYID _enemyID);
+	virtual void initialize();
 	struct Move 
 	{
 		Character* target;

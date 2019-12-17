@@ -16,6 +16,7 @@ HeroComponent::HeroComponent(HEROID id)
 	{
 	case HEROID::Paladin:
 	{
+		mName = "Paladin";
 		mBaseMaxHP = mCurrentHP = 150.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
@@ -80,6 +81,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
 			mSkillSelected = false;
+			ManageStatusEffects();
 			return true;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))

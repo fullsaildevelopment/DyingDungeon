@@ -38,11 +38,16 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 
 	// Set the pCurrentCharacter to the front of the battle queue
 	mCurrentCharacter = mBattleQueue.front();
+
+	// Set the current round to round 1 at the start
+	mCurrentRound = 1;
+	std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
+	// No turns have been completed yet
+	mTurnCounter = 0;
 }
 
 int BattleInstance::UpdateBattle()
 {
-
 	// Check to see if the current charcter is even alive before the character takes its turn
 	if (mCurrentCharacter->getComponent<Character>()->IsDead())
 	{
@@ -59,18 +64,36 @@ int BattleInstance::UpdateBattle()
 		// Has the current player taken it's turn yet
 		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
 		{
+			// One turn has been taken
+			mTurnCounter++;
 			// Take the current character out of the front of the line
 			mBattleQueue.pop();
 			// Put the current character to back into the queue, he will go to the back of the line
 			mBattleQueue.emplace(mCurrentCharacter);
 			// Reassign the next character to the 
 			mCurrentCharacter = mBattleQueue.front();
+
+			// Has everyone taken their turn in the round?
+			if (mTurnCounter == mBattleQueue.size())
+			{
+				// Increase the round
+				mCurrentRound++;
+				std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
+				// Set the turn counter for this new round back to zero
+				mTurnCounter = 0;
+			}
 		}
 	}
 	else
 	{
 		// The current battle has ended, at least one team is completely dead
 		std::cout << "The battle has ended!\n" << std::endl;
+
+		// Check again to see if it was the player's team that died
+		if (!IsTeamAlive(mPlayerTeam))
+		{
+			return PLAYER_TEAM_DIED;
+		}
 
 		//Return -1 to Destory the BattleInstance object when the battle is over
 		return DESTORY;

@@ -18,6 +18,7 @@ public: // Constructors
 	{
 		DESTORY = -1,
 		CONTINUE = 1,
+		PLAYER_TEAM_DIED
 	};
 
 public: // Functions
@@ -25,10 +26,9 @@ public: // Functions
 	int UpdateBattle();
 
 	//Getters
-
+	int GetCurrentRound() { return mCurrentRound; }
 
 	//Setters
-
 
 private: // Varibales
 
@@ -44,7 +44,8 @@ private: // Varibales
 	std::shared_ptr<Odyssey::GameObject> mCurrentCharacter; // This will hold the current player who's turn it is
 
 	// Ints
-
+	int mTurnCounter;
+	int mCurrentRound;
 
 	// Floats
 
