@@ -28,7 +28,7 @@ void EnemyComponent::initialize(ENEMYID enemyID)
 	}
 }
 
-EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	Character* target = nullptr;
 	for (std::shared_ptr<Odyssey::GameObject> t : targets)
@@ -42,8 +42,7 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 		}
 	}
 
-	Move bestMove;
-	for (int i = 0; i < 4; i++)
+	for (int i = currentSkillMoveCheck; i < 4;)
 	{
 		float score = ScoreMove(mSkillList[i], target);
 
@@ -53,9 +52,16 @@ EnemyComponent::Move EnemyComponent::findBestMove(std::vector<std::shared_ptr<Od
 			bestMove.target = target;
 			bestMove.score = score;
 		}
-	}
 
-	return bestMove;
+		currentSkillMoveCheck++;
+		if (currentSkillMoveCheck >= 4)
+		{
+			currentSkillMoveCheck = 0;
+			return true;
+		}
+
+		return false;
+	}
 }
 
 float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
@@ -73,12 +79,21 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	// Find my best option
-	Move bestMove = findBestMove(targets);
-	// Use the best move
-	bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
-	// If i have any buffs manage them 
-	ManageStatusEffects();
-	return true;
+	bool done = FindBestMove(targets);
+
+	if (done)
+	{
+		// Use the best move
+		bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+		// If i have any buffs manage them 
+		ManageStatusEffects();
+		//Reset best move score
+		bestMove.score = -1000;
+		//Return true if we finished our turn
+		return true;
+	}
+
+	return false;
 }
 
 void EnemyComponent::Die()
