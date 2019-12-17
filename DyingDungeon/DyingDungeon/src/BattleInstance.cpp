@@ -93,6 +93,33 @@ void BattleInstance::GenerateBattleQueue()
 		// Remove the character from the character pool so he won't be added to the battle queue multiple times
 		characterPool.erase(characterPool.begin() + rndIndex);
 	}
+
+	//// Setting Battle Order from highest speed to lowest speed
+	//for (int i = 0; i < numOfCharacters; i++)
+	//{
+	//	std::shared_ptr<Odyssey::GameObject> highestSpeedCharacter;
+	//	int indexOfCharacter = -1;
+	//	float highestSpeed = -1.0f;
+	//
+	//	for (int j = 0; j < characterPool.size(); j++)
+	//	{
+	//		if (characterPool[j]->getComponent<Character>()->GetSpeed() > highestSpeed)
+	//		{
+	//			// Set the new highest speed
+	//			highestSpeed = characterPool[j]->getComponent<Character>()->GetSpeed();
+	//			// Set the Character with the current highest speed
+	//			highestSpeedCharacter = characterPool[j];
+	//			// Set the index of the character with the highest speed
+	//			indexOfCharacter = j;
+	//		}
+	//	}
+	//
+	//	// Add the character into the battle queue
+	//	mBattleQueue.push(highestSpeedCharacter);
+	//
+	//	// Remove the character from the character pool so he won't be added to the battle queue multiple times
+	//	characterPool.erase(characterPool.begin() + indexOfCharacter);
+	//}
 }
 
 bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
