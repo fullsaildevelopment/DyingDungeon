@@ -9,6 +9,9 @@ HeroComponent::HeroComponent(HEROID id)
 {
 	SetHero(true);
 	mEXP = 0;
+	mSkillSelected = false;
+	mCurrentSkill = nullptr;
+	mCurrentTarget = nullptr;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -18,13 +21,13 @@ HeroComponent::HeroComponent(HEROID id)
 		mAttack = 0.0f;
 		mDefense = 0.30f;
 		// Basic Attack
-		mSkillList[0] = Skills(10, 0, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
+		mSkillList[0] = Skills(10, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
 		// Skill 1 (Raise Attack)
-		mSkillList[1] = Skills(0, 10, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up");
+		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up");
 		// Skill 2 (Raise Defense)
-		mSkillList[2] = Skills(0, 10, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up");
+		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up");
 		// Skill 3 (Bleed Target HP)
-		mSkillList[3] = Skills(5, 20, Buffs(STATS::HP, 0.05f, 3, true, nullptr), "Bleed Target");
+		mSkillList[3] = Skills(5, 20, true, Buffs(STATS::HP, 0.05f, 3, true, nullptr), "Bleed Target");
 		break;
 	}
 	default:
@@ -32,18 +35,58 @@ HeroComponent::HeroComponent(HEROID id)
 	}
 }
 
-bool HeroComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> characters)
+bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
-	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
+	if (mSkillSelected == false)
 	{
-		for (std::shared_ptr<Odyssey::GameObject> temp : characters)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))          
 		{
-			Character* target = temp->getComponent<Character>();
-			if (target->IsHero() == false && target->IsDead() == false)
+			mCurrentSkill = &mSkillList[0];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mSkillSelected = true;
+		}
+		 else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
+		{
+			mCurrentSkill = &mSkillList[1];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mSkillSelected = true;
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
+		{
+			mCurrentSkill = &mSkillList[2];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mSkillSelected = true;
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
+		{
+			mCurrentSkill = &mSkillList[3];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mSkillSelected = true;
+		}
+	}
+	else
+	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
+		{
+			if (mCurrentSkill->IsAttack())
 			{
-				BasicAttack(target);
-				return true;
+				mCurrentTarget = enemies[0]->getComponent<Character>();
 			}
+			else
+			{
+				mCurrentTarget = heros[0]->getComponent<Character>();
+			}
+			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
+			mCurrentSkill = nullptr;
+			mCurrentTarget = nullptr;
+			mSkillSelected = false;
+			return true;
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))
+		{
+			mCurrentSkill = nullptr;
+			mSkillSelected = false;
+			std::cout << "Reselect A Skill" << std::endl;
 		}
 	}
 	return false;
