@@ -2,6 +2,7 @@
 #include "RenderDevice.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "UICanvas.h"
 
 namespace Odyssey
 {
@@ -15,7 +16,6 @@ namespace Odyssey
 
 		args.perFrameBuffer = mPerFrameBuffer.get();
 		args.perObjectBuffer = mPerObjectBuffer.get();
-
 	}
 
 	void RenderPipeline::addRenderPass(std::shared_ptr<RenderPass> renderPass)
@@ -45,5 +45,17 @@ namespace Odyssey
 		args.camera = scene->mMainCamera.get();
 		args.lightList = scene->getSceneLights();
 		args.renderList = scene->getGameObjects();
+		args.canvasList.clear();
+
+		for (std::shared_ptr<GameObject> gameObject : scene->getGameObjects())
+		{
+			if (UICanvas* canvas = gameObject->getComponent<UICanvas>())
+			{
+				if (canvas->getActive())
+				{
+					args.canvasList.push_back(canvas);
+				}
+			}
+		}
 	}
 }

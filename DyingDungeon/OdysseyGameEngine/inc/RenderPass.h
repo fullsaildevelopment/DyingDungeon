@@ -8,6 +8,7 @@ namespace Odyssey
 	class Light;
 	class GameObject;
 	class RenderWindow;
+	class UICanvas;
 
 	struct RenderArgs
 	{
@@ -19,6 +20,7 @@ namespace Odyssey
 		std::vector<std::shared_ptr<GameObject>> renderList;
 		std::vector<std::shared_ptr<GameObject>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;
+		std::vector<UICanvas*> canvasList;
 	};
 
 	class RenderPass

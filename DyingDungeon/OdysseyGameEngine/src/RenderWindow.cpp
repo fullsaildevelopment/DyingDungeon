@@ -77,6 +77,11 @@ namespace Odyssey
 		return mWindowHandle.get();
 	}
 
+	Microsoft::WRL::ComPtr<IDXGISwapChain2> RenderWindow::getSwapChain()
+	{
+		return mSwapChain;
+	}
+
 	RenderWindow::~RenderWindow()
 	{
 		mSwapChain->SetFullscreenState(false, nullptr);

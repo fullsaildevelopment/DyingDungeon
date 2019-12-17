@@ -19,6 +19,7 @@
 #include "RenderTarget.h"
 #include "FileManager.h"
 #include "Mesh.h"
+#include "Sprite2DPass.h"
 
 namespace Odyssey
 {
@@ -179,6 +180,12 @@ namespace Odyssey
 	std::shared_ptr<DebugPass> RenderDevice::createDebugPass(std::shared_ptr<RenderTarget> renderTarget)
 	{
 		std::shared_ptr<DebugPass> renderPass = std::make_shared<DebugPass>(*this, renderTarget);
+		return renderPass;
+	}
+
+	std::shared_ptr<Sprite2DPass> RenderDevice::createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow)
+	{
+		std::shared_ptr<Sprite2DPass> renderPass = std::make_shared<Sprite2DPass>(*this, renderWindow);
 		return renderPass;
 	}
 

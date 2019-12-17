@@ -64,6 +64,12 @@
     <Filter Include="Source Files\Scene Interfaces">
       <UniqueIdentifier>{a54de2a6-1865-4ae7-a988-73530a29d6b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI Components">
+      <UniqueIdentifier>{cb36abb2-1744-4a98-8d22-0c03980b8539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI Components">
+      <UniqueIdentifier>{62b22576-9a50-4f61-8be9-c6a31e4444d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\EngineIncludes.h">
@@ -179,6 +185,24 @@
     </ClInclude>
     <ClInclude Include="inc\RenderPipeline.h">
       <Filter>Header Files\Render Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UICanvas.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UIElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Sprite2DPass.h">
+      <Filter>Header Files\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Text2D.h">
+      <Filter>Header Files\UI Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Sprite2D.h">
+      <Filter>Header Files\UI Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Rectangle2D.h">
+      <Filter>Header Files\UI Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -341,6 +365,21 @@
     </ClCompile>
     <ClCompile Include="src\RenderPipeline.cpp">
       <Filter>Source Files\Render Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UICanvas.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sprite2DPass.cpp">
+      <Filter>Source Files\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Text2D.cpp">
+      <Filter>Source Files\UI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sprite2D.cpp">
+      <Filter>Source Files\UI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rectangle2D.cpp">
+      <Filter>Source Files\UI Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ namespace Odyssey
 {
 	class Application;
 	class Buffer;
+	class Sprite2DPass;
 	class ClearRenderTargetPass;
 	class Scene;
 	class SkyboxPass;
@@ -51,6 +52,7 @@ namespace Odyssey
 		std::shared_ptr<OpaquePass> createOpaquePass(std::shared_ptr<RenderTarget> renderTarget);
 		std::shared_ptr<TransparentPass> createTransparentPass(std::shared_ptr<RenderTarget> renderTarget);
 		std::shared_ptr<DebugPass> createDebugPass(std::shared_ptr<RenderTarget> renderTarget);
+		std::shared_ptr<Sprite2DPass> createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow);
 	private:
 		void createDevice(HINSTANCE hInstance);
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;

@@ -15,6 +15,7 @@ namespace Odyssey
 		float getAspectRatio();
 		std::shared_ptr<RenderTarget> getRenderTarget();
 		HWND* getWindowHandle();
+		Microsoft::WRL::ComPtr<IDXGISwapChain2> getSwapChain();
 		~RenderWindow();
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain2> mSwapChain;
