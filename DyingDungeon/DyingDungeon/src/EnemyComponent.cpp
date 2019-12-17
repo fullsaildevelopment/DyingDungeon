@@ -12,7 +12,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	case ENEMYID::Skeleton:
 	{
 		mName = "Skeleton";
-		fScoreMove = EnemyComponent::ScoreMove;
+		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.15f;
