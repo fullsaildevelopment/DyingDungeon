@@ -1,21 +1,23 @@
 #include "Skills.h"
 #include "Character.h"
 
-Skills::Skills(float dps, float mana, bool attack, std::string skillName)
+Skills::Skills(float dps, float mana, bool attack, std::string skillName, std::string animationID)
 {
 	mDamage = dps;
 	mMpCost = mana;
 	mAttack = attack;
 	mBuff = Buffs(STATS::NONE, -1.0f, 0, false, false);
 	mName = skillName;
+	mAnimationId = animationID;
 }
-Skills::Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName)
+Skills::Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName, std::string animationID)
 {
 	mDamage = dps;
 	mMpCost = mana;
 	mAttack = attack;
 	mBuff = buff;
 	mName = skillName;
+	mAnimationId = animationID;
 }
 Skills::~Skills()
 {

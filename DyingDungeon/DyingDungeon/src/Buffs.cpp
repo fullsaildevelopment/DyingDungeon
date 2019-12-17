@@ -95,7 +95,10 @@ void Buffs::Bleed()
 	case STATS::HP:
 	{
 		mRecipient->TakeDamage(mAmountOfEffect * mRecipient->GetMaxHP());
-		std::cout << mRecipient->GetName() << " took " << (mAmountOfEffect * mRecipient->GetMaxHP()) - ((mAmountOfEffect * mRecipient->GetMaxHP()) * mRecipient->GetDef()) << " damage in bleeding "  << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
+		if(mAmountOfEffect > 0)
+			std::cout << mRecipient->GetName() << " took " << (mAmountOfEffect * mRecipient->GetMaxHP()) - ((mAmountOfEffect * mRecipient->GetMaxHP()) * mRecipient->GetDef()) << " damage in bleeding "  << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
+		else
+			std::cout << mRecipient->GetName() << " received " << (mAmountOfEffect * mRecipient->GetMaxHP()) << " damage in bleeding " << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
 		break;
 	}
 	case STATS::MP:
@@ -108,6 +111,12 @@ void Buffs::Bleed()
 	}
 	case STATS::Def:
 	{
+		break;
+	}
+	case STATS::Shd:
+	{
+		mRecipient->AddShielding(mAmountOfEffect);
+		std::cout << mRecipient->GetName() << " received " << mAmountOfEffect << " shielding" << std::endl;
 		break;
 	}
 	default:
