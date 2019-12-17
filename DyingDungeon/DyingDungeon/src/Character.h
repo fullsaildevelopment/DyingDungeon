@@ -3,6 +3,8 @@
 #include "Skills.h"
 #include <vector>
 
+#define TOTALSKILLS 5
+
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
 
@@ -31,6 +33,9 @@ public:
 	// Mana Functions
 	float GetMana();
 	void SetMana(float Mana);
+	// Shield Functions
+	float GetShielding();
+	void AddShielding(float shield);
 	// Attack Functions
 	float GetAtk();
 	void IncreaseAtk(float statIncrease);
@@ -69,12 +74,13 @@ protected:
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
+	float mShielding;
 	float mAttack;
 	float mDefense;
 	float mSpeed;
 	float mEXP;
 	std::string mName;
-	Skills mSkillList[4];
+	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
 private:
 

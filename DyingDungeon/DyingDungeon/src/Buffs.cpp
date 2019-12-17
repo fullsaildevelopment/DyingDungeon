@@ -22,7 +22,6 @@ void Buffs::InitalEffect()
 	{
 	case STATS::HP:
 	{
-		std::cout << "Bleed on " << mRecipient->GetName() << std::endl;
 		break;
 	}
 	case STATS::MP:
