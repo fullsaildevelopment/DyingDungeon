@@ -6,6 +6,11 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
+	
+	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
+	// This will help for determining if a slot is even available to attack
+	mPlayerTeam.resize(4);
+	mEnemyTeam.resize(4);
 
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
@@ -42,7 +47,7 @@ int BattleInstance::UpdateBattle()
 	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
 		// Has the current player taken it's turn yet
-		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
+		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mAllCharacters))
 		{
 			// Take the current character out of the front of the line
 			mBattleQueue.pop();

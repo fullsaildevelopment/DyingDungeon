@@ -37,5 +37,6 @@ private: // Varibales
 
 private: // Functions
 	MenuScreen* CreateMenuScreen(std::string _menuName);
+	void AddMenuScreenToList(MenuScreen* _menuScreenToAdd);
 
 };
