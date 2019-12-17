@@ -16,11 +16,11 @@ void EnemyComponent::initialize(ENEMYID enemyID)
 		mAttack = 0.15f;
 		mDefense = 0.05f;
 		// Basic Attack
-		mSkillList[0] = Skills(5, 0, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
+		mSkillList[0] = Skills(5, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack");
 		// Skill 1 (Bleed)
-		mSkillList[1] = Skills(10, 10, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Skeletal Slash");
+		mSkillList[1] = Skills(10, 10, true, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Skeletal Slash");
 		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
+		mSkillList[2] = Skills(25, 40, true , Buffs(STATS::HP, 0.15f, 2, true, nullptr), "Necrotic Infection");
 		break;
 	}
 	default:
@@ -67,7 +67,6 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 		score += 25;
 	if (GetMana() - skillOption.GetManaCost() <= 10)
 		score -= 10;
-
 	return score;
 }
 

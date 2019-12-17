@@ -15,15 +15,17 @@ private:
 	float mMpCost;
 	// If any the buff it contains
 	Buffs mBuff;
+	// If attack or support
+	bool mAttack;
 	// Name of skill
 	std::string mName;
 //public and private functions
 public:
 	Skills() = default;
 	//constructor, give how much damage you want the skill to do and how much mana you want it to cost 
-	Skills(float dps, float mana, std::string skillName);
+	Skills(float dps, float mana,bool attack, std::string skillName);
 	//additionally if it has a buff/debuff give it here 
-	Skills(float dps, float mana, Buffs buff, std::string skillName);
+	Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName);
 	//deconstructor
 	~Skills();
 	//get how much mana the skill cost
@@ -34,7 +36,8 @@ public:
 	std::string GetName();
 	//Get Damage
 	float GetDamage();
-
+	// Get Attack
+	bool IsAttack();
 
 	//use the skill
 	void Use(Character& caster, Character& target);

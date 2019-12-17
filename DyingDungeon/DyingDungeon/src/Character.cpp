@@ -131,12 +131,54 @@ float Character::GetAtk()
 	return mAttack;
 }
 
+// Increases the Attack stat
+void Character::IncreaseAtk(float statIncrease)
+{
+	mAttack += statIncrease;
+}
+
+// Decreases the Attack stat
+void Character::DecreaseAtk(float statDecrease)
+{
+	mAttack -= statDecrease;
+}
 
 // Returns the Defense mod
 float Character::GetDef()
 {
 	return mDefense;
 }
+
+// Increases the Defense stat
+void Character::IncreaseDef(float statIncrease)
+{
+	mDefense += statIncrease;
+}
+
+// Decreases the Defense stat
+void Character::DecreaseDef(float statDecrease)
+{
+	mDefense -= statDecrease;
+}
+
+// Returns the Speed stat
+float Character::GetSpeed()
+{
+	return mSpeed;
+}
+
+// Increases the Speed stat
+void Character::IncreaseSpd(float statIncrease)
+{
+	mSpeed += statIncrease;
+}
+
+// Decreases the Speed stat
+void Character::DecreaseSpd(float statDecrease)
+{
+	mSpeed -= statDecrease;
+}
+
 /*
  * Function:  IsDead()
  * --------------------

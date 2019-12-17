@@ -33,8 +33,16 @@ public:
 	void SetMana(float Mana);
 	// Attack Functions
 	float GetAtk();
+	void IncreaseAtk(float statIncrease);
+	void DecreaseAtk(float statDecrease);
 	// Defense Functions
 	float GetDef();
+	void IncreaseDef(float statIncrease);
+	void DecreaseDef(float statDecrease);
+	// Speed Functions
+	float GetSpeed();
+	void IncreaseSpd(float statIncrease);
+	void DecreaseSpd(float statDecrease);
 	// Dead Status Functions
 	bool IsDead();
 	void SetDead(bool deadStatus);
@@ -63,6 +71,7 @@ protected:
 	float mBaseMaxMana;
 	float mAttack;
 	float mDefense;
+	float mSpeed;
 	float mEXP;
 	std::string mName;
 	Skills mSkillList[4];

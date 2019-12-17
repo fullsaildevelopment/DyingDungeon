@@ -5,7 +5,7 @@
 class Character;
 
 // enum used for readablity 
-enum class STATS { NONE = 0,HP, MP, Atk, Def };
+enum class STATS { NONE = 0,HP, MP, Atk, Def, Spd };
 
 class Buffs
 {

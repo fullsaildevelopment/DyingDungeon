@@ -21,13 +21,28 @@ void Buffs::InitalEffect()
 	switch (mEffectedStat)
 	{
 	case STATS::HP:
+	{
 		break;
+	}
 	case STATS::MP:
+	{
 		break;
+	}
 	case STATS::Atk:
+	{
+		mRecipient->IncreaseAtk(mAmountOfEffect);
 		break;
+	}
 	case STATS::Def:
+	{
+		mRecipient->IncreaseDef(mAmountOfEffect);
 		break;
+	}
+	case STATS::Spd:
+	{
+		mRecipient->IncreaseSpd(mAmountOfEffect);
+		break;
+	}
 	default:
 		break;
 	}
@@ -39,13 +54,28 @@ void Buffs::RevertEffect()
 	switch (mEffectedStat)
 	{
 	case STATS::HP:
+	{
 		break;
+	}
 	case STATS::MP:
+	{
 		break;
+	}
 	case STATS::Atk:
+	{
+		mRecipient->DecreaseAtk(mAmountOfEffect);
 		break;
+	}
 	case STATS::Def:
+	{
+		mRecipient->DecreaseDef(mAmountOfEffect);
 		break;
+	}
+	case STATS::Spd:
+	{
+		mRecipient->DecreaseSpd(mAmountOfEffect);
+		break;
+	}
 	default:
 		break;
 	}
