@@ -65,6 +65,7 @@ void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* ap
 void setupArena();
 void setupPaladin();
 void setupSkeleton();
+void setupAudio();
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -111,9 +112,8 @@ int playGame()
 	application->addScene("Game", gGameScene);
 	application->setActiveScene("MainMenu");
 
-	//Play audio
-	//RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	//RedAudioManager::Instance()->Loop("Background");
+	// Play audio
+	setupAudio();
 
 	// Run the application
 	return application->run();
@@ -367,6 +367,12 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 	gGameScene->addSceneObject(gSkeleton);
+}
+
+void setupAudio()
+{
+	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
+	RedAudioManager::Instance()->Loop("Background");
 }
 
 void setUpTowerManager()
