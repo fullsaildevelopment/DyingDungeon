@@ -37,6 +37,8 @@ public: // Functions
 
 	int GetCurrentLevel() { return mCurrentLevel; }
 
+	BattleInstance* GetBattleInstance() { return mCurrentBattle; }
+
 	//Setters
 	void SetTowerState(TOWER_STATE _newTowerState) { mTowerState = _newTowerState; }
 
@@ -55,12 +57,10 @@ private: // Varibales
 	GameObjectList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
 	GameObjectList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	GameObjectList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
-	std::vector<Buffs> mTowerBuffs; //This will hold the list of all of the buffs that the player has selected and put onto the Player's team
+
 	// Queues
 
-
 	// GameObjects
-
 
 	// Ints
 	int mCurrentLevel;
@@ -69,9 +69,7 @@ private: // Varibales
 	// Floats
 	std::shared_ptr<float> mStatitics;
 
-
 	// Bools
-
 
 	// Tower State
 	TOWER_STATE mTowerState;
