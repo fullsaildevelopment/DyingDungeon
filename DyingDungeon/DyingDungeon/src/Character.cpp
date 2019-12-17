@@ -43,8 +43,21 @@ void Character::Die()
 void Character::TakeDamage(float dmg)
 {
     //TODO calculate damage reduction here
-	if(dmg > 0)
+	if (dmg > 0)
+	{
 		dmg = dmg - (dmg * mDefense);
+		if (mShielding > 0)
+		{
+			dmg = dmg - mShielding;
+			if (dmg <= 0)
+			{
+				mShielding = dmg;
+				dmg = 0;
+			}
+			else
+				mShielding = 0;
+		}
+	}
     //Take Damage
     SetHP(GetHP() - dmg);
 }
@@ -177,6 +190,19 @@ void Character::IncreaseSpd(float statIncrease)
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= statDecrease;
+}
+
+
+// Gets the shields
+float Character::GetShielding()
+{
+	return mShielding;
+}
+
+// Add to the shield
+void Character::AddShielding(float shield)
+{
+	mShielding += shield;
 }
 
 /*
