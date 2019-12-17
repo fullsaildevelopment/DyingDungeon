@@ -24,6 +24,7 @@ public:
 	/////Get and Set Functions/////
 	/////End of Get and Set Functions/////
 private:
+	std::function<float(Skills, Character*)> fScoreMove = nullptr;
 	Move bestMove;
 	float currentSkillMoveCheck = 0;
 };
