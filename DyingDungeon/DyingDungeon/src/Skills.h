@@ -32,6 +32,10 @@ public:
 	Buffs GetBuff();
 	// Get Skill name
 	std::string GetName();
+	//Get Damage
+	float GetDamage();
+
+
 	//use the skill
 	void Use(Character& caster, Character& target);
 private:

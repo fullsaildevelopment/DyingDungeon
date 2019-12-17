@@ -7,11 +7,12 @@ class EnemyComponent : public Character
 
 public:
 	EnemyComponent() = default;
-	virtual void initialize();
+	virtual void initialize(ENEMYID enemyID);
 	struct Move 
 	{
 		Character* target;
 		Skills* skill;
+		float score = -100;
 	};
 	//Attack Functions
 	Move findBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);

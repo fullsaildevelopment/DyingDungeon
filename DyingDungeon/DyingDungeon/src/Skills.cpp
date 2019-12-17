@@ -55,6 +55,7 @@ void Skills::Use(Character& caster,Character& target)
 	}
 	// Put info to console
 	std::cout << caster.GetName() << " attacked " << target.GetName() << " for " << mDamage << std::endl;
+	std::cout << caster.GetName() << " used " << GetName() << std::endl;
 	std::cout << target.GetName() << " now has " << target.GetHP() << "HP\n" << std::endl;
 	// If target is dead kill him
 	if (target.GetHP() <= 0)
@@ -71,4 +72,10 @@ Buffs Skills::GetBuff()
 std::string Skills::GetName()
 {
 	return mName;
+}
+
+//Returns the damage of the skill
+float Skills::GetDamage()
+{
+	return mDamage;
 }
