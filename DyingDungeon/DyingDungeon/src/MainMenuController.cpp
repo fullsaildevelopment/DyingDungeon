@@ -15,7 +15,7 @@ void MainMenuController::initialize()
 
 void MainMenuController::update(double deltaTime)
 {
-	if (Odyssey::InputManager::getInstance().getKeyDown(VK_RETURN))
+	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
 	{
 		mApplication->setActiveScene("Game");
 	}
