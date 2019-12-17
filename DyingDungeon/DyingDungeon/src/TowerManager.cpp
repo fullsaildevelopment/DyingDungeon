@@ -21,7 +21,8 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Set the current level to 1
-	mCurrentLevel = 1;
+
+	SetCurrentLevel(1);
 
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
@@ -39,7 +40,7 @@ void TowerManager::initialize()
 	// Create the battle on init, but this is TEMPORARY
 	CreateBattleInstance();
 
-	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
+	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
 }
 
 void TowerManager::update(double deltaTime)
@@ -51,31 +52,40 @@ void TowerManager::update(double deltaTime)
 		int result = mCurrentBattle->UpdateBattle();
 
 		// If the result of the updated battle was DESTROY, destory the current battle instance
-		if (result == mCurrentBattle->DESTORY)
+		if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
 		{
 			// Destroy the battle instance
 			DestroyBattleInstance();
 
-			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
-			// This will show a sim of entering a new battle
-			for (int i = 0; i < mEnemyTeam.size(); i++)
+			//Check to see if the update returned PLAYER_TEAM_DIED
+			if (result == mCurrentBattle->PLAYER_TEAM_DIED)
 			{
-				mEnemyTeam[i]->getComponent<Character>()->SetHP(100);
-				mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
-			}
-
-			// Update to the next level
-			mCurrentLevel++;
-
-			// Check to see if that was our last level for completing the tower
-			if (mCurrentLevel > mNumberOfLevels)
-			{
-				std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+				std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
+				SetTowerState(NOT_IN_BATTLE);
 			}
 			else
 			{
-				std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-				CreateBattleInstance();
+				// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
+				// This will show a sim of entering a new battle
+				for (int i = 0; i < mEnemyTeam.size(); i++)
+				{
+					mEnemyTeam[i]->getComponent<Character>()->SetHP(100);
+					mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
+				}
+
+				// Update to the next level
+				SetCurrentLevel(GetCurrentLevel() + 1);
+
+				// Check to see if that was our last level for completing the tower
+				if (GetCurrentLevel() > mNumberOfLevels)
+				{
+					std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+				}
+				else
+				{
+					std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+					CreateBattleInstance();
+				}
 			}
 		}
 	}
