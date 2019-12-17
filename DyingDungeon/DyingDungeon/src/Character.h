@@ -3,6 +3,8 @@
 #include "Skills.h"
 #include <vector>
 
+#define TOTALSKILLS 5
+
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
 
@@ -78,7 +80,7 @@ protected:
 	float mSpeed;
 	float mEXP;
 	std::string mName;
-	Skills mSkillList[4];
+	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
 private:
 
