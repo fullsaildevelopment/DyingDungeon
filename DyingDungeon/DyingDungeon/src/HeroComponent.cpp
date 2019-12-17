@@ -101,18 +101,3 @@ void HeroComponent::Die()
 		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
 	}
 }
-
-/*
- * Function:  BasicAttack()
- * --------------------
- * Uses basic attack (skillList[0])
- *
- * Currently a public function but will be moved
- * to a private one
- *
- * returns: void
- */
-void HeroComponent::BasicAttack(Character* target)
-{
-	mSkillList[0].Use(*mGameObject->getComponent<Character>(), *target);
-}

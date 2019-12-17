@@ -13,7 +13,6 @@ public:
 
 	//Attack Functions
 	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
-	void BasicAttack(Character* target);
 
 	//Death Check
 	virtual void Die();
