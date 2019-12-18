@@ -37,6 +37,7 @@ RedAudioManager::RedAudioManager()
 RedAudioManager::~RedAudioManager()
 {
 	delete default_audio;
+	delete m_p_Instance;
 }
 
 void RedAudioManager::Play(const char* alias)

@@ -8,6 +8,7 @@ StatTracker::StatTracker()
 
 StatTracker::~StatTracker()
 {
+	delete m_p_Instance;
 }
 
 StatTracker* StatTracker::Instance()
