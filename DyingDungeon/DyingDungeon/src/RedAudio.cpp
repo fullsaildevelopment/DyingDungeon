@@ -103,6 +103,7 @@ void RedAudio::Open()
 
 void RedAudio::Play()
 {
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	char* cmd = new char[static_cast<int>(strlen(m_alias)) + 6];
 	int curr_count = 6;
@@ -123,6 +124,7 @@ void RedAudio::Play()
 
 void RedAudio::PlayLoop()
 {
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	char* cmd = new char[static_cast<int>(strlen(m_alias)) + 20];
 	int curr_count = 6;
@@ -147,6 +149,7 @@ void RedAudio::PlayLoop()
 void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 {
 	assert(start < end);
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	std::string str = std::to_string(start);
 	const char* first = str.c_str();
@@ -186,6 +189,7 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 		std::cout << "ERROR: RedAudio-PlaySegment()-The start " << start << " is greater than end " << end << "-file:" << m_path << "\n";
 		return;
 	}
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	std::string str = std::to_string(start);
 	const char* first = str.c_str();
@@ -284,6 +288,7 @@ void RedAudio::Stop()
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	SeekBegin();
 }
 
 void RedAudio::SeekBegin()
