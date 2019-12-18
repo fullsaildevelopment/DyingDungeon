@@ -10,6 +10,8 @@ HeroComponent::HeroComponent(HEROID id)
 	SetHero(true);
 	mEXP = 0;
 	mSkillSelected = false;
+	mTurnOver = false;
+	mTargetSelectd = false;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	switch (id)
@@ -22,17 +24,18 @@ HeroComponent::HeroComponent(HEROID id)
 		mAttack = 0.0f;
 		mDefense = 0.30f;
 		// Basic Attack
-		mSkillList[0] = Skills(10, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "");
+		mSkillList[0] = Skills(10, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		// Skill 1 (Raise Attack)
-		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "");
+		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
 		// Skill 2 (Raise Defense)
-		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "");
+		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
 		// Skill 3 (Regen HP)
-		mSkillList[3] = Skills(0, 0, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "");
+		mSkillList[3] = Skills(0, 0, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
 		// Skill 4 (Shield)
-		mSkillList[4] = Skills(0, 0, false, Buffs(STATS::Shd, 50.0f, 1, true, nullptr), "Shield", "");
+		mSkillList[4] = Skills(0, 0, false, Buffs(STATS::Shd, 50.0f, 1, true, nullptr), "Shield", "Shield");
 		// Skill 5 (Big Attack)
-		mSkillList[5] = Skills(35, 20, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "");
+		mSkillList[5] = Skills(35, 20, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
+		// Add a stun skill
 		break;
 	}
 	default:
@@ -42,6 +45,7 @@ HeroComponent::HeroComponent(HEROID id)
 
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
+	//Make these if checks into a state machine
 	if (mSkillSelected == false)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))          
@@ -74,8 +78,15 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mSkillSelected = true;
 		}
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')))
+		{
+			mCurrentSkill = &mSkillList[5];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mSkillSelected = true;
+		}
+		//add input for stun skill
 	}
-	else
+	else if(mTargetSelectd == false)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
 		{
@@ -87,18 +98,27 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			{
 				mCurrentTarget = heros[0]->getComponent<Character>();
 			}
+			mGameObject->getComponent<Odyssey::Animator>()->playClip(mCurrentSkill->GetAnimationId());
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			mSkillSelected = false;
 			ManageStatusEffects();
-			return true;
+			mTargetSelectd = true;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))
 		{
 			mCurrentSkill = nullptr;
 			mSkillSelected = false;
 			std::cout << "Reselect A Skill" << std::endl;
+		}
+	}
+	else
+	{
+		if (mGameObject->getComponent<Odyssey::Animator>()->getProgress() > 0.8f)
+		{
+			mSkillSelected = false;
+			mTargetSelectd = false;
+			return true;
 		}
 	}
 	return false;
@@ -110,6 +130,6 @@ void HeroComponent::Die()
 	{
 		SetDead(true);
 		//TODO Uncomment for death animation
-		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
+		//GameObject->getComponent<Odyssey::Animator>()->playClip();
 	}
 }

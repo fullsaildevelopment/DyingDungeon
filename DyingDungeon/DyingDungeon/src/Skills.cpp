@@ -64,6 +64,7 @@ void Skills::Use(Character& caster,Character& target)
 	// If target is dead kill him
 	if (target.GetHP() <= 0)
 	{
+		//fix this target may die to a bleed and be at zero but it wont catch until the next attack hits
 		target.Die();
 	}
 }
@@ -88,4 +89,10 @@ float Skills::GetDamage()
 bool Skills::IsAttack()
 {
 	return mAttack;
+}
+
+// Returns the skills animation id
+std::string Skills::GetAnimationId()
+{
+	return mAnimationId;
 }

@@ -40,7 +40,8 @@ public:
 	float GetDamage();
 	// Get Attack
 	bool IsAttack();
-
+	// Gets the Animation ID
+	std::string GetAnimationId();
 	//use the skill
 	void Use(Character& caster, Character& target);
 private:
