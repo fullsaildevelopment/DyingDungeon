@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Rectangle2D.h"
 #include "Skills.h"
 #include <vector>
 
@@ -32,6 +33,7 @@ public:
 	float GetMaxHP();
 	// Mana Functions
 	float GetMana();
+	float GetMaxMana();
 	void SetMana(float Mana);
 	// Shield Functions
 	float GetShielding();
@@ -65,7 +67,16 @@ public:
 	// Status Effect Functions
 	void AddStatusEffect(Buffs* newEffect);
 	void ManageStatusEffects();
+	
+	//Update HealthBar UI
+	void UpdateHealthBar();
+	//Update ManaBar UI
+	void UpdateManaBar();
+
 	/////End of Get and Set Functions/////
+	
+	Odyssey::Rectangle2D* pHealthBar;
+	Odyssey::Rectangle2D* pManaBar;
 protected:
 	bool mHero;
 	bool mDead;
@@ -82,7 +93,9 @@ protected:
 	std::string mName;
 	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
+	Odyssey::Animator* mAnimator;
 private:
-
+	float mPrevHealth;
+	float mPrevMana;
 };
 

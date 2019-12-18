@@ -8,7 +8,7 @@ class EnemyComponent : public Character
 public:
 	EnemyComponent() = default;
 	EnemyComponent(ENEMYID _enemyID);
-	virtual void initialize();
+	//virtual void initialize();
 	struct Move 
 	{
 		Character* target;
@@ -27,5 +27,6 @@ private:
 	//std::function<float(Skills, Character*)> fScoreMove = nullptr;
 	Move bestMove;
 	float currentSkillMoveCheck = 0;
+	
 };
 
