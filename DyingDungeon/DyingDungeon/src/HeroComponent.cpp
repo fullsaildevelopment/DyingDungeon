@@ -36,7 +36,7 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 5 (Big Attack)
 		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
 		// Skill 6 (Stun Attack)
-		mSkillList[6] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Stunning Strike", "Idle");
+		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, true, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -49,7 +49,8 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	//Make these if checks into a state machine
 	if (mStunned)
 	{
-		std::cout << "You are stunned!" << std::endl;
+		std::cout << mName << " is stunned!" << std::endl;
+		ManageStatusEffects();
 		return true;
 	}
 
