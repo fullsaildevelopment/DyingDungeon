@@ -17,6 +17,7 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 	{
 		if (mPlayerTeam[i] != nullptr)
 		{
+			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
 			mAllCharacters.push_back(mPlayerTeam[i]);
 		}
 	}
