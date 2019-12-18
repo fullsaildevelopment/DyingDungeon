@@ -96,6 +96,7 @@ protected:
 	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
 	Odyssey::Animator* mAnimator;
+	STATE mCurrentState;
 private:
 	float mPrevHealth;
 	float mPrevMana;

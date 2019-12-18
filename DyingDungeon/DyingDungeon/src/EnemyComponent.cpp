@@ -7,6 +7,7 @@ CLASS_DEFINITION(Character, EnemyComponent)
 EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
 	SetHero(false);
+	mCurrentState = STATE::SELECTMOVE;
 	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
@@ -18,11 +19,11 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.15f;
 		mDefense = 0.05f;
 		// Basic Attack
-		mSkillList[0] = Skills(5, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "Idle");
+		mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "Idle");
 		// Skill 1 (Bleed)
-		mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.02f, 2, true, nullptr), "Skeletal Slash", "Idle");
+		mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.05f, 2, true, nullptr), "Skeletal Slash", "Idle");
 		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.07f, 3, true, nullptr), "Necrotic Infection", "Idle");
+		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.10f, 3, true, nullptr), "Necrotic Infection", "Idle");
 		break;
 	}
 	default:
@@ -84,6 +85,19 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
 {
 	// Find my best option
+	switch (mCurrentState)
+	{
+	case STATE::SELECTMOVE:
+		break;
+	case STATE::SELECTTARGET:
+		break;
+	case STATE::INPROGRESS:
+		break;
+	case STATE::FINISHED:
+		break;
+	default:
+		break;
+	}
 	bool done = FindBestMove(playerTeam);
 
 	if (done)
