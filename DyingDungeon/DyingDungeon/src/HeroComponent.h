@@ -10,7 +10,6 @@ class HeroComponent : public Character
 public:
 	HeroComponent() = default;
 	HeroComponent(HEROID id);
-	STATE currentState;
 	//Attack Functions
 	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
 
