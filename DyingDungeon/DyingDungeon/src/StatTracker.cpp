@@ -20,7 +20,16 @@ StatTracker* StatTracker::Instance()
 
 void StatTracker::StartNextTurn()
 {
-	//m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turns.size() - 1].push_back();
+	StatTracker::Turn newTurn;
+	newTurn.round = m_towerManager->GetBattleInstance()->GetCurrentRound();
+	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
+}
+
+void StatTracker::StartNextLevel()
+{
+	StatTracker::Level newLevel;
+	newLevel.levelNumber = m_towerManager->GetCurrentLevel();
+	m_levels.push_back(newLevel);
 }
 
 float StatTracker::CalculatDamageDone(std::string name) 
@@ -45,8 +54,8 @@ float StatTracker::CalculateDamageTaken(std::string name)
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (name == m_levels[i].turns[j].targetName) {
-				//total += m_levels[i].turns[j].damage;
+			if (name == m_levels[i].turns[j].targetName && m_levels[i].turns[j].effect == STATS::Atk) {
+				total += m_levels[i].turns[j].value;
 			}
 		}
 	}
