@@ -35,7 +35,8 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
 		// Skill 5 (Big Attack)
 		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		// Add a stun skill
+		// Skill 6 (Stun Attack)
+		mSkillList[6] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Stunning Strike", "Idle");
 		break;
 	}
 	default:
@@ -87,7 +88,12 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		//add input for stun skill
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')))
+		{
+			mCurrentSkill = &mSkillList[6];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mCurrentState = STATE::SELECTTARGET;
+		}
 		break;
 	}
 	case STATE::SELECTTARGET:
