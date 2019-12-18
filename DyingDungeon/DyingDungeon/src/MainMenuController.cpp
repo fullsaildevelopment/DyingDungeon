@@ -19,8 +19,4 @@ void MainMenuController::update(double deltaTime)
 	{
 		mApplication->setActiveScene("Game");
 	}
-	if (Odyssey::InputManager::getInstance().getKeyPress(VK_SPACE))
-	{
-		mRect->addFill(-deltaTime);
-	}
 }

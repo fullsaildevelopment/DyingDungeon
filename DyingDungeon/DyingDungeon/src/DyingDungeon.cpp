@@ -63,6 +63,8 @@ void setupLighting();
 void setupCamera();
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupArena();
+void setupGameInterface();
+void setupAltGameInterface();
 void setupPaladin();
 void setupSkeleton();
 void setupAudio();
@@ -98,6 +100,10 @@ int playGame()
 	// Load the arena scene
 	setupArena();
 
+	// Set up the game user interface
+	//setupGameInterface();
+	setupAltGameInterface();
+
 	// Set up the paladin
 	setupPaladin();
 
@@ -124,19 +130,19 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 	// Create a clear render target pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
 	application->addRenderPass(rtvPass);
-	//
+
 	// Create a skybox pass and add it to the render pipeline 
 	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
 	application->addRenderPass(skyboxPass);
-	//
+
 	// Create a shadow pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
 	application->addRenderPass(shadowPass);
-	
+
 	// Create an opaque pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
 	application->addRenderPass(opaquePass);
-	
+
 	// Create a transparent pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
 	application->addRenderPass(transparentPass);
@@ -327,19 +333,168 @@ void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* ap
 	gMenu->addComponent<Odyssey::UICanvas>();
 	gMenu->addComponent<Odyssey::Camera>();
 	gMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
-	float width = gMainWindow->mMainWindow.width;
-	float height = gMainWindow->mMainWindow.height;
+	UINT width = static_cast<UINT>(gMainWindow->mMainWindow.width);
+	UINT height = static_cast<UINT>(gMainWindow->mMainWindow.height);
 	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/MainMenu.png", width, height);
-	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Hello World", 50.0f, width, height);
-	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 200.0f, 100.0f);
 	gMenu->addComponent<MainMenuController>(application);
-	gMenu->getComponent<MainMenuController>()->mRect = gMenu->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
 	gMainMenu->addSceneObject(gMenu);
 }
 
 void setupArena()
 {
 	Odyssey::FileManager::getInstance().importScene(gGameScene, "assets/models/TestArena.dxm");
+}
+
+void setupGameInterface()
+{
+	// Create the menu object and add the UI Canvas component
+	std::shared_ptr<Odyssey::GameObject> menu = std::make_shared<Odyssey::GameObject>();
+	menu->addComponent<Odyssey::UICanvas>();
+
+	// Get a reference to the UI canvas and get the width/height of the screen
+	Odyssey::UICanvas* canvas = menu->getComponent<Odyssey::UICanvas>();
+	float width = static_cast<float>(gMainWindow->mMainWindow.width);
+	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+
+	// Combat log set of UI Elements
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, height - 200.0f), DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f), 550.0f, 200.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 190.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 1 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 155.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 2 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 125.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 3 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 95.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 4 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 64.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 5 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, height - 35.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"Testing text line 6 - insert your combat text here........ 61", 18.0f, 530.0f, 20.0f);
+
+	// Player Team - Title
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(110.0f, 10.0f), DirectX::XMFLOAT4(1, 1, 1, 1), L"Guy Fieri", 24.0f, 250.0f, 250.0f);
+
+	// Player Team - Character 1
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 45.0f), L"assets/images/Guy.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 55.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 75.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Player Team - Character 2
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 105.0f), L"assets/images/Guy.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 115.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 135.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Player Team - Character 3
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 165.0f), L"assets/images/Guy.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 175.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 195.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Player Team - Character 4
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 225.0f), L"assets/images/Guy.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 235.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(85.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Enemy Team - Title
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 250.0f, 10.0f), DirectX::XMFLOAT4(1, 1, 1, 1), L"Gordon Ramsey", 24.0f, 250.0f, 250.0f);
+
+	// Enemy Team - Character 1
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 75.0f, 45.0f), L"assets/images/Gordon.jpg", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 55.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 75.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Enemy Team - Character 2
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 75.0f, 105.0f), L"assets/images/Gordon.jpg", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 115.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 135.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Enemy Team - Character 3
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 75.0f, 165.0f), L"assets/images/Gordon.jpg", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 175.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 195.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+
+	// Enemy Team - Character 4
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 75.0f, 225.0f), L"assets/images/Gordon.jpg", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 235.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 175.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 260.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 175.0f, 15.0f);
+	gGameScene->addSceneObject(menu);
+}
+
+void setupAltGameInterface()
+{
+	// Create the menu object and add the UI Canvas component
+	std::shared_ptr<Odyssey::GameObject> menu = std::make_shared<Odyssey::GameObject>();
+	menu->addComponent<Odyssey::UICanvas>();
+
+	// Get a reference to the UI canvas and get the width/height of the screen
+	Odyssey::UICanvas* canvas = menu->getComponent<Odyssey::UICanvas>();
+	float width = static_cast<float>(gMainWindow->mMainWindow.width);
+	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+
+	// Construct the UI
+	// Battle for Flavortown Title
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2((width / 3.0f) + 50.0f, 15.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"Battle for Flavortown", 40.0f, 500.0f, 50.0f);
+
+	// Player Team - Character 1
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 45.0f), L"assets/images/Guy.png", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 95.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"1", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 120.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 137.5f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+
+	// Player Team - Character 2
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 180.0f), L"assets/images/Guy.png", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 230.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"2", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 275.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+
+	// Player Team - Character 3
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 315.0f), L"assets/images/Guy.png", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 365.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"3", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 390.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 410.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+
+	// Player Team - Character 4
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 455.0f), L"assets/images/Guy.png", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 505.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"4", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+	
+	// Enemy Team - Character 1
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 45.0f), L"assets/images/Gordon.jpg", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 95.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"5", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 120.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 140.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+
+	// Enemy Team - Character 2
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 180.0f), L"assets/images/Gordon.jpg", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 230.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"6", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 275.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+	gGameScene->addSceneObject(menu);
+
+	// Enemy Team - Character 3
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 315.0f), L"assets/images/Gordon.jpg", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 365.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"7", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 390.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 410.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+	gGameScene->addSceneObject(menu);
+
+	// Enemy Team - Character 4
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 455.0f), L"assets/images/Gordon.jpg", 75, 75);
+	// Turn Order Text
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 505.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"8", 24.0f, 50.0f, 50.0f);
+	// Health and Mana bars
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+
+	gGameScene->addSceneObject(menu);
 }
 
 void setupPaladin()
@@ -350,13 +505,13 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
 	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
 	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("AttackUp",	"assets/animations/Paladin/Paladin_AttackUp.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BasicAttack", "assets/animations/Paladin/Paladin_BasicAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BigAttack",	"assets/animations/Paladin/Paladin_BigAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Defense",		"assets/animations/Paladin/Paladin_Defense.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Heal",		"assets/animations/Paladin/Paladin_Heal.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield",		"assets/animations/Paladin/Paladin_Shield.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle",		"assets/animations/Paladin/Paladin_Idle.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BigAttack", "assets/animations/Paladin/Paladin_BigAttack.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Defense", "assets/animations/Paladin/Paladin_Defense.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Heal", "assets/animations/Paladin/Paladin_Heal.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addSceneObject(gPaladin);
 }
