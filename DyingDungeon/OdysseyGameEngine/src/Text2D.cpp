@@ -13,8 +13,8 @@ namespace Odyssey
 		hr = mFactory->CreateTextFormat(L"Verdana", NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"", mFormat.GetAddressOf());
 
 		// Center-align the format
-		mFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-		mFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+		mFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+		mFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 		// Create the shape to render the text onto
 		mShape = D2D1::RectF(position.x, position.y, position.x + width, position.y + height);
@@ -32,6 +32,6 @@ namespace Odyssey
 			renderTarget->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, mColor.w), mBrush.GetAddressOf());
 		}
 
-		renderTarget->DrawTextW(mText.c_str(), mText.length(), mFormat.Get(), mShape, mBrush.Get());
+		renderTarget->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
 	}
 }

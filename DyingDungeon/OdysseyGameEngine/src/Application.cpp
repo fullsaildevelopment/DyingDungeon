@@ -192,6 +192,19 @@ namespace Odyssey
 				if (mActiveScene)
 					mActiveScene->update();
 
+				static DWORD frameCount = 0; ++frameCount;
+				static DWORD framesPast = frameCount;
+				static DWORD prevCount = GetTickCount();
+
+				if (GetTickCount() - prevCount > 1000)
+				{
+					char buffer[256];
+					sprintf_s(buffer, "FPS: %d", frameCount - framesPast);
+					SetWindowTextA(*(mActiveWindow->getWindowHandle()), buffer);
+					framesPast = frameCount;
+					prevCount = GetTickCount();
+				}
+
 				// Render the scene
 				mRenderPipeline->render(mActiveScene);
 

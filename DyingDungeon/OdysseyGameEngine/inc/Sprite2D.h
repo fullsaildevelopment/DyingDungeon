@@ -9,11 +9,11 @@ namespace Odyssey
 	{
 	ELEMENT_DECLARATION(Sprite2D)
 	public:
-		Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, float width = 0.0f, float height = 0.0f);
+		Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width = 0, UINT height = 0);
 		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);
 	private:
 		DirectX::XMFLOAT2 mPosition;
-		float mWidth, mHeight;
+		UINT mWidth, mHeight;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> mBitmap;
 		Microsoft::WRL::ComPtr<IWICFormatConverter> mBitmapConverter;
 	};
