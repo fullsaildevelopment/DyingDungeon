@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Rectangle2D.h"
+#include "Text2D.h"
 #include "Skills.h"
 #include <vector>
 
@@ -82,6 +83,7 @@ public:
 	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
+	Odyssey::Text2D* pTurnNumber;
 protected:
 	bool mHero;
 	bool mDead;
