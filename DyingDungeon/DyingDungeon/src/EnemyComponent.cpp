@@ -18,6 +18,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.15f;
 		mDefense = 0.05f;
+		mSpeed = 20;
 		// Basic Attack
 		mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
 		// Skill 1 (Bleed)
