@@ -49,7 +49,8 @@ namespace Odyssey
 
 		for (std::shared_ptr<GameObject> gameObject : scene->getGameObjects())
 		{
-			if (UICanvas* canvas = gameObject->getComponent<UICanvas>())
+			std::vector<UICanvas*> canvasList = gameObject->getComponents<UICanvas>();
+			for (UICanvas* canvas : canvasList)
 			{
 				if (canvas->getActive())
 				{

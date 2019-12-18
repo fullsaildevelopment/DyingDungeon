@@ -19,31 +19,31 @@ namespace Odyssey
 	{
 		switch (message)
 		{
-		case WM_KEYDOWN:
-		{
-			// Register the input as key down with the input manager
-			Odyssey::InputManager::getInstance().registerKeyDown(static_cast<int>(wParam));
-		}
-		break;
-		case WM_KEYUP:
-		{
-			// Register the input as key up with the input manager
-			Odyssey::InputManager::getInstance().registerKeyUp(static_cast<int>(wParam));
-		}
-		break;
-		case WM_PAINT:
-		{
-			PAINTSTRUCT paintStruct;
-			HDC hDC;
-			hDC = BeginPaint(hwnd, &paintStruct);
-			EndPaint(hwnd, &paintStruct);
-		}
-		break;
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-		}
-		break;
+			case WM_KEYDOWN:
+			{
+				// Register the input as key down with the input manager
+				Odyssey::InputManager::getInstance().registerKeyDown(static_cast<int>(wParam));
+			}
+			break;
+			case WM_KEYUP:
+			{
+				// Register the input as key up with the input manager
+				Odyssey::InputManager::getInstance().registerKeyUp(static_cast<int>(wParam));
+			}
+			break;
+			case WM_PAINT:
+			{
+				PAINTSTRUCT paintStruct;
+				HDC hDC;
+				hDC = BeginPaint(hwnd, &paintStruct);
+				EndPaint(hwnd, &paintStruct);
+			}
+			break;
+			case WM_DESTROY:
+			{
+				PostQuitMessage(0);
+			}
+			break;
 		}
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
@@ -112,8 +112,8 @@ namespace Odyssey
 			WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
+			windowWidth,
+			windowHeight,
 			NULL,
 			NULL,
 			mHandleInstance,
@@ -196,13 +196,13 @@ namespace Odyssey
 				static DWORD framesPast = frameCount;
 				static DWORD prevCount = GetTickCount();
 
-				if (GetTickCount() - prevCount > 1000)
+				if (GetTickCount64() - prevCount > 1000)
 				{
 					char buffer[256];
 					sprintf_s(buffer, "FPS: %d", frameCount - framesPast);
 					SetWindowTextA(*(mActiveWindow->getWindowHandle()), buffer);
 					framesPast = frameCount;
-					prevCount = GetTickCount();
+					prevCount = GetTickCount64();
 				}
 
 				// Render the scene

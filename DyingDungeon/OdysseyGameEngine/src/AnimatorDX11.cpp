@@ -116,6 +116,26 @@ namespace Odyssey
 		mIsActive = true;
 	}
 
+	void AnimatorDX11::loopAnimationClip(AnimationClip& clip)
+	{
+		if (clip.duration == mAnimationMap["Dead"].duration)
+		{
+			clip.prevFrame = clip.keyframes.size() - 2;
+			clip.nextFrame = clip.keyframes.size() - 1;
+			clip.currentTime = clip.duration;
+			update(0.0f);
+			pause();
+		}
+		else
+		{
+			clip = mAnimationMap["Idle"];
+			clip.nextFrame = 1;
+			clip.prevFrame = 0;
+			clip.progress = 0.0f;
+			clip.currentTime = 0.0f;
+		}
+	}
+
 	void AnimatorDX11::updateSequence(double deltaTime)
 	{
 		// Convert the delta time from seconds to milliseconds to match the animation units
@@ -155,13 +175,9 @@ namespace Odyssey
 			// Set the time to the passed frame's time
 			clip.currentTime = clip.keyframes[clip.prevFrame].time;
 
-			if (clip.duration != mAnimationMap["Idle"].duration && clip.prevFrame == 0)
+			if (clip.prevFrame == 0)
 			{
-				clip = mAnimationMap["Idle"];
-				clip.nextFrame = 1;
-				clip.prevFrame = 0;
-				clip.progress = 0.0f;
-				clip.currentTime = 0.0f;
+				loopAnimationClip(clip);
 			}
 		}
 

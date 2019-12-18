@@ -34,4 +34,17 @@ namespace Odyssey
 
 		renderTarget->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
 	}
+
+	void Text2D::addAlpha(float alpha)
+	{
+		mColor.w += alpha;
+		mBrush = nullptr;
+
+	}
+
+	void Text2D::setAlpha(float alpha)
+	{
+		mColor.w = alpha;
+		mBrush = nullptr;
+	}
 }
