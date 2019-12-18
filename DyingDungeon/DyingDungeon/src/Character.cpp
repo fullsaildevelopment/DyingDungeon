@@ -7,11 +7,12 @@ CLASS_DEFINITION(Component, Character)
 void Character::initialize()
 {
 	onEnable();
+    mAnimator = mGameObject->getComponent<Odyssey::Animator>();
 }
 
 void Character::update(double deltaTime)
 {
-	
+    
 }
 
 bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
@@ -98,11 +99,14 @@ float Character::GetHP()
  */
 void Character::SetHP(float HP)
 {
+    mPrevHealth = mCurrentHP;
 	mCurrentHP = HP;
     if (mCurrentHP < 0)
         mCurrentHP = 0;
     else if (mCurrentHP > mBaseMaxHP)
         mCurrentHP = mBaseMaxHP;
+
+    UpdateHealthBar();
 }
 
 float Character::GetMaxHP()
@@ -131,11 +135,19 @@ float Character::GetMana()
  */
 void Character::SetMana(float Mana)
 {
+    mPrevMana = mCurrentMana;
     mCurrentMana = Mana;
     if (mCurrentMana < 0)
         mCurrentMana = 0;
     else if (mCurrentMana > mBaseMaxMana)
         mCurrentMana = mBaseMaxMana;
+
+    UpdateManaBar();
+}
+
+float Character::GetMaxMana()
+{
+    return mBaseMaxMana;
 }
 
 // Returns the Attack mod
@@ -200,9 +212,9 @@ float Character::GetShielding()
 }
 
 // Add to the shield
-void Character::AddShielding(float shield)
+void Character::SetShielding(float shield)
 {
-	mShielding += shield;
+	mShielding = shield;
 }
 
 /*
@@ -293,6 +305,7 @@ void Character::SetSkills(Skills newSkillList)
 {
 	mSkillList[0] = newSkillList;
 }
+
 /*
 *Function:  GetSkills()
 * --------------------
@@ -322,8 +335,22 @@ void Character::ManageStatusEffects()
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->IsBleed())
+			if (!(*it)->IsBleed() && (*it)->GetEffectedStat() != STATS::Shd)
 				(*it)->RevertEffect();
+			else
+			{
+				bool dontLoseShield = false;
+				for (int i = 0; i < mStatusEffects.size(); ++i)
+				{
+					if (mStatusEffects[i]->GetEffectedStat() == STATS::Shd && mStatusEffects[i] != (*it))
+					{
+						dontLoseShield = true;
+						break;
+					}
+				}
+				if (dontLoseShield == false)
+					(*it)->RevertEffect();
+			}
 			delete((*it));
 			(*it) = nullptr;
 			it = mStatusEffects.erase(it);
@@ -331,4 +358,41 @@ void Character::ManageStatusEffects()
 		else
 			it++;
 	}
+}
+
+
+/*
+*Function:  UpdateHealthBar()
+* --------------------
+* Sets the fill of the health bar for the character
+*
+*returns : void
+*/
+void Character::UpdateHealthBar()
+{
+    float fill = GetHP() / GetMaxHP();
+    if (fill < 0.0f)
+        fill = 0.0f;
+    else if (fill > 1.0f)
+        fill = 1.0f;
+
+    pHealthBar->setFill(fill);
+}
+
+/*
+*Function:  UpdateManaBar()
+* --------------------
+* Sets the fill of the mana bar for the character
+*
+*returns : void
+*/
+void Character::UpdateManaBar()
+{
+    float fill = GetMana() / GetMaxMana();
+    if (fill < 0.0f)
+        fill = 0.0f;
+    else if (fill > 1.0f)
+        fill = 1.0f;
+
+    pManaBar->setFill(fill);
 }

@@ -46,6 +46,17 @@ void Buffs::InitalEffect()
 		mRecipient->IncreaseSpd(mAmountOfEffect);
 		break;
 	}
+	case STATS::Shd:
+	{
+		if (mAmountOfEffect >= mRecipient->GetShielding())
+		{
+			mRecipient->SetShielding(mAmountOfEffect);
+			std::cout << "Sheild on " << mRecipient->GetName() << " for " << mAmountOfEffect << "Temp HP" << std::endl;
+		}
+		else
+			std::cout << "Had no effect... " <<  std::endl;
+		break;
+	}
 	default:
 		break;
 	}
@@ -82,6 +93,12 @@ void Buffs::RevertEffect()
 		mRecipient->DecreaseSpd(mAmountOfEffect);
 		break;
 	}
+	case STATS::Shd:
+	{
+		std::cout << "Sheild fell off " << mRecipient->GetName() << std::endl;
+		mRecipient->SetShielding(0);
+		break;
+	}
 	default:
 		break;
 	}
@@ -98,7 +115,9 @@ void Buffs::Bleed()
 		if(mAmountOfEffect > 0)
 			std::cout << mRecipient->GetName() << " took " << (mAmountOfEffect * mRecipient->GetMaxHP()) - ((mAmountOfEffect * mRecipient->GetMaxHP()) * mRecipient->GetDef()) << " damage in bleeding "  << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
 		else
-			std::cout << mRecipient->GetName() << " received " << (mAmountOfEffect * mRecipient->GetMaxHP()) << " damage in bleeding " << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
+			std::cout << mRecipient->GetName() << " received " << (mAmountOfEffect * mRecipient->GetMaxHP()) << " HP in healing " << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
+		if (mRecipient->GetHP() <= 0)
+			mRecipient->Die();
 		break;
 	}
 	case STATS::MP:
@@ -115,9 +134,6 @@ void Buffs::Bleed()
 	}
 	case STATS::Shd:
 	{
-		//Fix this to be an inital effect
-		mRecipient->AddShielding(mAmountOfEffect);
-		std::cout << mRecipient->GetName() << " received " << mAmountOfEffect << " shielding" << std::endl;
 		break;
 	}
 	default:

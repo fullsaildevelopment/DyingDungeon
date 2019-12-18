@@ -30,11 +30,6 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	}
 }
 
-void EnemyComponent::initialize()
-{
-
-}
-
 bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
 {
 	Character* target = nullptr;
