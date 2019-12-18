@@ -57,6 +57,11 @@ void Buffs::InitalEffect()
 			std::cout << "Had no effect... " <<  std::endl;
 		break;
 	}
+	case STATS::Stn:
+	{
+		mRecipient->SetStun(true);
+		std::cout << mRecipient->GetName() << " Is Stunned" << std::endl;
+	}
 	default:
 		break;
 	}
@@ -98,6 +103,11 @@ void Buffs::RevertEffect()
 		std::cout << "Sheild fell off " << mRecipient->GetName() << std::endl;
 		mRecipient->SetShielding(0);
 		break;
+	}
+	case STATS::Stn:
+	{
+		mRecipient->SetStun(false);
+		std::cout << mRecipient->GetName() << " Is no longer Stunned" << std::endl;
 	}
 	default:
 		break;
