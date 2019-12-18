@@ -9,7 +9,7 @@
 
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
-enum class STATE { NONE = 0, SELECTMOVE, SELECTTARGET, INPROGRESS, FINISHED };
+enum class STATE { NONE = 0, SELECTMOVE, SELECTTARGET, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
 {
