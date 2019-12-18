@@ -56,6 +56,7 @@ public:
 	void SetDead(bool deadStatus);
 	// EXP Functions
 	void AddExp(float exp);
+	float GetExp();
 	// IsHero Functions
 	bool IsHero();
 	void SetHero(bool heroStat);
@@ -65,17 +66,19 @@ public:
 	// Skill Functions
 	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
+	//Stunned Functions
+	void SetStun(bool stun);
+	bool GetStun();
+	/////End of Get and Set Functions/////
+
 	// Status Effect Functions
 	void AddStatusEffect(Buffs* newEffect);
 	void ManageStatusEffects();
 	void ClearStatusEffects();
-	
 	//Update HealthBar UI
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
-
-	/////End of Get and Set Functions/////
 	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;

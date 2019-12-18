@@ -247,6 +247,24 @@ void Character::AddExp(float exp)
 	mEXP += exp;
 }
 
+//Get the exp of the character
+float Character::GetExp()
+{
+    return mEXP;
+}
+
+//Set if the character is stunned
+void Character::SetStun(bool stun)
+{
+    mStunned = stun;
+}
+
+//Get if the character is stunned
+bool Character::GetStun()
+{
+    return mStunned;
+}
+
 /*
  * Function:  IsHero()
  * --------------------
