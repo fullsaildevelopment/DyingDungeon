@@ -95,7 +95,8 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 {
 	if (mStunned)
 	{
-		std::cout << "You are stunned!" << std::endl;
+		std::cout << GetName() << " is stunned!" << std::endl;
+		ManageStatusEffects();
 		return true;
 	}
 
