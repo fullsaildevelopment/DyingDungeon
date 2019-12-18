@@ -46,7 +46,13 @@ HeroComponent::HeroComponent(HEROID id)
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
 	//Make these if checks into a state machine
-	
+	if (mStunned)
+	{
+		std::cout << "You are stunned!" << std::endl;
+		return true;
+	}
+
+
 	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:

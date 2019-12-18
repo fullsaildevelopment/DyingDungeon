@@ -92,6 +92,7 @@ protected:
 	float mDefense;
 	float mSpeed;
 	float mEXP;
+	bool mStunned;
 	std::string mName;
 	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
