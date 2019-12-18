@@ -93,6 +93,7 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
 {
+	
 	if (mStunned && mCurrentState != STATE::DEAD)
 	{
 		std::cout << GetName() << " is stunned!" << std::endl;
@@ -105,6 +106,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	{
 	case STATE::SELECTMOVE:
 	{
+		ManageStatusEffects();
 		if (FindBestMove(playerTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
@@ -119,7 +121,6 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 			// Use the best move
 			bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
 			// If i have any buffs manage them 
-			ManageStatusEffects();
 			//Reset best move score
 			bestMove.score = -1000;
 			mCurrentState = STATE::SELECTMOVE;
@@ -134,6 +135,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 			SetDead(true);
 			return true;
 		}
+		break;
 	}
 	default:
 		break;
@@ -146,8 +148,10 @@ void EnemyComponent::Die()
 	if (GetHP() <= 0)
 	{
 		mCurrentState = STATE::DEAD;
+		ClearStatusEffects();
+
 		//TODO Uncomment for death animation
-		mAnimator->playClip("DeathButBetter");
+		mAnimator->playClip("Dead");
 	}
 }
 
