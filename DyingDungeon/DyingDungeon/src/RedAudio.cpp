@@ -288,6 +288,7 @@ void RedAudio::Stop()
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	m_playing = false;
 	SeekBegin();
 }
 
@@ -310,7 +311,10 @@ void RedAudio::SeekBegin()
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
-	if (m_playing) {
+	if (m_playing && m_looping) {
+		PlayLoop();
+	}
+	else if (m_playing) {
 		Play();
 	}
 }
