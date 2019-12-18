@@ -45,6 +45,7 @@ namespace
 	std::shared_ptr<Odyssey::GameObject> gMainCamera;
 	//Game Objects
 	std::shared_ptr<Odyssey::GameObject> gMenu;
+	std::shared_ptr<Odyssey::GameObject> gGameMenu;
 	std::shared_ptr<Odyssey::GameObject> gPaladin;
 	std::shared_ptr<Odyssey::GameObject> gSkeleton;
 	std::shared_ptr<Odyssey::GameObject> gCurrentTower;
@@ -416,11 +417,13 @@ void setupGameInterface()
 void setupAltGameInterface()
 {
 	// Create the menu object and add the UI Canvas component
-	std::shared_ptr<Odyssey::GameObject> menu = std::make_shared<Odyssey::GameObject>();
-	menu->addComponent<Odyssey::UICanvas>();
+	gGameMenu = std::make_shared<Odyssey::GameObject>();
+	gGameMenu->addComponent<Odyssey::UICanvas>(); // The player's icons and health bars
+	gGameMenu->addComponent<Odyssey::UICanvas>(); // The rewards screen
+
 
 	// Get a reference to the UI canvas and get the width/height of the screen
-	Odyssey::UICanvas* canvas = menu->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	float width = static_cast<float>(gMainWindow->mMainWindow.width);
 	float height = static_cast<float>(gMainWindow->mMainWindow.height);
 
@@ -475,7 +478,6 @@ void setupAltGameInterface()
 	// Health and Mana bars
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 275.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-	gGameScene->addSceneObject(menu);
 
 	// Enemy Team - Character 3
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 315.0f), L"assets/images/Gordon.jpg", 75, 75);
@@ -484,7 +486,6 @@ void setupAltGameInterface()
 	// Health and Mana bars
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 390.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 410.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-	gGameScene->addSceneObject(menu);
 
 	// Enemy Team - Character 4
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 455.0f), L"assets/images/Gordon.jpg", 75, 75);
@@ -494,7 +495,16 @@ void setupAltGameInterface()
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
 
-	gGameScene->addSceneObject(menu);
+	// Results Menu
+	canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
+	float rewardsImageWidth = 1280.0f;
+	float rewardsImageHeight = 720.0f;
+	float rewardsImageX = (width / 2.0f) - (rewardsImageWidth / 2.0f);
+	float rewardsImageY = (height / 2.0f) - (rewardsImageHeight / 2.0f);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
+	canvas->setActive(false); // The rewards screen won't show up at the start
+
+	gGameScene->addSceneObject(gGameMenu);
 }
 
 void setupPaladin()
@@ -542,6 +552,8 @@ void setUpTowerManager()
 	gEnemyUnit.push_back(gSkeleton);
 	gCurrentTower = std::make_shared<Odyssey::GameObject>();
 	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
+	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	gGameScene->addSceneObject(gCurrentTower);
 }
 

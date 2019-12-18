@@ -77,5 +77,6 @@ private: // Varibales
 private: // Functions
 	void CreateBattleInstance();
 	void DestroyBattleInstance();
+	void GoToMainMenu();
 };
 
