@@ -52,7 +52,7 @@ void Character::TakeDamage(float dmg)
 			dmg = dmg - mShielding;
 			if (dmg <= 0)
 			{
-				mShielding = dmg;
+				mShielding = fabsf(dmg);
 				dmg = 0;
 			}
 			else
@@ -358,6 +358,17 @@ void Character::ManageStatusEffects()
 		else
 			it++;
 	}
+}
+
+void Character::ClearStatusEffects()
+{
+	for (Buffs* b : mStatusEffects)
+	{
+		b->RevertEffect();
+		delete(b);
+		b = nullptr;
+	}
+	mStatusEffects.clear();
 }
 
 
