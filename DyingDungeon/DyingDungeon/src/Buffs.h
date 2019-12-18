@@ -26,7 +26,7 @@ public:
 	// Apply the buff effect functions
 	void InitalEffect();
 	void RevertEffect();
-	void Bleed();
+	bool Bleed();
 	//  mDuration functions
 	int GetDuration();
 	void SetDuration(int newDuration);

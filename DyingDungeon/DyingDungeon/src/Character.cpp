@@ -348,8 +348,11 @@ void Character::ManageStatusEffects()
 	std::vector<Buffs*>::iterator it;
 	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
 	{
-		if((*it)->IsBleed())
-			(*it)->Bleed();
+		if ((*it)->IsBleed())
+		{
+			if((*it)->Bleed())
+				return;
+		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{

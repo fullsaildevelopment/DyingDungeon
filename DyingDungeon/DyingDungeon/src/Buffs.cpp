@@ -115,7 +115,7 @@ void Buffs::RevertEffect()
 }
 
 // Effect that takes effect after the charaters turn ends
-void Buffs::Bleed()
+bool Buffs::Bleed()
 {
 	switch (mEffectedStat)
 	{
@@ -127,7 +127,10 @@ void Buffs::Bleed()
 		else
 			std::cout << mRecipient->GetName() << " received " << (mAmountOfEffect * mRecipient->GetMaxHP()) << " HP in healing " << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
 		if (mRecipient->GetHP() <= 0)
+		{
 			mRecipient->Die();
+			return true;
+		}
 		break;
 	}
 	case STATS::MP:
@@ -149,6 +152,7 @@ void Buffs::Bleed()
 	default:
 		break;
 	}
+	return false;
 }
 
 // Get how many turns are left for this buff

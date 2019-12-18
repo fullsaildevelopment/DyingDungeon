@@ -106,11 +106,12 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	{
 	case STATE::SELECTMOVE:
 	{
-		ManageStatusEffects();
 		if (FindBestMove(playerTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
-			mAnimator->playClip(bestMove.skill->GetAnimationId());
+			ManageStatusEffects();
+			if(mCurrentState == STATE::INPROGRESS)
+				mAnimator->playClip(bestMove.skill->GetAnimationId());
 		}
 		break;
 	}
