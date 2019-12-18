@@ -542,8 +542,16 @@ void setupSkeleton()
 
 void setupAudio()
 {
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "Background");
-	RedAudioManager::Instance()->Loop("Background");
+	//SFX
+	RedAudioManager::Instance()->AddAudio("assets/audio/bone_punch.mp3", "SkeletonAttack");
+	RedAudioManager::Instance()->AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
+	RedAudioManager::Instance()->AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
+	RedAudioManager::Instance()->AddAudio("assets/audio/losing.mp3", "Loss");
+	//Background Sound
+	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
+	RedAudioManager::Instance()->AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
+	//Play Initial Loop
+	RedAudioManager::Instance()->Loop("BackgroundMenu");
 }
 
 void setUpTowerManager()
