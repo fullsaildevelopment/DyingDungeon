@@ -62,6 +62,13 @@ namespace Odyssey
 
 	private:
 		/**
+		 *	Loop the animation clip back to the beginning frame.
+		 *	@param[in] clip The animation clip to loop.
+		 *	@return void
+		 */
+		void loopAnimationClip(AnimationClip& clip);
+
+		/**
 		 *	Update the current animation sequence, if one is set. Called once per frame when the scene is updated.
 		 *	@param[in] deltaTime The time between frames.
 		 *	@return void
