@@ -2,6 +2,8 @@
 #include "Character.h"
 #include "InputManager.h"
 
+enum class STATE { NONE = 0, SELECTMOVE, SELECTTARGET, INPROGRESS, FINISHED };
+
 typedef std::vector<std::shared_ptr<Odyssey::GameObject>> GameObjectList;
 class HeroComponent : public Character
 {
@@ -10,7 +12,7 @@ class HeroComponent : public Character
 public:
 	HeroComponent() = default;
 	HeroComponent(HEROID id);
-
+	STATE currentState;
 	//Attack Functions
 	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
 
@@ -25,9 +27,6 @@ public:
 	/////End of Get and Set Functions/////
 
 private:
-	bool mSkillSelected;
-	bool mTargetSelectd;
-	bool mTurnOver;
 	Skills* mCurrentSkill;
 	Character* mCurrentTarget;
 };
