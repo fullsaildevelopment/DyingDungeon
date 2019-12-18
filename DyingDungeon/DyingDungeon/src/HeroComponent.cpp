@@ -47,7 +47,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
 	//Make these if checks into a state machine
 	
-	switch (mmCurrentState)
+	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:
 	{
