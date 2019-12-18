@@ -181,7 +181,7 @@ namespace Odyssey
 		// Calculate the interpolation ratio
 		float totalTime = (clip.nextFrame == 0) ? static_cast<float>(clip.duration) : static_cast<float>(nextFrame.time);
 		float ratio = static_cast<float>(clip.currentTime - prevFrame.time) / (totalTime - static_cast<float>(prevFrame.time));
-		clip.progress = clip.currentTime / clip.duration;
+		clip.progress = static_cast<float>(clip.currentTime / clip.duration);
 
 		// Blend the two keyframes and store it as the "current" keyframe
 		blendKeyframes(prevFrame, nextFrame, ratio, processedKeyframe);

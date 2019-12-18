@@ -168,23 +168,27 @@ namespace Odyssey
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{
-			if (light->getLightType() == LightType::Point)
+			if (sceneLighting.numLights != 8)
 			{
-				Sphere sphere;
-				light->getPosition(sphere.center);
-				sphere.radius = light->getRange();
-				if (gameObject->getComponent<AABB>()->testAABBtoSphere(sphere))
+				if (light->getLightType() == LightType::Point)
 				{
+					Sphere sphere;
+					light->getPosition(sphere.center);
+					sphere.radius = light->getRange();
+					if (gameObject->getComponent<AABB>()->testAABBtoSphere(sphere))
+					{
+						sceneLighting.sceneLights[sceneLighting.numLights] = *light;
+						sceneLighting.numLights++;
+					}
+				}
+				else
+				{
+					// Directional and spot lights are automatically added to the light list
 					sceneLighting.sceneLights[sceneLighting.numLights] = *light;
 					sceneLighting.numLights++;
 				}
 			}
-			else
-			{
-				// Directional and spot lights are automatically added to the light list
-				sceneLighting.sceneLights[sceneLighting.numLights] = *light;
-				sceneLighting.numLights++;
-			}
+			
 		}
 
 		// Set the lighting constant buffer
