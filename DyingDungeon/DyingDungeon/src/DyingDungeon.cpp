@@ -455,6 +455,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Die", "assets/animations/Paladin/Paladin_Death.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addSceneObject(gPaladin);
 }

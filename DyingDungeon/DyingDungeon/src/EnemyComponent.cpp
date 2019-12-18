@@ -140,7 +140,7 @@ void EnemyComponent::Die()
 	{
 		SetDead(true);
 		//TODO Uncomment for death animation
-		//mGameObject->getComponent<Odyssey::Animator>()->setAnimationClip("Death");
+		mAnimator->playClip("DeathButBetter");
 	}
 }
 

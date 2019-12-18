@@ -36,7 +36,7 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 5 (Big Attack)
 		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
 		// Skill 6 (Stun Attack)
-		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, true, nullptr), "Stunning Strike", "Stun");
+		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -59,43 +59,43 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 	case STATE::SELECTMOVE:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[0];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[1];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')) && mSkillList[2].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[2];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')) && mSkillList[3].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[3];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')) && mSkillList[4].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[4];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')) && mSkillList[5].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[5];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')) && mSkillList[6].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[6];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
@@ -151,6 +151,6 @@ void HeroComponent::Die()
 	{
 		SetDead(true);
 		//TODO Uncomment for death animation
-		//GameObject->getComponent<Odyssey::Animator>()->playClip();
+		mAnimator->playClip("Die");
 	}
 }
