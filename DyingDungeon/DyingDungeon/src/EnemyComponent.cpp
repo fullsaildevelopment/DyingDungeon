@@ -72,18 +72,32 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObjec
 
 float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 {
-	float score = skillOption.GetDamage() - skillOption.GetManaCost();
+	float score = skillOption.GetDamage();
+	if (skillOption.GetName() == "Basic Attack" && GetMana() < 10)
+		score += 1000;
+	
+	if (skillOption.GetName() != "Basic Attack")
+		score -= skillOption.GetManaCost();
 	if (target->GetHP() - skillOption.GetDamage() == 0 && GetMana() >= skillOption.GetManaCost())
 		score += 1000;
 	if (GetHP() > 60 && skillOption.GetName() == "Necrotic Infection" && GetMana() >= skillOption.GetManaCost())
-		score += 25;
+		score += 100;
+	if (GetHP() > 60 && skillOption.GetName() == "Skeletal Slash" && GetMana() >= skillOption.GetManaCost())
+		score += 35;
 	if (GetMana() - skillOption.GetManaCost() <= 10)
 		score -= 10;
+
 	return score;
 }
 
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
 {
+	if (mStunned)
+	{
+		std::cout << "You are stunned!" << std::endl;
+		return true;
+	}
+
 	// Find my best option
 	switch (mCurrentState)
 	{
