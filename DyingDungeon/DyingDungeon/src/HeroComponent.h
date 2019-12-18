@@ -2,8 +2,6 @@
 #include "Character.h"
 #include "InputManager.h"
 
-enum class STATE { NONE = 0, SELECTMOVE, SELECTTARGET, INPROGRESS, FINISHED };
-
 typedef std::vector<std::shared_ptr<Odyssey::GameObject>> GameObjectList;
 class HeroComponent : public Character
 {
