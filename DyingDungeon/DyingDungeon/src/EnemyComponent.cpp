@@ -88,30 +88,33 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:
+	{
+		if (FindBestMove(playerTeam))
+		{
+			mCurrentState = STATE::INPROGRESS;
+			mAnimator->playClip(bestMove.skill->GetAnimationId());
+		}
 		break;
-	case STATE::SELECTTARGET:
-		break;
+	}
 	case STATE::INPROGRESS:
+	{
+		if (mAnimator->getProgress() > 0.8f)
+		{
+			// Use the best move
+			bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+			// If i have any buffs manage them 
+			ManageStatusEffects();
+			//Reset best move score
+			bestMove.score = -1000;
+			mCurrentState = STATE::SELECTMOVE;
+			return true;
+		}
 		break;
-	case STATE::FINISHED:
-		break;
+	}
+
 	default:
 		break;
 	}
-	bool done = FindBestMove(playerTeam);
-
-	if (done)
-	{
-		// Use the best move
-		bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
-		// If i have any buffs manage them 
-		ManageStatusEffects();
-		//Reset best move score
-		bestMove.score = -1000;
-		//Return true if we finished our turn
-		return true;
-	}
-
 	return false;
 }
 

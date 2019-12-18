@@ -11,7 +11,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mEXP = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
-	mmCurrentState = STATE::SELECTMOVE;
+	mCurrentState = STATE::SELECTMOVE;
 	switch (id)
 	{
 	case HEROID::Paladin:
