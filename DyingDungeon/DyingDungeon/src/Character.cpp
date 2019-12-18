@@ -360,6 +360,7 @@ void Character::ManageStatusEffects()
 	}
 }
 
+// Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
 	for (Buffs* b : mStatusEffects)
