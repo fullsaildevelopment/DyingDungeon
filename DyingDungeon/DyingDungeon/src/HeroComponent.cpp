@@ -102,7 +102,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			{
 				mCurrentTarget = heros[0]->getComponent<Character>();
 			}
-			mGameObject->getComponent<Odyssey::Animator>()->playClip(mCurrentSkill->GetAnimationId());
+			mAnimator->playClip(mCurrentSkill->GetAnimationId());
 			currentState = STATE::INPROGRESS;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))
@@ -115,7 +115,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	}
 	case STATE::INPROGRESS:
 	{
-		if (mGameObject->getComponent<Odyssey::Animator>()->getProgress() > 0.8f)
+		if (mAnimator->getProgress() > 0.8f)
 		{
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;

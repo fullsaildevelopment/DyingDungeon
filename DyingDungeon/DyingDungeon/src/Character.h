@@ -37,7 +37,7 @@ public:
 	void SetMana(float Mana);
 	// Shield Functions
 	float GetShielding();
-	void AddShielding(float shield);
+	void SetShielding(float shield);
 	// Attack Functions
 	float GetAtk();
 	void IncreaseAtk(float statIncrease);
@@ -67,6 +67,7 @@ public:
 	// Status Effect Functions
 	void AddStatusEffect(Buffs* newEffect);
 	void ManageStatusEffects();
+	void ClearStatusEffects();
 	
 	//Update HealthBar UI
 	void UpdateHealthBar();

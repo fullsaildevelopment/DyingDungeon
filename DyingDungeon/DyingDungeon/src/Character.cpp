@@ -212,9 +212,9 @@ float Character::GetShielding()
 }
 
 // Add to the shield
-void Character::AddShielding(float shield)
+void Character::SetShielding(float shield)
 {
-	mShielding += shield;
+	mShielding = shield;
 }
 
 /*
@@ -335,8 +335,22 @@ void Character::ManageStatusEffects()
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->IsBleed())
+			if (!(*it)->IsBleed() && (*it)->GetEffectedStat() != STATS::Shd)
 				(*it)->RevertEffect();
+			else
+			{
+				bool dontLoseShield = false;
+				for (int i = 0; i < mStatusEffects.size(); ++i)
+				{
+					if (mStatusEffects[i]->GetEffectedStat() == STATS::Shd && mStatusEffects[i] != (*it))
+					{
+						dontLoseShield = true;
+						break;
+					}
+				}
+				if (dontLoseShield == false)
+					(*it)->RevertEffect();
+			}
 			delete((*it));
 			(*it) = nullptr;
 			it = mStatusEffects.erase(it);

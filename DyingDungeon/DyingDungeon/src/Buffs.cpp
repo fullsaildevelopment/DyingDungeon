@@ -48,8 +48,13 @@ void Buffs::InitalEffect()
 	}
 	case STATS::Shd:
 	{
-		std::cout << "Sheild on " << mRecipient->GetName() << " for " << mAmountOfEffect << "Temp HP" << std::endl;
-		mRecipient->AddShielding(mAmountOfEffect);
+		if (mAmountOfEffect >= mRecipient->GetShielding())
+		{
+			mRecipient->SetShielding(mAmountOfEffect);
+			std::cout << "Sheild on " << mRecipient->GetName() << " for " << mAmountOfEffect << "Temp HP" << std::endl;
+		}
+		else
+			std::cout << "Had no effect... " <<  std::endl;
 		break;
 	}
 	default:
@@ -91,7 +96,7 @@ void Buffs::RevertEffect()
 	case STATS::Shd:
 	{
 		std::cout << "Sheild fell off " << mRecipient->GetName() << std::endl;
-		//remove sheilding
+		mRecipient->SetShielding(0);
 		break;
 	}
 	default:
