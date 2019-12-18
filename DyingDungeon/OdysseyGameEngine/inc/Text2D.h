@@ -10,6 +10,7 @@ namespace Odyssey
 	public:
 		Text2D(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, std::wstring text, float fontSize, float width, float height);
 		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);
+		void setText(std::wstring text);
 		void addAlpha(float alpha);
 		void setAlpha(float alpha);
 	private:

@@ -3,6 +3,7 @@
 #include "BattleInstance.h"
 #include "Buffs.h"
 #include "UICanvas.h"
+#include "Text2D.h"
 
 enum TOWER_STATE
 {
@@ -21,6 +22,7 @@ public: // Constructors
 
 	Odyssey::UICanvas* UI;
 	Odyssey::UICanvas* Rewards;
+	std::vector<Odyssey::Text2D*> TurnOrderNumbers;
 
 public: // Functions
 

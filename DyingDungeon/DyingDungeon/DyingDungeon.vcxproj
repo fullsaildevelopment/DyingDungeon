@@ -169,7 +169,6 @@
     <ClCompile Include="src\HeroComponent.cpp" />
     <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\MenuManager.cpp" />
-    <ClCompile Include="src\MenuScreen.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Skills.cpp" />
@@ -186,7 +185,6 @@
     <ClInclude Include="src\HeroComponent.h" />
     <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MenuManager.h" />
-    <ClInclude Include="src\MenuScreen.h" />
     <ClInclude Include="src\RedAudio.h" />
     <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Resource.h" />

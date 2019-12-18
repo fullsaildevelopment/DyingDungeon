@@ -73,20 +73,14 @@ void TowerManager::update(double deltaTime)
 			if (result == mCurrentBattle->PLAYER_TEAM_DIED)
 			{
 				std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
+				std::cout << "Your team DIED!!!!!!!\n" << std::endl;
 
+				SetTowerState(NOT_IN_BATTLE);
 				// Go to main menu screen
 				GoToMainMenu();
 			}
 			else
 			{
-				// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
-				// This will show a sim of entering a new battle
-				for (int i = 0; i < mEnemyTeam.size(); i++)
-				{
-					mEnemyTeam[i]->getComponent<Character>()->SetHP(100);
-					mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
-				}
-
 				// Update to the next level
 				SetCurrentLevel(GetCurrentLevel() + 1);
 			}
@@ -96,17 +90,31 @@ void TowerManager::update(double deltaTime)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
 		{
+			float tempXP = 0.0f;
+
 			// Check to see if that was our last level for completing the tower
 			if (GetCurrentLevel() > mNumberOfLevels)
 			{
 				std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+				SetTowerState(NOT_IN_BATTLE);
 
+				// Give player some XP
+				tempXP = 500.0f;
+				// Print how much XP was given to the player
+				mPlayerTeam[0]->getComponent<Character>()->AddExp(tempXP);
+				std::cout << "Paladin gained " << tempXP << "XP for completing the level.\n" << std::endl;
 				// Go to main menu screen
 				GoToMainMenu();
 			}
 			else
 			{
 				std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+
+				// Give player some XP
+				tempXP = 100.0f;
+				// Print how much XP was given to the player
+				mPlayerTeam[0]->getComponent<Character>()->AddExp(tempXP);
+				std::cout << "Paladin gained " << tempXP << "XP for completing the level.\n" << std::endl;
 
 				// Make a new battle to continue the tower
 				CreateBattleInstance();
@@ -116,12 +124,16 @@ void TowerManager::update(double deltaTime)
 			Rewards->setActive(false);
 		}
 	}
+	else if (GetTowerState() == NOT_IN_BATTLE)
+	{
+
+	}
 }
 
 void TowerManager::CreateBattleInstance()
 {
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
@@ -161,5 +173,23 @@ void TowerManager::DestroyBattleInstance()
 void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
+
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		if (mPlayerTeam[i] != nullptr)
+		{
+			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
+			// This will show a sim of entering a new battle
+			mPlayerTeam[i]->getComponent<Character>()->SetHP(1000);
+			mPlayerTeam[i]->getComponent<Character>()->SetMana(1000);
+			mPlayerTeam[i]->getComponent<Character>()->SetDead(false);
+			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
+		}
+	}
+
+	Rewards->setActive(false);
+
+	SetCurrentLevel(1);
 	MenuManager::GetInstance().loadScene("MainMenu");
 }

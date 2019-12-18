@@ -23,13 +23,13 @@ namespace Odyssey
 
 	void Rectangle2D::addFill(float value)
 	{
-		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mWidth * mFill), mPosition.y + mHeight);
 		mFill += value;
+		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mWidth * mFill), mPosition.y + mHeight);
 	}
 
 	void Rectangle2D::setFill(float fill)
 	{
-		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mWidth * mFill), mPosition.y + mHeight);
 		mFill = fill;
+		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mWidth * mFill), mPosition.y + mHeight);
 	}
 }
