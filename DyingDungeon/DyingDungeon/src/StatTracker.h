@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Skills.h"
-
+#include "TowerManager.h"
 class StatTracker
 {
 
@@ -34,9 +34,11 @@ public:
 private:
 	unsigned int m_currentLevel;
 	std::vector<Level> m_levels;
+	TowerManager* m_towerManager;
 public:
 	static StatTracker* Instance();
 	void StartNextTurn();
+	void StartNextLevel();
 	~StatTracker();
 
 private:
