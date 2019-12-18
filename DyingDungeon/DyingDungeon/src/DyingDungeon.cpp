@@ -455,7 +455,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Die", "assets/animations/Paladin/Paladin_Death.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addSceneObject(gPaladin);
 }
@@ -470,7 +470,7 @@ void setupSkeleton()
 	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("DeathButBetter", "assets/animations/Skeleton/Skeleton_Death.dxanim");
+	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
