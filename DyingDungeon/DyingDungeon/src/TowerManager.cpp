@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "HeroComponent.h"
 #include "InputManager.h"
+#include "MenuManager.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -65,12 +66,16 @@ void TowerManager::update(double deltaTime)
 		{
 			// Destroy the battle instance
 			DestroyBattleInstance();
+			SetTowerState(IN_REWARDS);
+			Rewards->setActive(true);
 
 			//Check to see if the update returned PLAYER_TEAM_DIED
 			if (result == mCurrentBattle->PLAYER_TEAM_DIED)
 			{
 				std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
-				SetTowerState(NOT_IN_BATTLE);
+
+				// Go to main menu screen
+				GoToMainMenu();
 			}
 			else
 			{
@@ -84,18 +89,31 @@ void TowerManager::update(double deltaTime)
 
 				// Update to the next level
 				SetCurrentLevel(GetCurrentLevel() + 1);
-
-				// Check to see if that was our last level for completing the tower
-				if (GetCurrentLevel() > mNumberOfLevels)
-				{
-					std::cout << "You have completed the tower, Congratulations\n" << std::endl;
-				}
-				else
-				{
-					std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
-					CreateBattleInstance();
-				}
 			}
+		}
+	}
+	else if (GetTowerState() == IN_REWARDS)
+	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
+		{
+			// Check to see if that was our last level for completing the tower
+			if (GetCurrentLevel() > mNumberOfLevels)
+			{
+				std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+
+				// Go to main menu screen
+				GoToMainMenu();
+			}
+			else
+			{
+				std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+
+				// Make a new battle to continue the tower
+				CreateBattleInstance();
+			}
+
+			// Turn off the rewads screen
+			Rewards->setActive(false);
 		}
 	}
 }
@@ -138,4 +156,10 @@ void TowerManager::DestroyBattleInstance()
 	SetTowerState(NOT_IN_BATTLE);
 
 	std::cout << "Destroyed a battle instance\n" << std::endl;
+}
+
+void TowerManager::GoToMainMenu()
+{
+	SetTowerState(NOT_IN_BATTLE);
+	MenuManager::GetInstance().loadScene("MainMenu");
 }
