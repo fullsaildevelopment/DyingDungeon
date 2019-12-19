@@ -53,12 +53,13 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 		ManageStatusEffects();
 		return true;
 	}
-
-
 	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:
 	{
+		ManageStatusEffects();
+		if (mCurrentState == STATE::DEAD)
+			return false;
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[0];
@@ -133,8 +134,16 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			ManageStatusEffects();
 			mCurrentState = STATE::SELECTMOVE;
+			return true;
+		}
+		break;
+	}
+	case STATE::DEAD:
+	{
+		if (mAnimator->getProgress() > 0.8f)
+		{
+			SetDead(true);
 			return true;
 		}
 		break;
@@ -149,8 +158,8 @@ void HeroComponent::Die()
 {
 	if (GetHP() <= 0)
 	{
-		SetDead(true);
+		mCurrentState = STATE::DEAD;
 		//TODO Uncomment for death animation
-		mAnimator->playClip("Die");
+		mAnimator->playClip("Dead");
 	}
 }
