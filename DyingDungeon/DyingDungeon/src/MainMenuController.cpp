@@ -18,8 +18,8 @@ void MainMenuController::update(double deltaTime)
 {
 	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
 	{
-		RedAudioManager::Instance()->GetAudio("BackgoundMenu")->Pause();
-		//RedAudioManager::Instance()->Play("BackgroundBattle");
+		RedAudioManager::Instance()->GetAudio("BackgroundMenu")->Pause();
+		RedAudioManager::Instance()->Play("BackgroundBattle");
 		mApplication->setActiveScene("Game");
 	}
 }

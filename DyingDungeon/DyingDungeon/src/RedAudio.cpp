@@ -32,7 +32,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 		std::cout << "ERROR: RedAudio-RedAudio()-Could not get duration/end of song-file:" << m_path << "\n";
 #endif // DEBUG_AUDIO_CONSOLE_OUT
 	}
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -82,7 +82,7 @@ void RedAudio::Close() {
 	m_playing = false;
 	m_segmented = false;
 	m_looping = false;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -106,11 +106,11 @@ void RedAudio::Open()
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[60]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
-		std::cout << "ERROR: RedAudio-Open()-";  std::wcout << out_error; std::cout << "-file:" << m_path <<"\n";
+		std::cout << "ERROR: RedAudio-Open()-";  std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 		delete out_error;
 	}
 #endif
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -136,7 +136,7 @@ void RedAudio::Play()
 	}
 #endif
 	m_playing = true;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -165,7 +165,7 @@ void RedAudio::PlayLoop()
 #endif
 	m_playing = true;
 	m_looping = true;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -206,7 +206,7 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 #endif
 	m_playing = true;
 	m_segmented = true;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -254,7 +254,7 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 	m_playing = true;
 	m_segmented = true;
 	m_looping = true;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -274,7 +274,7 @@ void RedAudio::PlayInstance() {
 	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
 	mciSendString(in_cmd, NULL, 0, NULL);
 
-	delete cmd;
+	//delete cmd;
 	cmd = new char[strlen(newAlias) + 11];
 	strcpy_s(cmd, 6, "play ");
 	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
@@ -283,7 +283,7 @@ void RedAudio::PlayInstance() {
 	in_cmd = ConvertCharToWChar(cmd);
 	mciSendString(in_cmd, NULL, 0, NULL);
 
-	delete cmd;
+	//delete cmd;
 	cmd = new char[strlen(newAlias) + 6];
 	strcpy_s(cmd, 6, "close ");
 	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
@@ -291,7 +291,7 @@ void RedAudio::PlayInstance() {
 	in_cmd = ConvertCharToWChar(cmd);
 	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
 
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 }
 
@@ -315,7 +315,7 @@ void RedAudio::Pause()
 	}
 #endif
 	m_playing = false;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -340,7 +340,7 @@ void RedAudio::Stop()
 	}
 #endif
 	m_playing = false;
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 	SeekBegin();
@@ -373,7 +373,7 @@ void RedAudio::SeekBegin()
 	else if (m_playing) {
 		Play();
 	}
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -402,7 +402,7 @@ void RedAudio::SeekEnd()
 	if (m_looping) {
 		PlayLoop();
 	}
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -431,7 +431,7 @@ void RedAudio::SetVolume(unsigned int volume)
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
-	delete cmd;
+	//delete cmd;
 	delete[] in_cmd;
 	delete out_string;
 }
@@ -460,7 +460,7 @@ void RedAudio::Update()
 			std::cout << "ERROR: RedAudio-Update()-No position recived" << "-file:" << m_path << "\n";
 		}
 #endif
-		delete cmd;
+		//delete cmd;
 		delete[] in_cmd;
 		delete[] out_string;
 	}
