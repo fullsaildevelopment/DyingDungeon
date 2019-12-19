@@ -1,13 +1,15 @@
 #pragma once
 #include "Component.h"
 #include "Rectangle2D.h"
+#include "Text2D.h"
 #include "Skills.h"
 #include <vector>
 
-#define TOTALSKILLS 6
+#define TOTALSKILLS 7
 
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
+enum class STATE { NONE = 0, SELECTMOVE, SELECTTARGET, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
 {
@@ -55,6 +57,7 @@ public:
 	void SetDead(bool deadStatus);
 	// EXP Functions
 	void AddExp(float exp);
+	float GetExp();
 	// IsHero Functions
 	bool IsHero();
 	void SetHero(bool heroStat);
@@ -64,20 +67,23 @@ public:
 	// Skill Functions
 	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
+	//Stunned Functions
+	void SetStun(bool stun);
+	bool GetStun();
+	/////End of Get and Set Functions/////
+
 	// Status Effect Functions
 	void AddStatusEffect(Buffs* newEffect);
 	void ManageStatusEffects();
 	void ClearStatusEffects();
-	
 	//Update HealthBar UI
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
-
-	/////End of Get and Set Functions/////
 	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
+	Odyssey::Text2D* pTurnNumber;
 protected:
 	bool mHero;
 	bool mDead;
@@ -91,10 +97,12 @@ protected:
 	float mDefense;
 	float mSpeed;
 	float mEXP;
+	bool mStunned;
 	std::string mName;
 	Skills mSkillList[TOTALSKILLS];
 	std::vector<Buffs*> mStatusEffects;
 	Odyssey::Animator* mAnimator;
+	STATE mCurrentState;
 private:
 	float mPrevHealth;
 	float mPrevMana;

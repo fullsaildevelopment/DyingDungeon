@@ -5,7 +5,7 @@
 class Character;
 
 // enum used for readablity 
-enum class STATS { NONE = 0,HP, MP, Atk, Def, Spd, Shd };
+enum class STATS { NONE = 0,HP, MP, Atk, Def, Spd, Shd, Stn };
 
 class Buffs
 {
@@ -26,7 +26,7 @@ public:
 	// Apply the buff effect functions
 	void InitalEffect();
 	void RevertEffect();
-	void Bleed();
+	bool Bleed();
 	//  mDuration functions
 	int GetDuration();
 	void SetDuration(int newDuration);

@@ -57,6 +57,11 @@ void Buffs::InitalEffect()
 			std::cout << "Had no effect... " <<  std::endl;
 		break;
 	}
+	case STATS::Stn:
+	{
+		mRecipient->SetStun(true);
+		std::cout << mRecipient->GetName() << " Is Stunned" << std::endl;
+	}
 	default:
 		break;
 	}
@@ -99,13 +104,18 @@ void Buffs::RevertEffect()
 		mRecipient->SetShielding(0);
 		break;
 	}
+	case STATS::Stn:
+	{
+		mRecipient->SetStun(false);
+		std::cout << mRecipient->GetName() << " Is no longer Stunned" << std::endl;
+	}
 	default:
 		break;
 	}
 }
 
 // Effect that takes effect after the charaters turn ends
-void Buffs::Bleed()
+bool Buffs::Bleed()
 {
 	switch (mEffectedStat)
 	{
@@ -117,7 +127,10 @@ void Buffs::Bleed()
 		else
 			std::cout << mRecipient->GetName() << " received " << (mAmountOfEffect * mRecipient->GetMaxHP()) << " HP in healing " << mRecipient->GetName() << " now has " << mRecipient->GetHP() << " HP\n" << std::endl;
 		if (mRecipient->GetHP() <= 0)
+		{
 			mRecipient->Die();
+			return true;
+		}
 		break;
 	}
 	case STATS::MP:
@@ -139,6 +152,7 @@ void Buffs::Bleed()
 	default:
 		break;
 	}
+	return false;
 }
 
 // Get how many turns are left for this buff

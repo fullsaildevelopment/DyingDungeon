@@ -52,7 +52,7 @@ void Character::TakeDamage(float dmg)
 			dmg = dmg - mShielding;
 			if (dmg <= 0)
 			{
-				mShielding = dmg;
+				mShielding = fabsf(dmg);
 				dmg = 0;
 			}
 			else
@@ -247,6 +247,24 @@ void Character::AddExp(float exp)
 	mEXP += exp;
 }
 
+//Get the exp of the character
+float Character::GetExp()
+{
+    return mEXP;
+}
+
+//Set if the character is stunned
+void Character::SetStun(bool stun)
+{
+    mStunned = stun;
+}
+
+//Get if the character is stunned
+bool Character::GetStun()
+{
+    return mStunned;
+}
+
 /*
  * Function:  IsHero()
  * --------------------
@@ -330,8 +348,11 @@ void Character::ManageStatusEffects()
 	std::vector<Buffs*>::iterator it;
 	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
 	{
-		if((*it)->IsBleed())
-			(*it)->Bleed();
+		if ((*it)->IsBleed())
+		{
+			if((*it)->Bleed())
+				return;
+		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -358,6 +379,18 @@ void Character::ManageStatusEffects()
 		else
 			it++;
 	}
+}
+
+// Clears all status effects from the Character
+void Character::ClearStatusEffects()
+{
+	for (Buffs* b : mStatusEffects)
+	{
+		b->RevertEffect();
+		delete(b);
+		b = nullptr;
+	}
+	mStatusEffects.clear();
 }
 
 

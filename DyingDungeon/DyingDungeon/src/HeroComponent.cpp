@@ -11,7 +11,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mEXP = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
-	currentState = STATE::SELECTMOVE;
+	mCurrentState = STATE::SELECTMOVE;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -24,18 +24,19 @@ HeroComponent::HeroComponent(HEROID id)
 		mSpeed = 35.0f;
 		mShielding = 0.0f;
 		// Basic Attack
-		mSkillList[0] = Skills(10, 0, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
+		mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		// Skill 1 (Raise Attack)
 		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
 		// Skill 2 (Raise Defense)
 		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
 		// Skill 3 (Regen HP)
-		mSkillList[3] = Skills(0, 0, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
+		mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
 		// Skill 4 (Shield)
-		mSkillList[4] = Skills(0, 0, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
+		mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
 		// Skill 5 (Big Attack)
-		mSkillList[5] = Skills(35, 20, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		// Add a stun skill
+		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
+		// Skill 6 (Stun Attack)
+		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -46,48 +47,61 @@ HeroComponent::HeroComponent(HEROID id)
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
 	//Make these if checks into a state machine
-	
-	switch (currentState)
+	if (mStunned)
+	{
+		std::cout << mName << " is stunned!" << std::endl;
+		ManageStatusEffects();
+		return true;
+	}
+	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
+		ManageStatusEffects();
+		if (mCurrentState == STATE::DEAD)
+			return false;
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[0];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[1];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')) && mSkillList[2].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[2];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')) && mSkillList[3].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[3];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')) && mSkillList[4].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[4];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')))
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')) && mSkillList[5].GetManaCost() <= mCurrentMana)
 		{
 			mCurrentSkill = &mSkillList[5];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			currentState = STATE::SELECTTARGET;
+			mCurrentState = STATE::SELECTTARGET;
 		}
-		//add input for stun skill
+		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')) && mSkillList[6].GetManaCost() <= mCurrentMana)
+		{
+			mCurrentSkill = &mSkillList[6];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mCurrentState = STATE::SELECTTARGET;
+		}
 		break;
 	}
 	case STATE::SELECTTARGET:
@@ -103,12 +117,12 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 				mCurrentTarget = heros[0]->getComponent<Character>();
 			}
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			currentState = STATE::INPROGRESS;
+			mCurrentState = STATE::INPROGRESS;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))
 		{
 			mCurrentSkill = nullptr;
-			currentState = STATE::SELECTMOVE;
+			mCurrentState = STATE::SELECTMOVE;
 			std::cout << "Reselect A Skill" << std::endl;
 		}
 		break;
@@ -120,8 +134,16 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			ManageStatusEffects();
-			currentState = STATE::SELECTMOVE;
+			mCurrentState = STATE::SELECTMOVE;
+			return true;
+		}
+		break;
+	}
+	case STATE::DEAD:
+	{
+		if (mAnimator->getProgress() > 0.8f)
+		{
+			SetDead(true);
 			return true;
 		}
 		break;
@@ -136,8 +158,8 @@ void HeroComponent::Die()
 {
 	if (GetHP() <= 0)
 	{
-		SetDead(true);
+		mCurrentState = STATE::DEAD;
 		//TODO Uncomment for death animation
-		//GameObject->getComponent<Odyssey::Animator>()->playClip();
+		mAnimator->playClip("Dead");
 	}
 }
