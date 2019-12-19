@@ -24,7 +24,7 @@ namespace Odyssey
 		~Scene();
 		void initialize();
 		void addLight(std::shared_ptr<Light> light);
-		void addSceneObject(std::shared_ptr<GameObject> sceneObject);
+		void addGameObject(std::shared_ptr<GameObject> sceneObject);
 		void update();
 		double getDeltaTime();
 		std::shared_ptr<Light> getLight(int index);

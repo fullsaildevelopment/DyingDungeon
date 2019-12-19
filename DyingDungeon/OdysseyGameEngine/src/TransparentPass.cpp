@@ -47,8 +47,7 @@ namespace Odyssey
 			{
 				// Depth sorting
 				DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getInverseViewMatrix());
-				DirectX::XMFLOAT4X4 globalTransform;
-				renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+				DirectX::XMFLOAT4X4 globalTransform = renderObject->getComponent<Transform>()->getGlobalTransform();
 				view = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 				float depth = DirectX::XMVectorGetZ(view.r[3]);
 				renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
@@ -63,7 +62,7 @@ namespace Odyssey
 	void TransparentPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
+		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
 		// Bind the mesh renderer

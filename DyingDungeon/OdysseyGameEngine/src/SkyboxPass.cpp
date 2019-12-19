@@ -72,14 +72,14 @@ namespace Odyssey
 	{
 		// Get the camera's position
 		DirectX::XMFLOAT3 camPos;
-		args.camera->getComponent<Transform>()->getPosition(camPos);
+		camPos = args.camera->getComponent<Transform>()->getPosition();
 
 		// Set the skybox to the camera's position
 		mSkyBox->addComponent<Transform>();
 		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
 
 		// Get the object's global transform and set the MVP acoordingly
-		mSkyBox->getComponent<Transform>()->getLocalTransform(args.perObject.world);
+		args.perObject.world = mSkyBox->getComponent<Transform>()->getLocalTransform();
 
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);

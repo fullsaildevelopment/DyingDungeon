@@ -46,10 +46,10 @@ namespace Odyssey
 		recalculateWorldMatrix();
 	}
 
-	void Transform::getPosition(DirectX::XMFLOAT3& position)
+	DirectX::XMFLOAT3 Transform::getPosition()
 	{
 		// Set the out parameter to the position
-		position = mPosition;
+		return mPosition;
 	}
 
 	void Transform::addRotation(float x, float y, float z)
@@ -68,10 +68,10 @@ namespace Odyssey
 		recalculateWorldMatrix();
 	}
 
-	void Transform::getEulerRotation(DirectX::XMFLOAT3& rotation)
+	DirectX::XMFLOAT3 Transform::getEulerRotation()
 	{
-		// Set the out parameter to the rotation
-		rotation = mRotation;
+		// Return the rotation value
+		return mRotation;
 	}
 
 	void Transform::addScale(float x, float y, float z)
@@ -90,37 +90,37 @@ namespace Odyssey
 		recalculateWorldMatrix();
 	}
 
-	void Transform::getScale(DirectX::XMFLOAT3& scale)
+	DirectX::XMFLOAT3 Transform::getScale()
 	{
-		// Set the out parameter to the scale
-		scale = mScale;
+		// Return the scale value
+		return mScale;
 	}
 
-	void Transform::getForward(DirectX::XMFLOAT3& forward)
+	DirectX::XMFLOAT3 Transform::getForward()
 	{
 		// Set the out parameter to the forward vector from the world matrix
-		forward = DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
+		return DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
 	}
 
-	void Transform::getRight(DirectX::XMFLOAT3& right)
+	DirectX::XMFLOAT3 Transform::getRight()
 	{
 		// Set the out parameter to the right vector from the world matrix
-		right = DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+		return DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
 	}
 	
-	void Transform::getUp(DirectX::XMFLOAT3& up)
+	DirectX::XMFLOAT3 Transform::getUp()
 	{
 		// Set the out parameter to the up vector from the world matrix
-		up = DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
+		return DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
 	}
 
-	void Transform::getLocalTransform(DirectX::XMFLOAT4X4& localTransform)
+	DirectX::XMFLOAT4X4 Transform::getLocalTransform()
 	{
 		// Set the out parameter to the local-space world matrix
-		localTransform = mWorldMatrix;
+		return mWorldMatrix;
 	}
 
-	void Transform::getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform)
+	DirectX::XMFLOAT4X4 Transform::getGlobalTransform()
 	{
 		// Store the world matrix in an XMMatrix
 		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&mWorldMatrix);
@@ -132,8 +132,7 @@ namespace Odyssey
 		while (parent != nullptr)
 		{
 			// Get the parent's local transform
-			DirectX::XMFLOAT4X4 localTransform;
-			parent->getComponent<Transform>()->getLocalTransform(localTransform);
+			DirectX::XMFLOAT4X4 localTransform = parent->getComponent<Transform>()->getLocalTransform();
 
 			// Move our world matrix into the parent's local-space
 			transform = DirectX::XMMatrixMultiply(transform, DirectX::XMLoadFloat4x4(&localTransform));
@@ -143,7 +142,9 @@ namespace Odyssey
 		}
 
 		// Set the out paramter to the global-space world matrix
-		DirectX::XMStoreFloat4x4(&globalTransform, transform);
+		DirectX::XMFLOAT4X4 retTransform;
+		DirectX::XMStoreFloat4x4(&retTransform, transform);
+		return retTransform;
 	}
 
 	void Transform::calculateEulerRotations()

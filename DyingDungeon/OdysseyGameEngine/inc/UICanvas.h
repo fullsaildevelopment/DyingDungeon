@@ -34,8 +34,6 @@ namespace Odyssey
 		 *	@return bool The active state of the UICanvas.
 		 */
 		bool getActive();
-
-	public:
 	public: // Single Component Interaction
 		template<class ElementType, typename... Args>
 		ElementType* addElement(Args&&... params);
@@ -44,7 +42,7 @@ namespace Odyssey
 		template<class ElementType>
 		bool removeElement();
 		template<class ElementType>
-		bool removeElements(ElementType* searching);
+		bool removeElement(ElementType* searching);
 	public: // Multi-Component Interaction
 		template<class ElementType>
 		std::vector<ElementType*> getElements();
@@ -95,7 +93,7 @@ namespace Odyssey
 	}
 
 	template<class ElementType>
-	inline bool UICanvas::removeElements(ElementType* searching)
+	inline bool UICanvas::removeElement(ElementType* searching)
 	{
 		if (mElements.empty())
 			return false;

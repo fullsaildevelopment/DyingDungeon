@@ -12,7 +12,7 @@ namespace Odyssey
 		Transform(DirectX::XMFLOAT4X4 worldMatrix);
 	public:
 		/**
-		 *	Initialize the Transform with default values.
+		 *	Initialize the Transform with default values. Called once when the scene is loaded.
 		 *	@param[in] void
 		 *	@return void
 		 */
@@ -41,7 +41,7 @@ namespace Odyssey
 		 *	@param[out] position The position of the Transform.
 		 *	@return void
 		 */
-		void getPosition(DirectX::XMFLOAT3& position);
+		DirectX::XMFLOAT3 getPosition();
 
 		/**
 		 *	Add to the rotation of the Transform.
@@ -66,7 +66,7 @@ namespace Odyssey
 		 *	@param[out] rotation The euler rotation of the Transform.
 		 *	@return void
 		 */
-		void getEulerRotation(DirectX::XMFLOAT3& rotation);
+		DirectX::XMFLOAT3 getEulerRotation();
 
 		/**
 		 *	Add to the scale of the Transform.
@@ -91,42 +91,42 @@ namespace Odyssey
 		 *	@param[out] rotation The scale of the Transform.
 		 *	@return void
 		 */
-		void getScale(DirectX::XMFLOAT3& scale);
+		DirectX::XMFLOAT3 getScale();
 
 		/**
 		 *	Get the forward direction of the Transform.
 		 *	@param[out] forward the forward direction of the Transform.
 		 *	@return void
 		 */
-		void getForward(DirectX::XMFLOAT3& forward);
+		DirectX::XMFLOAT3 getForward();
 
 		/**
 		 *	Get the right direction of the Transform.
 		 *	@param[out] forward the forward direction of the Transform.
 		 *	@return void
 		 */
-		void getRight(DirectX::XMFLOAT3& right);
+		DirectX::XMFLOAT3 getRight();
 
 		/**
 		 *	Get the up direction of the Transform.
 		 *	@param[out] forward the forward direction of the Transform.
 		 *	@return void
 		 */
-		void getUp(DirectX::XMFLOAT3& up);
+		DirectX::XMFLOAT3 getUp();
 
 		/**
 		 *	Get the local-space matrix of the Transform
 		 *	@param[out] localTransform The local-space matrix of the Transform
 		 *	@return void
 		 */
-		void getLocalTransform(DirectX::XMFLOAT4X4& localTransform);
+		DirectX::XMFLOAT4X4 getLocalTransform();
 
 		/**
 		 *	Get the global-space matrix of the Transform
 		 *	@param[out] globalTransform The global-space matrix of the Transform
 		 *	@return void
 		 */
-		void getGlobalTransform(DirectX::XMFLOAT4X4& globalTransform);
+		DirectX::XMFLOAT4X4 getGlobalTransform();
 	private:
 		/**
 		 *	Decompose the world matrix to determine the euler angle rotation.
