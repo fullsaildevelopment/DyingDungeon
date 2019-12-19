@@ -40,6 +40,11 @@ namespace Odyssey
 		}
 	}
 
+	RenderPass* RenderPipeline::getRenderPass(int index)
+	{
+		return mRenderPasses[index].get();
+	}
+
 	void RenderPipeline::generateRenderArgs(std::shared_ptr<Scene> scene)
 	{
 		args.camera = scene->mMainCamera.get();

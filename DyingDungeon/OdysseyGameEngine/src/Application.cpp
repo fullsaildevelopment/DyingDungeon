@@ -205,6 +205,11 @@ namespace Odyssey
 					prevCount = GetTickCount64();
 				}
 
+				if (InputManager::getInstance().getKeyPress(VK_F4))
+				{
+					mRenderPipeline->getRenderPass(6)->setEnabled(!mRenderPipeline->getRenderPass(6)->isEnabled());
+				}
+
 				// Render the scene
 				mRenderPipeline->render(mActiveScene);
 

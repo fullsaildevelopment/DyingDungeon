@@ -13,6 +13,7 @@ namespace Odyssey
 		RenderPipeline(RenderDevice& renderDevice);
 		void addRenderPass(std::shared_ptr<RenderPass> renderPass);
 		void render(std::shared_ptr<Scene> scene);
+		RenderPass* getRenderPass(int index);
 	private:
 		void generateRenderArgs(std::shared_ptr<Scene> scene);
 	private:
