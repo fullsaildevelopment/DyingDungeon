@@ -16,7 +16,7 @@ namespace Odyssey
 		mSceneLights.push_back(light);
 	}
 
-	void Scene::addSceneObject(std::shared_ptr<GameObject> sceneObject)
+	void Scene::addGameObject(std::shared_ptr<GameObject> sceneObject)
 	{
 		mSceneObjectList.push_back(sceneObject);
 

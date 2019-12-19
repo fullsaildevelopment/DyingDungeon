@@ -40,8 +40,7 @@ namespace Odyssey
 	Frustum* Camera::getFrustum()
 	{
 		// Get the view matrix
-		DirectX::XMFLOAT4X4 viewMatrix;
-		mGameObject->getComponent<Transform>()->getGlobalTransform(viewMatrix);
+		DirectX::XMFLOAT4X4 viewMatrix = mGameObject->getComponent<Transform>()->getGlobalTransform();
 
 		// Calculate and return the frustum
 		mFrustum->calculateFrustum(mFieldOfView, mAspectRatio, mNear, mFar, viewMatrix);
@@ -54,7 +53,7 @@ namespace Odyssey
 
 		if (Transform* transform = mGameObject->getComponent<Transform>())
 		{
-			transform->getGlobalTransform(inverseView);
+			inverseView = transform->getGlobalTransform();
 			DirectX::XMStoreFloat4x4(&inverseView, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&inverseView)));
 			return inverseView;
 		}
@@ -85,7 +84,7 @@ namespace Odyssey
 
 		// Get the view matrix
 		DirectX::XMFLOAT4X4 viewMatrix;
-		mGameObject->getComponent<Transform>()->getGlobalTransform(viewMatrix);
+		viewMatrix = mGameObject->getComponent<Transform>()->getGlobalTransform();
 		mFrustum->calculateFrustum(mFieldOfView, mAspectRatio, mNear, mFar, viewMatrix);
 	}
 }
