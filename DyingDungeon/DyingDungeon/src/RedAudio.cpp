@@ -22,7 +22,8 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	curr_count += 8;
 	strcat_s(cmd, curr_count, " length");
 	//cmd[static_cast<int>(strlen(m_alias)) + 14] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, 15, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, 15, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		m_end = m_duration = std::stoul(out_string, nullptr, 10);
 	}
@@ -31,6 +32,9 @@ RedAudio::RedAudio(const char* path, const char* alias)
 		std::cout << "ERROR: RedAudio-RedAudio()-Could not get duration/end of song-file:" << m_path << "\n";
 #endif // DEBUG_AUDIO_CONSOLE_OUT
 	}
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 RedAudio::~RedAudio()
@@ -65,17 +69,22 @@ void RedAudio::Close() {
 	strcpy_s(cmd, curr_count, "close ");
 	curr_count += static_cast<int>(static_cast<int>(strlen(m_alias))) + 1;
 	strcat_s(cmd, curr_count, m_alias);
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[60]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-Close()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = false;
 	m_segmented = false;
 	m_looping = false;
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::Open()
@@ -91,14 +100,19 @@ void RedAudio::Open()
 	curr_count += static_cast<int>(strlen(m_alias)) + 1;
 	strcat_s(cmd, curr_count, m_alias);
 	//cmd[strlen(path) + strlen(alias) + 16] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[60]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-Open()-";  std::wcout << out_error; std::cout << "-file:" << m_path <<"\n";
+		delete out_error;
 	}
 #endif
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::Play()
@@ -111,15 +125,20 @@ void RedAudio::Play()
 	curr_count += static_cast<int>(strlen(m_alias)) + 1;
 	strcat_s(cmd, curr_count, m_alias);
 	//cmd[static_cast<int>(strlen(m_alias)) + 5] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string)*2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-Play()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = true;
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::PlayLoop()
@@ -134,16 +153,21 @@ void RedAudio::PlayLoop()
 	curr_count += 15;
 	strcat_s(cmd, curr_count, " repeat notify");
 	//cmd[static_cast<int>(strlen(m_alias)) + 19] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlayLoop()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = true;
 	m_looping = true;
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::PlaySegment(unsigned int start, unsigned int end)
@@ -170,18 +194,24 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 	curr_count += static_cast<int>(strlen(last)) + 1;
 	strcat_s(cmd, curr_count, last);
 	//cmd[static_cast<int>(strlen(m_alias)) + static_cast<int>(strlen(first)) + static_cast<int>(strlen(last)) + 15] = '\0';
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = true;
 	m_segmented = true;
-
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
+
+
 
 void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 {
@@ -211,18 +241,22 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 	curr_count += 15;
 	strcat_s(cmd, curr_count, " repeat notify");
 	//cmd[static_cast<int>(strlen(m_alias)) + static_cast<int>(strlen(first)) + static_cast<int>(strlen(last)) + 29] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = true;
 	m_segmented = true;
 	m_looping = true;
-
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::PlayInstance() {
@@ -237,18 +271,28 @@ void RedAudio::PlayInstance() {
 	strcpy_s(newAlias, (strlen(m_alias) + 1), m_alias);
 	strcat_s(newAlias, (strlen(m_alias) + 1) + 3, rnd.c_str());
 	strcat_s(cmd, strlen(cmd) + strlen(newAlias) + 1, newAlias);
-	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, NULL, 0, NULL);
 
+	delete cmd;
 	cmd = new char[strlen(newAlias) + 11];
 	strcpy_s(cmd, 6, "play ");
 	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
 	strcat_s(cmd, strlen(newAlias) + 11, " wait");
-	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+	delete[] in_cmd;
+	in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, NULL, 0, NULL);
 
+	delete cmd;
 	cmd = new char[strlen(newAlias) + 6];
 	strcpy_s(cmd, 6, "close ");
 	strcat_s(cmd, strlen(newAlias) + 6, newAlias);
+	delete[] in_cmd;
+	in_cmd = ConvertCharToWChar(cmd);
 	mciSendString(ConvertCharToWChar(cmd), NULL, 0, NULL);
+
+	delete cmd;
+	delete[] in_cmd;
 }
 
 void RedAudio::Pause()
@@ -260,15 +304,20 @@ void RedAudio::Pause()
 	curr_count += static_cast<int>(strlen(m_alias)) + 1;
 	strcat_s(cmd, curr_count, m_alias);
 	//cmd[static_cast<int>(strlen(m_alias)) + 6] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = false;
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::Stop()
@@ -280,15 +329,20 @@ void RedAudio::Stop()
 	curr_count += static_cast<int>(strlen(m_alias)) + 1;
 	strcat_s(cmd, curr_count, m_alias);
 	//cmd[static_cast<int>(strlen(m_alias)) + 5] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	m_playing = false;
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 	SeekBegin();
 }
 
@@ -303,12 +357,14 @@ void RedAudio::SeekBegin()
 	curr_count += 10;
 	strcat_s(cmd, curr_count, " to start");
 	//cmd[static_cast<int>(strlen(m_alias)) + 14] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	if (m_playing && m_looping) {
@@ -317,6 +373,9 @@ void RedAudio::SeekBegin()
 	else if (m_playing) {
 		Play();
 	}
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::SeekEnd()
@@ -330,17 +389,22 @@ void RedAudio::SeekEnd()
 	curr_count += 8;
 	strcat_s(cmd, curr_count, " to end");
 	//cmd[static_cast<int>(strlen(m_alias)) + 14] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
 		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
 	}
 #endif
 	if (m_looping) {
 		PlayLoop();
 	}
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::SetVolume(unsigned int volume)
@@ -358,7 +422,8 @@ void RedAudio::SetVolume(unsigned int volume)
 	curr_count += static_cast<int>(strlen(vol)) + 1;
 	strcat_s(cmd, curr_count, vol);
 	//cmd[static_cast<int>(strlen(m_alias)) + strlen(vol) + 20] = '\0';
-	mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
 	if (strcmp((const char*)out_string, "") != 0) {
 		LPTSTR out_error = LPTSTR(new char[45]);
@@ -366,6 +431,9 @@ void RedAudio::SetVolume(unsigned int volume)
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	delete cmd;
+	delete[] in_cmd;
+	delete out_string;
 }
 
 void RedAudio::Update()
@@ -379,7 +447,8 @@ void RedAudio::Update()
 		strcat_s(cmd, curr_count, m_alias);
 		curr_count += 10;
 		strcat_s(cmd, curr_count, " position");
-		mciSendString(ConvertCharToWChar(cmd), out_string, sizeof(out_string) * 2, NULL);
+		const wchar_t* in_cmd = ConvertCharToWChar(cmd);
+		mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 		if (strcmp((const char*)out_string, "") != 0) {
 			unsigned long curr_pos = std::stoul(out_string);
 			if (!m_looping && (curr_pos >= m_duration)) {
@@ -391,6 +460,9 @@ void RedAudio::Update()
 			std::cout << "ERROR: RedAudio-Update()-No position recived" << "-file:" << m_path << "\n";
 		}
 #endif
+		delete cmd;
+		delete[] in_cmd;
+		delete[] out_string;
 	}
 }
 

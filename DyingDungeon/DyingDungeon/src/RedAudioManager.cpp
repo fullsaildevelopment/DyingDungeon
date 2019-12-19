@@ -24,7 +24,7 @@ RedAudioManager* RedAudioManager::Instance()
 
 RedAudioManager::RedAudioManager()
 {
-	default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
+	//default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
 	//default_audio->Open();
 }
 
@@ -38,6 +38,7 @@ RedAudioManager::~RedAudioManager()
 {
 	delete default_audio;
 	delete m_p_Instance;
+	m_audioFiles.clear();
 }
 
 void RedAudioManager::Play(const char* alias)
@@ -78,7 +79,8 @@ void RedAudioManager::Update()
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
-	m_audioFiles.push_back(RedAudio(path, alias));
+	RedAudio temp = RedAudio(path, alias);
+	m_audioFiles.push_back(temp);
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
