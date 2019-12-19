@@ -1,6 +1,7 @@
 #include "BattleInstance.h"
 #include "Transform.h"
 #include "Character.h"
+#include <string>
 
 BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
 {
@@ -10,8 +11,8 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 
 	mTurnOrderNumbers[0]->setText(L"420");
 	mTurnOrderNumbers[1]->setText(L"69");
-	mPlayerTeam[0]->pTurnNumber = mTurnOrderNumbers[0];
-	mEnemyTeam[0]->pTurnNumber = mTurnOrderNumbers[1];
+	mPlayerTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[0];
+	mEnemyTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[1];
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
@@ -199,7 +200,7 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 	for (int i = 0; i < startingNum; i++)
 	{
 		Character* currChar = tempBattleQueue.front()->getComponent<Character>();
-		currChar->pTurnNumber = counter;
+		currChar->pTurnNumber->setText(std::to_wstring(counter));
 		tempBattleQueue.pop();
 		counter++;
 	}

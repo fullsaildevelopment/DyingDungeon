@@ -24,7 +24,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		// Skill 1 (Bleed)
 		mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.05f, 2, true, nullptr), "Skeletal Slash", "FwdKick");
 		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.90f, 3, true, nullptr), "Necrotic Infection", "SpinKick");
+		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.10f, 3, true, nullptr), "Necrotic Infection", "SpinKick");
 		break;
 	}
 	default:
@@ -117,7 +117,16 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	}
 	case STATE::INPROGRESS:
 	{
-		if (mAnimator->getProgress() > 0.8f)
+		static bool trigger = false;
+
+		if (!trigger && mAnimator->getProgress() > 0.25f)
+		{
+			if (bestMove.target->IsHero())
+				bestMove.target->getGameObject()->getComponent<Odyssey::Animator>()->playClip("Hit");
+			trigger = true;
+		}
+
+		if (mAnimator->getProgress() > 0.9f)
 		{
 			// Use the best move
 			bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
@@ -125,6 +134,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 			//Reset best move score
 			bestMove.score = -1000;
 			mCurrentState = STATE::SELECTMOVE;
+			trigger = false;
 			return true;
 		}
 		break;

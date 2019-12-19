@@ -475,6 +475,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
 	gGameScene->addGameObject(gPaladin);
 }
@@ -521,8 +522,8 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[1]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[5]);
-	gGameScene->addSceneObject(gCurrentTower);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[11]);
+	gGameScene->addGameObject(gCurrentTower);
 }
 
 int main()

@@ -1,18 +1,19 @@
 #include "Character.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "RedAudioManager.h"
 
 CLASS_DEFINITION(Component, Character)
 
 void Character::initialize()
 {
 	onEnable();
-    mAnimator = mGameObject->getComponent<Odyssey::Animator>();
+	mAnimator = mGameObject->getComponent<Odyssey::Animator>();
 }
 
 void Character::update(double deltaTime)
 {
-    
+
 }
 
 bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
@@ -43,7 +44,9 @@ void Character::Die()
  */
 void Character::TakeDamage(float dmg)
 {
-    //TODO calculate damage reduction here
+	RedAudioManager::Instance()->Play("PaladinHit");
+
+	//TODO calculate damage reduction here
 	if (dmg > 0)
 	{
 		dmg = dmg - (dmg * mDefense);
@@ -59,8 +62,8 @@ void Character::TakeDamage(float dmg)
 				mShielding = 0;
 		}
 	}
-    //Take Damage
-    SetHP(GetHP() - dmg);
+	//Take Damage
+	SetHP(GetHP() - dmg);
 }
 
 /*
@@ -72,10 +75,10 @@ void Character::TakeDamage(float dmg)
  */
 void Character::DepleteMana(float manaCost)
 {
-    //Special Conditions here
+	//Special Conditions here
 
-    //Reduce current mana
-    SetMana(GetMana() - manaCost);
+	//Reduce current mana
+	SetMana(GetMana() - manaCost);
 }
 
 /*
@@ -99,14 +102,14 @@ float Character::GetHP()
  */
 void Character::SetHP(float HP)
 {
-    mPrevHealth = mCurrentHP;
+	mPrevHealth = mCurrentHP;
 	mCurrentHP = HP;
-    if (mCurrentHP < 0)
-        mCurrentHP = 0;
-    else if (mCurrentHP > mBaseMaxHP)
-        mCurrentHP = mBaseMaxHP;
+	if (mCurrentHP < 0)
+		mCurrentHP = 0;
+	else if (mCurrentHP > mBaseMaxHP)
+		mCurrentHP = mBaseMaxHP;
 
-    UpdateHealthBar();
+	UpdateHealthBar();
 }
 
 float Character::GetMaxHP()
@@ -135,19 +138,19 @@ float Character::GetMana()
  */
 void Character::SetMana(float Mana)
 {
-    mPrevMana = mCurrentMana;
-    mCurrentMana = Mana;
-    if (mCurrentMana < 0)
-        mCurrentMana = 0;
-    else if (mCurrentMana > mBaseMaxMana)
-        mCurrentMana = mBaseMaxMana;
+	mPrevMana = mCurrentMana;
+	mCurrentMana = Mana;
+	if (mCurrentMana < 0)
+		mCurrentMana = 0;
+	else if (mCurrentMana > mBaseMaxMana)
+		mCurrentMana = mBaseMaxMana;
 
-    UpdateManaBar();
+	UpdateManaBar();
 }
 
 float Character::GetMaxMana()
 {
-    return mBaseMaxMana;
+	return mBaseMaxMana;
 }
 
 // Returns the Attack mod
@@ -239,6 +242,14 @@ bool Character::IsDead()
 void Character::SetDead(bool deadStatus)
 {
 	mDead = deadStatus;
+	if (deadStatus == true)
+	{
+		mCurrentState = STATE::DEAD;
+	}
+	else
+	{
+		mCurrentState = STATE::SELECTMOVE;
+	}
 }
 
 // Adds Exp to the charater
@@ -250,19 +261,19 @@ void Character::AddExp(float exp)
 //Get the exp of the character
 float Character::GetExp()
 {
-    return mEXP;
+	return mEXP;
 }
 
 //Set if the character is stunned
 void Character::SetStun(bool stun)
 {
-    mStunned = stun;
+	mStunned = stun;
 }
 
 //Get if the character is stunned
 bool Character::GetStun()
 {
-    return mStunned;
+	return mStunned;
 }
 
 /*
@@ -350,7 +361,7 @@ void Character::ManageStatusEffects()
 	{
 		if ((*it)->IsBleed())
 		{
-			if((*it)->Bleed())
+			if ((*it)->Bleed())
 				return;
 		}
 		(*it)->ReduceDuration(1);
@@ -403,13 +414,13 @@ void Character::ClearStatusEffects()
 */
 void Character::UpdateHealthBar()
 {
-    float fill = GetHP() / GetMaxHP();
-    if (fill < 0.0f)
-        fill = 0.0f;
-    else if (fill > 1.0f)
-        fill = 1.0f;
+	float fill = GetHP() / GetMaxHP();
+	if (fill < 0.0f)
+		fill = 0.0f;
+	else if (fill > 1.0f)
+		fill = 1.0f;
 
-    pHealthBar->setFill(fill);
+	pHealthBar->setFill(fill);
 }
 
 /*
@@ -421,11 +432,11 @@ void Character::UpdateHealthBar()
 */
 void Character::UpdateManaBar()
 {
-    float fill = GetMana() / GetMaxMana();
-    if (fill < 0.0f)
-        fill = 0.0f;
-    else if (fill > 1.0f)
-        fill = 1.0f;
+	float fill = GetMana() / GetMaxMana();
+	if (fill < 0.0f)
+		fill = 0.0f;
+	else if (fill > 1.0f)
+		fill = 1.0f;
 
-    pManaBar->setFill(fill);
+	pManaBar->setFill(fill);
 }
