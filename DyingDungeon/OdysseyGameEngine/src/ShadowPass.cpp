@@ -143,7 +143,7 @@ namespace Odyssey
 	void ShadowPass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
-		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
+		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
 
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);

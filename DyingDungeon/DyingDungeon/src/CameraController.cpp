@@ -48,13 +48,10 @@ void CameraController::updateMovement(double deltaTime)
 	{
 		return;
 	}
-	DirectX::XMFLOAT3 fwd;
-	transform->getForward(fwd);
 
-	DirectX::XMFLOAT3 right;
-	transform->getRight(right);
-	DirectX::XMFLOAT3 up;
-	transform->getUp(up);
+	DirectX::XMFLOAT3 fwd = transform->getForward();
+	DirectX::XMFLOAT3 right = transform->getRight();
+	DirectX::XMFLOAT3 up = transform->getUp();
 
 	if (input.getKeyDown('W'))
 	{

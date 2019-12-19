@@ -107,7 +107,7 @@ namespace Odyssey
 					if (mFrustumCull == false || renderObject->getStaticObject() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(renderObject->getComponent<AABB>())))
 					{
 						// Depth sorting
-						renderObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+						globalTransform = renderObject->getComponent<Transform>()->getGlobalTransform();
 						DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 						float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 						renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, renderObject));
@@ -124,7 +124,7 @@ namespace Odyssey
 						if (mFrustumCull == false || child->getStaticObject() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(child->getComponent<AABB>())))
 						{
 							// Depth Sorting
-							child->getComponent<Transform>()->getGlobalTransform(globalTransform);
+							globalTransform = child->getComponent<Transform>()->getGlobalTransform();
 							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
 							renderMap.insert(std::pair<float, std::shared_ptr<GameObject>>(depth, child));
@@ -164,7 +164,7 @@ namespace Odyssey
 		sceneLighting.numLights = 0;
 
 		// Set the camera's position for specular highlighting
-		args.camera->getComponent<Transform>()->getPosition(sceneLighting.camPos);
+		sceneLighting.camPos = args.camera->getComponent<Transform>()->getPosition();
 
 		for (std::shared_ptr<Light> light : args.lightList)
 		{
@@ -199,7 +199,7 @@ namespace Odyssey
 	void OpaquePass::renderSceneObject(std::shared_ptr<GameObject> object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		object->getComponent<Transform>()->getGlobalTransform(args.perObject.world);
+		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
 		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer

@@ -105,7 +105,7 @@ int playGame()
 
 	// Set up the skeleton
 	setupSkeleton();
-	
+
 	// Set up the game user interface
 	setupGameInterface();
 
@@ -321,7 +321,7 @@ void setupCamera()
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
-	gGameScene->addSceneObject(gMainCamera);
+	gGameScene->addGameObject(gMainCamera);
 }
 
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
@@ -336,7 +336,7 @@ void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* ap
 	UINT height = static_cast<UINT>(gMainWindow->mMainWindow.height);
 	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/MainMenu.png", width, height);
 	gMenu->addComponent<MainMenuController>(application);
-	gMainMenu->addSceneObject(gMenu);
+	gMainMenu->addGameObject(gMenu);
 }
 
 void setupArena()
@@ -369,6 +369,25 @@ void setupGameInterface()
 	Character* pal = gPaladin->getComponent<Character>();
 	pal->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 120.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
 	pal->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 137.5f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+	
+	// Buff Icon Locations
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(125.0f, 45.0f), L"assets/images/AttackUp.png", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(125.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"1", 10.0f, 25.0f, 25.0f);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(155.0f, 45.0f), L"assets/images/SpeedUp.png", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(155.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"2", 10.0f, 25.0f, 25.0f);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(185.0f, 45.0f), L"assets/images/DefenseUp.jpg", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(185.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"3", 10.0f, 25.0f, 25.0f);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(125.0f, 95.0f), L"assets/images/SpeedDown.png", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(125.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"1", 10.0f, 25.0f, 25.0f);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(155.0f, 95.0f), L"assets/images/Bleed.png", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(155.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"2", 10.0f, 25.0f, 25.0f);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(185.0f, 95.0f), L"assets/images/Poison.png", 25, 25);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(185.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"3", 10.0f, 25.0f, 25.0f);
 
 	// Player Team - Character 2
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 180.0f), L"assets/images/Guy.png", 75, 75);
@@ -393,7 +412,7 @@ void setupGameInterface()
 	// Health and Mana bars
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-	
+
 	// Enemy Team - Character 1
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 45.0f), L"assets/images/Gordon.jpg", 75, 75);
 	// Turn Order Text
@@ -436,7 +455,7 @@ void setupGameInterface()
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
 	canvas->setActive(false); // The rewards screen won't show up at the start
 
-	gGameScene->addSceneObject(gGameMenu);
+	gGameScene->addGameObject(gGameMenu);
 }
 
 void setupPaladin()
@@ -455,7 +474,7 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
-	gGameScene->addSceneObject(gPaladin);
+	gGameScene->addGameObject(gPaladin);
 }
 
 void setupSkeleton()
@@ -469,7 +488,7 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
-	gGameScene->addSceneObject(gSkeleton);
+	gGameScene->addGameObject(gSkeleton);
 }
 
 void setupAudio()

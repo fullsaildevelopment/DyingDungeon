@@ -49,7 +49,7 @@ namespace Odyssey
 			constructGameObject(file, gameObject);
 
 			// Add the GameObject to the scene
-			scene->addSceneObject(gameObject);
+			scene->addGameObject(gameObject);
 		}
 	}
 
@@ -291,16 +291,13 @@ namespace Odyssey
 		if (Transform* tComponent = gameObject->getComponent<Transform>())
 		{
 			// Get the position of the attached transform
-			DirectX::XMFLOAT3 pos;
-			tComponent->getPosition(pos);
+			DirectX::XMFLOAT3 pos = tComponent->getPosition();
 
 			// Get the rotation of the attached transform
-			DirectX::XMFLOAT3 rot;
-			tComponent->getEulerRotation(rot);
+			DirectX::XMFLOAT3 rot = tComponent->getEulerRotation();
 
 			// Get the scale of the attached transform
-			DirectX::XMFLOAT3 scale;
-			tComponent->getScale(scale);
+			DirectX::XMFLOAT3 scale = tComponent->getScale();
 
 			// Remove the previously attached transform component
 			gameObject->removeComponent<Transform>(tComponent);
@@ -326,15 +323,22 @@ namespace Odyssey
 		gameObject->addComponent<MeshRenderer>(mesh, material);
 
 		// Add the AABB component
-		DirectX::XMFLOAT4X4 globalTransform;
-		gameObject->getComponent<Transform>()->getGlobalTransform(globalTransform);
+		DirectX::XMFLOAT4X4 globalTransform = gameObject->getComponent<Transform>()->getGlobalTransform();
 		gameObject->addComponent<AABB>(globalTransform, meshData.vertexList);
+
+		for (int i = 0; i < 4; i++)
+		{
+			if (materialData.texFilenames[i])
+			{
+				delete materialData.texFilenames[i];
+				materialData.texFilenames[i] = nullptr;
+			}
+		}
 	}
 
 	void FileManager::constructAABB(Transform* objectTransform, std::shared_ptr<GameObject> gameObject, MeshData& meshData)
 	{
-		DirectX::XMFLOAT4X4 localTransform;
-		objectTransform->getGlobalTransform(localTransform);
+		DirectX::XMFLOAT4X4 localTransform = objectTransform->getGlobalTransform();
 		// Add the AABB component using the world-space transform
 		gameObject->addComponent<AABB>(localTransform, meshData.vertexList);
 	}
