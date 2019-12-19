@@ -2,10 +2,16 @@
 #include "Transform.h"
 #include "Character.h"
 
-BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam)
+BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
+	mTurnOrderNumbers = _turnOrderNumbers;
+
+	mTurnOrderNumbers[0]->setText(L"420");
+	mTurnOrderNumbers[1]->setText(L"69");
+	mPlayerTeam[0]->pTurnNumber = mTurnOrderNumbers[0];
+	mEnemyTeam[0]->pTurnNumber = mTurnOrderNumbers[1];
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
@@ -28,6 +34,14 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 		if (mEnemyTeam[i] != nullptr)
 		{
 			mAllCharacters.push_back(mEnemyTeam[i]);
+
+			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
+			// This will show a sim of entering a new battle
+			mEnemyTeam[i]->getComponent<Character>()->SetHP(1000);
+			mEnemyTeam[i]->getComponent<Character>()->SetMana(1000);
+			mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
+			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 		}
 	}
 
@@ -36,6 +50,7 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 
 	// Create the battle queue before going to battle
 	GenerateBattleQueue();
+	UpdateCharacterTurnNumbers();
 
 	// Set the pCurrentCharacter to the front of the battle queue
 	mCurrentCharacter = mBattleQueue.front();
@@ -73,6 +88,8 @@ int BattleInstance::UpdateBattle()
 			mBattleQueue.emplace(mCurrentCharacter);
 			// Reassign the next character to the 
 			mCurrentCharacter = mBattleQueue.front();
+			//Update the turn numbers
+			UpdateCharacterTurnNumbers();
 
 			// Has everyone taken their turn in the round?
 			if (mTurnCounter == mBattleQueue.size())
@@ -170,4 +187,20 @@ bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 
 	// Everyone on the team is dead
 	return false;
+}
+
+void BattleInstance::UpdateCharacterTurnNumbers()
+{
+	GameObjectQueue tempBattleQueue = mBattleQueue;
+	int startingNum = tempBattleQueue.size();
+	int counter = 1;
+
+	//Loop through each character and update it's
+	for (int i = 0; i < startingNum; i++)
+	{
+		Character* currChar = tempBattleQueue.front()->getComponent<Character>();
+		currChar->pTurnNumber = counter;
+		tempBattleQueue.pop();
+		counter++;
+	}
 }

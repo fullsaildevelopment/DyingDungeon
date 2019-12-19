@@ -1,5 +1,4 @@
 #pragma once
-#include "MenuScreen.h"
 #include <vector>
 #include "Application.h"
 
@@ -23,7 +22,6 @@ private: // Varibales
 	Odyssey::Application* mApplication;
 
 	// Vectors
-	std::vector<MenuScreen*> mMenuList;
 
 	// GameObjects
 
@@ -38,7 +36,5 @@ private: // Varibales
 
 
 private: // Functions
-	MenuScreen* CreateMenuScreen(std::string _menuName);
-	void AddMenuScreenToList(MenuScreen* _menuScreenToAdd);
 
 };
