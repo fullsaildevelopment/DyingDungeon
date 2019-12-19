@@ -82,7 +82,7 @@ int playGame()
 {
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
-	gMainWindow = application->createRenderWindow("Dying Dungeon", 1920, 1080);
+	gMainWindow = application->createRenderWindow("Dying Dungeon", 1280, 720);
 
 	MenuManager::GetInstance().initialize(application.get());
 
