@@ -23,6 +23,8 @@ public: // Constructors
 	Odyssey::UICanvas* UI;
 	Odyssey::UICanvas* Rewards;
 	std::vector<Odyssey::Text2D*> TurnOrderNumbers;
+	// TODO: REMOVE POST BUILD 02
+	Odyssey::UICanvas* addHUD;
 
 public: // Functions
 

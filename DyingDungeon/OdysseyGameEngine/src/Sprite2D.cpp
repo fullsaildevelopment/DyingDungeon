@@ -2,9 +2,9 @@
 
 namespace Odyssey
 {
-	ELEMENT_DEFINITION( UIElement, Sprite2D ) 
+	ELEMENT_DEFINITION(UIElement, Sprite2D)
 
-	Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width, UINT height)
+		Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width, UINT height)
 	{
 		// Create the WIC factory
 		Microsoft::WRL::ComPtr <IWICImagingFactory> factory;
@@ -79,9 +79,7 @@ namespace Odyssey
 	{
 		if (mBitmap == nullptr)
 			HRESULT hr = renderTarget->CreateBitmapFromWicBitmap(mBitmapConverter.Get(), nullptr, mBitmap.GetAddressOf());
-		else
-		{
-			renderTarget->DrawBitmap(mBitmap.Get(), D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + mWidth, mPosition.y + mHeight));
-		}
+
+		renderTarget->DrawBitmap(mBitmap.Get(), D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + mWidth, mPosition.y + mHeight));
 	}
 }

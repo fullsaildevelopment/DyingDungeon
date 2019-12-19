@@ -55,6 +55,7 @@ namespace
 	// Light resources
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
+	Odyssey::Text2D::TextProperties gDefaultText;
 }
 
 // Forward declarations
@@ -65,9 +66,14 @@ void setupCamera();
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
+void setup4PlayerInterface();
 void setupPaladin();
 void setupSkeleton();
 void setupAudio();
+
+// Factories
+void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner);
+void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner);
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -76,12 +82,19 @@ int playGame()
 {
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
-	gMainWindow = application->createRenderWindow("Dying Dungeon", 1280, 720);
+	gMainWindow = application->createRenderWindow("Dying Dungeon", 1920, 1080);
 
 	MenuManager::GetInstance().initialize(application.get());
 
 	// Get the render device
 	Odyssey::RenderDevice* renderDevice = application->getRenderDevice();
+
+	gDefaultText.bold = false;
+	gDefaultText.italic = false;
+	gDefaultText.fontSize = 25.0f;
+	gDefaultText.textAlignment = Odyssey::Text2D::TextAlignment::Left;
+	gDefaultText.paragraphAlignment = Odyssey::Text2D::ParagraphAlignment::Left;
+	gDefaultText.fontName = L"Verdana";
 
 	// Create the main scene
 	gGameScene = renderDevice->createScene();
@@ -108,6 +121,7 @@ int playGame()
 
 	// Set up the game user interface
 	setupGameInterface();
+	setup4PlayerInterface();
 
 	// Set up the tower manager
 	setUpTowerManager();
@@ -346,105 +360,59 @@ void setupArena()
 
 void setupGameInterface()
 {
-	// Create the menu object and add the UI Canvas component
+	// Create the game menu object
 	gGameMenu = std::make_shared<Odyssey::GameObject>();
-	gGameMenu->addComponent<Odyssey::UICanvas>(); // The player's icons and health bars
-	gGameMenu->addComponent<Odyssey::UICanvas>(); // The rewards screen
 
+	// Add a UI Canvas for the 1v1 combat
+	gGameMenu->addComponent<Odyssey::UICanvas>(); // The player's icons and health bars
+
+	// Add a UI Canvas for the rewards screen
+	gGameMenu->addComponent<Odyssey::UICanvas>(); // The rewards screen
 
 	// Get a reference to the UI canvas and get the width/height of the screen
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+
+	// Get the width and height of the window
 	float width = static_cast<float>(gMainWindow->mMainWindow.width);
 	float height = static_cast<float>(gMainWindow->mMainWindow.height);
 
-	// Construct the UI
 	// Battle for Flavortown Title
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2((width / 3.0f) + 50.0f, 15.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"Battle for Flavortown", 40.0f, 500.0f, 50.0f);
+	Odyssey::Text2D::TextProperties properties = gDefaultText;
+	properties.fontSize = 40.0f;
+	properties.textAlignment = Odyssey::Text2D::TextAlignment::Center;
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, height / 75.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"Battle for Flavortown", properties, width, 0.0f);
 
-	// Player Team - Character 1
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 45.0f), L"assets/images/Guy.png", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 95.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"1", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	Character* pal = gPaladin->getComponent<Character>();
-	pal->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 120.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	pal->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 137.5f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-	
+	float anchorX = width / 75.0f;
+	float anchorY = height / 25.0f;
+
+	// Set up 4 player characters
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, gPaladin->getComponent<Character>());
+
+	anchorX = width - anchorX - (width / 25.0f);
+	anchorY = height / 25.0f;
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, gSkeleton->getComponent<Character>());
+
 	// Buff Icon Locations
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(125.0f, 45.0f), L"assets/images/AttackUp.png", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(125.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"1", 10.0f, 25.0f, 25.0f);
+	float iconSize = width / 50;
 
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(155.0f, 45.0f), L"assets/images/SpeedUp.png", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(155.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"2", 10.0f, 25.0f, 25.0f);
+	anchorX = width / 75.0f + iconSize * 2.5f;
+	anchorY = height / 25.0f;
 
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(185.0f, 45.0f), L"assets/images/DefenseUp.jpg", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(185.0f, 60.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"3", 10.0f, 25.0f, 25.0f);
+	createBuffIcon(anchorX, anchorY, 1, 1, L"assets/images/AttackUp.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 2, 1, L"assets/images/SpeedUp.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 3, 1, L"assets/images/DefenseUp.jpg", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 4, 1, L"assets/images/SpeedDown.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 5, 1, L"assets/images/Bleed.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 6, 1, L"assets/images/Poison.png", iconSize, iconSize, canvas, nullptr);
 
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(125.0f, 95.0f), L"assets/images/SpeedDown.png", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(125.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"1", 10.0f, 25.0f, 25.0f);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(155.0f, 95.0f), L"assets/images/Bleed.png", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(155.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"2", 10.0f, 25.0f, 25.0f);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(185.0f, 95.0f), L"assets/images/Poison.png", 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(185.0f, 110.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), L"3", 10.0f, 25.0f, 25.0f);
-
-	// Player Team - Character 2
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 180.0f), L"assets/images/Guy.png", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 230.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"2", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 275.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Player Team - Character 3
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 315.0f), L"assets/images/Guy.png", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 365.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"3", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 390.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 410.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Player Team - Character 4
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(25.0f, 455.0f), L"assets/images/Guy.png", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 505.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"4", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(25.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Enemy Team - Character 1
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 45.0f), L"assets/images/Gordon.jpg", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 95.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"5", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	Character* skel = gSkeleton->getComponent<Character>();
-	skel->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 120.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	skel->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 140.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Enemy Team - Character 2
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 180.0f), L"assets/images/Gordon.jpg", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 230.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"6", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 255.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 275.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Enemy Team - Character 3
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 315.0f), L"assets/images/Gordon.jpg", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 365.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"7", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 390.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 410.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
-
-	// Enemy Team - Character 4
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(width - 100.0f, 455.0f), L"assets/images/Gordon.jpg", 75, 75);
-	// Turn Order Text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(width - 125.0f, 505.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"8", 24.0f, 50.0f, 50.0f);
-	// Health and Mana bars
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 530.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 75.0f, 15.0f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(width - 100.0f, 550.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 75.0f, 15.0f);
+	anchorX = width - (width / 25.0f) - width / 75.0f;
+	anchorX -= iconSize * 1.5f;
+	createBuffIcon(anchorX, anchorY, 1, -1, L"assets/images/AttackUp.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 2, -1, L"assets/images/DefenseUp.jpg", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 3, -1, L"assets/images/SpeedUp.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 4, -1, L"assets/images/SpeedDown.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 5, -1, L"assets/images/Poison.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(anchorX, anchorY, 6, -1, L"assets/images/Bleed.png", iconSize, iconSize, canvas, nullptr);
 
 	// Results Menu
 	canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
@@ -456,6 +424,76 @@ void setupGameInterface()
 	canvas->setActive(false); // The rewards screen won't show up at the start
 
 	gGameScene->addGameObject(gGameMenu);
+}
+
+void setup4PlayerInterface()
+{
+	// Add a UI Canvas for 4v4 HUD
+	gGameMenu->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
+
+	// Get the width and height of the window
+	float width = static_cast<float>(gMainWindow->mMainWindow.width);
+	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+
+	float anchorX = width / 75.0f;
+	float anchorY = (height / 25.0f) + (height / 7.0f);
+
+	// Set up the other 3 player characters
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
+
+	// Move the anchor points to accomodate the right side
+	anchorX = width - anchorX - (width / 25.0f);
+	anchorY = (height / 25.0f) + (height / 7.0f);
+
+	// Set up the other 3 enemy characters
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
+
+	canvas->setActive(false);
+}
+
+void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner)
+{
+	// Get the width and height of the window
+	float width = static_cast<float>(gMainWindow->mMainWindow.width);
+	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+	Odyssey::Text2D::TextProperties properties = gDefaultText;
+	properties.fontSize = height / 50.0f;
+	properties.bold = true;
+
+	// Player Team - Character 1
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, (UINT)width / 25, (UINT)width / 25);
+
+	// Turn Order Text
+	float offsetX = width / 25.0f;
+	float offsetY = height / 23.0f;
+	if (owner && owner->IsHero()==false)
+	{
+		offsetX = -properties.fontSize / 1.5f;
+	}
+	properties.textAlignment = Odyssey::Text2D::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::Text2D::ParagraphAlignment::Left;
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), L"1", properties, width / 25, width / 25);
+	// Health and Mana bars
+	Character* pal = gPaladin->getComponent<Character>();
+	if (owner)
+	{
+		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
+		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 11.75f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), width / 25.0f, height / 70.0f);
+	}
+	else
+	{
+		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
+		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 11.75f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), width / 25.0f, height / 70.0f);
+	}
 }
 
 void setupPaladin()
@@ -513,6 +551,21 @@ void setupAudio()
 	RedAudioManager::Instance()->Loop("BackgroundMenu");
 }
 
+void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
+{
+	Odyssey::Text2D::TextProperties properties = gDefaultText;
+	properties.fontSize = gMainWindow->mMainWindow.height / 65.0f;
+	properties.bold = true;
+	float iconStepX = width * 1.25f;
+	float iconStepY = height * 1.25f;
+	slot -= 1;
+	int number = (slot % 3) + 1;
+	float xPos = anchorX + buildDirection * (static_cast<float>(slot % 3) * iconStepX);
+	float yPos = anchorY + (static_cast<float>(slot / 3) * iconStepY);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, static_cast<UINT>(width), static_cast<UINT>(height));
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), std::to_wstring(number), properties, width, height);
+}
+
 void setUpTowerManager()
 {
 	gPlayerUnit.push_back(gPaladin);
@@ -521,8 +574,9 @@ void setUpTowerManager()
 	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
+	gCurrentTower->getComponent<TowerManager>()->addHUD = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[1]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[11]);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[2]);
 	gGameScene->addGameObject(gCurrentTower);
 }
 

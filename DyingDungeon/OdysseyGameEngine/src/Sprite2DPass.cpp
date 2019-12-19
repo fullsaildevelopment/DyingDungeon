@@ -17,7 +17,7 @@ namespace Odyssey
 
 		hr = targetWindow->getSwapChain()->GetBuffer(0, IID_PPV_ARGS(backBufferSurface.GetAddressOf()));
 	
-		float dpi = static_cast<float>(GetDpiForWindow(*(targetWindow->getWindowHandle())));
+		float dpi = 96.0f;
 
 		auto properties = D2D1::RenderTargetProperties(
 			D2D1_RENDER_TARGET_TYPE_DEFAULT,

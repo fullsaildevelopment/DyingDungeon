@@ -45,6 +45,12 @@ void TowerManager::initialize()
 
 void TowerManager::update(double deltaTime)
 {
+	// TODO: REMOVE POST BUILD 02
+	if (Odyssey::InputManager::getInstance().getKeyPress(VK_F3))
+	{
+		addHUD->setActive(!addHUD->getActive());
+	}
+
 	// If we are in battle, Update the battle
 	if (GetTowerState() == IN_BATTLE)
 	{
@@ -122,6 +128,10 @@ void TowerManager::update(double deltaTime)
 
 void TowerManager::CreateBattleInstance()
 {
+	// TODO: REMOVE POST BUILD 02
+	if (mCurrentLevel == 1)
+		system("CLS");
+
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers);
 
