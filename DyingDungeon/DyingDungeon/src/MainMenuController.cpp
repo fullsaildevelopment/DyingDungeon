@@ -11,15 +11,15 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 
 void MainMenuController::initialize()
 {
-	RedAudioManager::Instance()->Play("BackgroundMenu");
+	RedAudioManager::Instance().Play("BackgroundMenu");
 }
 
 void MainMenuController::update(double deltaTime)
 {
 	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
 	{
-		RedAudioManager::Instance()->GetAudio("BackgroundMenu")->Pause();
-		RedAudioManager::Instance()->Play("BackgroundBattle");
+		RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+		RedAudioManager::Instance().Play("BackgroundBattle");
 		mApplication->setActiveScene("Game");
 	}
 }

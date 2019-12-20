@@ -4,16 +4,16 @@
 class RedAudioManager
 {
 	private:
-		std::vector<RedAudio> m_audioFiles;
+		static std::vector<RedAudio> m_audioFiles;
 		RedAudio* default_audio;
 	public:
 	private:
 		RedAudio* FindAudio(const char* alias);
-		static RedAudioManager* m_p_Instance;
-		//RedAudioManager(const char* defult_audio);
+		//static RedAudioManager* m_p_Instance;
+		
 		RedAudioManager();
 	public:
-		static RedAudioManager* Instance();
+		static RedAudioManager& Instance();
 		~RedAudioManager();
 		/// <summary>
 		/// 

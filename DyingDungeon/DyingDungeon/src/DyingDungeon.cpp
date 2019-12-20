@@ -34,6 +34,20 @@
 #include "EnemyComponent.h"
 #include "CameraController.h"
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
+
 namespace
 {
 	// Rendering resources
@@ -541,15 +555,15 @@ void setupSkeleton()
 void setupAudio()
 {
 	//SFX
-	RedAudioManager::Instance()->AddAudio("assets/audio/bone_punch.mp3", "SkeletonAttack");
-	RedAudioManager::Instance()->AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
-	RedAudioManager::Instance()->AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
-	RedAudioManager::Instance()->AddAudio("assets/audio/losing.mp3", "Loss");
+	RedAudioManager::Instance().AddAudio("assets/audio/bone_punch.mp3", "SkeletonAttack");
+	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
+	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
+	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
 	//Background Sound
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
-	RedAudioManager::Instance()->AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	//Play Initial Loop
-	RedAudioManager::Instance()->Loop("BackgroundMenu");
+	RedAudioManager::Instance().Loop("BackgroundMenu");
 }
 
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
@@ -583,5 +597,10 @@ void setUpTowerManager()
 
 int main()
 {
+	_CrtDumpMemoryLeaks();
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+	//_CrtSetBreakAlloc(46431);
 	return playGame();
+	_CrtDumpMemoryLeaks();
 }
