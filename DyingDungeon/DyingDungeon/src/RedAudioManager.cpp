@@ -11,7 +11,7 @@ RedAudio* RedAudioManager::FindAudio(const char* alias)
 			return &m_audioFiles[i];
 		}
 	}
-	return nullptr;
+	return default_audio;
 }
 
 RedAudioManager& RedAudioManager::Instance()
@@ -22,9 +22,9 @@ RedAudioManager& RedAudioManager::Instance()
 
 RedAudioManager::RedAudioManager()
 {
-	default_audio = nullptr;
-	//default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
-	//default_audio->Open();
+	//default_audio = nullptr;
+	default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
+	default_audio->Open();
 }
 
 //RedAudioManager::RedAudioManager(const char* defult_audio)
@@ -35,10 +35,10 @@ RedAudioManager::RedAudioManager()
 
 RedAudioManager::~RedAudioManager()
 {
-	if (default_audio) {
-		//default_audio->Clear();
-		delete default_audio;
-	}
+	//if (default_audio) {
+	//default_audio->Clear();
+	delete default_audio;
+	//}
 	/*for (int i = 0; i < m_audioFiles.size(); i++) {
 		m_audioFiles[i].Clear();
 	}*/
