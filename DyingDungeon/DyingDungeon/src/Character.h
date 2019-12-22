@@ -26,6 +26,7 @@ public:
 	virtual void Die();
 
 	void TakeDamage(float dmg);
+	void ReceiveHealing(float healing);
 	void DepleteMana(float manaCost);
 
 	/////Get and Set Functions/////

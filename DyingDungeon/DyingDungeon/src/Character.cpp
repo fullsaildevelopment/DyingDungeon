@@ -47,23 +47,26 @@ void Character::TakeDamage(float dmg)
 	RedAudioManager::Instance()->Play("PaladinHit");
 
 	//TODO calculate damage reduction here
-	if (dmg > 0)
+	dmg = dmg - (dmg * mDefense);
+	if (mShielding > 0)
 	{
-		dmg = dmg - (dmg * mDefense);
-		if (mShielding > 0)
+		dmg = dmg - mShielding;
+		if (dmg <= 0)
 		{
-			dmg = dmg - mShielding;
-			if (dmg <= 0)
-			{
-				mShielding = fabsf(dmg);
-				dmg = 0;
-			}
-			else
-				mShielding = 0;
+			mShielding = fabsf(dmg);
+			dmg = 0;
 		}
+		else
+			mShielding = 0;
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+}
+
+// Gives the character health back 
+void Character::ReceiveHealing(float healing)
+{
+	SetHP(mCurrentHP + healing);
 }
 
 /*
