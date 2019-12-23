@@ -28,25 +28,17 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 
+#include <stdio.h>
+#include <DbgHelp.h>
+#include <time.h>
+
 // Game Includes
 #include "TowerManager.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 #include "CameraController.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
-#endif
-
+#pragma comment(lib, "dbghelp.lib")
 
 namespace
 {
@@ -84,7 +76,7 @@ void setup4PlayerInterface();
 void setupPaladin();
 void setupSkeleton();
 void setupAudio();
-
+LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
 void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner);
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner);
@@ -595,12 +587,46 @@ void setUpTowerManager()
 	gGameScene->addGameObject(gCurrentTower);
 }
 
+LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
+{
+	struct tm newTime;
+	time_t locTime;
+	wchar_t path[100] = { 0 };
+
+	locTime = time(&locTime);
+	localtime_s(&newTime, &locTime);
+	//../crash_log/
+	wcsftime(path, sizeof(path), L"crash logs/%A_%b%d_%I%M%p.dmp", &newTime);
+
+	//fstream crashlog(path, ios::trunc | ios::out);
+
+	HANDLE hFile = ::CreateFile(path, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFile != INVALID_HANDLE_VALUE) {
+		_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
+
+		ExInfo.ThreadId = ::GetCurrentThreadId();
+		ExInfo.ExceptionPointers = in_error;
+		ExInfo.ClientPointers = FALSE;
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
+		::CloseHandle(hFile);
+	}
+
+	return 0;
+}
+
 int main()
 {
-	_CrtDumpMemoryLeaks();
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-	//_CrtSetBreakAlloc(46431);
+	SetUnhandledExceptionFilter(DumpOutput);
+	//DumpFile Test
+	/*int test = 120;
+	int tester = 12;
+	if (test == tester) {
+
+	}
+	else {
+		test = 0;
+	}
+	int newer = tester / test;*/
 	return playGame();
-	_CrtDumpMemoryLeaks();
 }
