@@ -9,6 +9,7 @@ CLASS_DEFINITION(Character, EnemyComponent)
 EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
 	SetHero(false);
+	mBleedApplied = false;
 	mCurrentState = STATE::SELECTMOVE;
 	switch (_enemyID)
 	{
@@ -114,10 +115,20 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	{
 	case STATE::SELECTMOVE:
 	{
+		if (mBleedApplied == false)
+		{
+			ManageStatusEffects(mBleeds);
+			ManageStatusEffects(mRegens);
+			mBleedApplied = true;
+			if (mCurrentHP <= 0.0f)
+			{
+				mCurrentState = STATE::DEAD;
+				return false;
+			}
+		}
 		if (FindBestMove(playerTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
-			//ManageStatusEffects();
 			if(mCurrentState == STATE::INPROGRESS)
 				mAnimator->playClip(bestMove.skill->GetAnimationId());
 		}
@@ -143,6 +154,9 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 			bestMove.score = -1000;
 			mCurrentState = STATE::SELECTMOVE;
 			trigger = false;
+			mBleedApplied = false;
+			ManageStatusEffects(mBuffs);
+			ManageStatusEffects(mDebuffs);
 			return true;
 		}
 		break;

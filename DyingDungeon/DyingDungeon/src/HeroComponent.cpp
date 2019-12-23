@@ -13,6 +13,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mEXP = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
+	mBleedApplied = false;
 	mCurrentState = STATE::SELECTMOVE;
 	switch (id)
 	{
@@ -49,6 +50,15 @@ HeroComponent::HeroComponent(HEROID id)
 	}
 }
 
+HeroComponent::~HeroComponent()
+{
+	delete[] mSkillList;
+	for (int i = 0; i < TOTALSKILLS; ++i)
+	{
+		mSkillList[0] = nullptr;
+	}
+}
+
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
 	//Make these if checks into a state machine
@@ -62,8 +72,17 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 	case STATE::SELECTMOVE:
 	{
-		ManageStatusEffects(mBleeds);
-		ManageStatusEffects(mRegens);
+		if (mBleedApplied == false)
+		{
+			ManageStatusEffects(mBleeds);
+			ManageStatusEffects(mRegens);
+			mBleedApplied = true;
+			if (mCurrentHP <= 0.0f)
+			{
+				mCurrentState = STATE::DEAD;
+				return false;
+			}
+		}
 		if (mCurrentHP <= 0)
 			mCurrentState = STATE::DEAD;
 		if (mCurrentState == STATE::DEAD)
@@ -116,6 +135,9 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentTarget = nullptr;
 			mCurrentState = STATE::SELECTMOVE;
 			trigger = false;
+			mBleedApplied = false;
+			ManageStatusEffects(mBuffs);
+			ManageStatusEffects(mDebuffs);
 			return true;
 		}
 		break;

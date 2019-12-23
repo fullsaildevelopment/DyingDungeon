@@ -99,12 +99,13 @@ protected:
 	float mSpeed;
 	float mEXP;
 	bool mStunned;
+	bool mBleedApplied;
 	std::string mName;
 	Skills** mSkillList;
 	std::vector<StatusEffect*> mDebuffs;
 	std::vector<StatusEffect*> mBuffs;
 	std::vector<StatusEffect*> mBleeds;
-	std::vector<StatusEffect*> mRegens;
+	std::vector<StatusEffect*> mRegens; 
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
 private:
