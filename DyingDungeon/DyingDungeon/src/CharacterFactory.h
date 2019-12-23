@@ -1,16 +1,17 @@
 #pragma once
 #include "GameObject.h"
 
-enum CharacterOptions
-{
-	Paladin,
-	Skeleton
-};
 
 class CharacterFactory
 {
 public: // Constructors
-	CharacterFactory();
+	CharacterFactory() = default;
+
+	enum CharacterOptions
+	{
+		Paladin,
+		Skeleton
+	};
 
 public: // Functions
 
