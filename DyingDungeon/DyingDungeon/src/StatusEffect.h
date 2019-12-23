@@ -1,5 +1,7 @@
 #pragma once
+#include <string>
 // enum used for readablity of what stat is affected
+enum class STATS {Atk = 0};
 enum class EFFECTTYPE { Bleed = 0};
 class Character; 
 class StatusEffect

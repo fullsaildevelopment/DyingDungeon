@@ -15,14 +15,8 @@ public:
 
 	//Death Check
 	virtual void Die();
-
-
 	/////Get and Set Functions/////
-
-	
-
 	/////End of Get and Set Functions/////
-
 private:
 	Skills* mCurrentSkill;
 	Character* mCurrentTarget;

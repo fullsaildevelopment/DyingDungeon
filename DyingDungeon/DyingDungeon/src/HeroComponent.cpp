@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "EnemyComponent.h"
+/// Check if better way
+#include "Attack.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -23,20 +25,23 @@ HeroComponent::HeroComponent(HEROID id)
 		mDefense = 0.30f;
 		mSpeed = 35.0f;
 		mShielding = 0.0f;
+		mSkillList = new Skills*[TOTALSKILLS];
 		// Basic Attack
-		mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
-		// Skill 1 (Raise Attack)
-		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
-		// Skill 2 (Raise Defense)
-		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
-		// Skill 3 (Regen HP)
-		mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
-		// Skill 4 (Shield)
-		mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
-		// Skill 5 (Big Attack)
-		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		// Skill 6 (Stun Attack)
-		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
+		mSkillList[0] = new Attack(SKILLTYPE::ATTACK,"Basic Attack", "BasicAttack", -5, 10, nullptr);
+		//// Basic Attack
+		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
+		//// Skill 1 (Raise Attack)
+		//mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
+		//// Skill 2 (Raise Defense)
+		//mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
+		//// Skill 3 (Regen HP)
+		//mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
+		//// Skill 4 (Shield)
+		//mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
+		//// Skill 5 (Big Attack)
+		//mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
+		//// Skill 6 (Stun Attack)
+		//mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -50,55 +55,22 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	if (mStunned)
 	{
 		std::cout << mName << " is stunned!" << std::endl;
-		ManageStatusEffects();
+		ManageAllEffects();
 		return true;
 	}
 	switch (mCurrentState)
 	{
 	case STATE::SELECTMOVE:
 	{
-		ManageStatusEffects();
+		ManageStatusEffects(mBleeds);
+		ManageStatusEffects(mRegens);
+		if (mCurrentHP <= 0)
+			mCurrentState = STATE::DEAD;
 		if (mCurrentState == STATE::DEAD)
 			return false;
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0].GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0]->GetManaCost() <= mCurrentMana)
 		{
-			mCurrentSkill = &mSkillList[0];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[1];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')) && mSkillList[2].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[2];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')) && mSkillList[3].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[3];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')) && mSkillList[4].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[4];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')) && mSkillList[5].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[5];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')) && mSkillList[6].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[6];
+			mCurrentSkill = mSkillList[0];
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
@@ -108,7 +80,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
 		{
-			if (mCurrentSkill->IsAttack())
+			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				mCurrentTarget = enemies[0]->getComponent<Character>();
 			}

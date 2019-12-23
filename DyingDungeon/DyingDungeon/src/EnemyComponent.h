@@ -17,7 +17,7 @@ public:
 	};
 	//Attack Functions
 	bool FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets);
-	float ScoreMove(Skills skillOption, Character* target);
+	float ScoreMove(Skills* skillOption, Character* target);
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam);
 	//Death Functions
 	virtual void Die();

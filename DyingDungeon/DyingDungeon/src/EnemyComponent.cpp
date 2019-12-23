@@ -1,6 +1,8 @@
 #include "EnemyComponent.h"
 #include "GameObject.h"
 #include "Transform.h"
+/// Check if better way
+#include "Attack.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -19,12 +21,15 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.15f;
 		mDefense = 0.05f;
 		mSpeed = 20;
+		mSkillList = new Skills* [TOTALSKILLS];
 		// Basic Attack
-		mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
-		// Skill 1 (Bleed)
-		mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.05f, 2, true, nullptr), "Skeletal Slash", "FwdKick");
-		// Skill 2 (Big Damage & Bleed)
-		mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.10f, 3, true, nullptr), "Necrotic Infection", "SpinKick");
+		mSkillList[0] = new Attack(SKILLTYPE::ATTACK, "Basic Attack", "BasicAttackButBetter", -5, 10, nullptr);
+		//// Basic Attack
+		//mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
+		//// Skill 1 (Bleed)
+		//mSkillList[1] = Skills(10, 15, true, Buffs(STATS::HP, 0.05f, 2, true, nullptr), "Skeletal Slash", "FwdKick");
+		//// Skill 2 (Big Damage & Bleed)
+		//mSkillList[2] = Skills(25, 40, true, Buffs(STATS::HP, 0.10f, 3, true, nullptr), "Necrotic Infection", "SpinKick");
 		break;
 	}
 	default:
@@ -55,7 +60,7 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObjec
 
 		if (score > bestMove.score)
 		{
-			bestMove.skill = &mSkillList[i];
+			bestMove.skill = mSkillList[i];
 			bestMove.target = target;
 			bestMove.score = score;
 		}
@@ -71,9 +76,9 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObjec
 	}
 }
 
-float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
+float EnemyComponent::ScoreMove(Skills* skillOption, Character* target)
 {
-	float score = skillOption.GetDamage();
+	/*float score = skillOption.GetDamage();
 	if (skillOption.GetName() == "Basic Attack" && GetMana() < 10)
 		score += 1000;
 	
@@ -86,8 +91,11 @@ float EnemyComponent::ScoreMove(Skills skillOption, Character* target)
 	if (GetHP() > 60 && skillOption.GetName() == "Skeletal Slash" && GetMana() >= skillOption.GetManaCost())
 		score += 35;
 	if (GetMana() - skillOption.GetManaCost() <= 10)
-		score -= 10;
-
+		score -= 10;*/
+	// Lanes crap for testing new skills system 
+	float score = 0;
+	if (skillOption->GetTypeId() == SKILLTYPE::ATTACK)
+		score = 1000;
 	return score;
 }
 
@@ -97,7 +105,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 	if (mStunned && mCurrentState != STATE::DEAD)
 	{
 		std::cout << GetName() << " is stunned!" << std::endl;
-		ManageStatusEffects();
+		ManageAllEffects();
 		return true;
 	}
 
@@ -109,7 +117,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 		if (FindBestMove(playerTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
-			ManageStatusEffects();
+			//ManageStatusEffects();
 			if(mCurrentState == STATE::INPROGRESS)
 				mAnimator->playClip(bestMove.skill->GetAnimationId());
 		}

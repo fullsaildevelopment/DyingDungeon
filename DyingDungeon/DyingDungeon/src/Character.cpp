@@ -334,7 +334,7 @@ void Character::SetName(std::string newName)
 *
 *returns : Skills*
 */
-Skills* Character::GetSkills()
+Skills** Character::GetSkills()
 {
 	return mSkillList;
 }
@@ -367,6 +367,68 @@ void Character::ManageStatusEffects(std::vector<StatusEffect*> effectList)
 			delete((*it));
 			(*it) = nullptr;
 			it = effectList.erase(it);
+		}
+		else
+			it++;
+	}
+}
+
+void Character::ManageAllEffects()
+{
+	std::vector<StatusEffect*>::iterator it;
+	for (it = mBleeds.begin(); it != mBleeds.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mRegens.begin(); it != mRegens.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mRegens.erase(it);
+		}
+		else
+			it++;
+	}
+	if (mCurrentHP <= 0.0f)
+	{
+		mCurrentState = STATE::DEAD;
+		return;
+	}
+	for (it = mBuffs.begin(); it != mBuffs.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mBuffs.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mDebuffs.erase(it);
 		}
 		else
 			it++;
