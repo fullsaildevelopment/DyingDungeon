@@ -64,9 +64,8 @@ public:
 	void SetHero(bool heroStat);
 	// Name Functions
 	std::string GetName();
+	// Skills Functions
 	void SetName(std::string newName);
-	// Skill Functions
-	void SetSkills(Skills newSkillList);
 	Skills* GetSkills();
 	//Stunned Functions
 	void SetStun(bool stun);
@@ -74,8 +73,8 @@ public:
 	/////End of Get and Set Functions/////
 
 	// Status Effect Functions
-	void AddStatusEffect(Buffs* newEffect);
-	void ManageStatusEffects();
+	void AddStatusEffect(StatusEffect* newEffect);
+	void ManageStatusEffects(std::vector<StatusEffect*> effectList);
 	void ClearStatusEffects();
 	//Update HealthBar UI
 	void UpdateHealthBar();
@@ -100,7 +99,7 @@ protected:
 	float mEXP;
 	bool mStunned;
 	std::string mName;
-	Skills* mSkillList[TOTALSKILLS];
+	Skills* mSkillList;
 	std::vector<StatusEffect*> mDebuffs;
 	std::vector<StatusEffect*> mBuffs;
 	std::vector<StatusEffect*> mBleeds;

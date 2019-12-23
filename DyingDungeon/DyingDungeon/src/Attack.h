@@ -12,7 +12,7 @@ private:
 public:
 	// Constructors, Destructors
 	Attack() = default;
-	~Attack() = default;
+	~Attack();
 	Attack(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff);
 	// Use the skill
 	void Use(Character& caster, Character& target);

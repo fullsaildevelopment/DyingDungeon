@@ -326,17 +326,6 @@ void Character::SetName(std::string newName)
 {
 	mName = newName;
 }
-/*
-*Function:  SetSkills(string newWSkillList)
-* --------------------
-* Set the character's skill list
-*
-*returns : void
-*/
-void Character::SetSkills(Skills newSkillList)
-{
-	mSkillList[0] = newSkillList;
-}
 
 /*
 *Function:  GetSkills()
@@ -351,44 +340,33 @@ Skills* Character::GetSkills()
 }
 
 // Adds a new status effect to the list of status effects
-void Character::AddStatusEffect(Buffs* newEffect)
+void Character::AddStatusEffect(StatusEffect* newEffect)
 {
-	mStatusEffects.push_back(newEffect);
+	switch (newEffect->GetTypeId())
+	{
+	case EFFECTTYPE::Bleed:
+	{
+		mBleeds.push_back(newEffect);
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 // Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
-void Character::ManageStatusEffects()
+void Character::ManageStatusEffects(std::vector<StatusEffect*> effectList)
 {
-	std::vector<Buffs*>::iterator it;
-	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
+	std::vector<StatusEffect*>::iterator it;
+	for (it = effectList.begin(); it != effectList.end();)
 	{
-		if ((*it)->IsBleed())
-		{
-			if ((*it)->Bleed())
-				return;
-		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->IsBleed() && (*it)->GetEffectedStat() != STATS::Shd)
-				(*it)->RevertEffect();
-			else
-			{
-				bool dontLoseShield = false;
-				for (int i = 0; i < mStatusEffects.size(); ++i)
-				{
-					if (mStatusEffects[i]->GetEffectedStat() == STATS::Shd && mStatusEffects[i] != (*it))
-					{
-						dontLoseShield = true;
-						break;
-					}
-				}
-				if (dontLoseShield == false)
-					(*it)->RevertEffect();
-			}
+			(*it)->Remove();
 			delete((*it));
 			(*it) = nullptr;
-			it = mStatusEffects.erase(it);
+			it = effectList.erase(it);
 		}
 		else
 			it++;
@@ -398,13 +376,34 @@ void Character::ManageStatusEffects()
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
-	for (Buffs* b : mStatusEffects)
+	for (StatusEffect* se : mDebuffs)
 	{
-		b->RevertEffect();
-		delete(b);
-		b = nullptr;
+		se->Remove();
+		delete(se);
+		se = nullptr;
 	}
-	mStatusEffects.clear();
+	mDebuffs.clear();
+	for (StatusEffect* se : mBuffs)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mBuffs.clear();
+	for (StatusEffect* se : mBleeds)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mBleeds.clear();
+	for (StatusEffect* se : mRegens)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mRegens.clear();
 }
 
 

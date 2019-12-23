@@ -1,5 +1,10 @@
 #include "StatusEffect.h"
 
+EFFECTTYPE StatusEffect::GetTypeId()
+{
+	return mTypeId;
+}
+
 int StatusEffect::GetDuration()
 {
 	return mDuration;

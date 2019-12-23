@@ -1,12 +1,13 @@
 #pragma once
 // enum used for readablity of what stat is affected
-enum class STATS { NONE = 0, HP, MP, Atk, Def, Spd, Shd, Stn };
+enum class EFFECTTYPE { Bleed = 0};
 class Character; 
 class StatusEffect
 {
 	// public and private variables
 public:
 protected:
+	EFFECTTYPE mTypeId;
 	// How much stat will be affected
 	float mAmountOfEffect;
 	// How many turns the status effect will last
@@ -20,9 +21,11 @@ public:
 	StatusEffect() = default;
 	~StatusEffect() = default;
 	// Application functions
-	virtual void Apply(Character* target) = 0;
+	virtual void Apply() = 0;
 	virtual void Remove() = 0;
 	virtual void Use() = 0;
+	// TypeId functions
+	EFFECTTYPE GetTypeId();
 	//  mDuration functions
 	int GetDuration();
 	void SetDuration(int newDuration);
