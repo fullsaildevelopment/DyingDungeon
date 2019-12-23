@@ -4,16 +4,10 @@
     <ClCompile Include="src\BattleInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Buffs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DyingDungeon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EnemyComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Skills.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Character.cpp">
@@ -44,20 +38,26 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Attack.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffs.cpp">
+      <Filter>Source Files\Skills</Filter>
     </ClCompile>
     <ClCompile Include="src\Heal.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skills.cpp">
+      <Filter>Source Files\Skills</Filter>
     </ClCompile>
     <ClCompile Include="src\StatusEffect.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\StatusEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bleed.cpp">
+      <Filter>Source Files\StatusEffects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Buffs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DyingDungeon.h">
@@ -67,9 +67,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Skills.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
@@ -102,14 +99,23 @@
     <ClInclude Include="src\StatTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Heal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Attack.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Heal.h">
+      <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skills.h">
+      <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Buffs.h">
+      <Filter>Header Files\Skills</Filter>
     </ClInclude>
     <ClInclude Include="src\StatusEffect.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\StatusEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bleed.h">
+      <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +135,18 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{dc61b853-3983-4e96-89a2-8cc92084b8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Skills">
+      <UniqueIdentifier>{8201b31a-8489-4e16-a51c-4e754a8171f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\StatusEffects">
+      <UniqueIdentifier>{9901a219-748e-40a1-9408-160541763359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Skills">
+      <UniqueIdentifier>{8298a595-07d6-4234-81db-c12e84306e78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\StatusEffects">
+      <UniqueIdentifier>{70288efd-1db3-4cd5-bbad-4888fd5f3cf4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

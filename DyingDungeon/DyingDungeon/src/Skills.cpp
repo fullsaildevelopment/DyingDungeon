@@ -39,5 +39,5 @@ std::string Skills::GetAnimationId()
 // Returns Type Id
 SKILLTYPE Skills::GetTypeId()
 {
-	return mtypeId;
+	return mTypeId;
 }

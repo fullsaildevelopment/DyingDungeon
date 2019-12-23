@@ -10,9 +10,16 @@ private:
 	StatusEffect* mDebuff;
 	// Functions
 public:
+	// Constructors, Destructors
+	Attack() = default;
+	~Attack() = default;
+	Attack(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff);
+	// Use the skill
 	void Use(Character& caster, Character& target);
+	// Get how much damage the attack does
 	float GetDamage();
-	StatusEffect GetStatusEffect();
+	// Get what debuff this applys
+	StatusEffect* GetStatusEffect();
 private:
 };
 

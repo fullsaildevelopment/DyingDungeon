@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="src\Attack.cpp" />
     <ClCompile Include="src\BattleInstance.cpp" />
+    <ClCompile Include="src\Bleed.cpp" />
     <ClCompile Include="src\Buffs.cpp" />
     <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\Character.cpp" />
@@ -181,6 +182,7 @@
   <ItemGroup>
     <ClInclude Include="src\Attack.h" />
     <ClInclude Include="src\BattleInstance.h" />
+    <ClInclude Include="src\Bleed.h" />
     <ClInclude Include="src\Buffs.h" />
     <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\Character.h" />

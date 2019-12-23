@@ -100,8 +100,11 @@ protected:
 	float mEXP;
 	bool mStunned;
 	std::string mName;
-	Skills mSkillList[TOTALSKILLS];
-	std::vector<Buffs*> mStatusEffects;
+	Skills* mSkillList[TOTALSKILLS];
+	std::vector<StatusEffect*> mDebuffs;
+	std::vector<StatusEffect*> mBuffs;
+	std::vector<StatusEffect*> mBleeds;
+	std::vector<StatusEffect*> mRegens;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
 private:

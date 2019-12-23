@@ -9,7 +9,7 @@ class Skills
 //public and private variables
 public:
 protected:
-	SKILLTYPE mtypeId;
+	SKILLTYPE mTypeId;
 	//how much mana it will cost the caster
 	float mMpCost;
 	// Name of skill
