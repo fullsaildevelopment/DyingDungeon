@@ -10,7 +10,7 @@ private:
 public:
 	// Constructors, Destructors
 	Bleed() = default;
-	Bleed(EFFECTTYPE id ,float ammountOfEffect, int duration, Character* target);
+	Bleed(float ammountOfEffect, int duration, Character* target);
 	~Bleed();
 	// Application functions
 	void Apply();

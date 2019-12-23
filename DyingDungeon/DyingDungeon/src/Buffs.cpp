@@ -1,9 +1,9 @@
 #include "Buffs.h"
 #include "Character.h"
 
-Buffs::Buffs(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, StatusEffect* buff)
+Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff)
 {
-	mTypeId = id;
+	mTypeId = SKILLTYPE::BUFF;
 	mName = skillName;
 	mAnimationId = animationId;
 	mMpCost = mpCost;

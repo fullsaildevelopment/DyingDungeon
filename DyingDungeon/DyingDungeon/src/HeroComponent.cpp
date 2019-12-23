@@ -4,6 +4,7 @@
 #include "EnemyComponent.h"
 /// Check if better way
 #include "Attack.h"
+#include "Bleed.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -27,8 +28,14 @@ HeroComponent::HeroComponent(HEROID id)
 		mSpeed = 35.0f;
 		mShielding = 0.0f;
 		mSkillList = new Skills*[TOTALSKILLS];
+		for (int i = 0; i < TOTALSKILLS; ++i)
+			mSkillList[i] = nullptr;
 		// Basic Attack
-		mSkillList[0] = new Attack(SKILLTYPE::ATTACK,"Basic Attack", "BasicAttack", -5, 10, nullptr);
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr);
+		// Skill 1 (Big Attack)
+		Bleed* tempB = new Bleed(0.25f, 4, nullptr);
+		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
+		tempB = nullptr;
 		//// Basic Attack
 		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		//// Skill 1 (Raise Attack)
@@ -52,10 +59,13 @@ HeroComponent::HeroComponent(HEROID id)
 
 HeroComponent::~HeroComponent()
 {
-	delete[] mSkillList;
 	for (int i = 0; i < TOTALSKILLS; ++i)
 	{
-		mSkillList[0] = nullptr;
+		if (mSkillList[i] != nullptr)
+		{
+			delete mSkillList[i];
+			mSkillList[i] = nullptr;
+		}
 	}
 }
 

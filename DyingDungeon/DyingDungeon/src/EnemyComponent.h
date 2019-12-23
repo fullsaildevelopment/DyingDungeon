@@ -8,6 +8,7 @@ class EnemyComponent : public Character
 public:
 	EnemyComponent() = default;
 	EnemyComponent(ENEMYID _enemyID);
+	~EnemyComponent();
 	//virtual void initialize();
 	struct Move 
 	{

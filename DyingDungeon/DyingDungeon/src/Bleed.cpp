@@ -1,9 +1,9 @@
 #include "Bleed.h"
 #include "Character.h"
 
-Bleed::Bleed(EFFECTTYPE id ,float ammountOfEffect, int duration, Character* target)
+Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 {
-	mTypeId = id;
+	mTypeId = EFFECTTYPE::Bleed;
 	mAmountOfEffect = ammountOfEffect;
 	mDuration = duration;
 	mRecipient = target;

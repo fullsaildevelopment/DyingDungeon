@@ -1,9 +1,9 @@
 #include "Heal.h"
 #include "Character.h"
 // Constructor
-Heal::Heal(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, float healing)
+Heal::Heal(std::string skillName, std::string animationId, float mpCost, float healing)
 {
-	mTypeId = id;
+	mTypeId = SKILLTYPE::HEAL;
 	mName = skillName;
 	mAnimationId = animationId;
 	mMpCost = mpCost;

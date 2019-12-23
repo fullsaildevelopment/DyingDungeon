@@ -23,8 +23,10 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mDefense = 0.05f;
 		mSpeed = 20;
 		mSkillList = new Skills* [TOTALSKILLS];
+		for (int i = 0; i < TOTALSKILLS; ++i)
+			mSkillList[i] = nullptr;
 		// Basic Attack
-		mSkillList[0] = new Attack(SKILLTYPE::ATTACK, "Basic Attack", "BasicAttackButBetter", -5, 10, nullptr);
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttackButBetter", -5, 10, nullptr);
 		//// Basic Attack
 		//mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
 		//// Skill 1 (Bleed)
@@ -35,6 +37,18 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	}
 	default:
 		break;
+	}
+}
+
+EnemyComponent::~EnemyComponent()
+{
+	for (int i = 0; i < TOTALSKILLS; ++i)
+	{
+		if (mSkillList[i] != nullptr)
+		{
+			delete mSkillList[i];
+			mSkillList[i] = nullptr;
+		}
 	}
 }
 

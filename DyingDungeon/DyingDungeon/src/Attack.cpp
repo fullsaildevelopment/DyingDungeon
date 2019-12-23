@@ -3,9 +3,9 @@
 // See if theres a better way than this 
 #include "Bleed.h"
 
-Attack::Attack(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff)
+Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff)
 {
-	mTypeId = id;
+	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
 	mAnimationId = animationId;
 	mMpCost = mpCost;
@@ -33,7 +33,7 @@ void Attack::Use(Character& caster, Character& target)
 		{
 		case EFFECTTYPE::Bleed:
 		{
-			newStatusEffect = new Bleed(mDebuff->GetTypeId(), mDebuff->GetAmountOfEffect(), mDebuff->GetDuration(), &target);
+			newStatusEffect = new Bleed(mDebuff->GetAmountOfEffect(), mDebuff->GetDuration(), &target);
 			break;
 		}
 		default:
@@ -50,6 +50,11 @@ float Attack::GetDamage()
 StatusEffect* Attack::GetStatusEffect()
 {
 	return mDebuff;
+}
+
+void Attack::SetStatusEffect(StatusEffect* se)
+{
+	mDebuff = se;
 }
 
 

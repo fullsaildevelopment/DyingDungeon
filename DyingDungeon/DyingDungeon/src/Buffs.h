@@ -10,7 +10,7 @@ private:
 public:
 	// Constructors
 	Buffs() = default;
-	Buffs(SKILLTYPE id, std::string skillName, std::string animationId, float mpCost, StatusEffect* buff);
+	Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff);
 	// Use the skill 
 	void Use(Character& caster, Character& target);
 	// Get what kind of buff this applys
