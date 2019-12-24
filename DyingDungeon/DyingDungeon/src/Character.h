@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Animator.h"
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"

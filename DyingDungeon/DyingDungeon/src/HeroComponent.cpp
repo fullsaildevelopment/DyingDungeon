@@ -103,6 +103,12 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 			mCurrentState = STATE::SELECTTARGET;
 		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1]->GetManaCost() <= mCurrentMana)
+		{
+			mCurrentSkill = mSkillList[1];
+			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+			mCurrentState = STATE::SELECTTARGET;
+		}
 		break;
 	}
 	case STATE::SELECTTARGET:

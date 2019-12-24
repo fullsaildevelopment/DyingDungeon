@@ -71,22 +71,24 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObjec
 
 	for (int i = currentSkillMoveCheck; i < 4;)
 	{
-		float score = ScoreMove(mSkillList[i], target);
-
-		if (score > bestMove.score)
+		if (mSkillList[i] != nullptr)
 		{
-			bestMove.skill = mSkillList[i];
-			bestMove.target = target;
-			bestMove.score = score;
-		}
+			float score = ScoreMove(mSkillList[i], target);
 
+			if (score > bestMove.score)
+			{
+				bestMove.skill = mSkillList[i];
+				bestMove.target = target;
+				bestMove.score = score;
+			}
+
+			if (currentSkillMoveCheck >= 4)
+			{
+				currentSkillMoveCheck = 0;
+				return true;
+			}
+		}
 		currentSkillMoveCheck++;
-		if (currentSkillMoveCheck >= 4)
-		{
-			currentSkillMoveCheck = 0;
-			return true;
-		}
-
 		return false;
 	}
 }

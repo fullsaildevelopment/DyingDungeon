@@ -17,7 +17,7 @@ void StatusEffect::SetDuration(int newDuration)
 
 void StatusEffect::ReduceDuration(int deduction)
 {
-	mDuration = -deduction;
+	mDuration -= deduction;
 }
 
 float StatusEffect::GetAmountOfEffect()
