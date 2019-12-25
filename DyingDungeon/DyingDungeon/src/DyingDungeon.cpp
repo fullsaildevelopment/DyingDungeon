@@ -37,6 +37,7 @@
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 #include "CameraController.h"
+#include "CharacterFactory.h"
 
 #pragma comment(lib, "dbghelp.lib")
 
@@ -120,10 +121,10 @@ int playGame()
 	setupArena();
 
 	// Set up the paladin
-	setupPaladin();
+	//setupPaladin();
 
 	// Set up the skeleton
-	setupSkeleton();
+	//setupSkeleton();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -393,11 +394,11 @@ void setupGameInterface()
 	float anchorY = height / 25.0f;
 
 	// Set up 4 player characters
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, gPaladin->getComponent<Character>());
+	//createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, gPaladin->getComponent<Character>());
 
 	anchorX = width - anchorX - (width / 25.0f);
 	anchorY = height / 25.0f;
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, gSkeleton->getComponent<Character>());
+	//createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, gSkeleton->getComponent<Character>());
 
 	// Buff Icon Locations
 	float iconSize = width / 50;
@@ -482,7 +483,7 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	// Turn Order Text
 	float offsetX = width / 25.0f;
 	float offsetY = height / 23.0f;
-	if (owner && owner->IsHero()==false)
+	if (owner && owner->IsHero() == false)
 	{
 		offsetX = -properties.fontSize / 1.5f;
 	}
@@ -490,7 +491,7 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	properties.paragraphAlignment = Odyssey::Text2D::ParagraphAlignment::Left;
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), L"1", properties, width / 25, width / 25);
 	// Health and Mana bars
-	Character* pal = gPaladin->getComponent<Character>();
+	//Character* pal = gPaladin->getComponent<Character>();
 	if (owner)
 	{
 		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
@@ -575,15 +576,60 @@ void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, 
 
 void setUpTowerManager()
 {
-	gPlayerUnit.push_back(gPaladin);
-	gEnemyUnit.push_back(gSkeleton);
+	// Create Character Factory
+	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	std::shared_ptr<Odyssey::GameObject> characterToAdd;
+
+	// Get Canvas
+	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+	// Get the width and height of the window
+	float width = static_cast<float>(gMainWindow->mMainWindow.width);
+	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+
+	// Paladin #1
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(0.0f, -0.6f, 3.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	float anchorX = width / 75.0f;
+	float anchorY = height / 25.0f;
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addGameObject(characterToAdd);
+	gPlayerUnit.push_back(characterToAdd);
+
+	// Paladin #2
+	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 3.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addGameObject(characterToAdd);
+	gPlayerUnit.push_back(characterToAdd);
+
+	// Skeleton #1
+	charPosition = DirectX::XMVectorSet(0.0f, -0.5f, -10.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	anchorX = width - anchorX - (width / 25.0f);
+	anchorY = height / 25.0f;
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addGameObject(characterToAdd);
+	gEnemyUnit.push_back(characterToAdd);
+
+	// Skeleton #2
+	charPosition = DirectX::XMVectorSet(-2.0f, -0.5f, -10.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	anchorY += (height / 7.0f);
+	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addGameObject(characterToAdd);
+	gEnemyUnit.push_back(characterToAdd);
+
 	gCurrentTower = std::make_shared<Odyssey::GameObject>();
 	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	gCurrentTower->getComponent<TowerManager>()->addHUD = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[1]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[2]);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[13]);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[14]);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[15]);
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[16]);
 	gGameScene->addGameObject(gCurrentTower);
 }
 

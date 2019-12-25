@@ -12,7 +12,9 @@ BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemy
 	mTurnOrderNumbers[0]->setText(L"420");
 	mTurnOrderNumbers[1]->setText(L"69");
 	mPlayerTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[0];
-	mEnemyTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[1];
+	mPlayerTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[1];
+	mEnemyTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[2];
+	mEnemyTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[3];
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
@@ -69,6 +71,8 @@ int BattleInstance::UpdateBattle()
 	if (mCurrentCharacter->getComponent<Character>()->IsDead())
 	{
 		std::cout << mCurrentCharacter->getComponent<Character>()->GetName() << " Died, R.I.P.\n" << std::endl;
+		//Update the character's turn number to an X - this will represent that he is dead
+		mCurrentCharacter->getComponent<Character>()->pTurnNumber->setText(L"X");
 		// Take the current character out of the battle queue
 		mBattleQueue.pop();
 		// Reassign the next character to the 
@@ -200,7 +204,16 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 	for (int i = 0; i < startingNum; i++)
 	{
 		Character* currChar = tempBattleQueue.front()->getComponent<Character>();
-		currChar->pTurnNumber->setText(std::to_wstring(counter));
+
+		if (currChar->IsDead())
+		{
+			currChar->pTurnNumber->setText(L"X");
+			counter--;
+		}
+		else
+		{
+			currChar->pTurnNumber->setText(std::to_wstring(counter));
+		}
 		tempBattleQueue.pop();
 		counter++;
 	}

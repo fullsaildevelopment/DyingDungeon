@@ -37,6 +37,8 @@
     <ClCompile Include="src\StatTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CharacterFactory.cpp">
+      <Filter>Source Files</Filter>
     <ClCompile Include="src\Attack.cpp">
       <Filter>Source Files\Skills</Filter>
     </ClCompile>
@@ -105,6 +107,8 @@
     <ClInclude Include="src\StatTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\CharacterFactory.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="src\Attack.h">
       <Filter>Header Files\Skills</Filter>
     </ClInclude>
