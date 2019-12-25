@@ -43,7 +43,7 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 2 (Heal)
 		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
 		// Skill 3 (StatUP)
-		StatUp* tempSU = new StatUp(0.25f,3,STATS::Atk,nullptr);
+		StatUp* tempSU = new StatUp(0.25f,1,STATS::Atk,nullptr);
 		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
 		tempSU = nullptr;
 		//// Basic Attack

@@ -3,6 +3,12 @@
 #include "Transform.h"
 /// Check if better way
 #include "Attack.h"
+#include "Buffs.h"
+#include "Heal.h"
+//////////////////
+#include "Bleed.h"
+#include "StatUp.h"
+#include "StatDown.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -25,7 +31,9 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		for (int i = 0; i < TOTALSKILLS; ++i)
 			mSkillList[i] = nullptr;
 		// Basic Attack
+		StatDown* tempSd = new StatDown(0.25f, 3, STATS::Atk, nullptr);
 		mSkillList[0] = new Attack("Basic Attack", "BasicAttackButBetter", -5, 10, nullptr);
+		tempSd = nullptr;
 		//// Basic Attack
 		//mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
 		//// Skill 1 (Bleed)
