@@ -22,11 +22,11 @@ class RedAudio
 	public:
 	private:
 		const wchar_t* ConvertCharToWChar(const char* p_char);
-		void Clear();
 		//unsigned int CountCharsInInt(int _value);
 	public:
 		RedAudio(const char* path, const char* alias);
 		~RedAudio();
+		void Clear();
 		/// <summary>
 		///		<para><c>Play</c> plays the audio file from it's beginning</para>
 		///	</summary>

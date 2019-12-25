@@ -2,6 +2,14 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "EnemyComponent.h"
+/// Check if better way
+#include "Attack.h"
+#include "Buffs.h"
+#include "Heal.h"
+//////////////////
+#include "Bleed.h"
+#include "StatUp.h"
+#include "StatDown.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -11,7 +19,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mEXP = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
-	mCurrentState = STATE::SELECTMOVE;
+	mCurrentState = STATE::NONE;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -23,20 +31,35 @@ HeroComponent::HeroComponent(HEROID id)
 		mDefense = 0.30f;
 		mSpeed = 35.0f;
 		mShielding = 0.0f;
+		mSkillList = new Skills*[TOTALSKILLS];
+		for (int i = 0; i < TOTALSKILLS; ++i)
+			mSkillList[i] = nullptr;
 		// Basic Attack
-		mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
-		// Skill 1 (Raise Attack)
-		mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
-		// Skill 2 (Raise Defense)
-		mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
-		// Skill 3 (Regen HP)
-		mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
-		// Skill 4 (Shield)
-		mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
-		// Skill 5 (Big Attack)
-		mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		// Skill 6 (Stun Attack)
-		mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr);
+		// Skill 1 (Big Attack)
+		Bleed* tempB = new Bleed(0.50f, 4, nullptr);
+		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
+		tempB = nullptr;
+		// Skill 2 (Heal)
+		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
+		// Skill 3 (StatUP)
+		StatUp* tempSU = new StatUp(0.25f,1,STATS::Atk,nullptr);
+		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
+		tempSU = nullptr;
+		//// Basic Attack
+		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
+		//// Skill 1 (Raise Attack)
+		//mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
+		//// Skill 2 (Raise Defense)
+		//mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
+		//// Skill 3 (Regen HP)
+		//mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
+		//// Skill 4 (Shield)
+		//mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
+		//// Skill 5 (Big Attack)
+		//mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
+		//// Skill 6 (Stun Attack)
+		//mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -44,63 +67,84 @@ HeroComponent::HeroComponent(HEROID id)
 	}
 }
 
+HeroComponent::~HeroComponent()
+{
+	for (int i = 0; i < TOTALSKILLS; ++i)
+	{
+		if (mSkillList[i] != nullptr)
+		{
+			delete mSkillList[i];
+			mSkillList[i] = nullptr;
+		}
+	}
+}
+
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
-	//Make these if checks into a state machine
-	if (mStunned)
-	{
-		std::cout << mName << " is stunned!" << std::endl;
-		ManageStatusEffects();
-		return true;
-	}
 	switch (mCurrentState)
 	{
+	case STATE::NONE:
+	{
+		if (mStunned)
+		{
+			std::cout << mName << " is stunned!" << std::endl;
+			return ManageAllEffects();
+		}
+		ManageStatusEffects(mBleeds);
+		ManageStatusEffects(mRegens);
+		if (mCurrentHP <= 0.0f)
+			Die();
+		else
+			mCurrentState = STATE::SELECTMOVE;
+		break;
+	}
 	case STATE::SELECTMOVE:
 	{
-		ManageStatusEffects();
 		if (mCurrentState == STATE::DEAD)
 			return false;
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0].GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
 		{
-			mCurrentSkill = &mSkillList[0];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[0];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1].GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
 		{
-			mCurrentSkill = &mSkillList[1];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[1]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[1];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('3')) && mSkillList[2].GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
 		{
-			mCurrentSkill = &mSkillList[2];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[2]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[2];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('4')) && mSkillList[3].GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
 		{
-			mCurrentSkill = &mSkillList[3];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('5')) && mSkillList[4].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[4];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('6')) && mSkillList[5].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[5];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyPress(int('7')) && mSkillList[6].GetManaCost() <= mCurrentMana)
-		{
-			mCurrentSkill = &mSkillList[6];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[3];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		break;
 	}
@@ -108,7 +152,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
 		{
-			if (mCurrentSkill->IsAttack())
+			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				mCurrentTarget = enemies[0]->getComponent<Character>();
 			}
@@ -142,8 +186,10 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			mCurrentState = STATE::SELECTMOVE;
+			mCurrentState = STATE::NONE;
 			trigger = false;
+			ManageStatusEffects(mBuffs);
+			ManageStatusEffects(mDebuffs);
 			return true;
 		}
 		break;

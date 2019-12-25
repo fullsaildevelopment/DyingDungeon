@@ -10,19 +10,14 @@ class HeroComponent : public Character
 public:
 	HeroComponent() = default;
 	HeroComponent(HEROID id);
+	~HeroComponent();
 	//Attack Functions
 	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
 
 	//Death Check
 	virtual void Die();
-
-
 	/////Get and Set Functions/////
-
-	
-
 	/////End of Get and Set Functions/////
-
 private:
 	Skills* mCurrentSkill;
 	Character* mCurrentTarget;

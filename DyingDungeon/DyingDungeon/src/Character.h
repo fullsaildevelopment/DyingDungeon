@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Animator.h"
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"
@@ -26,6 +27,7 @@ public:
 	virtual void Die();
 
 	void TakeDamage(float dmg);
+	void ReceiveHealing(float healing);
 	void DepleteMana(float manaCost);
 
 	/////Get and Set Functions/////
@@ -63,18 +65,18 @@ public:
 	void SetHero(bool heroStat);
 	// Name Functions
 	std::string GetName();
+	// Skills Functions
 	void SetName(std::string newName);
-	// Skill Functions
-	void SetSkills(Skills newSkillList);
-	Skills* GetSkills();
+	Skills** GetSkills();
 	//Stunned Functions
 	void SetStun(bool stun);
 	bool GetStun();
 	/////End of Get and Set Functions/////
 
 	// Status Effect Functions
-	void AddStatusEffect(Buffs* newEffect);
-	void ManageStatusEffects();
+	void AddStatusEffect(StatusEffect* newEffect);
+	void ManageStatusEffects(std::vector<StatusEffect*>& effectList);
+	bool ManageAllEffects();
 	void ClearStatusEffects();
 	//Update HealthBar UI
 	void UpdateHealthBar();
@@ -99,8 +101,11 @@ protected:
 	float mEXP;
 	bool mStunned;
 	std::string mName;
-	Skills mSkillList[TOTALSKILLS];
-	std::vector<Buffs*> mStatusEffects;
+	Skills** mSkillList;
+	std::vector<StatusEffect*> mDebuffs;
+	std::vector<StatusEffect*> mBuffs;
+	std::vector<StatusEffect*> mBleeds;
+	std::vector<StatusEffect*> mRegens; 
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
 private:
