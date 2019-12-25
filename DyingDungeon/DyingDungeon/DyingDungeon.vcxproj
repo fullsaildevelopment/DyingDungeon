@@ -199,6 +199,7 @@
     <ClInclude Include="src\HeroComponent.h" />
     <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MenuManager.h" />
+    <ClInclude Include="src\MyTypeDefs.h" />
     <ClInclude Include="src\RedAudio.h" />
     <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Resource.h" />
