@@ -75,8 +75,8 @@ public:
 
 	// Status Effect Functions
 	void AddStatusEffect(StatusEffect* newEffect);
-	void ManageStatusEffects(std::vector<StatusEffect*> effectList);
-	void ManageAllEffects();
+	void ManageStatusEffects(std::vector<StatusEffect*>& effectList);
+	bool ManageAllEffects();
 	void ClearStatusEffects();
 	//Update HealthBar UI
 	void UpdateHealthBar();
@@ -100,7 +100,6 @@ protected:
 	float mSpeed;
 	float mEXP;
 	bool mStunned;
-	bool mBleedApplied;
 	std::string mName;
 	Skills** mSkillList;
 	std::vector<StatusEffect*> mDebuffs;

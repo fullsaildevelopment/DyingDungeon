@@ -251,7 +251,7 @@ void Character::SetDead(bool deadStatus)
 	}
 	else
 	{
-		mCurrentState = STATE::SELECTMOVE;
+		mCurrentState = STATE::NONE;
 	}
 }
 
@@ -355,7 +355,7 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 }
 
 // Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
-void Character::ManageStatusEffects(std::vector<StatusEffect*> effectList)
+void Character::ManageStatusEffects(std::vector<StatusEffect*>& effectList)
 {
 	std::vector<StatusEffect*>::iterator it;
 	for (it = effectList.begin(); it != effectList.end();)
@@ -369,11 +369,14 @@ void Character::ManageStatusEffects(std::vector<StatusEffect*> effectList)
 			it = effectList.erase(it);
 		}
 		else
+		{
+			(*it)->Use();
 			it++;
+		}
 	}
 }
 
-void Character::ManageAllEffects()
+bool Character::ManageAllEffects()
 {
 	std::vector<StatusEffect*>::iterator it;
 	for (it = mBleeds.begin(); it != mBleeds.end();)
@@ -405,7 +408,7 @@ void Character::ManageAllEffects()
 	if (mCurrentHP <= 0.0f)
 	{
 		mCurrentState = STATE::DEAD;
-		return;
+		return false;
 	}
 	for (it = mBuffs.begin(); it != mBuffs.end();)
 	{
@@ -433,6 +436,7 @@ void Character::ManageAllEffects()
 		else
 			it++;
 	}
+	return true;
 }
 
 // Clears all status effects from the Character

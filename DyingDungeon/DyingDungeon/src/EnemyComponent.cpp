@@ -9,8 +9,7 @@ CLASS_DEFINITION(Character, EnemyComponent)
 EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
 	SetHero(false);
-	mBleedApplied = false;
-	mCurrentState = STATE::SELECTMOVE;
+	mCurrentState = STATE::NONE;
 	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
@@ -118,35 +117,30 @@ float EnemyComponent::ScoreMove(Skills* skillOption, Character* target)
 
 bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
 {
-	
-	if (mStunned && mCurrentState != STATE::DEAD)
-	{
-		std::cout << GetName() << " is stunned!" << std::endl;
-		ManageAllEffects();
-		return true;
-	}
-
 	// Find my best option
 	switch (mCurrentState)
 	{
+	case STATE::NONE:
+	{
+		if (mStunned)
+		{
+			std::cout << GetName() << " is stunned!" << std::endl;
+			return ManageAllEffects();
+		}
+		ManageStatusEffects(mBleeds);
+		ManageStatusEffects(mRegens);
+		if (mCurrentHP <= 0.0f)
+			Die();
+		else
+			mCurrentState = STATE::SELECTMOVE;
+		break;
+	}
 	case STATE::SELECTMOVE:
 	{
-		if (mBleedApplied == false)
-		{
-			ManageStatusEffects(mBleeds);
-			ManageStatusEffects(mRegens);
-			mBleedApplied = true;
-			if (mCurrentHP <= 0.0f)
-			{
-				mCurrentState = STATE::DEAD;
-				return false;
-			}
-		}
 		if (FindBestMove(playerTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
-			if(mCurrentState == STATE::INPROGRESS)
-				mAnimator->playClip(bestMove.skill->GetAnimationId());
+			mAnimator->playClip(bestMove.skill->GetAnimationId());
 		}
 		break;
 	}
@@ -168,9 +162,8 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 			// If i have any buffs manage them 
 			//Reset best move score
 			bestMove.score = -1000;
-			mCurrentState = STATE::SELECTMOVE;
+			mCurrentState = STATE::NONE;
 			trigger = false;
-			mBleedApplied = false;
 			ManageStatusEffects(mBuffs);
 			ManageStatusEffects(mDebuffs);
 			return true;

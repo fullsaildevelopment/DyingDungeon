@@ -14,8 +14,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mEXP = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
-	mBleedApplied = false;
-	mCurrentState = STATE::SELECTMOVE;
+	mCurrentState = STATE::NONE;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -31,9 +30,9 @@ HeroComponent::HeroComponent(HEROID id)
 		for (int i = 0; i < TOTALSKILLS; ++i)
 			mSkillList[i] = nullptr;
 		// Basic Attack
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr);
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 15, nullptr);
 		// Skill 1 (Big Attack)
-		Bleed* tempB = new Bleed(0.25f, 4, nullptr);
+		Bleed* tempB = new Bleed(0.50f, 4, nullptr);
 		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
 		tempB = nullptr;
 		//// Basic Attack
@@ -72,29 +71,26 @@ HeroComponent::~HeroComponent()
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
 	//Make these if checks into a state machine
-	if (mStunned)
-	{
-		std::cout << mName << " is stunned!" << std::endl;
-		ManageAllEffects();
-		return true;
-	}
+	
 	switch (mCurrentState)
 	{
+	case STATE::NONE:
+	{
+		if (mStunned)
+		{
+			std::cout << mName << " is stunned!" << std::endl;
+			return ManageAllEffects();
+		}
+		ManageStatusEffects(mBleeds);
+		ManageStatusEffects(mRegens);
+		if (mCurrentHP <= 0.0f)
+			Die();
+		else
+			mCurrentState = STATE::SELECTMOVE;
+		break;
+	}
 	case STATE::SELECTMOVE:
 	{
-		if (mBleedApplied == false)
-		{
-			ManageStatusEffects(mBleeds);
-			ManageStatusEffects(mRegens);
-			mBleedApplied = true;
-			if (mCurrentHP <= 0.0f)
-			{
-				mCurrentState = STATE::DEAD;
-				return false;
-			}
-		}
-		if (mCurrentHP <= 0)
-			mCurrentState = STATE::DEAD;
 		if (mCurrentState == STATE::DEAD)
 			return false;
 		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0]->GetManaCost() <= mCurrentMana)
@@ -149,9 +145,8 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			mCurrentState = STATE::SELECTMOVE;
+			mCurrentState = STATE::NONE;
 			trigger = false;
-			mBleedApplied = false;
 			ManageStatusEffects(mBuffs);
 			ManageStatusEffects(mDebuffs);
 			return true;
