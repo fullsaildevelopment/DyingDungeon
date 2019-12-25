@@ -160,28 +160,37 @@
     <ResourceCompile Include="DyingDungeon.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Attack.cpp" />
     <ClCompile Include="src\BattleInstance.cpp" />
+    <ClCompile Include="src\Bleed.cpp" />
     <ClCompile Include="src\Buffs.cpp" />
     <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
+    <ClCompile Include="src\Heal.cpp" />
     <ClCompile Include="src\HeroComponent.cpp" />
     <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\MenuManager.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Skills.cpp" />
+    <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
+    <ClCompile Include="src\StatUp.cpp" />
+    <ClCompile Include="src\StatusEffect.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Attack.h" />
     <ClInclude Include="src\BattleInstance.h" />
+    <ClInclude Include="src\Bleed.h" />
     <ClInclude Include="src\Buffs.h" />
     <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
+    <ClInclude Include="src\Heal.h" />
     <ClInclude Include="src\HeroComponent.h" />
     <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MenuManager.h" />
@@ -189,7 +198,10 @@
     <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
+    <ClInclude Include="src\StatDown.h" />
     <ClInclude Include="src\StatTracker.h" />
+    <ClInclude Include="src\StatUp.h" />
+    <ClInclude Include="src\StatusEffect.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TowerManager.h" />
   </ItemGroup>

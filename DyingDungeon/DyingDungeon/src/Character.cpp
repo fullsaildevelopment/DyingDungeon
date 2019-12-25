@@ -47,23 +47,26 @@ void Character::TakeDamage(float dmg)
 	RedAudioManager::Instance()->Play("PaladinHit");
 
 	//TODO calculate damage reduction here
-	if (dmg > 0)
+	dmg = dmg - (dmg * mDefense);
+	if (mShielding > 0)
 	{
-		dmg = dmg - (dmg * mDefense);
-		if (mShielding > 0)
+		dmg = dmg - mShielding;
+		if (dmg <= 0)
 		{
-			dmg = dmg - mShielding;
-			if (dmg <= 0)
-			{
-				mShielding = fabsf(dmg);
-				dmg = 0;
-			}
-			else
-				mShielding = 0;
+			mShielding = fabsf(dmg);
+			dmg = 0;
 		}
+		else
+			mShielding = 0;
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+}
+
+// Gives the character health back 
+void Character::ReceiveHealing(float healing)
+{
+	SetHP(mCurrentHP + healing);
 }
 
 /*
@@ -248,7 +251,7 @@ void Character::SetDead(bool deadStatus)
 	}
 	else
 	{
-		mCurrentState = STATE::SELECTMOVE;
+		mCurrentState = STATE::NONE;
 	}
 }
 
@@ -323,17 +326,6 @@ void Character::SetName(std::string newName)
 {
 	mName = newName;
 }
-/*
-*Function:  SetSkills(string newWSkillList)
-* --------------------
-* Set the character's skill list
-*
-*returns : void
-*/
-void Character::SetSkills(Skills newSkillList)
-{
-	mSkillList[0] = newSkillList;
-}
 
 /*
 *Function:  GetSkills()
@@ -342,66 +334,152 @@ void Character::SetSkills(Skills newSkillList)
 *
 *returns : Skills*
 */
-Skills* Character::GetSkills()
+Skills** Character::GetSkills()
 {
 	return mSkillList;
 }
 
 // Adds a new status effect to the list of status effects
-void Character::AddStatusEffect(Buffs* newEffect)
+void Character::AddStatusEffect(StatusEffect* newEffect)
 {
-	mStatusEffects.push_back(newEffect);
+	switch (newEffect->GetTypeId())
+	{
+	case EFFECTTYPE::Bleed:
+	{
+		mBleeds.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::StatUp:
+	{
+		mBuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::StatDown:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 // Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
-void Character::ManageStatusEffects()
+void Character::ManageStatusEffects(std::vector<StatusEffect*>& effectList)
 {
-	std::vector<Buffs*>::iterator it;
-	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
+	std::vector<StatusEffect*>::iterator it;
+	for (it = effectList.begin(); it != effectList.end();)
 	{
-		if ((*it)->IsBleed())
-		{
-			if ((*it)->Bleed())
-				return;
-		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->IsBleed() && (*it)->GetEffectedStat() != STATS::Shd)
-				(*it)->RevertEffect();
-			else
-			{
-				bool dontLoseShield = false;
-				for (int i = 0; i < mStatusEffects.size(); ++i)
-				{
-					if (mStatusEffects[i]->GetEffectedStat() == STATS::Shd && mStatusEffects[i] != (*it))
-					{
-						dontLoseShield = true;
-						break;
-					}
-				}
-				if (dontLoseShield == false)
-					(*it)->RevertEffect();
-			}
+			(*it)->Remove();
 			delete((*it));
 			(*it) = nullptr;
-			it = mStatusEffects.erase(it);
+			it = effectList.erase(it);
+		}
+		else
+		{
+			(*it)->Use();
+			it++;
+		}
+	}
+}
+
+bool Character::ManageAllEffects()
+{
+	std::vector<StatusEffect*>::iterator it;
+	for (it = mBleeds.begin(); it != mBleeds.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mBleeds.erase(it);
 		}
 		else
 			it++;
 	}
+	for (it = mRegens.begin(); it != mRegens.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mRegens.erase(it);
+		}
+		else
+			it++;
+	}
+	if (mCurrentHP <= 0.0f)
+	{
+		mCurrentState = STATE::DEAD;
+		return false;
+	}
+	for (it = mBuffs.begin(); it != mBuffs.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mBuffs.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mDebuffs.erase(it);
+		}
+		else
+			it++;
+	}
+	return true;
 }
 
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
-	for (Buffs* b : mStatusEffects)
+	for (StatusEffect* se : mDebuffs)
 	{
-		b->RevertEffect();
-		delete(b);
-		b = nullptr;
+		se->Remove();
+		delete(se);
+		se = nullptr;
 	}
-	mStatusEffects.clear();
+	mDebuffs.clear();
+	for (StatusEffect* se : mBuffs)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mBuffs.clear();
+	for (StatusEffect* se : mBleeds)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mBleeds.clear();
+	for (StatusEffect* se : mRegens)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mRegens.clear();
 }
 
 
