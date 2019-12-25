@@ -12,8 +12,11 @@ Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, Statu
 
 void Buffs::Use(Character& caster, Character& target)
 {
-	caster.DepleteMana(mMpCost);
-	mBuff->Apply();
+	if (mBuff != nullptr)
+	{
+		caster.DepleteMana(mMpCost);
+		mBuff->Apply(target);
+	}
 }
 StatusEffect* Buffs::GetStatusEffect()
 {

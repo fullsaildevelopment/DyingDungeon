@@ -13,8 +13,12 @@ Bleed::~Bleed()
 {
 	mRecipient = nullptr;
 }
-void Bleed::Apply()
+void Bleed::Apply(Character& target)
 {
+	StatusEffect* newStatusEffect = nullptr;
+	newStatusEffect = new Bleed(mAmountOfEffect, mDuration, &target);
+	target.AddStatusEffect(newStatusEffect);
+	std::cout << target.GetName() << " has been inflicted with bleed!" << std::endl;
 	return;
 }
 
@@ -28,4 +32,6 @@ void Bleed::Use()
 	float totalBleed = 0;
 	totalBleed = mAmountOfEffect * mRecipient->GetMaxHP();
 	mRecipient->TakeDamage(totalBleed);
+	totalBleed -= totalBleed * mRecipient->GetDef();
+	std::cout << mRecipient->GetName() << " has bleed for " << totalBleed << "HP!" <<std::endl;
 }

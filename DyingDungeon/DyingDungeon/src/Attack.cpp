@@ -1,7 +1,5 @@
 #include "Attack.h"
 #include "Character.h"
-// See if theres a better way than this 
-#include "Bleed.h"
 
 Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff)
 {
@@ -26,22 +24,9 @@ void Attack::Use(Character& caster, Character& target)
 {
 	caster.DepleteMana(mMpCost);
 	target.TakeDamage(mDamage);
+	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for " << mDamage << " damage!" << std::endl;
 	if (mDebuff != nullptr)
-	{
-		StatusEffect* newStatusEffect = nullptr;
-		switch (mDebuff->GetTypeId())
-		{
-		case EFFECTTYPE::Bleed:
-		{
-			newStatusEffect = new Bleed(mDebuff->GetAmountOfEffect(), mDebuff->GetDuration(), &target);
-			break;
-		}
-		default:
-			break;
-		}
-		target.AddStatusEffect(newStatusEffect);
-		newStatusEffect->Apply();
-	}
+		mDebuff->Apply(target);
 }
 float Attack::GetDamage()
 {

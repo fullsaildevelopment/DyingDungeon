@@ -5,6 +5,7 @@
 /// Check if better way
 #include "Attack.h"
 #include "Bleed.h"
+#include "Heal.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -35,6 +36,8 @@ HeroComponent::HeroComponent(HEROID id)
 		Bleed* tempB = new Bleed(0.50f, 4, nullptr);
 		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
 		tempB = nullptr;
+		// Skill 2 (Heal)
+		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
 		//// Basic Attack
 		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		//// Skill 1 (Raise Attack)
@@ -70,8 +73,6 @@ HeroComponent::~HeroComponent()
 
 bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 {
-	//Make these if checks into a state machine
-	
 	switch (mCurrentState)
 	{
 	case STATE::NONE:
@@ -93,17 +94,38 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 		if (mCurrentState == STATE::DEAD)
 			return false;
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')) && mSkillList[0]->GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
 		{
-			mCurrentSkill = mSkillList[0];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[0];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('2')) && mSkillList[1]->GetManaCost() <= mCurrentMana)
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
 		{
-			mCurrentSkill = mSkillList[1];
-			std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-			mCurrentState = STATE::SELECTTARGET;
+			if (mSkillList[1]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[1];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
+		{
+			if (mSkillList[2]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[2];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		break;
 	}

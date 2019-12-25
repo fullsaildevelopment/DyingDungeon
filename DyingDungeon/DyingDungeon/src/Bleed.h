@@ -13,7 +13,7 @@ public:
 	Bleed(float ammountOfEffect, int duration, Character* target);
 	~Bleed();
 	// Application functions
-	void Apply();
+	void Apply(Character& target);
 	void Remove();
 	void Use();
 private:
