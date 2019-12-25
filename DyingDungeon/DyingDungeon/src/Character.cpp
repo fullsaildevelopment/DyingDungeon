@@ -44,7 +44,7 @@ void Character::Die()
  */
 void Character::TakeDamage(float dmg)
 {
-	RedAudioManager::Instance()->Play("PaladinHit");
+	RedAudioManager::Instance().PlaySFX("PaladinHit");
 
 	//TODO calculate damage reduction here
 	dmg = dmg - (dmg * mDefense);

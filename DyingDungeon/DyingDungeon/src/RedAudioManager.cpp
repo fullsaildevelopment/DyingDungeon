@@ -1,6 +1,6 @@
 #include "RedAudioManager.h"
 
-RedAudioManager* RedAudioManager::m_p_Instance = nullptr;
+std::vector<RedAudio> RedAudioManager::m_audioFiles;
 
 RedAudio* RedAudioManager::FindAudio(const char* alias)
 {
@@ -14,18 +14,17 @@ RedAudio* RedAudioManager::FindAudio(const char* alias)
 	return default_audio;
 }
 
-RedAudioManager* RedAudioManager::Instance()
+RedAudioManager& RedAudioManager::Instance()
 {
-	if (!m_p_Instance) {
-		m_p_Instance = new RedAudioManager;
-	}
-	return m_p_Instance;
+	static RedAudioManager instance_audio_manager;
+	return instance_audio_manager;
 }
 
 RedAudioManager::RedAudioManager()
 {
-	//default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
-	//default_audio->Open();
+	//default_audio = nullptr;
+	default_audio = new RedAudio("assets/audio/default_audio.mp3", "DEFAULT");
+	default_audio->Open();
 }
 
 //RedAudioManager::RedAudioManager(const char* defult_audio)
@@ -36,8 +35,13 @@ RedAudioManager::RedAudioManager()
 
 RedAudioManager::~RedAudioManager()
 {
+	//if (default_audio) {
+	//default_audio->Clear();
 	delete default_audio;
-	delete m_p_Instance;
+	//}
+	/*for (int i = 0; i < m_audioFiles.size(); i++) {
+		m_audioFiles[i].Clear();
+	}*/
 	m_audioFiles.clear();
 }
 
@@ -79,14 +83,13 @@ void RedAudioManager::Update()
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
-	RedAudio temp = RedAudio(path, alias);
-	m_audioFiles.push_back(temp);
+	m_audioFiles.emplace_back(RedAudio(path, alias));
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
 void RedAudioManager::AddAudio(RedAudio in_audio)
 {
-	m_audioFiles.push_back(in_audio);
+	m_audioFiles.emplace_back(in_audio);
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
@@ -103,6 +106,8 @@ RedAudio* RedAudioManager::GetAudio(const char* alias)
 void RedAudioManager::SetDefult(const char* path)
 {
 	default_audio->SetPath(path);
+	default_audio->SetPath("DEFAULT");
+	default_audio->Open();
 }
 
 unsigned int RedAudioManager::AudioListSize()

@@ -28,11 +28,17 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 
+#include <stdio.h>
+#include <DbgHelp.h>
+#include <time.h>
+
 // Game Includes
 #include "TowerManager.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 #include "CameraController.h"
+
+#pragma comment(lib, "dbghelp.lib")
 
 namespace
 {
@@ -70,7 +76,7 @@ void setup4PlayerInterface();
 void setupPaladin();
 void setupSkeleton();
 void setupAudio();
-
+LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
 void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner);
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner);
@@ -541,15 +547,15 @@ void setupSkeleton()
 void setupAudio()
 {
 	//SFX
-	RedAudioManager::Instance()->AddAudio("assets/audio/bone_punch.mp3", "SkeletonAttack");
-	RedAudioManager::Instance()->AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
-	RedAudioManager::Instance()->AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
-	RedAudioManager::Instance()->AddAudio("assets/audio/losing.mp3", "Loss");
+	RedAudioManager::Instance().AddAudio("assets/audio/bone_punch.mp3", "SkeletonAttack");
+	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
+	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
+	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
 	//Background Sound
-	RedAudioManager::Instance()->AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
-	RedAudioManager::Instance()->AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	//Play Initial Loop
-	RedAudioManager::Instance()->Loop("BackgroundMenu");
+	RedAudioManager::Instance().Loop("BackgroundMenu");
 }
 
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
@@ -581,7 +587,46 @@ void setUpTowerManager()
 	gGameScene->addGameObject(gCurrentTower);
 }
 
+LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
+{
+	struct tm newTime;
+	time_t locTime;
+	wchar_t path[100] = { 0 };
+
+	locTime = time(&locTime);
+	localtime_s(&newTime, &locTime);
+	//../crash_log/
+	wcsftime(path, sizeof(path), L"crash logs/%A_%b%d_%I%M%p.dmp", &newTime);
+
+	//fstream crashlog(path, ios::trunc | ios::out);
+
+	HANDLE hFile = ::CreateFile(path, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFile != INVALID_HANDLE_VALUE) {
+		_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
+
+		ExInfo.ThreadId = ::GetCurrentThreadId();
+		ExInfo.ExceptionPointers = in_error;
+		ExInfo.ClientPointers = FALSE;
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
+		::CloseHandle(hFile);
+	}
+
+	return 0;
+}
+
 int main()
 {
+	SetUnhandledExceptionFilter(DumpOutput);
+	//DumpFile Test
+	/*int test = 120;
+	int tester = 12;
+	if (test == tester) {
+
+	}
+	else {
+		test = 0;
+	}
+	int newer = tester / test;*/
 	return playGame();
 }
