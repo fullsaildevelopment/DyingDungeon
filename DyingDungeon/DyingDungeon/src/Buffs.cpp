@@ -16,6 +16,7 @@ void Buffs::Use(Character& caster, Character& target)
 	{
 		caster.DepleteMana(mMpCost);
 		mBuff->Apply(target);
+		std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << "." << std::endl;
 	}
 }
 StatusEffect* Buffs::GetStatusEffect()

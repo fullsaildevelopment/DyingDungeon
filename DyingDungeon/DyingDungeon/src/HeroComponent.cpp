@@ -4,8 +4,12 @@
 #include "EnemyComponent.h"
 /// Check if better way
 #include "Attack.h"
-#include "Bleed.h"
+#include "Buffs.h"
 #include "Heal.h"
+//////////////////
+#include "Bleed.h"
+#include "StatUp.h"
+#include "StatDown.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -31,13 +35,17 @@ HeroComponent::HeroComponent(HEROID id)
 		for (int i = 0; i < TOTALSKILLS; ++i)
 			mSkillList[i] = nullptr;
 		// Basic Attack
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 15, nullptr);
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr);
 		// Skill 1 (Big Attack)
 		Bleed* tempB = new Bleed(0.50f, 4, nullptr);
 		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
 		tempB = nullptr;
 		// Skill 2 (Heal)
 		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
+		// Skill 3 (StatUP)
+		StatUp* tempSU = new StatUp(0.25f,3,STATS::Atk,nullptr);
+		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
+		tempSU = nullptr;
 		//// Basic Attack
 		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		//// Skill 1 (Raise Attack)
@@ -121,6 +129,17 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			if (mSkillList[2]->GetManaCost() <= mCurrentMana)
 			{
 				mCurrentSkill = mSkillList[2];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
+		{
+			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[3];
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}

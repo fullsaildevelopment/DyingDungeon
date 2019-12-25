@@ -55,6 +55,12 @@
     <ClCompile Include="src\Bleed.cpp">
       <Filter>Source Files\StatusEffects</Filter>
     </ClCompile>
+    <ClCompile Include="src\StatUp.cpp">
+      <Filter>Source Files\StatusEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatDown.cpp">
+      <Filter>Source Files\StatusEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h">
@@ -115,6 +121,12 @@
       <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
     <ClInclude Include="src\Bleed.h">
+      <Filter>Header Files\StatusEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatDown.h">
+      <Filter>Header Files\StatusEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatUp.h">
       <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
   </ItemGroup>

@@ -175,7 +175,9 @@
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Skills.cpp" />
+    <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
+    <ClCompile Include="src\StatUp.cpp" />
     <ClCompile Include="src\StatusEffect.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
   </ItemGroup>
@@ -196,7 +198,9 @@
     <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
+    <ClInclude Include="src\StatDown.h" />
     <ClInclude Include="src\StatTracker.h" />
+    <ClInclude Include="src\StatUp.h" />
     <ClInclude Include="src\StatusEffect.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TowerManager.h" />
