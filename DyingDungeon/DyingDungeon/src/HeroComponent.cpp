@@ -10,6 +10,9 @@
 #include "Bleed.h"
 #include "StatUp.h"
 #include "StatDown.h"
+#include "Regens.h"
+#include "Stun.h"
+#include "Shields.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -34,32 +37,14 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList = new Skills*[TOTALSKILLS];
 		for (int i = 0; i < TOTALSKILLS; ++i)
 			mSkillList[i] = nullptr;
-		// Basic Attack
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr);
-		// Skill 1 (Big Attack)
-		Bleed* tempB = new Bleed(0.50f, 4, nullptr);
-		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, tempB);
-		tempB = nullptr;
-		// Skill 2 (Heal)
+		// Basic Attack (Add Provoke 30% chance)
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr, true);
+		// Skill 1 Judgement (deal damage and heal self)
+		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, nullptr, false);
+		// Skill 2 Shield of Light (Gives the team 50% damage reduction for 2 turns)
 		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
-		// Skill 3 (StatUP)
-		StatUp* tempSU = new StatUp(0.25f,1,STATS::Atk,nullptr);
-		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
-		tempSU = nullptr;
-		//// Basic Attack
-		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
-		//// Skill 1 (Raise Attack)
-		//mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
-		//// Skill 2 (Raise Defense)
-		//mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
-		//// Skill 3 (Regen HP)
-		//mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
-		//// Skill 4 (Shield)
-		//mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
-		//// Skill 5 (Big Attack)
-		//mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		//// Skill 6 (Stun Attack)
-		//mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
+		// Skill 3 Blessing of light (Gives the team 25 temp hp with a shield)
+		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, nullptr,true);
 		break;
 	}
 	default:
@@ -108,7 +93,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			{
 				mCurrentSkill = mSkillList[0];
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-				mCurrentState = STATE::SELECTTARGET;
+				if (mCurrentSkill->IsAOE())
+				{
+					if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+						std::cout << "This move will hit the whole enemy party, hit one to confirm use." << std::endl;
+					else
+						std::cout << "This move will apply to your whole party, hit one to confirm use." << std::endl;
+					mCurrentState = STATE::AOECONFIRM;
+				}
+				else
+					mCurrentState = STATE::SELECTTARGET;
 			}
 			else
 				std::cout << "You dont have enough mana for that move." << std::endl;
@@ -148,6 +142,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
+	case STATE::AOECONFIRM:
+	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
+		{
+			mCurrentState = STATE::INPROGRESS;
+		}
+	}
 	case STATE::SELECTTARGET:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -176,20 +177,47 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		static bool trigger = false;
 		if (!trigger && mAnimator->getProgress() > 0.25f)
 		{
-			if (mCurrentTarget->IsHero() == false)
+			if (mCurrentSkill->IsAOE() == false && mCurrentTarget->IsHero() == false)
 				mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 			trigger = true;
 		}
 		
 		if (mAnimator->getProgress() > 0.9f)
 		{
-			mCurrentSkill->Use(*mEntity->getComponent<Character>(), *mCurrentTarget);
+			if (mCurrentSkill->IsAOE())
+			{
+				Character* temp = nullptr;
+				if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+				{
+					for (int i = 0; i < enemies.size(); ++i)
+					{
+						if (enemies[i] != nullptr)
+						{
+							temp = enemies[i]->getComponent<Character>();
+							if(temp->IsDead() == false)
+								mCurrentSkill->Use(*mEntity->getComponent<Character>(), *temp);
+						}
+					}
+				}
+				else
+				{
+					for (int i = 0; i < heros.size(); ++i)
+					{
+						temp = heros[i]->getComponent<Character>();
+						if (temp->IsDead() == false)
+							mCurrentSkill->Use(*mEntity->getComponent<Character>(), *temp);
+					}
+				}
+			}
+			else
+				mCurrentSkill->Use(*mEntity->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
 			mCurrentState = STATE::NONE;
 			trigger = false;
 			ManageStatusEffects(mBuffs);
 			ManageStatusEffects(mDebuffs);
+			ManageStatusEffects(mSheilds);
 			return true;
 		}
 		break;

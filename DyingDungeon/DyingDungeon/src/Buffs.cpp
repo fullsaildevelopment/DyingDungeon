@@ -1,15 +1,17 @@
 #include "Buffs.h"
 #include "Character.h"
 
-Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff)
+Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff, bool isBuff)
 {
-	mTypeId = SKILLTYPE::BUFF;
+	if (isBuff)
+		mTypeId = SKILLTYPE::BUFF;
+	else
+		mTypeId = SKILLTYPE::DEBUFF;
 	mName = skillName;
 	mAnimationId = animationId;
 	mMpCost = mpCost;
 	mBuff = buff;
 }
-
 void Buffs::Use(Character& caster, Character& target)
 {
 	if (mBuff != nullptr)

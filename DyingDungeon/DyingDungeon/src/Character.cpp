@@ -47,16 +47,24 @@ void Character::TakeDamage(float dmg)
 
 	//TODO calculate damage reduction here
 	dmg = dmg - (dmg * mDefense);
-	if (mShielding > 0)
+	// Shielding algorithim
+	std::vector<StatusEffect*>::iterator it;
+	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
-		dmg = dmg - mShielding;
-		if (dmg <= 0)
+		dmg -= (*it)->GetAmountOfEffect();
+		if (dmg < 0.0f)
 		{
-			mShielding = fabsf(dmg);
-			dmg = 0;
+			(*it)->SetAmountOfEffect(dmg * -1.0f);
+			dmg = 0.0f;
+			return;
 		}
 		else
-			mShielding = 0;
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mSheilds.erase(it);
+		}
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
@@ -348,6 +356,11 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 		mBleeds.push_back(newEffect);
 		break;
 	}
+	case EFFECTTYPE::Regen:
+	{
+		mRegens.push_back(newEffect);
+		break;
+	}
 	case EFFECTTYPE::StatUp:
 	{
 		mBuffs.push_back(newEffect);
@@ -356,6 +369,16 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 	case EFFECTTYPE::StatDown:
 	{
 		mDebuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Stun:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Shield:
+	{
+		mSheilds.push_back(newEffect);
 		break;
 	}
 	default:
@@ -445,6 +468,19 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+	for (it = mSheilds.begin(); it != mSheilds.end();)
+	{
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			delete((*it));
+			(*it) = nullptr;
+			it = mSheilds.erase(it);
+		}
+		else
+			it++;
+	}
 	return true;
 }
 
@@ -479,6 +515,13 @@ void Character::ClearStatusEffects()
 		se = nullptr;
 	}
 	mRegens.clear();
+	for (StatusEffect* se : mSheilds)
+	{
+		se->Remove();
+		delete(se);
+		se = nullptr;
+	}
+	mSheilds.clear();
 }
 
 

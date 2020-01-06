@@ -1,7 +1,7 @@
 #include "Attack.h"
 #include "Character.h"
 
-Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff)
+Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -9,6 +9,7 @@ Attack::Attack(std::string skillName, std::string animationId, float mpCost, flo
 	mMpCost = mpCost;
 	mDamage = damage;
 	mDebuff = debuff;
+	mIsAOE = AOE;
 }
 
 Attack::~Attack()

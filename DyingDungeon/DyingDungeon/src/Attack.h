@@ -13,7 +13,7 @@ public:
 	// Constructors, Destructors
 	Attack() = default;
 	~Attack();
-	Attack(std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff);
+	Attack(std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff, bool AOE);
 	// Use the skill
 	void Use(Character& caster, Character& target);
 	// Get how much damage the attack does
