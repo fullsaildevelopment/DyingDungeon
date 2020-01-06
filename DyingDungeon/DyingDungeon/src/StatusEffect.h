@@ -2,7 +2,7 @@
 #include <string>
 // enum used for readablity of what stat is affected
 enum class STATS {Atk = 0, Def, Spd};
-enum class EFFECTTYPE { Bleed = 0, Regen, StatUp, StatDown, Stun};
+enum class EFFECTTYPE { Bleed = 0, Regen, StatUp, StatDown, Stun, Shield};
 class Character; 
 class StatusEffect
 {
@@ -34,6 +34,7 @@ public:
 	void ReduceDuration(int deduction);
 	// mAmountOfEffect functions
 	float GetAmountOfEffect();
+	void SetAmountOfEffect(float newAmount);
 	// mRecipient functions
 	Character* GetRecipient();
 	void SetRecipient(Character * recipient);

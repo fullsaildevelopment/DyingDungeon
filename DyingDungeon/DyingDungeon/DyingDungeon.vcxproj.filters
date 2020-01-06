@@ -67,6 +67,9 @@
     <ClCompile Include="src\Stun.cpp">
       <Filter>Source Files\StatusEffects</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shields.cpp">
+      <Filter>Source Files\StatusEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h">
@@ -142,6 +145,9 @@
       <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
     <ClInclude Include="src\Stun.h">
+      <Filter>Header Files\StatusEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shields.h">
       <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
   </ItemGroup>

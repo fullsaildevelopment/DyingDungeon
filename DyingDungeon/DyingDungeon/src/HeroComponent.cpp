@@ -12,6 +12,7 @@
 #include "StatDown.h"
 #include "Regens.h"
 #include "Stun.h"
+#include "Shields.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -57,23 +58,13 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList[5] = new Buffs("StatDown", "AttackUp", 10, temp, false);
 		temp = nullptr;
 		// Skill 6 (Stun)
-		temp = new Stun(1, nullptr);
+		/*temp = new Stun(1, nullptr);
 		mSkillList[6] = new Attack("StunAttak", "BasicAttack", 10, 15, temp);
+		temp = nullptr;*/
+		// Skill 6 (Stun)
+		temp = new Shields(25.0f, 4, nullptr);
+		mSkillList[6] = new Buffs("Shield", "Heal", 10.0f, temp, true);
 		temp = nullptr;
-		//// Basic Attack
-		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
-		//// Skill 1 (Raise Attack)
-		//mSkillList[1] = Skills(0, 10, false, Buffs(STATS::Atk, 0.15f, 3, false, nullptr), "Attack Up", "AttackUp");
-		//// Skill 2 (Raise Defense)
-		//mSkillList[2] = Skills(0, 10, false, Buffs(STATS::Def, 0.15f, 3, false, nullptr), "Defense Up", "Defense");
-		//// Skill 3 (Regen HP)
-		//mSkillList[3] = Skills(0, 35, false, Buffs(STATS::HP, -0.50f, 3, true, nullptr), "Regen", "Heal");
-		//// Skill 4 (Shield)
-		//mSkillList[4] = Skills(0, 25, false, Buffs(STATS::Shd, 50.0f, 5, false, nullptr), "Shield", "Shield");
-		//// Skill 5 (Big Attack)
-		//mSkillList[5] = Skills(35, 45, true, Buffs(STATS::HP, 0.25f, 4, true, nullptr), "Ultimate Move", "BigAttack");
-		//// Skill 6 (Stun Attack)
-		//mSkillList[6] = Skills(25, 25, true, Buffs(STATS::Stn, 0.0f, 1, false, nullptr), "Stunning Strike", "Stun");
 		break;
 	}
 	default:
@@ -237,6 +228,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			trigger = false;
 			ManageStatusEffects(mBuffs);
 			ManageStatusEffects(mDebuffs);
+			ManageStatusEffects(mSheilds);
 			return true;
 		}
 		break;

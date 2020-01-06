@@ -25,6 +25,11 @@ float StatusEffect::GetAmountOfEffect()
 	return mAmountOfEffect;
 }
 
+void StatusEffect::SetAmountOfEffect(float newAmount)
+{
+	mAmountOfEffect = newAmount;
+}
+
 Character* StatusEffect::GetRecipient()
 {
 	return mRecipient;

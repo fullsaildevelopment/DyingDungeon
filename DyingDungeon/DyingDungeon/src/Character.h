@@ -106,6 +106,7 @@ protected:
 	std::vector<StatusEffect*> mBuffs;
 	std::vector<StatusEffect*> mBleeds;
 	std::vector<StatusEffect*> mRegens; 
+	std::vector<StatusEffect*> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
 private:
