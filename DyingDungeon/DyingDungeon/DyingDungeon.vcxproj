@@ -208,6 +208,7 @@
     <ClInclude Include="src\StatTracker.h" />
     <ClInclude Include="src\StatUp.h" />
     <ClInclude Include="src\StatusEffect.h" />
+    <ClInclude Include="src\StatusEvents.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TeamSelectionController.h" />
     <ClInclude Include="src\TowerManager.h" />
