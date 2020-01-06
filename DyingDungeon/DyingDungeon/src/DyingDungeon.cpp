@@ -14,6 +14,7 @@
 #include "RedAudioManager.h"
 #include "MainMenuController.h"
 #include "TowerSelectController.h"
+#include "TeamSelectionController.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -28,10 +29,12 @@ namespace
 	std::shared_ptr<Odyssey::Scene> gGameScene;
 	std::shared_ptr<Odyssey::Scene> gMainMenu;
 	std::shared_ptr<Odyssey::Scene> gTowerSelectScene;
+	std::shared_ptr<Odyssey::Scene> gTeamSelectScene;
 	std::shared_ptr<Odyssey::Entity> gMainCamera;
 	//Game Objects
 	std::shared_ptr<Odyssey::Entity> gMenu;
 	std::shared_ptr<Odyssey::Entity> gTowerSelectMenu;
+	std::shared_ptr<Odyssey::Entity> gTeamSelectMenu;
 	std::shared_ptr<Odyssey::Entity> gGameMenu;
 	std::shared_ptr<Odyssey::Entity> gPaladin;
 	std::shared_ptr<Odyssey::Entity> gSkeleton;
@@ -50,8 +53,10 @@ int playGame();
 void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application);
 void setupLighting();
 void setupCamera();
+//void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene> _sceneObject, std::shared_ptr<Odyssey::Entity> _entityToAdd, const wchar_t* _imageName);
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupTowerSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
+void setupTeamSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
 void setup4PlayerInterface();
@@ -96,9 +101,15 @@ int playGame()
 
 	// Set up the main menu
 	setupMainMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png");
 
 	// Set up the tower selection screen
 	setupTowerSelectMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelection.png", "TowerSelection");
+
+	// Set up the team selection screen
+	setupTeamSelectMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection");
 
 	// Load the arena scene
 	setupArena();
@@ -118,7 +129,8 @@ int playGame()
 
 	// Set the active scene
 	application->addScene("MainMenu", gMainMenu);
-	application->addScene("TowerSelect", gTowerSelectScene);
+	application->addScene("TowerSelection", gTowerSelectScene);
+	application->addScene("TeamSelection", gTeamSelectScene);
 	application->addScene("Game", gGameScene);
 
 	// Play audio
@@ -329,6 +341,24 @@ void setupCamera()
 	gGameScene->addEntity(gMainCamera);
 }
 
+//void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene> _sceneObject, std::shared_ptr<Odyssey::Entity> _entityToAdd, const wchar_t* _imageName)
+//{
+//	_sceneObject = renderDevice->createScene();
+//	_entityToAdd = std::make_shared<Odyssey::Entity>();
+//	_entityToAdd->addComponent<Odyssey::Transform>();
+//	_entityToAdd->addComponent<Odyssey::UICanvas>();
+//	_entityToAdd->addComponent<Odyssey::Camera>();
+//	_entityToAdd->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+//	UINT width = gMainWindow->getWidth();
+//	UINT height = gMainWindow->getHeight();
+//	_entityToAdd->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), _imageName, width, height);
+//	_entityToAdd->addComponent<MainMenuController>(application);
+//	_sceneObject->addEntity(_entityToAdd);
+//
+//	// Add the scene to the application
+//	//application->addScene(_sceneName, _sceneObject);
+//}
+
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
 {
 	gMainMenu = renderDevice->createScene();
@@ -357,6 +387,21 @@ void setupTowerSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Applicat
 	gTowerSelectMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/TowerSelection.png", width, height);
 	gTowerSelectMenu->addComponent<TowerSelectController>(application);
 	gTowerSelectScene->addEntity(gTowerSelectMenu);
+}
+
+void setupTeamSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
+{
+	gTeamSelectScene = renderDevice->createScene();
+	gTeamSelectMenu = std::make_shared<Odyssey::Entity>();
+	gTeamSelectMenu->addComponent<Odyssey::Transform>();
+	gTeamSelectMenu->addComponent<Odyssey::UICanvas>();
+	gTeamSelectMenu->addComponent<Odyssey::Camera>();
+	gTeamSelectMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
+	gTeamSelectMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/TeamSelection.png", width, height);
+	gTeamSelectMenu->addComponent<TeamSelectionController>(application);
+	gTeamSelectScene->addEntity(gTeamSelectMenu);
 }
 
 void setupArena()

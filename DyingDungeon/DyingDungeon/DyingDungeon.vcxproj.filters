@@ -64,6 +64,9 @@
     <ClCompile Include="src\TowerSelectController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TeamSelectionController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Attack.h">
@@ -136,6 +139,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\TowerSelectController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TeamSelectionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

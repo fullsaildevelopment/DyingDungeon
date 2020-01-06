@@ -21,6 +21,6 @@ void MainMenuController::update(double deltaTime)
 	{
 		//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 		//RedAudioManager::Instance().Play("BackgroundBattle");
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelect"));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 	}
 }
