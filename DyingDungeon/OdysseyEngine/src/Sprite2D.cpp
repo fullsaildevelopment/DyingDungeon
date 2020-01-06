@@ -9,22 +9,22 @@ namespace Odyssey
 		: UIElement(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)
 	{
 		// Create the WIC factory
-		HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(factory.GetAddressOf()));
+		HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory));
 		assert(!FAILED(hr));
 
 		createBitmapFromFile(filename, width, height);
 	}
 
-	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget)
+	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		if (mBitmap == nullptr && mBitmapConverter)
 		{
-			HRESULT hr = renderTarget->CreateBitmapFromWicBitmap(mBitmapConverter, nullptr, mBitmap.GetAddressOf());
+			HRESULT hr = context->CreateBitmapFromWicBitmap(mBitmapConverter, nullptr, mBitmap.GetAddressOf());
 			mBitmapConverter = nullptr;
 		}
 
-		if (renderTarget && mBitmap)
-			renderTarget->DrawBitmap(mBitmap.Get(), D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + mDimensions.x, mPosition.y + mDimensions.y), mColor.w);
+		if (context && mBitmap)
+			context->DrawBitmap(mBitmap.Get(), D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + mDimensions.x, mPosition.y + mDimensions.y), mColor.w);
 	}
 
 	void Sprite2D::setSprite(LPCWSTR filename, UINT width, UINT height)

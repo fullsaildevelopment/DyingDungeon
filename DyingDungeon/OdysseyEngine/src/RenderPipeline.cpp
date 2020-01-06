@@ -50,7 +50,8 @@ namespace Odyssey
 	{
 		args.camera = scene->getMainCamera();
 		args.lightList = scene->getSceneLights();
-		args.renderList = scene->getEntities();
-		args.canvasList = scene->getCanvasList();
+		args.entityList = scene->getEntities();
+		args.elementList = scene->getElementList();
+		args.renderList = scene->getRenderList();
 	}
 }

@@ -22,7 +22,7 @@ void TowerManager::update(double deltaTime)
 	// TODO: REMOVE POST BUILD 02
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
 	{
-		addHUD->setActive(!addHUD->isActive());
+		Rewards->setActive(!Rewards->isActive());
 	}
 
 	// If we are in battle, Update the battle

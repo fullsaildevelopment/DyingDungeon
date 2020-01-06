@@ -9,8 +9,10 @@ namespace Odyssey
 	class Camera;
 	class Light;
 	class Entity;
+	class MeshRenderer;
 	class RenderWindow;
 	class UICanvas;
+	class UIElement;
 
 	struct RenderArgs
 	{
@@ -19,10 +21,11 @@ namespace Odyssey
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;
 		Buffer* perObjectBuffer;
-		std::vector<std::shared_ptr<Entity>> renderList;
+		std::vector<std::shared_ptr<Entity>> entityList;
 		std::vector<std::shared_ptr<Entity>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;
-		std::vector<UICanvas*> canvasList;
+		std::vector<UIElement*> elementList;
+		std::vector<MeshRenderer*> renderList;
 	};
 
 	class RenderPass

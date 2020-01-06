@@ -60,8 +60,6 @@ void setupTeamSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Applicati
 void setupArena();
 void setupGameInterface();
 void setup4PlayerInterface();
-void setupPaladin();
-void setupSkeleton();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
@@ -113,12 +111,6 @@ int playGame()
 
 	// Load the arena scene
 	setupArena();
-
-	// Set up the paladin
-	//setupPaladin();
-	//
-	//// Set up the skeleton
-	//setupSkeleton();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -547,47 +539,6 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	}
 }
 
-void setupPaladin()
-{
-	gPaladin = std::make_shared<Odyssey::Entity>();
-	gPaladin->addComponent<Odyssey::Transform>();
-	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
-	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BasicAttack", "assets/animations/Paladin/Paladin_BasicAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BigAttack", "assets/animations/Paladin/Paladin_BigAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Defense", "assets/animations/Paladin/Paladin_Defense.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Heal", "assets/animations/Paladin/Paladin_Heal.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
-	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
-	gGameScene->addEntity(gPaladin);
-}
-
-void setupSkeleton()
-{
-	gSkeleton = std::make_shared<Odyssey::Entity>();
-	gSkeleton->addComponent<Odyssey::Transform>();
-	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
-	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180, 0);
-	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
-	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
-	gGameScene->addEntity(gSkeleton);
-}
-
 void setupAudio()
 {
 	//SFX
@@ -625,7 +576,6 @@ void setUpTowerManager()
 	gCurrentTower->addComponent<TowerManager>();
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
-	gCurrentTower->getComponent<TowerManager>()->addHUD = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
 	
 	// Get the number of Text2D elements in the GameMenu before adding them
 	int text2DIndex = gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>().size();

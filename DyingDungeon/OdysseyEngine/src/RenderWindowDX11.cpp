@@ -23,10 +23,10 @@ namespace Odyssey
 		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.Stereo = false;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapChainDesc.BufferCount = 2;
+		swapChainDesc.BufferCount = 1;
 		swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
 		swapChainDesc.SampleDesc = { 1,0 };
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullScreenDesc = {};
@@ -45,9 +45,7 @@ namespace Odyssey
 
 		mWindowHandle = std::make_shared<HWND>(hWnd);
 
-		auto options = D2D1_FACTORY_OPTIONS();
-		options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, options, mFactory.GetAddressOf());
+		mFactory = renderDevice.get2DFactory();
 
 		createRenderTargets();
 
@@ -65,9 +63,9 @@ namespace Odyssey
 		return m3DRenderTarget;
 	}
 
-	Microsoft::WRL::ComPtr<ID2D1RenderTarget> RenderWindowDX11::get2DRenderTarget()
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> RenderWindowDX11::get2DRenderTarget()
 	{
-		return m2DRenderTarget;
+		return mBackBuffer;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> RenderWindowDX11::getBackBuffer()
@@ -77,10 +75,15 @@ namespace Odyssey
 		return backBuffer;
 	}
 
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> RenderWindowDX11::getBackBuffer2D()
+	{
+		return mBackBuffer;
+	}
+
 	void RenderWindowDX11::onResize(WindowResizeEvent* evnt)
 	{
 		// Reset the 2D and 3D render targets
-		m2DRenderTarget.Reset();
+		mBackBuffer.Reset();
 		m3DRenderTarget.reset();
 
 		// Clear the output merger of any render targets and flush
@@ -89,9 +92,10 @@ namespace Odyssey
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
 		context->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
 		context->Flush();
+		mRenderDevice.getDevice2DContext()->SetTarget(nullptr);
 
 		// Resize the swapchain buffers
-		mSwapChain->ResizeBuffers(2, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
+		mSwapChain->ResizeBuffers(0, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
 
 		float xScale = (float)evnt->width / (float)mProperties.width;
 		float yScale = (float)evnt->height / (float)mProperties.height;
@@ -123,13 +127,12 @@ namespace Odyssey
 
 		float dpi = 96.0f;
 
-		auto properties = D2D1::RenderTargetProperties(
-			D2D1_RENDER_TARGET_TYPE_DEFAULT,
-			D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-			dpi, dpi
-		);
+		auto properties = D2D1::BitmapProperties1(
+			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpi, dpi);
 
-		mFactory->CreateDxgiSurfaceRenderTarget(backBufferSurface.Get(), &properties, m2DRenderTarget.GetAddressOf());
+		mRenderDevice.getDevice2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
+		mRenderDevice.getDevice2DContext()->SetTarget(mBackBuffer.Get());
 	}
 
 	DXGI_RATIONAL RenderWindowDX11::queryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync)

@@ -76,6 +76,7 @@ namespace Odyssey
 		// Calculate and set view proj
 		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
 		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+
 		// Update the buffer
 		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
 
@@ -91,7 +92,7 @@ namespace Odyssey
 
 	void OpaquePass::render(RenderArgs& args)
 	{
-		std::multimap<float, std::shared_ptr<Entity>> renderMap;
+		std::multimap<float, MeshRenderer*> renderMap;
 		UINT numCulled = 0;
 		UINT total = 0;
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
@@ -102,70 +103,43 @@ namespace Odyssey
 		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
-		for (std::shared_ptr<Entity> renderObject : args.renderList)
+		for (MeshRenderer* meshRenderer : args.renderList)
 		{
-			// If the object has a mesh renderer, render it
-			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
+			if (meshRenderer->isActive())
 			{
-				if (meshRenderer->isActive())
+				if (mFrustumCull == true)
 				{
-					if (mFrustumCull == true)
-					{
-						if (renderObject->getStatic() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(renderObject->getComponent<AABB>())))
-						{
-							// Depth sorting
-							globalTransform = renderObject->getComponent<Transform>()->getGlobalTransform();
-							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
-							renderMap.insert(std::pair<float, std::shared_ptr<Entity>>(depth, renderObject));
-						}
-						else
-						{
-							numCulled++;
-						}
-					}
-				}
-				total++;
-			}
+					Entity* renderObject = meshRenderer->getEntity();
 
-			for (std::shared_ptr<Entity> child : renderObject->getChildren())
-			{
-				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
-				{
-					if (meshRenderer->isActive())
+					if (renderObject->getStatic() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(renderObject->getComponent<AABB>())))
 					{
-						if (mFrustumCull == true)
-						{
-							if (child->getStatic() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(child->getComponent<AABB>())))
-							{
-								// Depth Sorting
-								globalTransform = child->getComponent<Transform>()->getGlobalTransform();
-								DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-								float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
-								renderMap.insert(std::pair<float, std::shared_ptr<Entity>>(depth, child));
-							}
-						}
-						else
-						{
-							numCulled++;
-						}
+						// Depth sorting
+						globalTransform = renderObject->getComponent<Transform>()->getGlobalTransform();
+						DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+						float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
+						renderMap.insert(std::pair<float, MeshRenderer*>(depth, meshRenderer));
 					}
-					total++;
+					else
+					{
+						numCulled++;
+					}
 				}
 			}
+			total++;
 		}
-
 		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 		{
-			updateLightingBuffer(itr->second, args);
+			Entity* renderObject = itr->second->getEntity();
 
-			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
+			updateLightingBuffer(renderObject, args);
+
+			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->bind();
 			}
-			updateLightingBuffer(itr->second, args);
-			renderSceneObject(itr->second, args);
-			if (AnimatorDX11* rootAnimator = itr->second->getRootComponent<AnimatorDX11>())
+			updateLightingBuffer(renderObject, args);
+			renderSceneObject(renderObject, args);
+			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
 				rootAnimator->unbind();
 			}
@@ -180,7 +154,7 @@ namespace Odyssey
 		mFrustumCull = enable;
 	}
 
-	void OpaquePass::updateLightingBuffer(std::shared_ptr<Entity> Entity, RenderArgs& args)
+	void OpaquePass::updateLightingBuffer(Entity* entity, RenderArgs& args)
 	{
 		// Generate a list of lights on a per-object basis
 		SceneLighting sceneLighting;
@@ -198,7 +172,7 @@ namespace Odyssey
 					Sphere sphere;
 					light->getPosition(sphere.center);
 					sphere.radius = light->getRange();
-					if (Entity->getComponent<AABB>()->testAABBtoSphere(sphere))
+					if (entity->getComponent<AABB>()->testAABBtoSphere(sphere))
 					{
 						sceneLighting.sceneLights[sceneLighting.numLights] = *light;
 						sceneLighting.numLights++;
@@ -219,7 +193,7 @@ namespace Odyssey
 		mLightingBuffer->bind(1, ShaderType::PixelShader);
 	}
 
-	void OpaquePass::renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args)
+	void OpaquePass::renderSceneObject(Entity* object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
 		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();

@@ -30,6 +30,13 @@ namespace Odyssey
 		 */
 		void processCommands(CommandFlushEvent* evnt);
 
+		/**
+		 *	Event callback to shut down the event manager.
+		 *	@param[in] evnt The event parameters.
+		 *	@return void
+		 */
+		void onShutdown(EngineShutdownEvent* evnt);
+
 	private: // Helpers
 		/**
 		 *	Determine if an event is a command.
@@ -51,6 +58,7 @@ namespace Odyssey
 		std::map<std::type_index, std::shared_ptr<EventHandlerList>> mSubscribers;
 		std::map<std::type_index, Event*> mCommands;
 		bool mPublishCommands;
+		bool mIsShutdown;
 
 	public: // Templated interface
 		/**
