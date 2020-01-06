@@ -48,17 +48,6 @@ void Character::TakeDamage(float dmg)
 	//TODO calculate damage reduction here
 	dmg = dmg - (dmg * mDefense);
 	// Shielding algorithim
-	/*if (mShielding > 0)
-	{
-		dmg = dmg - mShielding;
-		if (dmg <= 0)
-		{
-			mShielding = fabsf(dmg);
-			dmg = 0;
-		}
-		else
-			mShielding = 0;
-	}*/
 	std::vector<StatusEffect*>::iterator it;
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{

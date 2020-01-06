@@ -16,6 +16,8 @@ protected:
 	std::string mName;
 	// Animation ID
 	std::string mAnimationId;
+	// Tell if it affects a whole team or a single target
+	bool mIsAOE;
 private:
 //public and private functions
 public:
@@ -31,6 +33,8 @@ public:
 	std::string GetAnimationId();
 	// Get TypeID
 	SKILLTYPE GetTypeId();
+	// Get isAOE
+	bool IsAOE();
 	//use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
 private:

@@ -102,9 +102,6 @@
     <ClInclude Include="src\RedAudioManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatTracker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\TowerManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -149,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="src\Shields.h">
       <Filter>Header Files\StatusEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatTracker.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
