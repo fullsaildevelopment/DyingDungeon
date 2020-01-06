@@ -20,6 +20,7 @@ public:
 		std::string targetName;
 		uint32_t round;
 		float value;
+		float blockValue;
 		STATS effect;
 		StatTracker::Action actionType;
 		bool isSpell = false;

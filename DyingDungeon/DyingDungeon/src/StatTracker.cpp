@@ -61,10 +61,12 @@ void StatTracker::SaveStats(std::string saveName)
 
 				file.write((const char*)&m_levels[i].turns[j].value, sizeof(float));
 
+				file.write((const char*)&m_levels[i].turns[j].blockValue, sizeof(float));
+
 				uint32_t effect = (uint32_t)m_levels[i].turns[j].effect;
 				file.write((const char*)&effect, sizeof(uint32_t));
 
-				uint32_t action = (uint32_t))m_levels[i].turns[j].actionType;
+				uint32_t action = (uint32_t)m_levels[i].turns[j].actionType;
 				file.write((const char*)&action, sizeof(uint32_t));
 
 				file.write((const char*)&m_levels[i].turns[j].isSpell, sizeof(bool));
@@ -118,6 +120,8 @@ void StatTracker::LoadStats(std::string loadFileName)
 				file.read((char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
 
 				file.read((char*)&m_levels[i].turns[j].value, sizeof(float));
+
+				file.read((char*)&m_levels[i].turns[j].blockValue, sizeof(float));
 
 				uint32_t effect = 0;
 				file.read((char*)&effect, sizeof(uint32_t));
