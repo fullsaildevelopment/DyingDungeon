@@ -9,24 +9,34 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	mEnemyTeam = _enemyTeam;
 	mTurnOrderNumbers = _turnOrderNumbers;
 
-	mTurnOrderNumbers[0]->setText(L"420");
+	/*mTurnOrderNumbers[0]->setText(L"420");
 	mTurnOrderNumbers[1]->setText(L"69");
 	mPlayerTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[0];
 	mPlayerTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[1];
 	mEnemyTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[2];
-	mEnemyTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[3];
+	mEnemyTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[3];*/
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
 	mPlayerTeam.resize(4);
 	mEnemyTeam.resize(4);
 
+	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
+	int turnOrderIndex = 0;
+
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		if (mPlayerTeam[i] != nullptr)
 		{
+			// Play an attack animation at the beginning of each battle
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
+
+			// Set the player's turn order number
+			mPlayerTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
+			turnOrderIndex++;
+
+			// Put him into the mAllCharacters list
 			mAllCharacters.push_back(mPlayerTeam[i]);
 		}
 	}
@@ -36,7 +46,9 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	{
 		if (mEnemyTeam[i] != nullptr)
 		{
-			mAllCharacters.push_back(mEnemyTeam[i]);
+			// Set the player's turn order number
+			mEnemyTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
+			turnOrderIndex++;
 
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
@@ -45,6 +57,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 			mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
 			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
+
+			mAllCharacters.push_back(mEnemyTeam[i]);
 		}
 	}
 
@@ -133,19 +147,6 @@ void BattleInstance::GenerateBattleQueue()
 
 	// Get the beginning count of the character pool
 	int numOfCharacters = static_cast<int>(characterPool.size());
-	// What? - Loop for the number of beginning amount of characters
-	// Why? - Because we will be removing characters from the pool when we add the character to the battle queue 
-	//for (int i = 0; i < numOfCharacters; i++)
-	//{
-	//	// Get random index from the character pool
-	//	int rndIndex = rand() % characterPool.size();
-
-	//	// Add the character into the battle queue
-	//	mBattleQueue.push(characterPool[rndIndex]);
-
-	//	// Remove the character from the character pool so he won't be added to the battle queue multiple times
-	//	characterPool.erase(characterPool.begin() + rndIndex);
-	//}
 
 	// Setting Battle Order from highest speed to lowest speed
 	for (int i = 0; i < numOfCharacters; i++)

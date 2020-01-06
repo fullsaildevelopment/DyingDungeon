@@ -24,8 +24,7 @@ namespace Odyssey
 			mMainCamera = entity;
 		}
 
-		// Check if the entity has a UI canvas component
-		if (UICanvas* canvas = entity->getComponent<UICanvas>())
+		for (UICanvas* canvas : entity->getComponents<UICanvas>())
 		{
 			// Add it to the vector of UI canvas objects
 			mSceneCanvas.push_back(canvas);

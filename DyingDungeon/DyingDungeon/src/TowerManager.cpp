@@ -7,28 +7,6 @@
 
 CLASS_DEFINITION(Component, TowerManager)
 
-TowerManager::TowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles)
-{
-	// Assign the player team and the enemy team
-	mPlayerTeam = _playerTeam;
-	mEnemyTeam = _enemyTeam;
-
-	// Add all of the characters from the player's team to the allCharacters vector
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-		mAllCharacters.push_back(mPlayerTeam[i]);
-
-	// Add all of the characters from the enemy's team to the allCharacters vector
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-		mAllCharacters.push_back(mEnemyTeam[i]);
-
-	// Set the current level to 1
-	SetCurrentLevel(1);
-
-	// Set the number of levels for this tower
-	mNumberOfLevels = _numberOfBattles;
-	mCurrentBattle = nullptr;
-}
-
 TowerManager::~TowerManager()
 {
 	DestroyBattleInstance();
@@ -36,10 +14,7 @@ TowerManager::~TowerManager()
 
 void TowerManager::initialize()
 {
-	// Create the battle on init, but this is TEMPORARY
-	CreateBattleInstance();
 
-	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
 }
 
 void TowerManager::update(double deltaTime)
@@ -77,7 +52,7 @@ void TowerManager::update(double deltaTime)
 			else
 			{
 				// Update to the next level
-				SetCurrentLevel(GetCurrentLevel() + 1);
+				mCurrentLevel = GetCurrentLevel() + 1;
 			}
 		}
 	}
@@ -125,6 +100,31 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
+void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles)
+{
+	// Assign the player team and the enemy team
+	mPlayerTeam = _playerTeam;
+	mEnemyTeam = _enemyTeam;
+
+	// Add all of the characters from the player's team to the allCharacters vector
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+		mAllCharacters.push_back(mPlayerTeam[i]);
+
+	// Add all of the characters from the enemy's team to the allCharacters vector
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+		mAllCharacters.push_back(mEnemyTeam[i]);
+
+	// Set the current level to 1
+	mCurrentLevel = 1;
+
+	// Set the number of levels for this tower
+	mNumberOfLevels = _numberOfBattles;
+	mCurrentBattle = nullptr;
+
+	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
+	CreateBattleInstance();
+}
+
 void TowerManager::CreateBattleInstance()
 {
 	// TODO: REMOVE POST BUILD 02
@@ -146,12 +146,13 @@ void TowerManager::CreateBattleInstance()
 	}
 
 	std::cout << "- Enemy Team\n" << std::endl;
-	for (int i = 0; i < mPlayerTeam.size(); i++)
+	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
 		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
+	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
 }
 
 void TowerManager::DestroyBattleInstance()
@@ -189,6 +190,6 @@ void TowerManager::GoToMainMenu()
 
 	Rewards->setActive(false);
 
-	SetCurrentLevel(1);
+	mCurrentLevel = 1;
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }

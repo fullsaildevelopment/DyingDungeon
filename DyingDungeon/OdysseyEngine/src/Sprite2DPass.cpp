@@ -21,9 +21,12 @@ namespace Odyssey
 	{
 		for (UICanvas* canvas : args.canvasList)
 		{
-			for (auto element : canvas->getElements<UIElement>())
+			if (canvas->isActive())
 			{
-				element->draw(mRenderWindow->get2DRenderTarget());
+				for (auto element : canvas->getElements<UIElement>())
+				{
+					element->draw(mRenderWindow->get2DRenderTarget());
+				}
 			}
 		}
 		mRenderWindow->get2DRenderTarget()->EndDraw();

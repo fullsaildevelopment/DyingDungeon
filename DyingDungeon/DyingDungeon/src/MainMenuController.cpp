@@ -19,8 +19,8 @@ void MainMenuController::update(double deltaTime)
 {
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 	{
-		RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
-		RedAudioManager::Instance().Play("BackgroundBattle");
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
+		//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+		//RedAudioManager::Instance().Play("BackgroundBattle");
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 	}
 }
