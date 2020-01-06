@@ -17,8 +17,6 @@ public:
 	void Apply(Character& target);
 	void Remove();
 	void Use();
-	// Getter for Stat id
-	STATS GetStatId();
 private:
 
 };

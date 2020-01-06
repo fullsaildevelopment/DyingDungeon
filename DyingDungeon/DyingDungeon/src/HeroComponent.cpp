@@ -45,11 +45,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
 		// Skill 3 (StatUP)
 		StatUp* tempSU = new StatUp(0.25f,1,STATS::Atk,nullptr);
-		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
+		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU,true);
 		tempSU = nullptr;
-		// Skill 4
+		// Skill 4 (Regen)
 		StatusEffect* temp = new Regens(0.25f,4,nullptr);
-		mSkillList[4] = new Buffs("Regen", "AttackUp", 10, temp);
+		mSkillList[4] = new Buffs("Regen", "AttackUp", 10, temp,true);
+		temp = nullptr;
+		// Skill 5 (StatDown)
+		temp = new StatDown(0.50f, 2, STATS::Atk, nullptr);
+		mSkillList[5] = new Buffs("StatDown", "AttackUp", 10, temp, false);
 		temp = nullptr;
 		//// Basic Attack
 		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
@@ -153,9 +157,20 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D5))
 		{
-			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
+			if (mSkillList[4]->GetManaCost() <= mCurrentMana)
 			{
 				mCurrentSkill = mSkillList[4];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D6))
+		{
+			if (mSkillList[5]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[5];
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}
