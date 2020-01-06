@@ -2,7 +2,7 @@
 #include <string>
 // enum used for readablity of what stat is affected
 enum class STATS {Atk = 0, Def, Spd};
-enum class EFFECTTYPE { Bleed = 0, StatUp, StatDown};
+enum class EFFECTTYPE { Bleed = 0, Regen, StatUp, StatDown};
 class Character; 
 class StatusEffect
 {

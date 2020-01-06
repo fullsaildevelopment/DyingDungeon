@@ -177,6 +177,7 @@
     <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
+    <ClCompile Include="src\Regens.cpp" />
     <ClCompile Include="src\Skills.cpp" />
     <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="src\MyTypeDefs.h" />
     <ClInclude Include="src\RedAudio.h" />
     <ClInclude Include="src\RedAudioManager.h" />
+    <ClInclude Include="src\Regens.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\StatDown.h" />

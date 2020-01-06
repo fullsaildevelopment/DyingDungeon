@@ -9,7 +9,6 @@ Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, Statu
 	mMpCost = mpCost;
 	mBuff = buff;
 }
-
 void Buffs::Use(Character& caster, Character& target)
 {
 	if (mBuff != nullptr)

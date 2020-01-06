@@ -10,6 +10,7 @@
 #include "Bleed.h"
 #include "StatUp.h"
 #include "StatDown.h"
+#include "Regens.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -46,6 +47,10 @@ HeroComponent::HeroComponent(HEROID id)
 		StatUp* tempSU = new StatUp(0.25f,1,STATS::Atk,nullptr);
 		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, tempSU);
 		tempSU = nullptr;
+		// Skill 4
+		StatusEffect* temp = new Regens(0.25f,4,nullptr);
+		mSkillList[4] = new Buffs("Regen", "AttackUp", 10, temp);
+		temp = nullptr;
 		//// Basic Attack
 		//mSkillList[0] = Skills(10, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttack");
 		//// Skill 1 (Raise Attack)
@@ -140,6 +145,17 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
 			{
 				mCurrentSkill = mSkillList[3];
+				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
+				mCurrentState = STATE::SELECTTARGET;
+			}
+			else
+				std::cout << "You dont have enough mana for that move." << std::endl;
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D5))
+		{
+			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
+			{
+				mCurrentSkill = mSkillList[4];
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}

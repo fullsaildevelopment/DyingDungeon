@@ -348,6 +348,11 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 		mBleeds.push_back(newEffect);
 		break;
 	}
+	case EFFECTTYPE::Regen:
+	{
+		mRegens.push_back(newEffect);
+		break;
+	}
 	case EFFECTTYPE::StatUp:
 	{
 		mBuffs.push_back(newEffect);
