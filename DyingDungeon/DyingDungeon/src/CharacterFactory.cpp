@@ -5,9 +5,9 @@
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
-std::shared_ptr<Odyssey::GameObject> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation)
 {
-	std::shared_ptr<Odyssey::GameObject> newCharacter = std::make_shared<Odyssey::GameObject>();
+	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
 
 	// Get Position values
 	float xPos = DirectX::XMVectorGetX(_position);
@@ -37,7 +37,7 @@ std::shared_ptr<Odyssey::GameObject> CharacterFactory::CreateCharacter(Character
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		break;
@@ -48,7 +48,7 @@ std::shared_ptr<Odyssey::GameObject> CharacterFactory::CreateCharacter(Character
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Skeleton.dxm", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
@@ -60,6 +60,8 @@ std::shared_ptr<Odyssey::GameObject> CharacterFactory::CreateCharacter(Character
 	}
 
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
+	newCharacter->getComponent<Character>()->SetDead(false);
+	newCharacter->getComponent<Character>()->SetStun(false);
 
 	return newCharacter;
 }

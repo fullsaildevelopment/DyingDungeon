@@ -1,0 +1,14 @@
+#include "UICanvas.h"
+#include "Rectangle2D.h"
+#include "Sprite2D.h"
+#include "Text2D.h"
+
+namespace Odyssey
+{
+	CLASS_DEFINITION(Component, UICanvas)
+
+	UICanvas::UICanvas()
+	{
+		mActive = true;
+	}
+}

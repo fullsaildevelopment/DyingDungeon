@@ -3,11 +3,11 @@
 #include "Character.h"
 #include "HeroComponent.h"
 #include "InputManager.h"
-#include "MenuManager.h"
+#include "EventManager.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
-TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam, int _numberOfBattles)
+TowerManager::TowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles)
 {
 	// Assign the player team and the enemy team
 	mPlayerTeam = _playerTeam;
@@ -26,6 +26,7 @@ TowerManager::TowerManager(GameObjectList _playerTeam, GameObjectList _enemyTeam
 
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
+	mCurrentBattle = nullptr;
 }
 
 TowerManager::~TowerManager()
@@ -35,8 +36,6 @@ TowerManager::~TowerManager()
 
 void TowerManager::initialize()
 {
-	onEnable();
-
 	// Create the battle on init, but this is TEMPORARY
 	CreateBattleInstance();
 
@@ -46,9 +45,9 @@ void TowerManager::initialize()
 void TowerManager::update(double deltaTime)
 {
 	// TODO: REMOVE POST BUILD 02
-	if (Odyssey::InputManager::getInstance().getKeyPress(VK_F3))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
 	{
-		addHUD->setActive(!addHUD->getActive());
+		addHUD->setActive(!addHUD->isActive());
 	}
 
 	// If we are in battle, Update the battle
@@ -84,7 +83,7 @@ void TowerManager::update(double deltaTime)
 	}
 	else if (GetTowerState() == IN_REWARDS)
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 		{
 			float tempXP = 0.0f;
 
@@ -191,5 +190,5 @@ void TowerManager::GoToMainMenu()
 	Rewards->setActive(false);
 
 	SetCurrentLevel(1);
-	MenuManager::GetInstance().loadScene("MainMenu");
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }

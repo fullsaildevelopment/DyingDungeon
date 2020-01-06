@@ -1,5 +1,5 @@
 #include "HeroComponent.h"
-#include "GameObject.h"
+#include "Entity.h"
 #include "Transform.h"
 #include "EnemyComponent.h"
 /// Check if better way
@@ -79,7 +79,7 @@ HeroComponent::~HeroComponent()
 	}
 }
 
-bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
+bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 {
 	switch (mCurrentState)
 	{
@@ -102,7 +102,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	{
 		if (mCurrentState == STATE::DEAD)
 			return false;
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
 			{
@@ -113,7 +113,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			else
 				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('2')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
 			if (mSkillList[1]->GetManaCost() <= mCurrentMana)
 			{
@@ -124,7 +124,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			else
 				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('3')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
 			if (mSkillList[2]->GetManaCost() <= mCurrentMana)
 			{
@@ -135,7 +135,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			else
 				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('4')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
 			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
 			{
@@ -150,7 +150,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 	}
 	case STATE::SELECTTARGET:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(int('1')))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
@@ -163,7 +163,7 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
 			mCurrentState = STATE::INPROGRESS;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(VK_BACK))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Back))
 		{
 			mCurrentSkill = nullptr;
 			mCurrentState = STATE::SELECTMOVE;
@@ -177,13 +177,13 @@ bool HeroComponent::TakeTurn(GameObjectList heros, GameObjectList enemies)
 		if (!trigger && mAnimator->getProgress() > 0.25f)
 		{
 			if (mCurrentTarget->IsHero() == false)
-				mCurrentTarget->getGameObject()->getComponent<Odyssey::Animator>()->playClip("Hit");
+				mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 			trigger = true;
 		}
 		
 		if (mAnimator->getProgress() > 0.9f)
 		{
-			mCurrentSkill->Use(*mGameObject->getComponent<Character>(), *mCurrentTarget);
+			mCurrentSkill->Use(*mEntity->getComponent<Character>(), *mCurrentTarget);
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
 			mCurrentState = STATE::NONE;

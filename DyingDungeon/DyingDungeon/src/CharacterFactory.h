@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Entity.h"
 
 
 class CharacterFactory
@@ -15,7 +15,7 @@ public: // Constructors
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::GameObject> CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation);
+	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation);
 
 	//Getters
 
@@ -27,7 +27,7 @@ private: // Varibales
 
 	// Queues
 
-	// GameObjects
+	// Entitys
 
 	// Ints
 

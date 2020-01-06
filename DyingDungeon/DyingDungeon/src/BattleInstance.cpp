@@ -3,7 +3,7 @@
 #include "Character.h"
 #include <string>
 
-BattleInstance::BattleInstance(GameObjectList _playerTeam, GameObjectList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
@@ -129,7 +129,7 @@ int BattleInstance::UpdateBattle()
 void BattleInstance::GenerateBattleQueue()
 {
 	// This will hold all of the characters that will be in the match
-	GameObjectList characterPool = mAllCharacters;
+	EntityList characterPool = mAllCharacters;
 
 	// Get the beginning count of the character pool
 	int numOfCharacters = static_cast<int>(characterPool.size());
@@ -150,7 +150,7 @@ void BattleInstance::GenerateBattleQueue()
 	// Setting Battle Order from highest speed to lowest speed
 	for (int i = 0; i < numOfCharacters; i++)
 	{
-		std::shared_ptr<Odyssey::GameObject> highestSpeedCharacter;
+		std::shared_ptr<Odyssey::Entity> highestSpeedCharacter;
 		int indexOfCharacter = -1;
 		float highestSpeed = -1.0f;
 	
@@ -175,7 +175,7 @@ void BattleInstance::GenerateBattleQueue()
 	}
 }
 
-bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
+bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
 {
 	for (int i = 0; i < _teamToCheck.size(); i++)
 	{
@@ -196,7 +196,7 @@ bool BattleInstance::IsTeamAlive(GameObjectList _teamToCheck)
 
 void BattleInstance::UpdateCharacterTurnNumbers()
 {
-	GameObjectQueue tempBattleQueue = mBattleQueue;
+	EntityQueue tempBattleQueue = mBattleQueue;
 	int startingNum = tempBattleQueue.size();
 	int counter = 1;
 

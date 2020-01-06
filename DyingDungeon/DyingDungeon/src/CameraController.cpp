@@ -1,9 +1,8 @@
 #include "CameraController.h"
-#include "GameObject.h"
+#include "Entity.h"
 #include "Camera.h"
 #include "InputManager.h"
 #include "Transform.h"
-#include "MenuManager.h"
 
 CLASS_DEFINITION(Odyssey::Component, CameraController)
 
@@ -16,17 +15,16 @@ CameraController::CameraController()
 
 void CameraController::initialize()
 {
-	onEnable();
-	mMainCamera = mGameObject->getComponent<Odyssey::Camera>();
+	mMainCamera = mEntity->getComponent<Odyssey::Camera>();
 }
 
 void CameraController::update(double deltaTime)
 {
 	if (mMainCamera)
 	{
-		if (Odyssey::InputManager::getInstance().getKeyDown(VK_F2))
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::F2))
 		{
-			if (Odyssey::Transform* transform = mGameObject->getComponent<Odyssey::Transform>())
+			if (Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>())
 			{
 				transform->setPosition(7.44f, 6.13f, 4.03f);
 				transform->setRotation(23.5f, -129.55f, 0.0f);
@@ -43,7 +41,7 @@ void CameraController::updateMovement(double deltaTime)
 	Odyssey::InputManager& input = Odyssey::InputManager::getInstance();
 	DirectX::XMFLOAT3 velocity(0.0f, 0.0f, 0.0f);
 
-	Odyssey::Transform* transform = mGameObject->getComponent<Odyssey::Transform>();
+	Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>();
 	if (transform == nullptr)
 	{
 		return;
@@ -53,37 +51,37 @@ void CameraController::updateMovement(double deltaTime)
 	DirectX::XMFLOAT3 right = transform->getRight();
 	DirectX::XMFLOAT3 up = transform->getUp();
 
-	if (input.getKeyDown('W'))
+	if (input.getKeyDown(KeyCode::W))
 	{
 		velocity.x += fwd.x;
 		velocity.y += fwd.y;
 		velocity.z += fwd.z;
 	}
-	if (input.getKeyDown('S'))
+	if (input.getKeyDown(KeyCode::S))
 	{
 		velocity.x -= fwd.x;
 		velocity.y -= fwd.y;
 		velocity.z -= fwd.z;
 	}
-	if (input.getKeyDown('D'))
+	if (input.getKeyDown(KeyCode::D))
 	{
 		velocity.x += right.x;
 		velocity.y += right.y;
 		velocity.z += right.z;
 	}
-	if (input.getKeyDown('A'))
+	if (input.getKeyDown(KeyCode::A))
 	{
 		velocity.x -= right.x;
 		velocity.y -= right.y;
 		velocity.z -= right.z;
 	}
-	if (input.getKeyDown(VK_SPACE))
+	if (input.getKeyDown(KeyCode::Space))
 	{
 		velocity.x += up.x;
 		velocity.y += up.y;
 		velocity.z += up.z;
 	}
-	if (input.getKeyDown('X'))
+	if (input.getKeyDown(KeyCode::X))
 	{
 		velocity.x -= up.x;
 		velocity.y -= up.y;
@@ -105,26 +103,26 @@ void CameraController::updateRotation(double deltaTime)
 	Odyssey::InputManager& input = Odyssey::InputManager::getInstance();
 	DirectX::XMFLOAT3 rotation(0.0f, 0.0f, 0.0f);
 
-	Odyssey::Transform* transform = mGameObject->getComponent<Odyssey::Transform>();
+	Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>();
 
 	if (transform == nullptr)
 	{
 		return;
 	}
 
-	if (input.getKeyDown(VK_UP))
+	if (input.getKeyDown(KeyCode::Up))
 	{
 		rotation.x -= mRotationSpeed;
 	}
-	if (input.getKeyDown(VK_DOWN))
+	if (input.getKeyDown(KeyCode::Down))
 	{
 		rotation.x += mRotationSpeed;
 	}
-	if (input.getKeyDown(VK_RIGHT))
+	if (input.getKeyDown(KeyCode::Right))
 	{
 		rotation.y += mRotationSpeed;
 	}
-	if (input.getKeyDown(VK_LEFT))
+	if (input.getKeyDown(KeyCode::Left))
 	{
 		rotation.y -= mRotationSpeed;
 	}

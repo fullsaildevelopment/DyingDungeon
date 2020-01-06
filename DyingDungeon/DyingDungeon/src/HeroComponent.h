@@ -2,7 +2,7 @@
 #include "Character.h"
 #include "InputManager.h"
 
-typedef std::vector<std::shared_ptr<Odyssey::GameObject>> GameObjectList;
+typedef std::vector<std::shared_ptr<Odyssey::Entity>> EntityList;
 class HeroComponent : public Character
 {
 	CLASS_DECLARATION(HeroComponent)
@@ -12,7 +12,7 @@ public:
 	HeroComponent(HEROID id);
 	~HeroComponent();
 	//Attack Functions
-	virtual bool TakeTurn(GameObjectList heros, GameObjectList enemies);
+	virtual bool TakeTurn(EntityList heros, EntityList enemies);
 
 	//Death Check
 	virtual void Die();

@@ -1,5 +1,5 @@
 #include "EnemyComponent.h"
-#include "GameObject.h"
+#include "Entity.h"
 #include "Transform.h"
 /// Check if better way
 #include "Attack.h"
@@ -59,10 +59,10 @@ EnemyComponent::~EnemyComponent()
 	}
 }
 
-bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::GameObject>> targets)
+bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
 {
 	Character* target = nullptr;
-	for (std::shared_ptr<Odyssey::GameObject> t : targets)
+	for (std::shared_ptr<Odyssey::Entity> t : targets)
 	{
 		if (t)
 		{
@@ -123,7 +123,7 @@ float EnemyComponent::ScoreMove(Skills* skillOption, Character* target)
 	return score;
 }
 
-bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
+bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	// Find my best option
 	switch (mCurrentState)
@@ -159,14 +159,14 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> 
 		if (!trigger && mAnimator->getProgress() > 0.25f)
 		{
 			if (bestMove.target->IsHero())
-				bestMove.target->getGameObject()->getComponent<Odyssey::Animator>()->playClip("Hit");
+				bestMove.target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 			trigger = true;
 		}
 
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			// Use the best move
-			bestMove.skill->Use(*mGameObject->getComponent<Character>(), *bestMove.target);
+			bestMove.skill->Use(*mEntity->getComponent<Character>(), *bestMove.target);
 			// If i have any buffs manage them 
 			//Reset best move score
 			bestMove.score = -1000;

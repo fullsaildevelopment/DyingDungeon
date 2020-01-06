@@ -1,33 +1,6 @@
 #include "DyingDungeon.h"
-#include "RenderPass.h"
-#include "RenderWindow.h"
-#include "RenderTarget.h"
-#include "Animator.h"
-#include "Scene.h"
-#include "GameObject.h"
-#include "OpaquePass.h"
-#include "SkyboxPass.h"
-#include "ShadowPass.h"
-#include "TransparentPass.h"
-#include "ClearRenderTargetPass.h"
-#include "DebugPass.h"
-#include "Light.h"
-#include "Component.h"
-#include "FileManager.h"
-#include "Transform.h"
-#include "Application.h"
-#include "RenderDevice.h"
-#include "Material.h"
-#include "Camera.h"
-#include "RedAudioManager.h"
-#include "UICanvas.h"
-#include "Sprite2DPass.h"
-#include "MenuManager.h"
-#include "MainMenuController.h"
-#include "Sprite2D.h"
-#include "Rectangle2D.h"
-#include "Text2D.h"
 
+// General includes
 #include <stdio.h>
 #include <DbgHelp.h>
 #include <time.h>
@@ -38,7 +11,11 @@
 #include "EnemyComponent.h"
 #include "CameraController.h"
 #include "CharacterFactory.h"
+#include "RedAudioManager.h"
+#include "MainMenuController.h"
 
+// Engine includes
+#include "OdysseyEngine.h"
 #pragma comment(lib, "dbghelp.lib")
 
 namespace
@@ -49,20 +26,20 @@ namespace
 	// Scene resources
 	std::shared_ptr<Odyssey::Scene> gGameScene;
 	std::shared_ptr<Odyssey::Scene> gMainMenu;
-	std::shared_ptr<Odyssey::GameObject> gMainCamera;
+	std::shared_ptr<Odyssey::Entity> gMainCamera;
 	//Game Objects
-	std::shared_ptr<Odyssey::GameObject> gMenu;
-	std::shared_ptr<Odyssey::GameObject> gGameMenu;
-	std::shared_ptr<Odyssey::GameObject> gPaladin;
-	std::shared_ptr<Odyssey::GameObject> gSkeleton;
-	std::shared_ptr<Odyssey::GameObject> gCurrentTower;
+	std::shared_ptr<Odyssey::Entity> gMenu;
+	std::shared_ptr<Odyssey::Entity> gGameMenu;
+	std::shared_ptr<Odyssey::Entity> gPaladin;
+	std::shared_ptr<Odyssey::Entity> gSkeleton;
+	std::shared_ptr<Odyssey::Entity> gCurrentTower;
 	//Vectors
-	std::vector<std::shared_ptr<Odyssey::GameObject>> gPlayerUnit;
-	std::vector<std::shared_ptr<Odyssey::GameObject>> gEnemyUnit;
+	std::vector<std::shared_ptr<Odyssey::Entity>> gPlayerUnit;
+	std::vector<std::shared_ptr<Odyssey::Entity>> gEnemyUnit;
 	// Light resources
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
-	Odyssey::Text2D::TextProperties gDefaultText;
+	Odyssey::TextProperties gDefaultText;
 }
 
 // Forward declarations
@@ -89,18 +66,16 @@ int playGame()
 {
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
-	gMainWindow = application->createRenderWindow("Dying Dungeon", 1280, 720);
-
-	MenuManager::GetInstance().initialize(application.get());
-
+	gMainWindow = application->createRenderWindow(L"Dying Dungeon", 1280, 720);
+	
 	// Get the render device
 	Odyssey::RenderDevice* renderDevice = application->getRenderDevice();
 
 	gDefaultText.bold = false;
 	gDefaultText.italic = false;
 	gDefaultText.fontSize = 25.0f;
-	gDefaultText.textAlignment = Odyssey::Text2D::TextAlignment::Left;
-	gDefaultText.paragraphAlignment = Odyssey::Text2D::ParagraphAlignment::Left;
+	gDefaultText.textAlignment = Odyssey::TextAlignment::Left;
+	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 	gDefaultText.fontName = L"Verdana";
 
 	// Create the main scene
@@ -122,8 +97,8 @@ int playGame()
 
 	// Set up the paladin
 	//setupPaladin();
-
-	// Set up the skeleton
+	//
+	//// Set up the skeleton
 	//setupSkeleton();
 
 	// Set up the game user interface
@@ -136,7 +111,6 @@ int playGame()
 	// Set the active scene
 	application->addScene("MainMenu", gMainMenu);
 	application->addScene("Game", gGameScene);
-	application->setActiveScene("MainMenu");
 
 	// Play audio
 	setupAudio();
@@ -148,11 +122,11 @@ int playGame()
 void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application)
 {
 	// Create a clear render target pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow->getRenderTarget(), true);
+	std::shared_ptr<Odyssey::ClearRenderTargetPass> rtvPass = renderDevice->createClearRTVPass(gMainWindow, true);
 	application->addRenderPass(rtvPass);
 
 	// Create a skybox pass and add it to the render pipeline 
-	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow->getRenderTarget());
+	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow);
 	application->addRenderPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
@@ -160,18 +134,18 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 	application->addRenderPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow->getRenderTarget());
+	std::shared_ptr<Odyssey::OpaquePass> opaquePass = renderDevice->createOpaquePass(gMainWindow);
 	application->addRenderPass(opaquePass);
 
 	// Create a transparent pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow->getRenderTarget());
+	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow);
 	application->addRenderPass(transparentPass);
 
 	std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
 	application->addRenderPass(spritePass);
 
 	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow->getRenderTarget());
+	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow);
 	debugPass->setEnabled(false);
 	application->addRenderPass(debugPass);
 }
@@ -336,29 +310,29 @@ void setupLighting()
 
 void setupCamera()
 {
-	gMainCamera = std::make_shared<Odyssey::GameObject>();
+	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
 	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(7.44f, 6.13f, 4.03f);
 	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(23.5f, -129.55f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
-	gGameScene->addGameObject(gMainCamera);
+	gGameScene->addEntity(gMainCamera);
 }
 
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
 {
 	gMainMenu = renderDevice->createScene();
-	gMenu = std::make_shared<Odyssey::GameObject>();
+	gMenu = std::make_shared<Odyssey::Entity>();
 	gMenu->addComponent<Odyssey::Transform>();
 	gMenu->addComponent<Odyssey::UICanvas>();
 	gMenu->addComponent<Odyssey::Camera>();
 	gMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
-	UINT width = static_cast<UINT>(gMainWindow->mMainWindow.width);
-	UINT height = static_cast<UINT>(gMainWindow->mMainWindow.height);
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
 	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/MainMenu.png", width, height);
 	gMenu->addComponent<MainMenuController>(application);
-	gMainMenu->addGameObject(gMenu);
+	gMainMenu->addEntity(gMenu);
 }
 
 void setupArena()
@@ -369,7 +343,7 @@ void setupArena()
 void setupGameInterface()
 {
 	// Create the game menu object
-	gGameMenu = std::make_shared<Odyssey::GameObject>();
+	gGameMenu = std::make_shared<Odyssey::Entity>();
 
 	// Add a UI Canvas for the 1v1 combat
 	gGameMenu->addComponent<Odyssey::UICanvas>(); // The player's icons and health bars
@@ -381,14 +355,14 @@ void setupGameInterface()
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 
 	// Get the width and height of the window
-	float width = static_cast<float>(gMainWindow->mMainWindow.width);
-	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
 
 	// Battle for Flavortown Title
-	Odyssey::Text2D::TextProperties properties = gDefaultText;
+	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = 40.0f;
-	properties.textAlignment = Odyssey::Text2D::TextAlignment::Center;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, height / 75.0f), DirectX::XMFLOAT4(1, 0, 0, 1), L"Battle for Flavortown", properties, width, 0.0f);
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, height / 75.0f), DirectX::XMFLOAT4(1, 0, 0, 1), width, 0, L"Battle for Flavortown", properties);
 
 	float anchorX = width / 75.0f;
 	float anchorY = height / 25.0f;
@@ -431,7 +405,7 @@ void setupGameInterface()
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
 	canvas->setActive(false); // The rewards screen won't show up at the start
 
-	gGameScene->addGameObject(gGameMenu);
+	gGameScene->addEntity(gGameMenu);
 }
 
 void setup4PlayerInterface()
@@ -441,8 +415,8 @@ void setup4PlayerInterface()
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
 
 	// Get the width and height of the window
-	float width = static_cast<float>(gMainWindow->mMainWindow.width);
-	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
 
 	float anchorX = width / 75.0f;
 	float anchorY = (height / 25.0f) + (height / 7.0f);
@@ -471,14 +445,14 @@ void setup4PlayerInterface()
 void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner)
 {
 	// Get the width and height of the window
-	float width = static_cast<float>(gMainWindow->mMainWindow.width);
-	float height = static_cast<float>(gMainWindow->mMainWindow.height);
-	Odyssey::Text2D::TextProperties properties = gDefaultText;
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
+	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = height / 50.0f;
 	properties.bold = true;
 
 	// Player Team - Character 1
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, (UINT)width / 25, (UINT)width / 25);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, width / 25, width / 25);
 
 	// Turn Order Text
 	float offsetX = width / 25.0f;
@@ -487,11 +461,11 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	{
 		offsetX = -properties.fontSize / 1.5f;
 	}
-	properties.textAlignment = Odyssey::Text2D::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::Text2D::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), L"1", properties, width / 25, width / 25);
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), width / 25, width / 25, L"1", properties);
 	// Health and Mana bars
-	//Character* pal = gPaladin->getComponent<Character>();
+
 	if (owner)
 	{
 		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
@@ -506,7 +480,7 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 
 void setupPaladin()
 {
-	gPaladin = std::make_shared<Odyssey::GameObject>();
+	gPaladin = std::make_shared<Odyssey::Entity>();
 	gPaladin->addComponent<Odyssey::Transform>();
 	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
@@ -520,15 +494,15 @@ void setupPaladin()
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim");
+	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
 	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
 	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
-	gGameScene->addGameObject(gPaladin);
+	gGameScene->addEntity(gPaladin);
 }
 
 void setupSkeleton()
 {
-	gSkeleton = std::make_shared<Odyssey::GameObject>();
+	gSkeleton = std::make_shared<Odyssey::Entity>();
 	gSkeleton->addComponent<Odyssey::Transform>();
 	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
@@ -542,7 +516,7 @@ void setupSkeleton()
 	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
 	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
-	gGameScene->addGameObject(gSkeleton);
+	gGameScene->addEntity(gSkeleton);
 }
 
 void setupAudio()
@@ -561,8 +535,8 @@ void setupAudio()
 
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
 {
-	Odyssey::Text2D::TextProperties properties = gDefaultText;
-	properties.fontSize = gMainWindow->mMainWindow.height / 65.0f;
+	Odyssey::TextProperties properties = gDefaultText;
+	properties.fontSize = gMainWindow->getHeight() / 65.0f;
 	properties.bold = true;
 	float iconStepX = width * 1.25f;
 	float iconStepY = height * 1.25f;
@@ -571,20 +545,20 @@ void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, 
 	float xPos = anchorX + buildDirection * (static_cast<float>(slot % 3) * iconStepX);
 	float yPos = anchorY + (static_cast<float>(slot / 3) * iconStepY);
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, static_cast<UINT>(width), static_cast<UINT>(height));
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), std::to_wstring(number), properties, width, height);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
 void setUpTowerManager()
 {
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
-	std::shared_ptr<Odyssey::GameObject> characterToAdd;
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
 
 	// Get Canvas
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	// Get the width and height of the window
-	float width = static_cast<float>(gMainWindow->mMainWindow.width);
-	float height = static_cast<float>(gMainWindow->mMainWindow.height);
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
 
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(0.0f, -0.6f, 3.0f, 1.0f);
@@ -593,7 +567,7 @@ void setUpTowerManager()
 	float anchorX = width / 75.0f;
 	float anchorY = height / 25.0f;
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addGameObject(characterToAdd);
+	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #2
@@ -601,7 +575,7 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 	anchorY += (height / 7.0f);
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addGameObject(characterToAdd);
+	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
@@ -610,7 +584,7 @@ void setUpTowerManager()
 	anchorX = width - anchorX - (width / 25.0f);
 	anchorY = height / 25.0f;
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addGameObject(characterToAdd);
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #2
@@ -618,10 +592,10 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
 	anchorY += (height / 7.0f);
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addGameObject(characterToAdd);
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
-	gCurrentTower = std::make_shared<Odyssey::GameObject>();
+	gCurrentTower = std::make_shared<Odyssey::Entity>();
 	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
@@ -630,7 +604,7 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[14]);
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[15]);
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[16]);
-	gGameScene->addGameObject(gCurrentTower);
+	gGameScene->addEntity(gCurrentTower);
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)

@@ -1,5 +1,5 @@
 #include "Character.h"
-#include "GameObject.h"
+#include "Entity.h"
 #include "Transform.h"
 #include "RedAudioManager.h"
 
@@ -7,8 +7,7 @@ CLASS_DEFINITION(Component, Character)
 
 void Character::initialize()
 {
-	onEnable();
-	mAnimator = mGameObject->getComponent<Odyssey::Animator>();
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 }
 
 void Character::update(double deltaTime)
@@ -16,7 +15,7 @@ void Character::update(double deltaTime)
 
 }
 
-bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
+bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	return false;
 }
