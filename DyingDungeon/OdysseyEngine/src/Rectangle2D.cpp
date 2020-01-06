@@ -13,7 +13,7 @@ namespace Odyssey
 		mZeroFillColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	void Rectangle2D::draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget)
+	void Rectangle2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if color lerp is enabled
 		if (mColorLerpEnabled)
@@ -23,7 +23,7 @@ namespace Odyssey
 
 			// Reset and recreate the brush with the lerped color
 			mBrush.Reset();
-			HRESULT hr = renderTarget->CreateSolidColorBrush(D2D1::ColorF(brushColor.x, brushColor.y, brushColor.z, brushColor.w), mBrush.GetAddressOf());
+			HRESULT hr = context->CreateSolidColorBrush(D2D1::ColorF(brushColor.x, brushColor.y, brushColor.z, brushColor.w), mBrush.GetAddressOf());
 			assert(!FAILED(hr));
 		}
 
@@ -31,16 +31,16 @@ namespace Odyssey
 		if (mBrush == nullptr)
 		{
 			// Recreate the brush with the base color
-			HRESULT hr = renderTarget->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, mColor.w), mBrush.GetAddressOf());
+			HRESULT hr = context->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, mColor.w), mBrush.GetAddressOf());
 			assert(!FAILED(hr));
 		}
 
 		// Copy the current shape and alter it's width using the fill
-		D2D_RECT_F fillShape = mShape;
-		fillShape.right *= mFill;
+		//D2D_RECT_F fillShape = mShape;
+		mShape.right *= mFill;
 
 		// Draw the filled rectangle
-		renderTarget->FillRectangle(&fillShape, mBrush.Get());
+		context->FillRectangle(&mShape, mBrush.Get());
 	}
 
 	void Rectangle2D::addFill(float value)

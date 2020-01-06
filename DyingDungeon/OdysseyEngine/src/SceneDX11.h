@@ -6,7 +6,9 @@
 namespace Odyssey
 {
 	class Entity;
+	class Component;
 	class UICanvas;
+	class MeshRenderer;
 	class Light;
 
 	class SceneDX11 : public Scene
@@ -50,5 +52,26 @@ namespace Odyssey
 		 *	@return vector<shared_ptr<Light>> A vector with all UI canvases within the scene.
 		 */
 		std::vector<UICanvas*> getCanvasList();
+
+		/**
+		 *	Get all mesh renderers within the scene.
+		 *	@param[in] void
+		 *	@return vector<shared_ptr<Light>> A vector with all mesh renderers within the scene.
+		 */
+		std::vector<MeshRenderer*> getRenderList();
+
+		/**
+		 *	Get all mesh renderers within the scene.
+		 *	@param[in] void
+		 *	@return vector<shared_ptr<Light>> A vector with all mesh renderers within the scene.
+		 */
+		std::vector<Component*> getComponentList();
+
+		/**
+		 *	Get all mesh renderers within the scene.
+		 *	@param[in] void
+		 *	@return vector<shared_ptr<Light>> A vector with all mesh renderers within the scene.
+		 */
+		std::vector<UIElement*> getElementList();
 	};
 }

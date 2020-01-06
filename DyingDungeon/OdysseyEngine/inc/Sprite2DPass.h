@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "EngineEvents.h"
 #include "RenderPass.h"
 
 namespace Odyssey
@@ -17,5 +18,6 @@ namespace Odyssey
 		virtual void render(RenderArgs& args);
 	private:
 		std::shared_ptr<RenderWindowDX11> mRenderWindow;
+		Microsoft::WRL::ComPtr<ID2D1DeviceContext> mContext;
 	};
 }

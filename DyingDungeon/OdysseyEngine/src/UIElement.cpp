@@ -38,6 +38,16 @@ namespace Odyssey
 		createShape();
 	}
 
+	void UIElement::setCanvas(UICanvas* canvas)
+	{
+		mCanvas = canvas;
+	}
+
+	UICanvas* UIElement::getCanvas()
+	{
+		return mCanvas;
+	}
+
 	void UIElement::addPosition(float x, float y)
 	{
 		// Add the parameter x and y values to the position

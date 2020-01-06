@@ -53,6 +53,6 @@ namespace Odyssey
 	private: // Members
 		std::map<std::string, ThreadStats> statsMap;
 		RenderStats opaqueStats;
-		bool mOutputEnabled;
+		bool mOutputStats;
 	};
 }

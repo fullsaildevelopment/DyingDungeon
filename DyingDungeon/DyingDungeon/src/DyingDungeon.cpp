@@ -13,6 +13,8 @@
 #include "CharacterFactory.h"
 #include "RedAudioManager.h"
 #include "MainMenuController.h"
+#include "TowerSelectController.h"
+#include "TeamSelectionController.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -26,9 +28,13 @@ namespace
 	// Scene resources
 	std::shared_ptr<Odyssey::Scene> gGameScene;
 	std::shared_ptr<Odyssey::Scene> gMainMenu;
+	std::shared_ptr<Odyssey::Scene> gTowerSelectScene;
+	std::shared_ptr<Odyssey::Scene> gTeamSelectScene;
 	std::shared_ptr<Odyssey::Entity> gMainCamera;
 	//Game Objects
 	std::shared_ptr<Odyssey::Entity> gMenu;
+	std::shared_ptr<Odyssey::Entity> gTowerSelectMenu;
+	std::shared_ptr<Odyssey::Entity> gTeamSelectMenu;
 	std::shared_ptr<Odyssey::Entity> gGameMenu;
 	std::shared_ptr<Odyssey::Entity> gPaladin;
 	std::shared_ptr<Odyssey::Entity> gSkeleton;
@@ -47,12 +53,13 @@ int playGame();
 void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey::Application> application);
 void setupLighting();
 void setupCamera();
+//void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene> _sceneObject, std::shared_ptr<Odyssey::Entity> _entityToAdd, const wchar_t* _imageName);
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
+void setupTowerSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
+void setupTeamSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
 void setup4PlayerInterface();
-void setupPaladin();
-void setupSkeleton();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
@@ -90,16 +97,20 @@ int playGame()
 	// Set up camera
 	setupCamera();
 
+	// Set up the main menu
 	setupMainMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png");
+
+	// Set up the tower selection screen
+	setupTowerSelectMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelection.png", "TowerSelection");
+
+	// Set up the team selection screen
+	setupTeamSelectMenu(renderDevice, application.get());
+	//setupMenu(renderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection");
 
 	// Load the arena scene
 	setupArena();
-
-	// Set up the paladin
-	//setupPaladin();
-	//
-	//// Set up the skeleton
-	//setupSkeleton();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -110,6 +121,8 @@ int playGame()
 
 	// Set the active scene
 	application->addScene("MainMenu", gMainMenu);
+	application->addScene("TowerSelection", gTowerSelectScene);
+	application->addScene("TeamSelection", gTeamSelectScene);
 	application->addScene("Game", gGameScene);
 
 	// Play audio
@@ -320,6 +333,24 @@ void setupCamera()
 	gGameScene->addEntity(gMainCamera);
 }
 
+//void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene> _sceneObject, std::shared_ptr<Odyssey::Entity> _entityToAdd, const wchar_t* _imageName)
+//{
+//	_sceneObject = renderDevice->createScene();
+//	_entityToAdd = std::make_shared<Odyssey::Entity>();
+//	_entityToAdd->addComponent<Odyssey::Transform>();
+//	_entityToAdd->addComponent<Odyssey::UICanvas>();
+//	_entityToAdd->addComponent<Odyssey::Camera>();
+//	_entityToAdd->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+//	UINT width = gMainWindow->getWidth();
+//	UINT height = gMainWindow->getHeight();
+//	_entityToAdd->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), _imageName, width, height);
+//	_entityToAdd->addComponent<MainMenuController>(application);
+//	_sceneObject->addEntity(_entityToAdd);
+//
+//	// Add the scene to the application
+//	//application->addScene(_sceneName, _sceneObject);
+//}
+
 void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
 {
 	gMainMenu = renderDevice->createScene();
@@ -333,6 +364,36 @@ void setupMainMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* ap
 	gMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/MainMenu.png", width, height);
 	gMenu->addComponent<MainMenuController>(application);
 	gMainMenu->addEntity(gMenu);
+}
+
+void setupTowerSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
+{
+	gTowerSelectScene = renderDevice->createScene();
+	gTowerSelectMenu = std::make_shared<Odyssey::Entity>();
+	gTowerSelectMenu->addComponent<Odyssey::Transform>();
+	gTowerSelectMenu->addComponent<Odyssey::UICanvas>();
+	gTowerSelectMenu->addComponent<Odyssey::Camera>();
+	gTowerSelectMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
+	gTowerSelectMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/TowerSelection.png", width, height);
+	gTowerSelectMenu->addComponent<TowerSelectController>(application);
+	gTowerSelectScene->addEntity(gTowerSelectMenu);
+}
+
+void setupTeamSelectMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application)
+{
+	gTeamSelectScene = renderDevice->createScene();
+	gTeamSelectMenu = std::make_shared<Odyssey::Entity>();
+	gTeamSelectMenu->addComponent<Odyssey::Transform>();
+	gTeamSelectMenu->addComponent<Odyssey::UICanvas>();
+	gTeamSelectMenu->addComponent<Odyssey::Camera>();
+	gTeamSelectMenu->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	UINT width = gMainWindow->getWidth();
+	UINT height = gMainWindow->getHeight();
+	gTeamSelectMenu->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/TeamSelection.png", width, height);
+	gTeamSelectMenu->addComponent<TeamSelectionController>(application);
+	gTeamSelectScene->addEntity(gTeamSelectMenu);
 }
 
 void setupArena()
@@ -400,8 +461,8 @@ void setupGameInterface()
 	canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	UINT rewardsImageWidth = 1280;
 	UINT rewardsImageHeight = 720;
-	float rewardsImageX = width / 2.0f - (static_cast<float>(rewardsImageWidth) / 2.0f);
-	float rewardsImageY = height / 2.0f - (static_cast<float>(rewardsImageHeight) / 2.0f);
+	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
+	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
 	canvas->setActive(false); // The rewards screen won't show up at the start
 
@@ -478,47 +539,6 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	}
 }
 
-void setupPaladin()
-{
-	gPaladin = std::make_shared<Odyssey::Entity>();
-	gPaladin->addComponent<Odyssey::Transform>();
-	gPaladin->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gPaladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.6f, 3.0f);
-	gPaladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(gPaladin, "assets/models/Paladin.dxm", true);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BasicAttack", "assets/animations/Paladin/Paladin_BasicAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("BigAttack", "assets/animations/Paladin/Paladin_BigAttack.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Defense", "assets/animations/Paladin/Paladin_Defense.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Heal", "assets/animations/Paladin/Paladin_Heal.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
-	gPaladin->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
-	gPaladin->addComponent<HeroComponent>(HEROID::Paladin);
-	gGameScene->addEntity(gPaladin);
-}
-
-void setupSkeleton()
-{
-	gSkeleton = std::make_shared<Odyssey::Entity>();
-	gSkeleton->addComponent<Odyssey::Transform>();
-	gSkeleton->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	gSkeleton->getComponent<Odyssey::Transform>()->setPosition(0.0f, -0.5f, -10.0f);
-	gSkeleton->getComponent<Odyssey::Transform>()->setRotation(0.0f, 180, 0);
-	Odyssey::FileManager::getInstance().importModel(gSkeleton, "assets/models/Skeleton.dxm", false);
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
-	gSkeleton->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
-	gSkeleton->addComponent<EnemyComponent>(ENEMYID::Skeleton);
-	gGameScene->addEntity(gSkeleton);
-}
-
 void setupAudio()
 {
 	//SFX
@@ -530,7 +550,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	//Play Initial Loop
-	RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
@@ -550,6 +571,15 @@ void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, 
 
 void setUpTowerManager()
 {
+	// Create the current tower entity
+	gCurrentTower = std::make_shared<Odyssey::Entity>();
+	gCurrentTower->addComponent<TowerManager>();
+	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
+	
+	// Get the number of Text2D elements in the GameMenu before adding them
+	int text2DIndex = gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>().size();
+
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
@@ -567,6 +597,9 @@ void setUpTowerManager()
 	float anchorX = width / 75.0f;
 	float anchorY = height / 25.0f;
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	// Increase the amount of text2D elements when pushing into the TurnOrderNumbers
+	text2DIndex++;
 	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
@@ -575,6 +608,9 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 	anchorY += (height / 7.0f);
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	// Increase the amount of text2D elements when pushing into the TurnOrderNumbers
+	text2DIndex++;
 	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
@@ -584,6 +620,9 @@ void setUpTowerManager()
 	anchorX = width - anchorX - (width / 25.0f);
 	anchorY = height / 25.0f;
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	// Increase the amount of text2D elements when pushing into the TurnOrderNumbers
+	text2DIndex++;
 	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
@@ -592,18 +631,14 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
 	anchorY += (height / 7.0f);
 	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	// Increase the amount of text2D elements when pushing into the TurnOrderNumbers
+	text2DIndex++;
 	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
-	gCurrentTower = std::make_shared<Odyssey::Entity>();
-	gCurrentTower->addComponent<TowerManager>(gPlayerUnit, gEnemyUnit, 5);
-	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
-	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
-	gCurrentTower->getComponent<TowerManager>()->addHUD = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[13]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[14]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[15]);
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(gGameMenu->getComponents<Odyssey::UICanvas>()[0]->getElements<Odyssey::Text2D>()[16]);
+	// Set up the tower manager with the enemy and player teams
+	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5);
 	gGameScene->addEntity(gCurrentTower);
 }
 

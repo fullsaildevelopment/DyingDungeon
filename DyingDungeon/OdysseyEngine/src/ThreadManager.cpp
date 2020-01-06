@@ -5,6 +5,7 @@
 #include "XTime.h"
 #include "EventManager.h"
 #include "EngineProfiler.h"
+#include "EventManager.h"
 
 namespace Odyssey
 {
@@ -13,6 +14,12 @@ namespace Odyssey
 		// TODO: insert return statement here
 		static ThreadManager instance;
 		return instance;
+	}
+
+	ThreadManager::ThreadManager()
+	{
+		mShuttingDown = false;
+		EventManager::getInstance().subscribe(this, &ThreadManager::onShutdown);
 	}
 
 	ThreadManager::~ThreadManager()
@@ -40,14 +47,21 @@ namespace Odyssey
 		}
 	}
 
+	void ThreadManager::onShutdown(EngineShutdownEvent* evnt)
+	{
+		mShuttingDown = true;
+	}
+
 	void ThreadManager::updateScene(std::shared_ptr<SceneDX11> activeScene)
 	{
 		while (mSceneChanged == false)
 		{
-			// TODO: FIX THIS
-			//EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
+			if (mShuttingDown == false)
+			{
+				EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
 
-			activeScene->update();
+				activeScene->update();
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "UICanvas.h"
 #include "Scene.h"
+#include "MeshRenderer.h"
 
 namespace Odyssey
 {
@@ -17,6 +18,29 @@ namespace Odyssey
 		// Add the entity to the entity vector
 		mSceneEntities.push_back(entity);
 
+		for (Component* component : entity->getComponents<Component>())
+		{
+			mComponentList.push_back(component);
+		}
+
+		for (MeshRenderer* meshRenderer : entity->getComponents<MeshRenderer>())
+		{
+			mRenderList.push_back(meshRenderer);
+		}
+
+		for (std::shared_ptr<Entity> child : entity->getChildren())
+		{
+			for (Component* component : child->getComponents<Component>())
+			{
+				mComponentList.push_back(component);
+			}
+
+			for (MeshRenderer* childMesh : child->getComponents<MeshRenderer>())
+			{
+				mRenderList.push_back(childMesh);
+			}
+		}
+
 		// Check if the entity has a camera component
 		if (entity->getComponent<Camera>())
 		{
@@ -25,10 +49,15 @@ namespace Odyssey
 		}
 
 		// Check if the entity has a UI canvas component
-		if (UICanvas* canvas = entity->getComponent<UICanvas>())
+		for (UICanvas* canvas : entity->getComponents<UICanvas>())
 		{
 			// Add it to the vector of UI canvas objects
 			mSceneCanvas.push_back(canvas);
+
+			for (UIElement* element : canvas->getElements<UIElement>())
+			{
+				mElementList.push_back(element);
+			}
 		}
 	}
 

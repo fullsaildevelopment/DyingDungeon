@@ -29,6 +29,7 @@ namespace Odyssey
 			// Create a new element type shared pointer and store it in the elements vector
 			mElements.emplace_back(std::make_shared<ElementType>(std::forward<Args>(params)...));
 
+			mElements[mElements.size() - 1]->setCanvas(this);
 			// Return a raw pointer to the created element type
 			return static_cast<ElementType*>(mElements[mElements.size() - 1].get());
 		}

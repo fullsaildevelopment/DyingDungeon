@@ -70,6 +70,12 @@
     <ClCompile Include="src\Shields.cpp">
       <Filter>Source Files\StatusEffects</Filter>
     </ClCompile>
+    <ClCompile Include="src\TowerSelectController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TeamSelectionController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h">
@@ -148,6 +154,12 @@
       <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
     <ClInclude Include="src\StatTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TowerSelectController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TeamSelectionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

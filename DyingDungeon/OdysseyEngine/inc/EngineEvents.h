@@ -50,6 +50,7 @@ namespace Odyssey
 
 		}
 	};
+
 	class SceneChangeEvent : public Event
 	{
 	public:
@@ -59,5 +60,14 @@ namespace Odyssey
 			priority = EventPriority::Deferred;
 		}
 		~SceneChangeEvent() = default;
+	};
+
+	class EngineShutdownEvent : public Event
+	{
+	public:
+		EngineShutdownEvent()
+		{
+
+		}
 	};
 }

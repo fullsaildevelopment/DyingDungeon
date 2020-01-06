@@ -13,8 +13,7 @@ namespace Odyssey
 		// Subscribe to the opaque render event
 		EventManager::getInstance().subscribe(this, &EngineProfiler::onOpaqueRender);
 
-		// Disable output
-		mOutputEnabled = false;
+		mOutputStats = false;
 	}
 
 	void EngineProfiler::onThreadTick(ThreadTickEvent* evnt)
@@ -32,13 +31,12 @@ namespace Odyssey
 		stats.currentFrame = stats.timer.TotalTime();
 
 		double time = stats.timer.TotalTime();
-		if (time >= 5.0)
+		if (time >= 1.0)
 		{
 			stats.timer.Restart();
 			stats.framesPerSecond = stats.frameCounter;
 			stats.frameCounter = 0;
-
-			if (mOutputEnabled)
+			if (mOutputStats)
 			{
 				std::cout << "========================" << std::endl;
 				std::cout << stats.threadName << " FPS: " << stats.framesPerSecond << std::endl;
@@ -57,11 +55,10 @@ namespace Odyssey
 
 		double time = opaqueStats.timer.TotalTime();
 
-		if (time >= 5.0)
+		if (time >= 1.0)
 		{
 			opaqueStats.timer.Restart();
-
-			if (mOutputEnabled)
+			if (mOutputStats)
 			{
 				std::cout << "========================" << std::endl;
 				std::cout << "Render time: " << opaqueStats.renderTime << " ms" << std::endl;

@@ -31,6 +31,8 @@ namespace Odyssey
 	public:
 		RenderDevice(Application& application, HINSTANCE moduleHandle);
 		Microsoft::WRL::ComPtr<ID3D11Device> getDevice();
+		Microsoft::WRL::ComPtr<ID2D1DeviceContext> getDevice2DContext();
+		Microsoft::WRL::ComPtr<ID2D1Factory1> get2DFactory();
 	public:
 		std::shared_ptr<Scene> createScene();
 	public: // Rendering Resources
@@ -57,8 +59,14 @@ namespace Odyssey
 		std::shared_ptr<Sprite2DPass> createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow);
 	private:
 		void createDevice(HINSTANCE hInstance);
+		// Direct3D
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
+		// Direct2D
+		Microsoft::WRL::ComPtr<ID2D1Factory1> mFactory;
+		Microsoft::WRL::ComPtr<ID2D1Device> mDevice2D;
+		Microsoft::WRL::ComPtr<ID2D1DeviceContext> mDevice2DContext;
+
 	private:
 		typedef std::vector<std::shared_ptr<Scene>> SceneList;
 		SceneList mScenes;

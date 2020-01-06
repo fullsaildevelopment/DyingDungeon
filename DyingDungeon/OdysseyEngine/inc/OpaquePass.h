@@ -28,8 +28,8 @@ namespace Odyssey
 		virtual void render(RenderArgs& args);
 		void setFrustumCullEnable(bool enable);
 	private:
-		void updateLightingBuffer(std::shared_ptr<Entity> Entity, RenderArgs& args);
-		void renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args);
+		void updateLightingBuffer(Entity* entity, RenderArgs& args);
+		void renderSceneObject(Entity* object, RenderArgs& args);
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;

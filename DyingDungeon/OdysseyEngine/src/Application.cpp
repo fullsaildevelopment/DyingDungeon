@@ -51,12 +51,16 @@ namespace Odyssey
 
 		// Enable muli-threading by default
 		mIsMultithreading = true;
+		mIsShutdown = false;
 
 		// Subscribe to the scene change event
 		EventManager::getInstance().subscribe(this, &Application::onSceneChange);
 
 		// Subscribe to the command receive event
 		EventManager::getInstance().subscribe(this, &Application::onCommandReceive);
+
+		// Subscribe to the engine shutdown event
+		EventManager::getInstance().subscribe(this, &Application::onShutdown);
 	}
 
 	Application::~Application()
@@ -93,6 +97,11 @@ namespace Odyssey
 		mProcessCommands = true;
 	}
 
+	void Application::onShutdown(EngineShutdownEvent* evnt)
+	{
+		mIsShutdown = true;
+	}
+
 	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
@@ -116,6 +125,11 @@ namespace Odyssey
 
 			// Register the window resize event with the new window bounds
 			EventManager::getInstance().publish(new WindowResizeEvent(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom));
+			break;
+		}
+		case WM_CLOSE:
+		{
+			EventManager::getInstance().publish(new EngineShutdownEvent());
 			break;
 		}
 		case WM_PAINT:
@@ -261,6 +275,11 @@ namespace Odyssey
 			}
 			// else
 			{
+				if (mIsShutdown)
+				{
+					continue;
+				}
+
 				// Check at the top of every frame if the event manager has commands to flush
 				if (mProcessCommands)
 				{
