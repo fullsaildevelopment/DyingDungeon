@@ -1,6 +1,6 @@
 #include "RedAudio.h"
 
-#define DEBUG_AUDIO_CONSOLE_OUT
+//#define DEBUG_AUDIO_CONSOLE_OUT
 
 RedAudio::RedAudio(const char* path, const char* alias)
 {
