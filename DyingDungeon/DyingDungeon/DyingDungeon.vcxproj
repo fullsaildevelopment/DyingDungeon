@@ -183,6 +183,7 @@
     <ClCompile Include="src\StatTracker.cpp" />
     <ClCompile Include="src\StatUp.cpp" />
     <ClCompile Include="src\StatusEffect.cpp" />
+    <ClCompile Include="src\Stun.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,7 @@
     <ClInclude Include="src\StatTracker.h" />
     <ClInclude Include="src\StatUp.h" />
     <ClInclude Include="src\StatusEffect.h" />
+    <ClInclude Include="src\Stun.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TowerManager.h" />
   </ItemGroup>
