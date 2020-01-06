@@ -50,6 +50,11 @@ void RedAudioManager::Play(const char* alias)
 	FindAudio(alias)->Play();
 }
 
+void RedAudioManager::Stop(const char* alias) 
+{
+	FindAudio(alias)->Stop();
+}
+
 void RedAudioManager::PlaySFX(const char* alias)
 {
 	FindAudio(alias)->PlayInstance();
@@ -83,13 +88,13 @@ void RedAudioManager::Update()
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
-	m_audioFiles.emplace_back(RedAudio(path, alias));
+	m_audioFiles.push_back(RedAudio(path, alias));
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
 void RedAudioManager::AddAudio(RedAudio in_audio)
 {
-	m_audioFiles.emplace_back(in_audio);
+	m_audioFiles.push_back(in_audio);
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 

@@ -530,7 +530,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	//Play Initial Loop
-	RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)

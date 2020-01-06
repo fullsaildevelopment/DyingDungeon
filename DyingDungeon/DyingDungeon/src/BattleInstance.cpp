@@ -1,10 +1,13 @@
 #include "BattleInstance.h"
+#include "RedAudioManager.h"
 #include "Transform.h"
 #include "Character.h"
 #include <string>
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
 {
+	RedAudioManager::Instance().Stop("BackgroundMenu");
+
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 	mTurnOrderNumbers = _turnOrderNumbers;
