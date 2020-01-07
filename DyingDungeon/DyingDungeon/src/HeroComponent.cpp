@@ -13,6 +13,7 @@
 #include "Regens.h"
 #include "Stun.h"
 #include "Shields.h"
+#include "Provoked.h"
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -23,6 +24,8 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
+	StatusEffect* temp = nullptr;
+	Skills* tempSkill = nullptr;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -38,13 +41,19 @@ HeroComponent::HeroComponent(HEROID id)
 		for (int i = 0; i < TOTALSKILLS; ++i)
 			mSkillList[i] = nullptr;
 		// Basic Attack (Add Provoke 30% chance)
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, nullptr, true);
+		temp = new Provoked(1, this, nullptr);
+		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, temp, false);
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList[1] = new Attack("Bleed Attack", "BigAttack", 25, 25, nullptr, false);
-		// Skill 2 Shield of Light (Gives the team 50% damage reduction for 2 turns)
-		mSkillList[2] = new Heal("Heal", "Heal", 10, 25);
-		// Skill 3 Blessing of light (Gives the team 25 temp hp with a shield)
-		mSkillList[3] = new Buffs("StatUp", "AttackUp", 10, nullptr,true);
+		tempSkill = new Heal("SelfHeal", "Idle", 0.0f, 20.0f);
+		mSkillList[1] = new Attack("Judgement", "BigAttack", 15.0f, 20.0f, nullptr, false, tempSkill);
+		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
+		temp = new Shields(25.0f, 3, nullptr);
+		mSkillList[2] = new Buffs("Shield of Light", "Heal", 20.0f, temp, true, true);
+		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
+		temp = new StatUp(0.50f, 3, STATS::Def, nullptr);
+		mSkillList[3] = new Buffs("Blessing of Light", "Defense", 15.0f,temp,true,true);
+		temp = nullptr;
+		tempSkill = nullptr;
 		break;
 	}
 	default:
@@ -85,8 +94,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (mCurrentState == STATE::DEAD)
-			return false;
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
@@ -203,9 +210,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (int i = 0; i < heros.size(); ++i)
 					{
-						temp = heros[i]->getComponent<Character>();
-						if (temp->IsDead() == false)
-							mCurrentSkill->Use(*mEntity->getComponent<Character>(), *temp);
+						if (heros[i] != nullptr)
+						{
+							temp = heros[i]->getComponent<Character>();
+							if (temp->IsDead() == false)
+								mCurrentSkill->Use(*mEntity->getComponent<Character>(), *temp);
+						}
 					}
 				}
 			}

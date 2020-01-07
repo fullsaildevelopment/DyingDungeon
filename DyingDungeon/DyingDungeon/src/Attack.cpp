@@ -10,6 +10,19 @@ Attack::Attack(std::string skillName, std::string animationId, float mpCost, flo
 	mDamage = damage;
 	mDebuff = debuff;
 	mIsAOE = AOE;
+	mAdditionalEffect = nullptr;
+}
+
+Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE, Skills* additionalEffect)
+{
+	mTypeId = SKILLTYPE::ATTACK;
+	mName = skillName;
+	mAnimationId = animationId;
+	mMpCost = mpCost;
+	mDamage = damage;
+	mDebuff = debuff;
+	mIsAOE = AOE;
+	mAdditionalEffect = additionalEffect;
 }
 
 Attack::~Attack()
@@ -19,6 +32,11 @@ Attack::~Attack()
 		delete mDebuff;
 		mDebuff = nullptr;
 	}
+	if (mAdditionalEffect != nullptr)
+	{
+		delete mAdditionalEffect;
+		mAdditionalEffect = nullptr;
+	}
 }
 
 void Attack::Use(Character& caster, Character& target)
@@ -26,10 +44,19 @@ void Attack::Use(Character& caster, Character& target)
 	caster.DepleteMana(mMpCost);
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
+	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	target.TakeDamage(totalDps);
-	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for " << totalDps << " damage!" << std::endl;
 	if (mDebuff != nullptr)
-		mDebuff->Apply(target);
+	{
+		if (mDebuff->GetRecipient() == nullptr)
+			mDebuff->Apply(target);
+		else
+			mDebuff->Apply(*mDebuff->GetRecipient());
+	}
+	if (mAdditionalEffect != nullptr)
+	{
+		mAdditionalEffect->Use(caster, caster);
+	}
 }
 float Attack::GetDamage()
 {

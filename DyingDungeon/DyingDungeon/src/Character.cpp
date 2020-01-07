@@ -56,6 +56,7 @@ void Character::TakeDamage(float dmg)
 		{
 			(*it)->SetAmountOfEffect(dmg * -1.0f);
 			dmg = 0.0f;
+			std::cout << 0 << " damage!" << std::endl;
 			return;
 		}
 		else
@@ -68,6 +69,7 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+	std::cout << dmg << " damage!" << std::endl;
 }
 
 // Gives the character health back 
@@ -286,6 +288,16 @@ bool Character::GetStun()
 	return mStunned;
 }
 
+Character* Character::GetProvoked()
+{
+	return mProvoked;
+}
+
+void Character::SetProvoked(Character* provoker)
+{
+	mProvoked = provoker;
+}
+
 /*
  * Function:  IsHero()
  * --------------------
@@ -379,6 +391,11 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 	case EFFECTTYPE::Shield:
 	{
 		mSheilds.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Provoke:
+	{
+		mDebuffs.push_back(newEffect);
 		break;
 	}
 	default:

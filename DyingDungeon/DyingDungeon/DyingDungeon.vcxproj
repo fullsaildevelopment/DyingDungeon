@@ -176,6 +176,7 @@
     <ClCompile Include="src\Heal.cpp" />
     <ClCompile Include="src\HeroComponent.cpp" />
     <ClCompile Include="src\MainMenuController.cpp" />
+    <ClCompile Include="src\Provoked.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
     <ClCompile Include="src\Regens.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\HeroComponent.h" />
     <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MyTypeDefs.h" />
+    <ClInclude Include="src\Provoked.h" />
     <ClInclude Include="src\RedAudio.h" />
     <ClInclude Include="src\RedAudioManager.h" />
     <ClInclude Include="src\Regens.h" />

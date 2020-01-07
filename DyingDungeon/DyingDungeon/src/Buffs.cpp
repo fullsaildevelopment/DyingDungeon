@@ -1,7 +1,7 @@
 #include "Buffs.h"
 #include "Character.h"
 
-Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff, bool isBuff)
+Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, StatusEffect* buff, bool isBuff, bool isAOE)
 {
 	if (isBuff)
 		mTypeId = SKILLTYPE::BUFF;
@@ -11,6 +11,7 @@ Buffs::Buffs(std::string skillName, std::string animationId, float mpCost, Statu
 	mAnimationId = animationId;
 	mMpCost = mpCost;
 	mBuff = buff;
+	mIsAOE = isAOE;
 }
 void Buffs::Use(Character& caster, Character& target)
 {
