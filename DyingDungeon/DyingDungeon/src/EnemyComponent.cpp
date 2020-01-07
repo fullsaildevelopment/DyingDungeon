@@ -14,12 +14,14 @@ CLASS_DEFINITION(Character, EnemyComponent)
 
 EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
+	mDead = false;
 	SetHero(false);
 	mCurrentState = STATE::NONE;
 	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
+		// TODO: FIX YOUR SHIT - WHOEVER
 		mName = "Skeleton";
 		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -76,7 +78,9 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> 
 		}
 	}
 
-	for (int i = currentSkillMoveCheck; i < 4;)
+	// TODO: MAKE THIS WORK LATER
+	// - Changed 4 to 1 in loop
+	for (int i = currentSkillMoveCheck; i < 1;)
 	{
 		if (mSkillList[i] != nullptr)
 		{
@@ -89,7 +93,7 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> 
 				bestMove.score = score;
 			}
 
-			if (currentSkillMoveCheck >= 4)
+			if (currentSkillMoveCheck >= 0)
 			{
 				currentSkillMoveCheck = 0;
 				return true;

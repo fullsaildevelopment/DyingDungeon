@@ -17,7 +17,7 @@ class Character : public Odyssey::Component
 	CLASS_DECLARATION(Character)
 
 public:
-	Character() = default;
+	Character();
 public:
 	virtual void initialize();
 	virtual void update(double deltaTime);

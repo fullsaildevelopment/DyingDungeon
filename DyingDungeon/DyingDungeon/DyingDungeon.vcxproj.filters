@@ -5,43 +5,34 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BattleInstance.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game Management</Filter>
     </ClCompile>
     <ClCompile Include="src\CameraController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CharacterFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EnemyComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\HeroComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MainMenuController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RedAudio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RedAudioManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\StatTracker.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game Management</Filter>
     </ClCompile>
     <ClCompile Include="src\TowerManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game Management</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Character.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterFactory.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EnemyComponent.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HeroComponent.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RedAudioManager.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RedAudio.cpp">
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
     <ClCompile Include="src\Attack.cpp">
       <Filter>Source Files\Skills</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bleed.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
     </ClCompile>
     <ClCompile Include="src\Buffs.cpp">
       <Filter>Source Files\Skills</Filter>
@@ -52,126 +43,139 @@
     <ClCompile Include="src\Skills.cpp">
       <Filter>Source Files\Skills</Filter>
     </ClCompile>
-    <ClCompile Include="src\StatDown.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\StatUp.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
+    <ClCompile Include="src\StatTracker.cpp">
+      <Filter>Source Files\Stat Tracking</Filter>
     </ClCompile>
     <ClCompile Include="src\StatusEffect.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
+      <Filter>Source Files\Stat Tracking</Filter>
     </ClCompile>
-    <ClCompile Include="src\Regens.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
+    <ClCompile Include="src\GameUIManager.cpp">
+      <Filter>Source Files\User Interface</Filter>
     </ClCompile>
-    <ClCompile Include="src\Stun.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Shields.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TowerSelectController.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\MainMenuController.cpp">
+      <Filter>Source Files\User Interface</Filter>
     </ClCompile>
     <ClCompile Include="src\TeamSelectionController.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\User Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TowerSelectController.cpp">
+      <Filter>Source Files\User Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bleed.cpp">
+      <Filter>Source Files\Status Effects</Filter>
     </ClCompile>
     <ClCompile Include="src\Provoked.cpp">
-      <Filter>Source Files\StatusEffects</Filter>
-    <ClCompile Include="src\GameUIManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Regens.cpp">
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shields.cpp">
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatDown.cpp">
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatUp.cpp">
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Stun.cpp">
+      <Filter>Source Files\Status Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BattleInstance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CharacterFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DyingDungeon.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EnemyComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\HeroComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MainMenuController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RedAudio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RedAudioManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TowerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\targetver.h">
-      <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="src\MyTypeDefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Attack.h">
-      <Filter>Header Files\Skills</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Skills.h">
-      <Filter>Header Files\Skills</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Heal.h">
       <Filter>Header Files\Skills</Filter>
     </ClInclude>
     <ClInclude Include="src\Buffs.h">
       <Filter>Header Files\Skills</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatDown.h">
-      <Filter>Header Files\StatusEffects</Filter>
+    <ClInclude Include="src\Heal.h">
+      <Filter>Header Files\Skills</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatUp.h">
-      <Filter>Header Files\StatusEffects</Filter>
+    <ClInclude Include="src\Skills.h">
+      <Filter>Header Files\Skills</Filter>
     </ClInclude>
     <ClInclude Include="src\Bleed.h">
-      <Filter>Header Files\StatusEffects</Filter>
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatusEffect.h">
-      <Filter>Header Files\StatusEffects</Filter>
+    <ClInclude Include="src\Provoked.h">
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
     <ClInclude Include="src\Regens.h">
-      <Filter>Header Files\StatusEffects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Stun.h">
-      <Filter>Header Files\StatusEffects</Filter>
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
     <ClInclude Include="src\Shields.h">
-      <Filter>Header Files\StatusEffects</Filter>
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatTracker.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\StatDown.h">
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\TowerSelectController.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\StatUp.h">
+      <Filter>Header Files\Status Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatusEffect.h">
+      <Filter>Header Files\Status Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Stun.h">
+      <Filter>Header Files\Status Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Character.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterFactory.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EnemyComponent.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HeroComponent.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameUIManager.h">
+      <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MainMenuController.h">
+      <Filter>Header Files\User Interface</Filter>
     </ClInclude>
     <ClInclude Include="src\TeamSelectionController.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\User Interface</Filter>
     </ClInclude>
-    <ClInclude Include="src\StatusEvents.h" />
-    <ClInclude Include="src\Provoked.h">
-      <Filter>Header Files\StatusEffects</Filter>
-    <ClInclude Include="src\GameUIManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\TowerSelectController.h">
+      <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BattleInstance.h">
+      <Filter>Header Files\Game Management</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraController.h">
+      <Filter>Header Files\Game Management</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TowerManager.h">
+      <Filter>Header Files\Game Management</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RedAudioManager.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RedAudio.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatTracker.h">
+      <Filter>Header Files\Stat Tracking</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatusEvents.h">
+      <Filter>Header Files\Stat Tracking</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -183,34 +187,64 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{3689287e-1d9f-459a-8775-d90bf186e222}</UniqueIdentifier>
+      <UniqueIdentifier>{9e7c9414-e811-4309-a952-5deab850bc65}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{eafbc38f-36c9-4ee2-89c3-005ba492bcac}</UniqueIdentifier>
+      <UniqueIdentifier>{b14d3c03-de2c-4918-aa16-3e1cbde6ed37}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{29609dee-bcf2-48ba-a1a9-93fa23867377}</UniqueIdentifier>
+      <UniqueIdentifier>{edacb65c-2cd2-4b34-af86-457d5e5d5a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Status Effects">
+      <UniqueIdentifier>{186f9536-6ec9-4f16-b358-ed2bb3250a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Management">
+      <UniqueIdentifier>{18b16745-47c4-47d7-8960-91aac0c49455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Stat Tracking">
+      <UniqueIdentifier>{5a1dc338-0c84-4632-ba99-49defee0f76a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Management">
+      <UniqueIdentifier>{6f978382-01db-4fc3-bea9-78a6b1ba1a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio">
+      <UniqueIdentifier>{9ded1b84-b09a-44ae-953d-dae9daef40dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Characters">
+      <UniqueIdentifier>{d006d8d2-1636-4cd0-8aec-245dbc85b9ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\User Interface">
+      <UniqueIdentifier>{397e419c-9f33-4d14-b265-9e5c4ee6f794}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Skills">
-      <UniqueIdentifier>{d010a57d-317c-4b1b-811f-68d05523a13d}</UniqueIdentifier>
+      <UniqueIdentifier>{4f5efd89-4f20-4263-a16a-a06dc574e33a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\StatusEffects">
-      <UniqueIdentifier>{3599decd-a943-40ed-9f57-3ae1cc39b6f4}</UniqueIdentifier>
+    <Filter Include="Source Files\User Interface">
+      <UniqueIdentifier>{ebe9b274-98bf-4175-aa38-916f68ce7551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Status Effects">
+      <UniqueIdentifier>{f3f3e7a1-b83a-4e9d-922d-da6f35feaba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{7e75db33-7042-4eda-b74a-53f3d5163cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{efa6ea32-82f3-4ea6-bc32-fbdff089b4d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Skills">
-      <UniqueIdentifier>{866ef38a-3a32-46d3-a8bc-f957b3ef712c}</UniqueIdentifier>
+      <UniqueIdentifier>{acc8cac2-f8d3-4c1b-af31-8a1bfbd634f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\StatusEffects">
-      <UniqueIdentifier>{ab060c20-4b1b-466c-85a4-e94f176fcb14}</UniqueIdentifier>
+    <Filter Include="Source Files\Stat Tracking">
+      <UniqueIdentifier>{98afeb78-fe9b-435a-af8c-9ef224416c6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DyingDungeon.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

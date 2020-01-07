@@ -70,4 +70,15 @@ namespace Odyssey
 
 		}
 	};
+
+	class MouseClickEvent : public Event
+	{
+	public:
+		int xPosition;
+		int yPosition;
+		MouseClickEvent(int xPos, int yPos) : xPosition(xPos), yPosition(yPos)
+		{
+
+		}
+	};
 }

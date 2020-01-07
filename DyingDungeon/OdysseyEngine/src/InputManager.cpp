@@ -11,6 +11,7 @@ namespace Odyssey
 		// Subscribe to the key up event
 		EventManager::getInstance().subscribe(this, &InputManager::onKeyUp);
 	}
+
 	InputManager& InputManager::getInstance()
 	{
 		// Create the static Singleton instance and return it.

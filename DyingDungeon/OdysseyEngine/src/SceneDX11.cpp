@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include "MeshRenderer.h"
+#include "UIElement.h"
 
 namespace Odyssey
 {
@@ -11,10 +12,15 @@ namespace Odyssey
 		mXTimer.Restart();
 
 		// Iterate through each component of the entity
-		for (auto* component : mComponentList)
+		for (Component* component : mComponentList)
 		{
 			// Initialize the component
 			component->initialize();
+		}
+
+		for (UIElement* element : mElementList)
+		{
+			element->initialize();
 		}
 	}
 
@@ -26,15 +32,11 @@ namespace Odyssey
 		// Recalculate delta time
 		mDeltaTime = mXTimer.SmoothDelta();
 
-		// Iterate through the entity vector
-		for (std::shared_ptr<Entity> entity : mSceneEntities)
+		// Iterate through each component of the entity
+		for (auto* component : mComponentList)
 		{
-			// Iterate through each component of the entity
-			for (auto& component : entity->getComponents<Component>())
-			{
-				// Update the component
-				component->update(mDeltaTime);
-			}
+			// Initialize the component
+			component->update(mDeltaTime);
 		}
 	}
 

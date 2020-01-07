@@ -20,6 +20,18 @@
 #include "OdysseyEngine.h"
 #pragma comment(lib, "dbghelp.lib")
 
+// Memory leak includes
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 enum MenuComponent
 {
 	eMainMenu,
@@ -76,6 +88,11 @@ void setUpTowerManager();
 
 int playGame()
 {
+	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	//_CrtSetBreakAlloc(68315);
+
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
 	gMainWindow = application->createRenderWindow(L"Dying Dungeon", 1280, 720);
@@ -662,6 +679,8 @@ LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
 
 int main()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	SetUnhandledExceptionFilter(DumpOutput);
 	//DumpFile Test
 	/*int test = 120;

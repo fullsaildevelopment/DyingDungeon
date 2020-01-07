@@ -36,11 +36,11 @@ namespace Odyssey
 		}
 
 		// Copy the current shape and alter it's width using the fill
-		//D2D_RECT_F fillShape = mShape;
-		mShape.right *= mFill;
+		D2D_RECT_F fillShape = mShape;
+		fillShape.right *= mFill;
 
 		// Draw the filled rectangle
-		context->FillRectangle(&mShape, mBrush.Get());
+		context->FillRectangle(&fillShape, mBrush.Get());
 	}
 
 	void Rectangle2D::addFill(float value)

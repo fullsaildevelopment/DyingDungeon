@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <windows.h>
+#include <windowsx.h>
 #include "Scene.h"
 #include "RenderWindow.h"
 #include "DebugManager.h"
@@ -106,45 +107,60 @@ namespace Odyssey
 	{
 		switch (message)
 		{
-		case WM_KEYDOWN:
-		{
-			// Register the input as key down with the input manager
-			EventManager::getInstance().publish(new KeypressEvent((KeyCode)wParam));
-		}
-		break;
-		case WM_KEYUP:
-		{
-			// Register the input as key up with the input manager
-			EventManager::getInstance().publish(new KeyUpEvent((KeyCode)wParam));
-		}
-		case WM_SIZE:
-		{
-			// Get the new client rect
-			RECT mainWinRect;
-			GetClientRect(hwnd, &mainWinRect);
+			case WM_LBUTTONDOWN:
+			{
+				int xPos = GET_X_LPARAM(lParam);
+				int yPos = GET_Y_LPARAM(lParam);
+				EventManager::getInstance().publish(new MouseClickEvent(xPos, yPos));
+				EventManager::getInstance().publish(new KeypressEvent(KeyCode::LButton));
+				break;
+			}
+			case WM_LBUTTONUP:
+			{
+				EventManager::getInstance().publish(new KeyUpEvent(KeyCode::LButton));
+				break;
+			}
+			case WM_KEYDOWN:
+			{
+				// Register the input as key down with the input manager
+				EventManager::getInstance().publish(new KeypressEvent((KeyCode)wParam));
+				break;
+			}
+			break;
+			case WM_KEYUP:
+			{
+				// Register the input as key up with the input manager
+				EventManager::getInstance().publish(new KeyUpEvent((KeyCode)wParam));
+				break;
+			}
+			case WM_SIZE:
+			{
+				// Get the new client rect
+				RECT mainWinRect;
+				GetClientRect(hwnd, &mainWinRect);
 
-			// Register the window resize event with the new window bounds
-			EventManager::getInstance().publish(new WindowResizeEvent(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom));
-			break;
-		}
-		case WM_CLOSE:
-		{
-			EventManager::getInstance().publish(new EngineShutdownEvent());
-			break;
-		}
-		case WM_PAINT:
-		{
-			PAINTSTRUCT paintStruct;
-			HDC hDC;
-			hDC = BeginPaint(hwnd, &paintStruct);
-			EndPaint(hwnd, &paintStruct);
-		}
-		break;
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-		}
-		break;
+				// Register the window resize event with the new window bounds
+				EventManager::getInstance().publish(new WindowResizeEvent(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom));
+				break;
+			}
+			case WM_CLOSE:
+			{
+				EventManager::getInstance().publish(new EngineShutdownEvent());
+				break;
+			}
+			case WM_PAINT:
+			{
+				PAINTSTRUCT paintStruct;
+				HDC hDC;
+				hDC = BeginPaint(hwnd, &paintStruct);
+				EndPaint(hwnd, &paintStruct);
+				break;
+			}
+			case WM_DESTROY:
+			{
+				PostQuitMessage(0);
+				break;
+			}
 		}
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}

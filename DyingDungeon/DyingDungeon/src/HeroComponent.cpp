@@ -19,6 +19,7 @@ CLASS_DEFINITION(Character, HeroComponent)
 
 HeroComponent::HeroComponent(HEROID id)
 {
+	mDead = false;
 	SetHero(true);
 	mEXP = 0;
 	mCurrentSkill = nullptr;

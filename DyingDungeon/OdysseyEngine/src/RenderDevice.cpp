@@ -201,15 +201,19 @@ namespace Odyssey
 
 	void RenderDevice::createDevice(HINSTANCE hInstance)
 	{
-		const D3D_FEATURE_LEVEL featureLevels[] = {
-		D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0
-		};
-
+#ifdef _DEBUG
 		UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_SINGLETHREADED;
-		D3D_FEATURE_LEVEL featureLevel;
+#else
+		UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_SINGLETHREADED;
+#endif // _DEBUG
+		
+		// Find the graphics card adapter for device creation
+		findVideoCard();
 
-		// Create the 3D device
-		HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE,
+		// Create the 3D device using the highest possible feature level
+		D3D_FEATURE_LEVEL featureLevel;
+		const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0 };
+		HRESULT hr = D3D11CreateDevice(mVideoAdapter.Get(), D3D_DRIVER_TYPE_UNKNOWN,
 			nullptr, createDeviceFlags, featureLevels, _countof(featureLevels),
 			D3D11_SDK_VERSION, &mDevice, &featureLevel, &mDeviceContext);
 
@@ -225,5 +229,83 @@ namespace Odyssey
 		hr = mFactory->CreateDevice(dxgiDevice.Get(), &mDevice2D);
 
 		hr = mDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &mDevice2DContext);
+	}
+
+	void RenderDevice::findVideoCard()
+	{
+		// Create the DirectX graphics interface factory
+		Microsoft::WRL::ComPtr<IDXGIFactory> dxgiFactory;
+		HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)dxgiFactory.GetAddressOf());
+		assert(!FAILED(hr));
+
+		// Create an adapter list of gpu cards belonging to this machine
+		std::vector<Microsoft::WRL::ComPtr<IDXGIAdapter>> adapterList;
+		Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
+		UINT adapterIndex = 0;
+		while (dxgiFactory->EnumAdapters(adapterIndex, dxgiAdapter.GetAddressOf()) != DXGI_ERROR_NOT_FOUND)
+		{
+			adapterList.push_back(dxgiAdapter);
+			adapterIndex++;
+		}
+
+		// Reassign the adapter list as the list size
+		adapterIndex = static_cast<UINT>(adapterList.size());
+
+		// Create an adapter output list for the monitors available to this machine
+		std::vector<Microsoft::WRL::ComPtr<IDXGIOutput>> adapterOutputList;
+		Microsoft::WRL::ComPtr<IDXGIOutput> dxgiAdapterOutput;
+		UINT adapterOutputIndex = 0;
+
+		// Iterate through all adapters
+		for (UINT i = 0; i < adapterIndex; i++)
+		{
+			// Iterate through all outputs until none are found
+			while (adapterList[i]->EnumOutputs(adapterOutputIndex, dxgiAdapterOutput.GetAddressOf()) != DXGI_ERROR_NOT_FOUND)
+			{
+				// Store the output and increment
+				adapterOutputList.push_back(dxgiAdapterOutput);
+				adapterOutputIndex++;
+			}
+
+			// Reset the counter to 0
+			adapterOutputIndex = 0;
+		}
+
+		// Get the number of modes that will match dxgi_format_r8g8b8a8_unorm
+		adapterOutputIndex = static_cast<UINT>(adapterOutputList.size());
+
+		// Get the primary adapter output's display modes
+		UINT numModes;
+		hr = adapterOutputList[0]->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, nullptr);
+		assert(!FAILED(hr));
+
+		// Fill out the primary output's display mode list
+		DXGI_MODE_DESC* displayModeList = new DXGI_MODE_DESC[numModes];
+		hr = adapterOutputList[0]->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+		assert(!FAILED(hr));
+
+		// Iterate through the adapter list
+		DXGI_ADAPTER_DESC adapterDescription;
+		std::vector<DXGI_ADAPTER_DESC> adapterDescriptionList;
+		for (UINT i = 0; i < static_cast<UINT>(adapterList.size()); i++)
+		{
+			hr = adapterList[i]->GetDesc(&adapterDescription);
+			adapterDescriptionList.push_back(adapterDescription);
+		}
+
+		UINT adapterToUse = 0;
+		int videoCardMemory = static_cast<int>(adapterDescriptionList[0].DedicatedVideoMemory / 1024 / 1024);
+
+		for (UINT i = 0; i < adapterDescriptionList.size(); i++)
+		{
+			int cardMemory = static_cast<int>(adapterDescriptionList[i].DedicatedVideoMemory / 1024 / 1024);
+			if (videoCardMemory < cardMemory)
+			{
+				adapterToUse = i;
+				videoCardMemory = cardMemory;
+			}
+		}
+
+		mVideoAdapter = adapterList[adapterToUse];
 	}
 }

@@ -23,6 +23,7 @@
     <ClInclude Include="inc\Animator.h" />
     <ClInclude Include="inc\Application.h" />
     <ClInclude Include="inc\Buffer.h" />
+    <ClInclude Include="inc\Callback.h" />
     <ClInclude Include="inc\Camera.h" />
     <ClInclude Include="inc\ClearRenderTargetPass.h" />
     <ClInclude Include="inc\Component.h" />

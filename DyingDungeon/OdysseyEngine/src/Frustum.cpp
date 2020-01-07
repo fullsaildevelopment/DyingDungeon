@@ -59,6 +59,7 @@ namespace Odyssey
 
 		return classifySphereToPlane(aabbSphere, plane);
 	}
+
 	bool Frustum::checkFrustumView(AABB& aabb)
 	{
 		for (int i = 0; i < 6; i++)

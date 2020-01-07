@@ -2,6 +2,7 @@
 #include "EngineIncludes.h"
 #include "RenderIncludes.h"
 #include "EngineEvents.h"
+#include "Callback.h"
 
 #pragma region Element Macros
 
@@ -50,6 +51,8 @@ namespace Odyssey
 		UIElement(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height);
 		virtual ~UIElement() = default;
 
+	public:
+		typedef void (UIElement::*MemberFunction)(void);
 	public: // Events
 		/**
 		 *	Event callback to resize the UI element.
@@ -58,7 +61,22 @@ namespace Odyssey
 		 */
 		void onElementResize(UIElementResizeEvent* evnt);
 
+		/**
+		 *	Event callback to process a mouse click.
+		 *	@param[in] evnt The event parameters.
+		 *	@return void
+		 */
+		void onMouseClick(MouseClickEvent* evnt);
+
+		template<class T>
+		void registerCallback(std::string function, T* instance, void(T::*memberFunction)())
+		{
+			mCallbackMap[function] = std::make_shared<CallbackHandler<T>>(instance, memberFunction);
+		}
+
 	public: // Interface
+		virtual void initialize();
+
 		/**
 		 *	Render the 2D UI element to the parameter render target.
 		 *	@param[in] renderTarget The 2D render target to render the UI element to.
@@ -214,5 +232,6 @@ namespace Odyssey
 		DirectX::XMFLOAT2 mDimensions;
 		DirectX::XMFLOAT4 mColor;
 		UICanvas* mCanvas;
+		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 	};
 }

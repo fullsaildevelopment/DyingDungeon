@@ -20,6 +20,7 @@ namespace Odyssey
 	{
 	public:
 		typedef void (T::* MemberFunction)(EventType*);
+
 	private:
 		T* mInstance;
 		MemberFunction mFunction;

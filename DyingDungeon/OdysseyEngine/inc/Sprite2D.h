@@ -29,6 +29,9 @@ namespace Odyssey
 		 */
 		void setSprite(LPCWSTR filename, UINT width = 0, UINT height = 0);
 
+	protected:
+		virtual void onElementClick();
+
 	private: // Helpers
 		/**
 		 *	Create the bitmap resource from the parameter file.

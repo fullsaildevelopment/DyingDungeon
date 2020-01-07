@@ -20,7 +20,8 @@ namespace Odyssey
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.Width = mProperties.width;
 		swapChainDesc.Height = mProperties.height;
-		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 		swapChainDesc.Stereo = false;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.BufferCount = 1;
@@ -31,7 +32,7 @@ namespace Odyssey
 
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullScreenDesc = {};
 
-		swapChainFullScreenDesc.RefreshRate = queryRefreshRate(mProperties.width, mProperties.height, true);
+		swapChainFullScreenDesc.RefreshRate = queryRefreshRate(mProperties.width, mProperties.height, false);
 		swapChainFullScreenDesc.Windowed = true;
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
@@ -129,7 +130,7 @@ namespace Odyssey
 
 		auto properties = D2D1::BitmapProperties1(
 			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-			D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpi, dpi);
+			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpi, dpi);
 
 		mRenderDevice.getDevice2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
 		mRenderDevice.getDevice2DContext()->SetTarget(mBackBuffer.Get());
@@ -138,6 +139,7 @@ namespace Odyssey
 	DXGI_RATIONAL RenderWindowDX11::queryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync)
 	{
 		DXGI_RATIONAL refreshRate = { 0, 1 };
+
 		if (vsync)
 		{
 			Microsoft::WRL::ComPtr<IDXGIFactory> factory;

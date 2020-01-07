@@ -21,9 +21,6 @@ namespace Odyssey
 
 		// Create the rectangle
 		createShape();
-
-		// Subscribe to the element resize event
-		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
@@ -36,6 +33,28 @@ namespace Odyssey
 
 		// Recreate the shape to match the new position and dimensions
 		createShape();
+	}
+
+	void UIElement::onMouseClick(MouseClickEvent* evnt)
+	{
+		int xPosition = evnt->xPosition;
+		int yPosition = evnt->yPosition;
+
+		if (xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom)
+		{
+			if (mCallbackMap.count(__func__) > 0)
+			{
+				mCallbackMap[__func__]->execute();
+			}
+		}
+	}
+
+	void UIElement::initialize()
+	{
+		// Subscribe to the element resize event
+		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
+
+		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
 	}
 
 	void UIElement::setCanvas(UICanvas* canvas)

@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)OdysseyGameEngine\inc\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OdysseyEngine\inc\</AdditionalIncludeDirectories>
       <OmitFramePointers>false</OmitFramePointers>
     </ClCompile>
     <Link>
@@ -154,7 +154,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)OdysseyGameEngine\lib\OdysseyGameEngine.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OdysseyEngine\lib\OdysseyEngine.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
       <MapExports>true</MapExports>
     </Link>

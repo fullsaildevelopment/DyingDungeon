@@ -13,7 +13,7 @@ namespace Odyssey
 		// Subscribe to the opaque render event
 		EventManager::getInstance().subscribe(this, &EngineProfiler::onOpaqueRender);
 
-		mOutputStats = false;
+		mOutputStats = true;
 	}
 
 	void EngineProfiler::onThreadTick(ThreadTickEvent* evnt)
@@ -23,20 +23,21 @@ namespace Odyssey
 			statsMap[evnt->threadName] = ThreadStats();
 			statsMap[evnt->threadName].threadName = evnt->threadName;
 		}
-
+		
 		ThreadStats& stats = statsMap[evnt->threadName];
 		stats.timer.Signal();
 		stats.frameCounter++;
 		stats.lastFrame = stats.currentFrame;
 		stats.currentFrame = stats.timer.TotalTime();
-
+		
 		double time = stats.timer.TotalTime();
 		if (time >= 1.0)
 		{
 			stats.timer.Restart();
 			stats.framesPerSecond = stats.frameCounter;
 			stats.frameCounter = 0;
-			if (mOutputStats)
+
+			if (mOutputStats && false)
 			{
 				std::cout << "========================" << std::endl;
 				std::cout << stats.threadName << " FPS: " << stats.framesPerSecond << std::endl;
@@ -48,20 +49,22 @@ namespace Odyssey
 	void EngineProfiler::onOpaqueRender(RenderEvent* evnt)
 	{
 		opaqueStats.timer.Signal();
+		
 		opaqueStats.objectsInScene = evnt->totalObjects;
 		opaqueStats.numRendered = evnt->rendered;
 		opaqueStats.numCulled = evnt->culled;
 		opaqueStats.renderTime = opaqueStats.timer.Delta() * 1000.0;
-
+		
 		double time = opaqueStats.timer.TotalTime();
-
+		
 		if (time >= 1.0)
 		{
 			opaqueStats.timer.Restart();
-			if (mOutputStats)
+			if (mOutputStats && false)
 			{
 				std::cout << "========================" << std::endl;
-				std::cout << "Render time: " << opaqueStats.renderTime << " ms" << std::endl;
+				std::cout << "Total Render time: " << opaqueStats.renderTime << " ms" << std::endl;
+				std::cout << "Render FPS: " << statsMap["Main Thread"].framesPerSecond << " fps" << std::endl;
 				std::cout << "Objects in scene: " << opaqueStats.objectsInScene << std::endl;
 				std::cout << "Objects rendered: " << opaqueStats.numRendered << std::endl;
 				std::cout << "Objects culled: " << opaqueStats.numCulled << std::endl;

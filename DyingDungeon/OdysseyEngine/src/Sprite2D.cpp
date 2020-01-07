@@ -36,6 +36,11 @@ namespace Odyssey
 		createBitmapFromFile(filename, width, height);
 	}
 
+	void Sprite2D::onElementClick()
+	{
+		int debug = 0;
+	}
+
 	void Sprite2D::createBitmapFromFile(LPCWSTR filename, UINT width, UINT height)
 	{
 		// Create the bimap decoder

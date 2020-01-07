@@ -5,6 +5,11 @@
 
 CLASS_DEFINITION(Component, Character)
 
+Character::Character()
+{
+	mDead = false;
+}
+
 void Character::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();

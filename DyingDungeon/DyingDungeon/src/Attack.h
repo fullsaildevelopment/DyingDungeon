@@ -15,8 +15,7 @@ public:
 	Attack() = default;
 	~Attack();
 	Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE);
-	Attack(std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff, bool AOE, Skills* AdditionalEffect);
-	Attack(std::string skillName, std::string animationId, float mpCost, float mDamage, StatusEffect* debuff, bool AOE);
+	Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE, Skills* AdditionalEffect);
 	// Use the skill
 	void Use(Character& caster, Character& target);
 	// Get how much damage the attack does

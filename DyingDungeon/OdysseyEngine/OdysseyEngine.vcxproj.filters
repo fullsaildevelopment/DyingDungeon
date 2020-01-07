@@ -273,6 +273,9 @@
     <ClInclude Include="inc\OdysseyEngine.h">
       <Filter>Header Files\Includes</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Callback.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">

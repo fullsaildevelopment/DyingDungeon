@@ -6,6 +6,8 @@ namespace Odyssey
 	{
 		// Default state for scene objects is non-renderable without a parent or children
 		mParent = nullptr;
+		mIsStatic = true;
+		mDebugEnabled = false;
 	}
 
 	void Entity::addChild(std::shared_ptr<Entity> child)

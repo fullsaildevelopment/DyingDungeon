@@ -59,7 +59,9 @@ namespace Odyssey
 		std::shared_ptr<Sprite2DPass> createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow);
 	private:
 		void createDevice(HINSTANCE hInstance);
+		void findVideoCard();
 		// Direct3D
+		Microsoft::WRL::ComPtr<IDXGIAdapter> mVideoAdapter;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		// Direct2D
