@@ -41,3 +41,8 @@ SKILLTYPE Skills::GetTypeId()
 {
 	return mTypeId;
 }
+
+bool Skills::IsAOE()
+{
+	return mIsAOE;
+}
