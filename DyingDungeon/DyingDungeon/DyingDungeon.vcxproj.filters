@@ -78,6 +78,8 @@
     </ClCompile>
     <ClCompile Include="src\Provoked.cpp">
       <Filter>Source Files\StatusEffects</Filter>
+    <ClCompile Include="src\GameUIManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +170,8 @@
     <ClInclude Include="src\StatusEvents.h" />
     <ClInclude Include="src\Provoked.h">
       <Filter>Header Files\StatusEffects</Filter>
+    <ClInclude Include="src\GameUIManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

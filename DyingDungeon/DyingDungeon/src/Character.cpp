@@ -56,7 +56,6 @@ void Character::TakeDamage(float dmg)
 		{
 			(*it)->SetAmountOfEffect(dmg * -1.0f);
 			dmg = 0.0f;
-
 			std::cout << 0 << " damage!" << std::endl;
 			return;
 		}
