@@ -71,8 +71,10 @@ public:
 	//Stunned Functions
 	void SetStun(bool stun);
 	bool GetStun();
+	// mProvoked Functions
+	Character* GetProvoked();
+	void SetProvoked(Character* provoker);
 	/////End of Get and Set Functions/////
-
 	// Status Effect Functions
 	void AddStatusEffect(StatusEffect* newEffect);
 	void ManageStatusEffects(std::vector<StatusEffect*>& effectList);
@@ -100,6 +102,7 @@ protected:
 	float mSpeed;
 	float mEXP;
 	bool mStunned;
+	Character* mProvoked;
 	std::string mName;
 	Skills** mSkillList;
 	std::vector<StatusEffect*> mDebuffs;

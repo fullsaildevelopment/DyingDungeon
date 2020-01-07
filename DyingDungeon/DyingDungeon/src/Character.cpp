@@ -56,6 +56,8 @@ void Character::TakeDamage(float dmg)
 		{
 			(*it)->SetAmountOfEffect(dmg * -1.0f);
 			dmg = 0.0f;
+
+			std::cout << 0 << " damage!" << std::endl;
 			return;
 		}
 		else
@@ -68,6 +70,7 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+	std::cout << dmg << " damage!" << std::endl;
 }
 
 // Gives the character health back 
@@ -284,6 +287,16 @@ void Character::SetStun(bool stun)
 bool Character::GetStun()
 {
 	return mStunned;
+}
+
+Character* Character::GetProvoked()
+{
+	return mProvoked;
+}
+
+void Character::SetProvoked(Character* provoker)
+{
+	mProvoked = provoker;
 }
 
 /*

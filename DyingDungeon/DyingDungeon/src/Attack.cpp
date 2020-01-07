@@ -26,10 +26,15 @@ void Attack::Use(Character& caster, Character& target)
 	caster.DepleteMana(mMpCost);
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
+	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	target.TakeDamage(totalDps);
-	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for " << totalDps << " damage!" << std::endl;
 	if (mDebuff != nullptr)
-		mDebuff->Apply(target);
+	{
+		if (mDebuff->GetRecipient() == nullptr)
+			mDebuff->Apply(target);
+		else
+			mDebuff->Apply(*mDebuff->GetRecipient());
+	}
 }
 float Attack::GetDamage()
 {

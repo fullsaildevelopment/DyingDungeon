@@ -76,6 +76,9 @@
     <ClCompile Include="src\TeamSelectionController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Provoked.cpp">
+      <Filter>Source Files\StatusEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BattleInstance.h">
@@ -161,6 +164,10 @@
     </ClInclude>
     <ClInclude Include="src\TeamSelectionController.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StatusEvents.h" />
+    <ClInclude Include="src\Provoked.h">
+      <Filter>Header Files\StatusEffects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
