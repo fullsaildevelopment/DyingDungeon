@@ -394,6 +394,11 @@ void Character::AddStatusEffect(StatusEffect* newEffect)
 		mSheilds.push_back(newEffect);
 		break;
 	}
+	case EFFECTTYPE::Provoke:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
 	default:
 		break;
 	}

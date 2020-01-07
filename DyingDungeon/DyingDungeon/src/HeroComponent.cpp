@@ -25,6 +25,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
 	StatusEffect* temp = nullptr;
+	Skills* tempSkill = nullptr;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -43,7 +44,8 @@ HeroComponent::HeroComponent(HEROID id)
 		temp = new Provoked(1, this, nullptr);
 		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, temp, false);
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList[1] = new Attack("Judgement", "BigAttack", 15.0f, 20.0f, nullptr, false);
+		tempSkill = new Heal("SelfHeal", "Idle", 0.0f, 20.0f);
+		mSkillList[1] = new Attack("Judgement", "BigAttack", 15.0f, 20.0f, nullptr, false, tempSkill);
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = new Shields(25.0f, 3, nullptr);
 		mSkillList[2] = new Buffs("Shield of Light", "Heal", 20.0f, temp, true, true);
@@ -51,6 +53,7 @@ HeroComponent::HeroComponent(HEROID id)
 		temp = new StatUp(0.50f, 3, STATS::Def, nullptr);
 		mSkillList[3] = new Buffs("Blessing of Light", "Defense", 15.0f,temp,true,true);
 		temp = nullptr;
+		tempSkill = nullptr;
 		break;
 	}
 	default:
@@ -91,8 +94,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (mCurrentState == STATE::DEAD)
-			return false;
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
