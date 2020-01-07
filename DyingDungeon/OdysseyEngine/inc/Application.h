@@ -35,6 +35,13 @@ namespace Odyssey
 		void onCommandReceive(CommandReceiveEvent* evnt);
 
 		/**
+		 *	Event callback notifying the application to shutdown.
+		 *	@param[in] evnt The event parameters.
+		 *	@return void
+		 */
+		void onShutdown(EngineShutdownEvent* evnt);
+
+		/**
 		 *	Static callback for render window message handling.
 		 *	@param[in] hwnd The render window's handle.
 		 *	@param[in] message The windows message to handle.
@@ -114,5 +121,6 @@ namespace Odyssey
 		std::unique_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<RenderPipeline> mRenderPipeline;
 		bool mIsRunning;
+		bool mIsShutdown;
 	};
 }

@@ -4,8 +4,15 @@ namespace Odyssey
 {
 	EventManager::EventManager()
 	{
+		// Set default values
+		mIsShutdown = false;
+		mPublishCommands = false;
+
 		// Subscribe to the command flush event with the process commands callback.
 		subscribe(this, &EventManager::processCommands);
+
+		// Subscribe to the engine shutdown event with the on shutdown callback.
+		subscribe(this, &EventManager::onShutdown);
 	}
 
 	EventManager& EventManager::getInstance()
@@ -34,6 +41,11 @@ namespace Odyssey
 		mPublishCommands = false;
 	}
 
+	void EventManager::onShutdown(EngineShutdownEvent* evnt)
+	{
+		mIsShutdown = true;
+	}
+
 	bool EventManager::isCommand(Event* evnt)
 	{
 		// Deferred priority events are considered commands
@@ -45,6 +57,9 @@ namespace Odyssey
 
 	void EventManager::processEvent(std::type_index index, Event* evnt)
 	{
+		if (mIsShutdown)
+			return;
+
 		// Get the event handlers of all subscribers to this event
 		std::shared_ptr<EventHandlerList> handlers = mSubscribers[index];
 

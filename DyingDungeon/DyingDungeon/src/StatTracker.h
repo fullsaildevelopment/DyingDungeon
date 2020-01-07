@@ -2,8 +2,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include<fstream>
 #include "Skills.h"
 #include "TowerManager.h"
+#include "EventManager.h"
 class StatTracker
 {
 
@@ -16,8 +18,9 @@ public:
 	{
 		std::string characterName;
 		std::string targetName;
-		unsigned int round;
+		uint32_t round;
 		float value;
+		float blockValue;
 		STATS effect;
 		StatTracker::Action actionType;
 		bool isSpell = false;
@@ -26,19 +29,21 @@ public:
 
 	struct Level 
 	{
-		unsigned int levelNumber;
-		unsigned int rounds;
+		uint32_t levelNumber;
+		uint32_t rounds;
 		std::vector<StatTracker::Turn> turns;
 	};
 
 private:
-	unsigned int m_currentLevel;
+	uint32_t m_currentLevel;
 	std::vector<Level> m_levels;
 	TowerManager* m_towerManager;
 public:
 	static StatTracker* Instance();
 	void StartNextTurn();
 	void StartNextLevel();
+	void SaveStats(std::string saveName);
+	void LoadStats(std::string loadFileName);
 	~StatTracker();
 
 private:

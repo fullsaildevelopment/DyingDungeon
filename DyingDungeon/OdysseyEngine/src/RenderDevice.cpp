@@ -34,6 +34,16 @@ namespace Odyssey
 		return mDevice.Get();
 	}
 
+	Microsoft::WRL::ComPtr<ID2D1DeviceContext> RenderDevice::getDevice2DContext()
+	{
+		return mDevice2DContext;
+	}
+
+	Microsoft::WRL::ComPtr<ID2D1Factory1> RenderDevice::get2DFactory()
+	{
+		return mFactory;
+	}
+
 	std::shared_ptr<Scene> RenderDevice::createScene()
 	{
 		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
@@ -198,8 +208,22 @@ namespace Odyssey
 		UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_SINGLETHREADED;
 		D3D_FEATURE_LEVEL featureLevel;
 
+		// Create the 3D device
 		HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE,
 			nullptr, createDeviceFlags, featureLevels, _countof(featureLevels),
 			D3D11_SDK_VERSION, &mDevice, &featureLevel, &mDeviceContext);
+
+		// Create the 2D factory
+		auto options = D2D1_FACTORY_OPTIONS();
+		options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, options, mFactory.GetAddressOf());
+
+		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
+		hr = mDevice.As(&dxgiDevice);
+
+		// Obtain the Direct2D device for 2-D rendering.
+		hr = mFactory->CreateDevice(dxgiDevice.Get(), &mDevice2D);
+
+		hr = mDevice2D->CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &mDevice2DContext);
 	}
 }

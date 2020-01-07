@@ -63,7 +63,7 @@ namespace Odyssey
 
 	void DebugPass::render(RenderArgs& args)
 	{
-		for (std::shared_ptr<Entity> debugObject : args.renderList)
+		for (std::shared_ptr<Entity> debugObject : args.entityList)
 		{
 			if (AnimatorDX11* animator = debugObject->getComponent<AnimatorDX11>())
 			{

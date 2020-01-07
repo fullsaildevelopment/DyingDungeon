@@ -185,7 +185,9 @@
     <ClCompile Include="src\StatUp.cpp" />
     <ClCompile Include="src\StatusEffect.cpp" />
     <ClCompile Include="src\Stun.cpp" />
+    <ClCompile Include="src\TeamSelectionController.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
+    <ClCompile Include="src\TowerSelectController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Attack.h" />
@@ -212,8 +214,11 @@
     <ClInclude Include="src\StatUp.h" />
     <ClInclude Include="src\StatusEffect.h" />
     <ClInclude Include="src\Stun.h" />
+    <ClInclude Include="src\StatusEvents.h" />
     <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\TeamSelectionController.h" />
     <ClInclude Include="src\TowerManager.h" />
+    <ClInclude Include="src\TowerSelectController.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico" />

@@ -38,6 +38,8 @@ bool childclass::isElementType( const std::size_t elementType ) const {         
 
 namespace Odyssey
 {
+	class UICanvas;
+
 	class UIElement
 	{
 	public: // Type identifers
@@ -62,7 +64,11 @@ namespace Odyssey
 		 *	@param[in] renderTarget The 2D render target to render the UI element to.
 		 *	@return void
 		 */
-		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget) = 0;
+		virtual void draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context) = 0;
+
+		void setCanvas(UICanvas* canvas);
+
+		UICanvas* getCanvas();
 
 		/**
 		 *	Add to the element's position.
@@ -207,5 +213,6 @@ namespace Odyssey
 		DirectX::XMFLOAT2 mScale;
 		DirectX::XMFLOAT2 mDimensions;
 		DirectX::XMFLOAT4 mColor;
+		UICanvas* mCanvas;
 	};
 }

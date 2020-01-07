@@ -20,6 +20,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		void Play(const char* alias);
+		void Stop(const char* alias);
 		/// <summary>
 		/// 
 		/// </summary>

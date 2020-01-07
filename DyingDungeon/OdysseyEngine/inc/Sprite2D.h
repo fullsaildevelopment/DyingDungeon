@@ -18,7 +18,7 @@ namespace Odyssey
 		 *	@param[in] renderTarget The 2D render target to render the sprite to.
 		 *	@return void
 		 */
-		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);
+		virtual void draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context);
 
 		/**
 		 *	Create the sprite image resource to be rendered.
@@ -40,7 +40,7 @@ namespace Odyssey
 		void createBitmapFromFile(LPCWSTR filename, UINT width, UINT height);
 
 	private: // Members
-		Microsoft::WRL::ComPtr<IWICImagingFactory> factory;
+		IWICImagingFactory* factory;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> mBitmap;
 		IWICFormatConverter* mBitmapConverter;
 	};

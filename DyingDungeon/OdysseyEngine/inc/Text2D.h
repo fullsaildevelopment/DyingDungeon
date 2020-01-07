@@ -27,7 +27,7 @@ namespace Odyssey
 		 *	@param[in] renderTarget The 2D render target to render the text to.
 		 *	@return void
 		 */
-		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);
+		virtual void draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context);
 
 		/**
 		 *	Set the text element to be rendered.

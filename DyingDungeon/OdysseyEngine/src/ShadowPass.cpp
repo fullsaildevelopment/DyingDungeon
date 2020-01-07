@@ -139,7 +139,7 @@ namespace Odyssey
 		if (renderStatic || renderDynamic)
 		{
 			// Iterate over each scene object in the render list
-			for (std::shared_ptr<Entity> renderObject : args.renderList)
+			for (std::shared_ptr<Entity> renderObject : args.entityList)
 			{
 				// Check if the object has a mesh renderer
 				if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())

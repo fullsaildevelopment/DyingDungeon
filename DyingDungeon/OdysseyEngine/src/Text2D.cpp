@@ -24,18 +24,18 @@ namespace Odyssey
 		createTextFormat(mProperties);
 	}
 
-	void Text2D::draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget)
+	void Text2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if we have a valid brush
 		if (mBrush == nullptr)
 		{
 			// Create the brush to render the text with
-			renderTarget->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, 1.0f), mBrush.GetAddressOf());
+			context->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, 1.0f), mBrush.GetAddressOf());
 			mBrush->SetOpacity(mColor.w);
 		}
 
 		// Render the text to the render target
-		renderTarget->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
+		context->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
 	}
 
 	void Text2D::setText(std::wstring text)

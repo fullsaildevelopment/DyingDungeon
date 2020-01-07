@@ -18,7 +18,7 @@ namespace Odyssey
 		 *	@param[in] renderTarget The 2D render target to render the rectangle to.
 		 *	@return void
 		 */
-		virtual void draw(Microsoft::WRL::ComPtr<ID2D1RenderTarget> renderTarget);
+		virtual void draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context);
 
 		/**
 		 *	Add to the rectangle's fill.

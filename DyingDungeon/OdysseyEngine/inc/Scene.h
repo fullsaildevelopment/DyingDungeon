@@ -6,9 +6,12 @@
 namespace Odyssey
 {
 	// Forward declarations
+	class Component;
 	class Light;
 	class Entity;
+	class MeshRenderer;
 	class UICanvas;
+	class UIElement;
 
 	class Scene
 	{
@@ -57,6 +60,9 @@ namespace Odyssey
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
 		std::vector<std::shared_ptr<Light>> mSceneLights;
 		std::vector<UICanvas*> mSceneCanvas;
+		std::vector<MeshRenderer*> mRenderList;
+		std::vector<UIElement*> mElementList;
+		std::vector<Component*> mComponentList;
 		XTime mXTimer;
 		double mDeltaTime;
 	};

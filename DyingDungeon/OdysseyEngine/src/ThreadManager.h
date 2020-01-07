@@ -1,7 +1,9 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "EngineEvents.h"
 #include <thread>
 #include <atomic>
+
 namespace Odyssey
 {
 	class SceneDX11;
@@ -19,14 +21,16 @@ namespace Odyssey
 		~ThreadManager();
 
 	private: // Singleton pattern
-		ThreadManager() = default;
+		ThreadManager();
 	public:
 		void executeSceneThread(std::shared_ptr<SceneDX11> activeScene);
 		void changeActiveScene(std::shared_ptr<SceneDX11> activeScene);
+		void onShutdown(EngineShutdownEvent* evnt);
 	private:
 		std::thread sceneThread;
 		bool sceneThreadActive;
 		std::atomic<bool> mSceneChanged;
+		std::atomic<bool> mShuttingDown;
 	private:
 		void updateScene(std::shared_ptr<SceneDX11> activeScene);
 	

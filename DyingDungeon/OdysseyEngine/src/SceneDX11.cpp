@@ -1,6 +1,7 @@
 #include "SceneDX11.h"
 #include "Entity.h"
 #include "Component.h"
+#include "MeshRenderer.h"
 
 namespace Odyssey
 {
@@ -9,26 +10,11 @@ namespace Odyssey
 		// Restart the timer
 		mXTimer.Restart();
 
-		// Iterate through the entity vector
-		for (std::shared_ptr<Entity> entity : mSceneEntities)
+		// Iterate through each component of the entity
+		for (auto* component : mComponentList)
 		{
-			// Iterate through each component of the entity
-			for (auto* component : entity->getComponents<Component>())
-			{
-				// Initialize the component
-				component->initialize();
-			}
-
-			// Iterate through each child entity
-			for (auto child : entity->getChildren())
-			{
-				// Iterate through each component of the child
-				for (auto component : child->getComponents<Component>())
-				{
-					// Initialize the component
-					component->initialize();
-				}
-			}
+			// Initialize the component
+			component->initialize();
 		}
 	}
 
@@ -68,5 +54,17 @@ namespace Odyssey
 	{
 		// Return the scene canvas vector
 		return mSceneCanvas;
+	}
+	std::vector<MeshRenderer*> SceneDX11::getRenderList()
+	{
+		return mRenderList;
+	}
+	std::vector<Component*> SceneDX11::getComponentList()
+	{
+		return mComponentList;
+	}
+	std::vector<UIElement*> SceneDX11::getElementList()
+	{
+		return mElementList;
 	}
 }

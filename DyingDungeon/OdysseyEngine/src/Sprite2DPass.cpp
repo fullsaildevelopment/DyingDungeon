@@ -4,28 +4,30 @@
 #include "UICanvas.h"
 #include "Entity.h"
 #include "RenderWindowDX11.h"
+#include "EventManager.h"
 
 namespace Odyssey
 {
 	Sprite2DPass::Sprite2DPass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> targetWindow)
 	{
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(targetWindow);
+		mContext = renderDevice.getDevice2DContext();
 	}
 
 	void Sprite2DPass::preRender(RenderArgs& args)
 	{
-		mRenderWindow->get2DRenderTarget()->BeginDraw();
+		mContext->BeginDraw();
 	}
 
 	void Sprite2DPass::render(RenderArgs& args)
 	{
-		for (UICanvas* canvas : args.canvasList)
+		for (UIElement* element : args.elementList)
 		{
-			for (auto element : canvas->getElements<UIElement>())
+			if (element->getCanvas()->isActive())
 			{
-				element->draw(mRenderWindow->get2DRenderTarget());
+				element->draw(mContext);
 			}
 		}
-		mRenderWindow->get2DRenderTarget()->EndDraw();
+		mContext->EndDraw();
 	}
 }
