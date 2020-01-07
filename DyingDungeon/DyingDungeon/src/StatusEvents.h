@@ -6,55 +6,86 @@
 
 class CharacterDealtDamageEvent : public Odyssey::Event
 {
-	std::string m_characterName;
-	std::string m_targetName;
-	std::string m_actionName;
-	float m_value;
-	STATS m_effect;
-	bool m_isSpell;
 public:
-	CharacterDealtDamageEvent(std::string attackerName, std::string targetName, std::string actionName, float damage, STATS effect, bool isSpell)
+	std::string attackerName;
+	std::string actionName;
+	float damageAmount;
+	STATS actionEffect;
+	bool isSpell;
+
+	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, STATS effect, bool isASpell)
 	{
-		m_characterName = attackerName;
-		m_targetName = targetName;
-		m_actionName = actionName;
-		m_value = damage;
-		m_effect = effect;
-		m_isSpell = isSpell;
+		attackerName = attacker;
+		actionName = action;
+		damageAmount = damage;
+		actionEffect = effect;
+		isSpell = isASpell;
 	}
 };
 
 class CharacterTakeDamage : public Odyssey::Event
 {
-	std::string m_attackerName;
-	std::string m_actionName;
-	float m_damage;
-	float m_mitigation;
 public:
-	CharacterTakeDamage(std::string attakerName, std::string actionName, float damage, float mitigation)
+	std::string targetName;
+	std::string actionName;
+	float mitigationAmount;
+	
+	CharacterTakeDamage(std::string target, std::string action, float mitigation)
 	{
-		m_attackerName = attakerName;
-		m_actionName = actionName;
-		m_damage = damage;
-		m_mitigation = mitigation;
+		targetName = target;
+		actionName = action;
+		mitigationAmount = mitigation;
 	}
 };
 
 class CharacterHealsCharacterEvent : public Odyssey::Event
 {
-	std::string m_characterName;
-	std::string m_targetName;
-	std::string m_actionName;
-	float m_value;
-	STATS m_effect;
-	bool m_isSpell;
 public:
-	CharacterHealsCharacterEvent(std::string healerName, std::string targetName, std::string actionName, float healthRestored, STATS effect, bool isSpell) {
-		m_characterName = healerName;
-		m_targetName = targetName;
-		m_actionName = actionName;
-		m_value = healthRestored;
-		m_effect = effect;
+	std::string healerName;
+	std::string actionName;
+	STATS actionEffect;
+	bool m_isSpell;
+	CharacterHealsCharacterEvent(std::string healer, std::string action, STATS effect, bool isSpell) 
+	{
+		healerName = healer;
+		actionName = action;
+		actionEffect = effect;
 		m_isSpell = isSpell;
+	}
+};
+
+class CharacterRecivesHealingEvent : public Odyssey::Event
+{
+public:
+	std::string targetName;
+	std::string actionName;
+	float health;
+	CharacterRecivesHealingEvent(std::string target, std::string actionName, float healthRestored)
+	{
+		targetName = 
+		health = healthRestored;
+	}
+};
+
+class CharacterDefendsEvent : public Odyssey::Event 
+{
+
+};
+
+class LevelStartEvent : public Odyssey::Event
+{
+public:
+	LevelStartEvent()
+	{
+
+	}
+};
+
+class TurnStartEvent : public Odyssey::Event 
+{
+public:
+	TurnStartEvent()
+	{
+
 	}
 };
