@@ -33,9 +33,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mDefense = 0.05f;
 		mSpeed = 20;
 		mMoveOverride = SKILLTYPE::ATTACK;
-		// Basic Attack
-		std::shared_ptr<StatDown> tempSd = std::make_shared<StatDown>(0.25f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", -5.0f, 10.0f, nullptr, false));
+		
 		//// Basic Attack
 		//mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
 		//// Skill 1 (Bleed)
@@ -126,11 +124,12 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	{
 	case STATE::NONE:
 	{
-		if (mStunned)
+		//TODO: Change to lanes new stuff
+		/*if (mStunned)
 		{
 			std::cout << GetName() << " is stunned!" << std::endl;
 			return ManageAllEffects();
-		}
+		}*/
 		ManageStatusEffects(mBleeds);
 		ManageStatusEffects(mRegens);
 		if (mCurrentHP <= 0.0f)

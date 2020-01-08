@@ -25,8 +25,8 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 0:
 		{
 			//Setup Moves
-			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", -5, 10, nullptr, false));
-			mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "BasicAttackButBetter", 20, 25, nullptr, false));
+			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", 0.25f, -5, 10));
+			mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "BasicAttackButBetter", 0.25f, 20, 25));
 			break;
 		}
 		default:

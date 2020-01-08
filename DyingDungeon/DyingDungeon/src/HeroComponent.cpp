@@ -26,6 +26,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
+	mProvoked = nullptr;
 	std::shared_ptr<StatusEffect> temp;
 	switch (id)
 	{
