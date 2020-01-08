@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "AiMoves.h"
 
 class EnemyComponent : public Character
 {
@@ -27,7 +28,8 @@ public:
 private:
 	//std::function<float(Skills, Character*)> fScoreMove = nullptr;
 	Move bestMove;
-	float currentSkillMoveCheck = 0;
-	
+	int currentSkillMoveCheck = 0;
+	AIMoves mMoves;
+	SKILLTYPE mMoveOverride;
 };
 

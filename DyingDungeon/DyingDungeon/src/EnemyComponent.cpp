@@ -16,7 +16,10 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
 	mDead = false;
 	SetHero(false);
+	mMoveOverride = SKILLTYPE::UNDEFINED;
 	mCurrentState = STATE::NONE;
+	mMoves = AIMoves(static_cast<int>(_enemyID), this);
+
 	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
@@ -29,7 +32,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.15f;
 		mDefense = 0.05f;
 		mSpeed = 20;
-
+		mMoveOverride = SKILLTYPE::ATTACK;
 		// Basic Attack
 		std::shared_ptr<StatDown> tempSd = std::make_shared<StatDown>(0.25f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", -5.0f, 10.0f, nullptr, false));
@@ -138,10 +141,11 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (FindBestMove(playerTeam))
+		//if (FindBestMove(playerTeam))
+		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam))
 		{
 			mCurrentState = STATE::INPROGRESS;
-			mAnimator->playClip(bestMove.skill->GetAnimationId());
+			mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
 		}
 		break;
 	}
@@ -151,18 +155,18 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 
 		if (!trigger && mAnimator->getProgress() > 0.25f)
 		{
-			if (bestMove.target->IsHero())
-				bestMove.target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
+			if (mMoves.GetMove()->target->IsHero())
+				mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 			trigger = true;
 		}
 
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			// Use the best move
-			bestMove.skill->Use(*mEntity->getComponent<Character>(), *bestMove.target);
+			mMoves.GetMove()->skill->Use(*mEntity->getComponent<Character>(), *mMoves.GetMove()->target);
 			// If i have any buffs manage them 
 			//Reset best move score
-			bestMove.score = -1000;
+			mMoves.GetMove()->score = -10000;
 			mCurrentState = STATE::NONE;
 			trigger = false;
 			ManageStatusEffects(mBuffs);
