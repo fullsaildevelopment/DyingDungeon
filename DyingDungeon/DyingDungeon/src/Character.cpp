@@ -69,8 +69,7 @@ void Character::TakeDamage(float dmg)
 		{
 			(*it)->SetAmountOfEffect(dmg * -1.0f);
 			dmg = 0.0f;
-			std::cout << 0 << " damage!" << std::endl;
-			return;
+			++it;
 		}
 		else
 		{
@@ -80,15 +79,15 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
-
 	// TODO: FOR BUILD ONLY FIX LATER
 	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
-
 	std::cout << dmg << " damage!" << std::endl;
+	if (mCurrentHP <= 0.0f)
+		Die();
 }
 
 // Gives the character health back 
@@ -100,7 +99,6 @@ void Character::ReceiveHealing(float healing)
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
-
 	SetHP(mCurrentHP + healing);
 }
 
@@ -302,18 +300,6 @@ float Character::GetExp()
 	return mEXP;
 }
 
-//Set if the character is stunned
-void Character::SetStun(bool stun)
-{
-	mStunned = stun;
-}
-
-//Get if the character is stunned
-bool Character::GetStun()
-{
-	return mStunned;
-}
-
 Character* Character::GetProvoked()
 {
 	return mProvoked;
@@ -322,6 +308,16 @@ Character* Character::GetProvoked()
 void Character::SetProvoked(Character* provoker)
 {
 	mProvoked = provoker;
+}
+
+STATE Character::GetState()
+{
+	return mCurrentState;
+}
+
+void Character::SetState(STATE newState)
+{
+	mCurrentState = newState;
 }
 
 /*
@@ -429,7 +425,6 @@ void Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	}
 }
 
-// Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;

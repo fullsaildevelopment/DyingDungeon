@@ -1,13 +1,26 @@
 #include "Heal.h"
 #include "Character.h"
 // Constructor
-Heal::Heal(std::string skillName, std::string animationId, float mpCost, float healing)
+Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
 	mTypeId = SKILLTYPE::HEAL;
 	mName = skillName;
 	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mIsAOE = false;
+}
+
+Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
+{
+	mTypeId = SKILLTYPE::HEAL;
+	mName = skillName;
+	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
+	mMpCost = mpCost;
+	mHealing = healing;
+	mIsAOE = isAoe;
 }
 
 // Use the heal on the target

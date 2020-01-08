@@ -12,6 +12,8 @@ protected:
 	SKILLTYPE mTypeId;
 	//how much mana it will cost the caster
 	float mMpCost;
+	// Animation time for when effects such as hit animation or particle effects should go out
+	float mAnimationTime;
 	// Name of skill
 	std::string mName;
 	// Animation ID
@@ -31,6 +33,8 @@ public:
 	std::string GetName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
+	// Gets the animation timing
+	float GetAnimationTiming();
 	// Get TypeID
 	SKILLTYPE GetTypeId();
 	// Get isAOE
