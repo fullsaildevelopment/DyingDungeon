@@ -1,7 +1,16 @@
 #pragma once
-#include "Character.h"
 #include "AiMoves.h"
+#include "Character.h"
 #include "Attack.h"
+
+AIMoves::AIMoves()
+{
+	mCurrMoveCheck = 0;
+	mBestMove = nullptr;
+	caster = nullptr;
+	mEnemyID = -1;
+	mPriorityMove = SKILLTYPE::UNDEFINED;
+}
 
 AIMoves::AIMoves(int _enemyID, Character* _caster)
 {
@@ -46,7 +55,6 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 		};
 		default:
 		{
-
 			break;
 		};
 	}
@@ -122,11 +130,6 @@ void AIMoves::SkeletonDeterminePriority()
 void AIMoves::UngaAttackDeterminePriority()
 {
 	mPriorityMove = SKILLTYPE::ATTACK;
-}
-
-AIMoves::~AIMoves()
-{
-
 }
 
 ///////GET FUNCTIONS///////

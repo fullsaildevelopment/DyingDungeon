@@ -14,15 +14,15 @@ class AIMoves
 	};
 
 	public:
-		AIMoves() = default;
+		AIMoves();
 		AIMoves(int _enemyID, Character* _caster);
-		~AIMoves();
+		~AIMoves() = default;
 		bool FindMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
-		float ScoreMove(std::shared_ptr<Skills> skill, Character* target);
 
 	private:
 		//General Functions
 		bool FindBestMove();
+		float ScoreMove(std::shared_ptr<Skills> skill, Character* target);
 
 		//Skeleton
 		void SkeletonDeterminePriority();
