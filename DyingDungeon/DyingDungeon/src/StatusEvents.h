@@ -84,17 +84,21 @@ class CharacterDefendsEvent : public Odyssey::Event
 class LevelStartEvent : public Odyssey::Event
 {
 public:
-	LevelStartEvent()
+	unsigned int levelNumber;
+	LevelStartEvent(unsigned int level)
 	{
-
+		levelNumber = level;
 	}
 };
 
 class TurnStartEvent : public Odyssey::Event 
 {
 public:
-	TurnStartEvent()
+	std::string characterName;
+	unsigned int turn;
+	TurnStartEvent(std::string character, unsigned int turnNumber)
 	{
-
+		characterName = character;
+		turn = turnNumber;
 	}
 };

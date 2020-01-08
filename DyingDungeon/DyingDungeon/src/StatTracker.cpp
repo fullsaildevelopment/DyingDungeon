@@ -166,29 +166,27 @@ void StatTracker::LoadStats(std::string loadFileName)
 
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 {
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].characterName = cddEvent->actionName;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].actionType = Action::Attack;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].characterName = cddEvent->attackerName;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].effect = cddEvent->actionEffect;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].isSpell = cddEvent->isSpell;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].value = cddEvent->damageAmount;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName = cddEvent->actionName;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Attack;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].effect = cddEvent->actionEffect;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSpell = cddEvent->isSpell;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cddEvent->damageAmount;
 
 }
 
 void StatTracker::LogTakeDamageEvent(CharacterTakeDamage* ctdEvent)
 {
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].targetNames.push_back(ctdEvent->targetName);
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].blockValues.push_back(ctdEvent->mitigationAmount);
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].targetNames.push_back(ctdEvent->targetName);
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].blockValues.push_back(ctdEvent->mitigationAmount);
 
 }
 
 void StatTracker::LogHealingEvent(CharacterHealsCharacterEvent* chcEvent)
 {
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].characterName = chcEvent->healerName;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].actionName = chcEvent->actionName;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].actionType = Action::Aid;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].isSpell = chcEvent->isSpell;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].value = chcEvent->health;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionName = chcEvent->actionName;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Aid;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSpell = chcEvent->isSpell;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = chcEvent->health;
 
 }
 
@@ -199,12 +197,18 @@ void StatTracker::LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent)
 
 void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 {
-	StartNextLevel();
+	StatTracker::Level newLevel;
+	newLevel.levelNumber = lsEvent->levelNumber;
+	m_levels.push_back(newLevel);
+	m_currentLevel = newLevel.levelNumber;
 }
 
 void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 {
-	StartNextTurn();
+	StatTracker::Turn newTurn;
+	m_levels[m_currentLevel - 1].turnCount = tsEvent->turn;
+	newTurn.characterName = tsEvent->characterName;
+	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
 }
 
 float StatTracker::CalculateDamageDealt(std::string name) 
