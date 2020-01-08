@@ -62,7 +62,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	newCharacter->getComponent<Character>()->SetDead(false);
-	newCharacter->getComponent<Character>()->SetStun(false);
+	//newCharacter->getComponent<Character>()->SetStun(false);
 
 	return newCharacter;
 }

@@ -1,34 +1,74 @@
 #include "Attack.h"
 #include "Character.h"
 
-Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
+Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
 	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mDamage = damage;
-	mDebuff = debuff;
-	mIsAOE = AOE;
-	mAdditionalEffect = nullptr;
+	mHealing = 0.0f;
+	mDebuff = nullptr;
+	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE, std::shared_ptr<Skills> additionalEffect)
+Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
 	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mDamage = damage;
+	mHealing = healing;
+	mDebuff = nullptr;
+	mIsAOE = false;
+}
+
+Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
+{
+	mTypeId = SKILLTYPE::ATTACK;
+	mName = skillName;
+	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
+	mMpCost = mpCost;
+	mDamage = damage;
+	mHealing = 0.0f;
+	mDebuff = debuff;
+	mIsAOE = false;
+}
+
+Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
+{
+	mTypeId = SKILLTYPE::ATTACK;
+	mName = skillName;
+	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
+	mMpCost = mpCost;
+	mDamage = damage;
+	mHealing = 0.0f;
+	mDebuff = nullptr;
+	mIsAOE = AOE;
+}
+Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
+{
+	mTypeId = SKILLTYPE::ATTACK;
+	mName = skillName;
+	mAnimationId = animationId;
+	mAnimationTime = animationTiming;
+	mMpCost = mpCost;
+	mDamage = damage;
+	mHealing = 0.0f;
 	mDebuff = debuff;
 	mIsAOE = AOE;
-	mAdditionalEffect = additionalEffect;
 }
 
 Attack::~Attack()
 {
-
 }
+
 
 void Attack::Use(Character& caster, Character& target)
 {
@@ -38,16 +78,9 @@ void Attack::Use(Character& caster, Character& target)
 	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	target.TakeDamage(totalDps);
 	if (mDebuff != nullptr)
-	{
-		if (mDebuff->GetRecipient() == nullptr)
-			mDebuff->Apply(target);
-		else
-			mDebuff->Apply(*mDebuff->GetRecipient());
-	}
-	if (mAdditionalEffect != nullptr)
-	{
-		mAdditionalEffect->Use(caster, caster);
-	}
+		mDebuff->Apply(target);
+	if (mHealing > 0.0f)
+		caster.ReceiveHealing(mHealing);
 }
 float Attack::GetDamage()
 {

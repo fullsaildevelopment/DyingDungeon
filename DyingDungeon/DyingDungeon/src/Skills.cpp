@@ -36,6 +36,11 @@ std::string Skills::GetAnimationId()
 	return mAnimationId;
 }
 
+float Skills::GetAnimationTiming()
+{
+	return mAnimationTime;
+}
+
 // Returns Type Id
 SKILLTYPE Skills::GetTypeId()
 {
