@@ -13,7 +13,6 @@ class StatTracker
 private:
 	enum Action { Attack, Defend, Aid };
 public:
-	static StatTracker* m_p_Instance;
 
 	struct Turn
 	{
@@ -28,7 +27,7 @@ public:
 		std::string actionName;
 	};
 
-	struct Level 
+	struct Level
 	{
 		uint32_t levelNumber;
 		uint32_t turnCount;
@@ -40,19 +39,28 @@ private:
 	std::vector<Level> m_levels;
 	TowerManager* m_towerManager;
 public:
-	static StatTracker* Instance();
+	static StatTracker& Instance();
+	~StatTracker();
+
 	void StartNextTurn();
 	void StartNextLevel();
+
 	void SaveStats(std::string saveName);
 	void LoadStats(std::string loadFileName);
+
 	void LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent);
 	void LogTakeDamageEvent(CharacterTakeDamage* ctdEvent);
 	void LogHealingEvent(CharacterHealsCharacterEvent* chcEvent);
-	~StatTracker();
+	void LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent);
+
+	void LevelStartReflex(LevelStartEvent* lsEvent);
+
+	void TurnStartReflex(TurnStartEvent* tsEvent);
 
 private:
 	StatTracker();
-	float CalculatDamageDone(std::string name);
+	float CalculateDamageDealt(std::string name);
+	float CalculateDamageDone(std::string name);
 	float CalculateDamageTaken(std::string name);
 	unsigned int CalculateRoundsInLevel(unsigned int levelNumber);
 };

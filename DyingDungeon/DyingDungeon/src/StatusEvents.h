@@ -44,13 +44,15 @@ public:
 	std::string healerName;
 	std::string actionName;
 	STATS actionEffect;
-	bool m_isSpell;
-	CharacterHealsCharacterEvent(std::string healer, std::string action, STATS effect, bool isSpell) 
+	bool isSpell;
+	float health;
+	CharacterHealsCharacterEvent(std::string healer, std::string action, STATS effect, float healthAmount, bool isASpell) 
 	{
 		healerName = healer;
 		actionName = action;
 		actionEffect = effect;
-		m_isSpell = isSpell;
+		isSpell = isASpell;
+		health = healthAmount;
 	}
 };
 
@@ -59,17 +61,24 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 public:
 	std::string targetName;
 	std::string actionName;
-	float health;
-	CharacterRecivesHealingEvent(std::string target, std::string actionName, float healthRestored)
+	CharacterRecivesHealingEvent(std::string target, std::string action)
 	{
-		targetName = 
-		health = healthRestored;
+		targetName = target;
+		actionName = action;
 	}
 };
 
 class CharacterDefendsEvent : public Odyssey::Event 
 {
-
+	std::string chracterName;
+	std::string actionName;
+	float shieldBuff;
+	CharacterDefendsEvent(std::string character, std::string action, float shield_defense)
+	{
+		chracterName = character;
+		actionName = action;
+		shieldBuff = shield_defense;
+	}
 };
 
 class LevelStartEvent : public Odyssey::Event
