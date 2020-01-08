@@ -37,7 +37,7 @@ namespace Odyssey
 			stats.framesPerSecond = stats.frameCounter;
 			stats.frameCounter = 0;
 
-			if (mOutputStats && false)
+			if (mOutputStats)
 			{
 				std::cout << "========================" << std::endl;
 				std::cout << stats.threadName << " FPS: " << stats.framesPerSecond << std::endl;

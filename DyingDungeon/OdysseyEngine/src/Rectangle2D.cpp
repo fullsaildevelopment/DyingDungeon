@@ -36,8 +36,14 @@ namespace Odyssey
 		}
 
 		// Copy the current shape and alter it's width using the fill
+		if (mFill < 1.0f)
+		{
+			int debug = 0;
+		}
+
+		// Copy the shape and apply the fill to the width
 		D2D_RECT_F fillShape = mShape;
-		fillShape.right *= mFill;
+		fillShape.right -= (mDimensions.x * (1.0f - mFill));
 
 		// Draw the filled rectangle
 		context->FillRectangle(&fillShape, mBrush.Get());
