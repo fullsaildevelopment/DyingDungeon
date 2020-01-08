@@ -158,11 +158,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
 						if(c != nullptr && c.get()->getComponent<HeroComponent>() != this)
-							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
+							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					}
 				}
 				else if (mCurrentTarget != nullptr)
-					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
+					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 			}
 			trigger = true;
 		}
@@ -253,8 +253,16 @@ void HeroComponent::SelctionState(int moveIndex)
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
 			mCurrentState = STATE::CONFIRM;
 		}
-		else
+		else if (mProvoked == nullptr)
+		{
 			mCurrentState = STATE::SELECTTARGET;
+		}
+		else
+		{
+			mCurrentTarget = mProvoked;
+			mCurrentState == STATE::CONFIRM;
+			std::cout << "This will hit " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
+		}
 	}
 	else
 		std::cout << "You dont have enough mana for that move." << std::endl;
