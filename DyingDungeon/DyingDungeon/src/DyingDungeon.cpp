@@ -341,8 +341,8 @@ void setupCamera()
 {
 	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(4.41f, 5.5f, 8.43f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(18.0f, -147.13f, 0.0f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(3.81f, 11.41f, 8.56f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(41.82f, -158.32f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
@@ -542,8 +542,8 @@ void setUpTowerManager()
 	UINT height = gMainWindow->getHeight();
 
 	// Paladin #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 2.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(7.0f, 0.5f, 0.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 225.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 
 	// Create the character's potrait and assign it's health and mana bars
@@ -561,7 +561,8 @@ void setUpTowerManager()
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #2
-	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 2.0f, 1.0f);
+	charPosition = DirectX::XMVectorSet(3.75f, -0.3f, 2.75f, 1.0f);
+	charRotation = DirectX::XMVectorSet(0.0f, 202.5f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 	anchorY += (height / 7.0f);
 	createCharacterPortrait(20, 130, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
