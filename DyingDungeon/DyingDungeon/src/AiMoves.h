@@ -1,5 +1,6 @@
 #pragma once
 #include "Skills.h"
+#include "Character.h"
 
 class Character;
 
@@ -13,21 +14,27 @@ class AIMoves
 	};
 
 	public:
-		AIMoves() = default;
+		AIMoves();
 		AIMoves(ENEMYID _enemyID);
 		~AIMoves();
 		bool UseBestMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 
 	private:
 		//Skeleton
-		bool FindBestMove(SKILLTYPE override);
-		SKILLTYPE SkeletonDeterminePriority(SKILLTYPE override);
+		bool FindBestMove();
+		void SkeletonDeterminePriority();
 		
 		//UngaAttack
-		SKILLTYPE UngaAttackDeterminePriority(SKILLTYPE override);
+		void UngaAttackDeterminePriority();
 
-		//Variables
+		//Team Lists
+		std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam;
+		std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam;
+		
+		//Member Variables
 		std::vector<std::shared_ptr<Skills>> skillList;
 		Move mBestMove;
+		ENEMYID mEnemyID;
 		int mCurrMoveCheck;
+		SKILLTYPE mPriorityOverride;
 };
