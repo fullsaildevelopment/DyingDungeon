@@ -16,8 +16,8 @@ StatDown::~StatDown()
 
 void StatDown::Apply(Character& target)
 {
-	StatusEffect* newStatusEffect = nullptr;
-	newStatusEffect = new StatDown(mAmountOfEffect, mDuration, mStatId, &target);
+	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
+	newStatusEffect = std::make_shared<StatDown>(mAmountOfEffect, mDuration, mStatId, &target);
 	target.AddStatusEffect(newStatusEffect);
 	std::string temp;
 	switch (mStatId)

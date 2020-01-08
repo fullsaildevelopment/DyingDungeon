@@ -1,21 +1,21 @@
 #pragma once
 #include "Skills.h"
+#include <memory>
 
 class Attack : public Skills
 {
 	// Variables
-public:
 private:
 	float mDamage;
-	StatusEffect* mDebuff;
-	Skills* mAdditionalEffect;
+	std::shared_ptr<StatusEffect> mDebuff;
+	std::shared_ptr<Skills> mAdditionalEffect;
 	// Functions
 public:
 	// Constructors, Destructors
 	Attack() = default;
 	~Attack();
-	Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE);
-	Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE, Skills* AdditionalEffect);
+	Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE);
+	Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE, std::shared_ptr<Skills> AdditionalEffect);
 	// Use the skill
 	void Use(Character& caster, Character& target);
 	// Get how much damage the attack does
@@ -23,7 +23,7 @@ public:
 	// Get what debuff this applys
 	StatusEffect* GetStatusEffect();
 	// Set the status Effect this applies
-	void SetStatusEffect(StatusEffect* se);
+	void SetStatusEffect(std::shared_ptr<StatusEffect> se);
 private:
 };
 

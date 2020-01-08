@@ -274,16 +274,6 @@ namespace Odyssey
 		// Get the number of modes that will match dxgi_format_r8g8b8a8_unorm
 		adapterOutputIndex = static_cast<UINT>(adapterOutputList.size());
 
-		// Get the primary adapter output's display modes
-		UINT numModes;
-		hr = adapterOutputList[0]->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, nullptr);
-		assert(!FAILED(hr));
-
-		// Fill out the primary output's display mode list
-		DXGI_MODE_DESC* displayModeList = new DXGI_MODE_DESC[numModes];
-		hr = adapterOutputList[0]->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
-		assert(!FAILED(hr));
-
 		// Iterate through the adapter list
 		DXGI_ADAPTER_DESC adapterDescription;
 		std::vector<DXGI_ADAPTER_DESC> adapterDescriptionList;

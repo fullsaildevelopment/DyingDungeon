@@ -1,7 +1,7 @@
 #include "Attack.h"
 #include "Character.h"
 
-Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE)
+Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -13,7 +13,7 @@ Attack::Attack(std::string skillName, std::string animationId, float mpCost, flo
 	mAdditionalEffect = nullptr;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, StatusEffect* debuff, bool AOE, Skills* additionalEffect)
+Attack::Attack(std::string skillName, std::string animationId, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE, std::shared_ptr<Skills> additionalEffect)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -27,16 +27,7 @@ Attack::Attack(std::string skillName, std::string animationId, float mpCost, flo
 
 Attack::~Attack()
 {
-	if (mDebuff != nullptr)
-	{
-		delete mDebuff;
-		mDebuff = nullptr;
-	}
-	if (mAdditionalEffect != nullptr)
-	{
-		delete mAdditionalEffect;
-		mAdditionalEffect = nullptr;
-	}
+
 }
 
 void Attack::Use(Character& caster, Character& target)
@@ -64,10 +55,10 @@ float Attack::GetDamage()
 }
 StatusEffect* Attack::GetStatusEffect()
 {
-	return mDebuff;
+	return mDebuff.get();
 }
 
-void Attack::SetStatusEffect(StatusEffect* se)
+void Attack::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 {
 	mDebuff = se;
 }

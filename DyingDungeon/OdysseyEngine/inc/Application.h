@@ -4,6 +4,7 @@
 #include "RenderPipeline.h"
 #include "EngineEvents.h"
 #include "..\src\EngineProfiler.h"
+#include "XTime.h"
 
 namespace Odyssey
 {
@@ -110,6 +111,7 @@ namespace Odyssey
 		bool mIsMultithreading;
 		EngineProfiler profiler;
 		bool mProcessCommands;
+		XTime timer;
 		// Window Management
 		std::vector<std::shared_ptr<RenderWindow>> mWindows;
 		std::shared_ptr<RenderWindowDX11> mActiveWindow;

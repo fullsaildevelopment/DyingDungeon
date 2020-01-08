@@ -15,8 +15,8 @@ Bleed::~Bleed()
 }
 void Bleed::Apply(Character& target)
 {
-	StatusEffect* newStatusEffect = nullptr;
-	newStatusEffect = new Bleed(mAmountOfEffect, mDuration, &target);
+	std::shared_ptr<StatusEffect> newStatusEffect;
+	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
 	std::cout << target.GetName() << " has been inflicted with bleed!" << std::endl;
 	return;

@@ -291,6 +291,8 @@ namespace Odyssey
 			}
 			// else
 			{
+				timer.Signal();
+
 				if (mIsShutdown)
 				{
 					continue;
@@ -304,29 +306,34 @@ namespace Odyssey
 					mProcessCommands = false;
 				}
 
-				// Check if multithreading is disabled
-				if (mIsMultithreading == false)
+				if (timer.TotalTime() > 0.016)
 				{
+					timer.Restart();
+					// Check if multithreading is disabled
+					if (mIsMultithreading == false)
+					{
+						// Check for an active scene
+						if (mActiveScene)
+						{
+							// Update the scene
+							mActiveScene->update();
+						}
+					}
+
 					// Check for an active scene
 					if (mActiveScene)
 					{
-						// Update the scene
-						mActiveScene->update();
+						// Render the scene
+						mRenderPipeline->render(mActiveScene);
 					}
-				}
 
-				// Check for an active scene
-				if (mActiveScene)
-				{
-					// Render the scene
-					mRenderPipeline->render(mActiveScene);
+					// Fire a thread tick event for the main thread. This is for profiling purposes only.
+					EventManager::getInstance().publish(new ThreadTickEvent("Main Thread"));
+
+					// Present the window
+					mActiveWindow->present();
 				}
 				
-				// Fire a thread tick event for the main thread. This is for profiling purposes only.
-				EventManager::getInstance().publish(new ThreadTickEvent("Main Thread"));
-
-				// Present the window
-				mActiveWindow->present();
 			}
 		}
 
