@@ -32,15 +32,17 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	{
 		if (mPlayerTeam[i] != nullptr)
 		{
-			// Play an attack animation at the beginning of each battle
-			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
-
 			// Set the player's turn order number
 			mPlayerTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
 			turnOrderIndex++;
 
-			// Put him into the mAllCharacters list
-			mAllCharacters.push_back(mPlayerTeam[i]);
+			if (!mPlayerTeam[i]->getComponent<Character>()->IsDead())
+			{
+				// Play an attack animation at the beginning of each battle
+				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
+				// Put him into the mAllCharacters list
+				mAllCharacters.push_back(mPlayerTeam[i]);
+			}
 		}
 	}
 
