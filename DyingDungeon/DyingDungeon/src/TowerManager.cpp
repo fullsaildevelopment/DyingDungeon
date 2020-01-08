@@ -14,7 +14,8 @@ TowerManager::~TowerManager()
 
 void TowerManager::initialize()
 {
-
+	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
+	CreateBattleInstance();
 }
 
 void TowerManager::update(double deltaTime)
@@ -120,9 +121,6 @@ void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTe
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
-
-	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
-	CreateBattleInstance();
 }
 
 void TowerManager::CreateBattleInstance()

@@ -172,6 +172,19 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
 			mCurrentState = STATE::INPROGRESS;
 		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
+		{
+			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			{
+				mCurrentTarget = enemies[1]->getComponent<Character>();
+			}
+			else
+			{
+				mCurrentTarget = heros[1]->getComponent<Character>();
+			}
+			mAnimator->playClip(mCurrentSkill->GetAnimationId());
+			mCurrentState = STATE::INPROGRESS;
+		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Back))
 		{
 			mCurrentSkill = nullptr;
