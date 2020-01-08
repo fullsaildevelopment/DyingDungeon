@@ -208,6 +208,7 @@ void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 	StatTracker::Turn newTurn;
 	m_levels[m_currentLevel - 1].turnCount = tsEvent->turn;
 	newTurn.characterName = tsEvent->characterName;
+	newTurn.round = tsEvent->round;
 	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
 }
 

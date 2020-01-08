@@ -96,9 +96,11 @@ class TurnStartEvent : public Odyssey::Event
 public:
 	std::string characterName;
 	unsigned int turn;
-	TurnStartEvent(std::string character, unsigned int turnNumber)
+	unsigned int round;
+	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber)
 	{
 		characterName = character;
 		turn = turnNumber;
+		round = roundNumber;
 	}
 };
