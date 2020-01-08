@@ -90,10 +90,8 @@ int playGame()
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
 #if _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(68315);
+	//_CrtSetBreakAlloc(231);
 #endif // _DEBUG
-
-
 
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();

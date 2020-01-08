@@ -14,6 +14,7 @@
 #include "Stun.h"
 #include "Shields.h"
 #include "Provoked.h"
+#include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
 
@@ -25,8 +26,8 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
-	StatusEffect* temp = nullptr;
-	Skills* tempSkill = nullptr;
+	std::shared_ptr<StatusEffect> temp;
+	std::shared_ptr<Skills> tempSkill;
 	switch (id)
 	{
 	case HEROID::Paladin:
@@ -38,23 +39,19 @@ HeroComponent::HeroComponent(HEROID id)
 		mDefense = 0.30f;
 		mSpeed = 35.0f;
 		mShielding = 0.0f;
-		mSkillList = new Skills*[TOTALSKILLS];
 		for (int i = 0; i < TOTALSKILLS; ++i)
-			mSkillList[i] = nullptr;
 		// Basic Attack (Add Provoke 30% chance)
-		temp = new Provoked(1, this, nullptr);
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttack", -5, 10, temp, false);
+		temp = std::make_shared<Provoked>(1, this, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", -5.0f, 10.0f, temp, false));
 		// Skill 1 Judgement (deal damage and heal self)
-		tempSkill = new Heal("SelfHeal", "Idle", 0.0f, 20.0f);
-		mSkillList[1] = new Attack("Judgement", "BigAttack", 15.0f, 20.0f, nullptr, false, tempSkill);
+		tempSkill = std::make_shared<Heal>("SelfHeal", "Idle", 0.0f, 20.0f);
+		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 15.0f, 20.0f, nullptr, false, tempSkill));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
-		temp = new Shields(25.0f, 3, nullptr);
-		mSkillList[2] = new Buffs("Shield of Light", "Heal", 20.0f, temp, true, true);
+		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
+		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
-		temp = new StatUp(0.50f, 3, STATS::Def, nullptr);
-		mSkillList[3] = new Buffs("Blessing of Light", "Defense", 15.0f,temp,true,true);
-		temp = nullptr;
-		tempSkill = nullptr;
+		temp = std::make_shared<StatUp>(0.50f, 3, STATS::Def, nullptr);
+		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 15.0f,temp,true,true));
 		break;
 	}
 	default:
@@ -64,14 +61,6 @@ HeroComponent::HeroComponent(HEROID id)
 
 HeroComponent::~HeroComponent()
 {
-	for (int i = 0; i < TOTALSKILLS; ++i)
-	{
-		if (mSkillList[i] != nullptr)
-		{
-			delete mSkillList[i];
-			mSkillList[i] = nullptr;
-		}
-	}
 }
 
 bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
@@ -99,54 +88,54 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			if (mSkillList[0]->GetManaCost() <= mCurrentMana)
 			{
-				mCurrentSkill = mSkillList[0];
+				mCurrentSkill = mSkillList[0].get();
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				if (mCurrentSkill->IsAOE())
 				{
 					if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 						std::cout << "This move will hit the whole enemy party, hit one to confirm use." << std::endl;
-					else
+					
 						std::cout << "This move will apply to your whole party, hit one to confirm use." << std::endl;
 					mCurrentState = STATE::AOECONFIRM;
 				}
 				else
 					mCurrentState = STATE::SELECTTARGET;
 			}
-			else
+			
 				std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
 			if (mSkillList[1]->GetManaCost() <= mCurrentMana)
 			{
-				mCurrentSkill = mSkillList[1];
+				mCurrentSkill = mSkillList[1].get();
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}
-			else
-				std::cout << "You dont have enough mana for that move." << std::endl;
+			
+			std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
 			if (mSkillList[2]->GetManaCost() <= mCurrentMana)
 			{
-				mCurrentSkill = mSkillList[2];
+				mCurrentSkill = mSkillList[2].get();
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}
-			else
-				std::cout << "You dont have enough mana for that move." << std::endl;
+			
+			std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
 			if (mSkillList[3]->GetManaCost() <= mCurrentMana)
 			{
-				mCurrentSkill = mSkillList[3];
+				mCurrentSkill = mSkillList[3].get();
 				std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 				mCurrentState = STATE::SELECTTARGET;
 			}
-			else
-				std::cout << "You dont have enough mana for that move." << std::endl;
+			
+			std::cout << "You dont have enough mana for that move." << std::endl;
 		}
 		break;
 	}
