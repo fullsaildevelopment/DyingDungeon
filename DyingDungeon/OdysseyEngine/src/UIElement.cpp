@@ -21,6 +21,9 @@ namespace Odyssey
 
 		// Create the rectangle
 		createShape();
+
+		// Subscribe to the element resize event
+		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
@@ -51,9 +54,6 @@ namespace Odyssey
 
 	void UIElement::initialize()
 	{
-		// Subscribe to the element resize event
-		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
-
 		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
 	}
 

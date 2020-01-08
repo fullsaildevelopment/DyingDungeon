@@ -1,9 +1,25 @@
 #pragma once
 #include "Event.h"
+#include "Keycode.h"
+#include <memory>
 #include <string>
 
 namespace Odyssey
 {
+	class KeypressEvent : public Event
+	{
+	public:
+		KeyCode keyCode;
+		KeypressEvent(KeyCode code) : keyCode(code) { }
+	};
+
+	class KeyUpEvent : public Event
+	{
+	public:
+		KeyCode keyCode;
+		KeyUpEvent(KeyCode code) : keyCode(code) { }
+	};
+
 	class CommandReceiveEvent : public Event
 	{
 	public:
@@ -76,7 +92,20 @@ namespace Odyssey
 	public:
 		int xPosition;
 		int yPosition;
+
 		MouseClickEvent(int xPos, int yPos) : xPosition(xPos), yPosition(yPos)
+		{
+
+		}
+	};
+
+	class UICanvas;
+	class DebugEngine : public Event
+	{
+	public:
+		std::shared_ptr<UICanvas> canvas;
+
+		DebugEngine(std::shared_ptr<UICanvas> debugCanvas) : canvas(debugCanvas)
 		{
 
 		}

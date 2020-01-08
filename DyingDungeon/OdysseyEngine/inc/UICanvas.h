@@ -14,6 +14,8 @@ namespace Odyssey
 	public: // Rule of 3
 		UICanvas();
 
+		virtual void initialize();
+
 	private: // Members
 		std::vector<std::shared_ptr<UIElement>> mElements;
 

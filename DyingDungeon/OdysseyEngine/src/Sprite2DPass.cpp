@@ -12,6 +12,8 @@ namespace Odyssey
 	{
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(targetWindow);
 		mContext = renderDevice.getDevice2DContext();
+
+		EventManager::getInstance().subscribe(this, &Sprite2DPass::onDebugEngine);
 	}
 
 	void Sprite2DPass::preRender(RenderArgs& args)
@@ -28,6 +30,22 @@ namespace Odyssey
 				element->draw(mContext);
 			}
 		}
+
+		if (mDebugCanvas)
+		{
+			for (UIElement* element : mDebugCanvas->getElements<UIElement>())
+			{
+				if (element->getCanvas()->isActive())
+				{
+					element->draw(mContext);
+				}
+			}
+		}
 		mContext->EndDraw();
+	}
+
+	void Sprite2DPass::onDebugEngine(DebugEngine* evnt)
+	{
+		mDebugCanvas = evnt->canvas;
 	}
 }

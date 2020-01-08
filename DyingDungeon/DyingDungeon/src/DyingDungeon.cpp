@@ -173,11 +173,6 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 
 	std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
 	application->addRenderPass(spritePass);
-
-	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow);
-	debugPass->setEnabled(false);
-	application->addRenderPass(debugPass);
 }
 
 void setupLighting()
