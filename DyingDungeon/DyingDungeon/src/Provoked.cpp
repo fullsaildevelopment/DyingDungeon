@@ -19,8 +19,8 @@ Provoked::~Provoked()
 void Provoked::Apply(Character& target)
 {
 	target.SetProvoked(&target);
-	StatusEffect* newStatusEffect = nullptr;
-	newStatusEffect = new Provoked(mDuration, mProvoker, &target);
+	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
+	newStatusEffect = std::make_shared<Provoked>(mDuration, mProvoker, &target);
 	target.AddStatusEffect(newStatusEffect);
 	std::cout << mProvoker->GetName() << " has provoked " << target.GetName() << "!"<< std::endl;
 }

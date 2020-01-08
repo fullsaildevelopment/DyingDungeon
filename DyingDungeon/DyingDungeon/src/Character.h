@@ -67,7 +67,7 @@ public:
 	std::string GetName();
 	// Skills Functions
 	void SetName(std::string newName);
-	Skills** GetSkills();
+	std::vector<std::shared_ptr<Skills>> GetSkills();
 	//Stunned Functions
 	void SetStun(bool stun);
 	bool GetStun();
@@ -76,8 +76,8 @@ public:
 	void SetProvoked(Character* provoker);
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
-	void AddStatusEffect(StatusEffect* newEffect);
-	void ManageStatusEffects(std::vector<StatusEffect*>& effectList);
+	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
+	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
 	bool ManageAllEffects();
 	void ClearStatusEffects();
 	//Update HealthBar UI
@@ -109,12 +109,12 @@ protected:
 	bool mStunned;
 	Character* mProvoked;
 	std::string mName;
-	Skills** mSkillList;
-	std::vector<StatusEffect*> mDebuffs;
-	std::vector<StatusEffect*> mBuffs;
-	std::vector<StatusEffect*> mBleeds;
-	std::vector<StatusEffect*> mRegens; 
-	std::vector<StatusEffect*> mSheilds;
+	std::vector<std::shared_ptr<Skills>> mSkillList;
+	std::vector<std::shared_ptr<StatusEffect>> mDebuffs;
+	std::vector<std::shared_ptr<StatusEffect>> mBuffs;
+	std::vector<std::shared_ptr<StatusEffect>> mBleeds;
+	std::vector<std::shared_ptr<StatusEffect>> mRegens; 
+	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
 private:

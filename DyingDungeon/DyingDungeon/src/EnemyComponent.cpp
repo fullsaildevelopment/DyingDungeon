@@ -29,13 +29,10 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.15f;
 		mDefense = 0.05f;
 		mSpeed = 20;
-		mSkillList = new Skills* [TOTALSKILLS];
-		for (int i = 0; i < TOTALSKILLS; ++i)
-			mSkillList[i] = nullptr;
+
 		// Basic Attack
-		StatDown* tempSd = new StatDown(0.25f, 3, STATS::Atk, nullptr);
-		mSkillList[0] = new Attack("Basic Attack", "BasicAttackButBetter", -5, 10, nullptr,false);
-		tempSd = nullptr;
+		std::shared_ptr<StatDown> tempSd = std::make_shared<StatDown>(0.25f, 3, STATS::Atk, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", -5.0f, 10.0f, nullptr, false));
 		//// Basic Attack
 		//mSkillList[0] = Skills(15, -25, true, Buffs(STATS::NONE, -5, 0, false, nullptr), "Basic Attack", "BasicAttackButBetter");
 		//// Skill 1 (Bleed)
@@ -51,14 +48,6 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 
 EnemyComponent::~EnemyComponent()
 {
-	for (int i = 0; i < TOTALSKILLS; ++i)
-	{
-		if (mSkillList[i] != nullptr)
-		{
-			delete mSkillList[i];
-			mSkillList[i] = nullptr;
-		}
-	}
 }
 
 bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
@@ -84,11 +73,11 @@ bool EnemyComponent::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> 
 	{
 		if (mSkillList[i] != nullptr)
 		{
-			float score = ScoreMove(mSkillList[i], target);
+			float score = ScoreMove(mSkillList[i].get(), target);
 
 			if (score > bestMove.score)
 			{
-				bestMove.skill = mSkillList[i];
+				bestMove.skill = mSkillList[i].get();
 				bestMove.target = target;
 				bestMove.score = score;
 			}
