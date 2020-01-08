@@ -16,8 +16,10 @@ namespace Odyssey
 	public:
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
+		void onDebugEngine(DebugEngine* evnt);
 	private:
 		std::shared_ptr<RenderWindowDX11> mRenderWindow;
 		Microsoft::WRL::ComPtr<ID2D1DeviceContext> mContext;
+		std::shared_ptr<UICanvas> mDebugCanvas;
 	};
 }

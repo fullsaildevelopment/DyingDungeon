@@ -75,13 +75,12 @@ void setupCamera();
 void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene>& _sceneObject, std::shared_ptr<Odyssey::Entity>& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupArena();
 void setupGameInterface();
-void setup4PlayerInterface();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
 void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner);
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
-void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner);
+void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -133,7 +132,6 @@ int playGame()
 
 	// Set up the game user interface
 	setupGameInterface();
-	//setup4PlayerInterface();
 
 	// Set up the tower manager
 	setUpTowerManager();
@@ -175,11 +173,6 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 
 	std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
 	application->addRenderPass(spritePass);
-
-	// Create a debugging pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::DebugPass>debugPass = renderDevice->createDebugPass(gMainWindow);
-	debugPass->setEnabled(false);
-	application->addRenderPass(debugPass);
 }
 
 void setupLighting()
@@ -412,28 +405,22 @@ void setupGameInterface()
 	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = 40.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, height / 75.0f), DirectX::XMFLOAT4(1, 0, 0, 1), width, 0, L"Battle for Flavortown", properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 10.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 1280, 0, L"Battle for Flavortown", properties);
 	
 	// Buff Icon Locations
-	float iconSize = width / 50;
-	float anchorX = width / 75.0f + iconSize * 2.5f;
-	float anchorY = height / 25.0f;
-
-	createBuffIcon(anchorX, anchorY, 1, 1, L"assets/images/AttackUp.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 2, 1, L"assets/images/SpeedUp.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 3, 1, L"assets/images/DefenseUp.jpg", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 4, 1, L"assets/images/SpeedDown.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 5, 1, L"assets/images/Bleed.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 6, 1, L"assets/images/Poison.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(80, 30, 1, 1, L"assets/images/AttackUp.png", 25, 25, canvas, nullptr);
+	createBuffIcon(80, 30, 2, 1, L"assets/images/SpeedUp.png", 25, 25, canvas, nullptr);
+	createBuffIcon(80, 30, 3, 1, L"assets/images/DefenseUp.jpg", 25, 25, canvas, nullptr);
+	createBuffIcon(80, 30, 4, 1, L"assets/images/SpeedDown.png", 25, 25, canvas, nullptr);
+	createBuffIcon(80, 30, 5, 1, L"assets/images/Bleed.png", 25, 25, canvas, nullptr);
+	createBuffIcon(80, 30, 6, 1, L"assets/images/Poison.png", 25, 25, canvas, nullptr);
 	
-	anchorX = width - (width / 25.0f) - width / 75.0f;
-	anchorX -= iconSize * 1.5f;
-	createBuffIcon(anchorX, anchorY, 1, -1, L"assets/images/AttackUp.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 2, -1, L"assets/images/DefenseUp.jpg", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 3, -1, L"assets/images/SpeedUp.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 4, -1, L"assets/images/SpeedDown.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 5, -1, L"assets/images/Poison.png", iconSize, iconSize, canvas, nullptr);
-	createBuffIcon(anchorX, anchorY, 6, -1, L"assets/images/Bleed.png", iconSize, iconSize, canvas, nullptr);
+	createBuffIcon(1112, 30, 1, 1, L"assets/images/AttackUp.png", 25, 25, canvas, nullptr);
+	createBuffIcon(1112, 30, 2, 1, L"assets/images/DefenseUp.jpg", 25, 25, canvas, nullptr);
+	createBuffIcon(1112, 30, 3, 1, L"assets/images/SpeedUp.png", 25, 25, canvas, nullptr);
+	createBuffIcon(1112, 30, 4, 1, L"assets/images/SpeedDown.png", 25, 25, canvas, nullptr);
+	createBuffIcon(1112, 30, 5, 1, L"assets/images/Poison.png", 25, 25, canvas, nullptr);
+	createBuffIcon(1112, 30, 6, 1, L"assets/images/Bleed.png", 25, 25, canvas, nullptr);
 
 	// Results Menu
 	canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
@@ -445,95 +432,49 @@ void setupGameInterface()
 	canvas->setActive(false); // The rewards screen won't show up at the start
 }
 
-void setup4PlayerInterface()
-{
-	// Add a UI Canvas for 4v4 HUD
-	gGameMenu->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[2];
-
-	// Get the width and height of the window
-	UINT width = gMainWindow->getWidth();
-	UINT height = gMainWindow->getHeight();
-
-	float anchorX = width / 75.0f;
-	float anchorY = (height / 25.0f) + (height / 7.0f);
-
-	// Set up the other 3 player characters
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
-	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
-	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, nullptr);
-
-	// Move the anchor points to accomodate the right side
-	anchorX = width - anchorX - (width / 25.0f);
-	anchorY = (height / 25.0f) + (height / 7.0f);
-
-	// Set up the other 3 enemy characters
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
-	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
-	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, nullptr);
-
-	canvas->setActive(false);
-}
-
 void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner)
 {
-	// Get the width and height of the window
-	UINT width = gMainWindow->getWidth();
-	UINT height = gMainWindow->getHeight();
 	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = height / 50.0f;
+	properties.fontSize = 14.0f;
 	properties.bold = true;
 
 	// Player Team - Character 1
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, width / 25, width / 25);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, 50, 50);
 
 	// Turn Order Text
-	float offsetX = width / 25.0f;
-	float offsetY = height / 23.0f;
-	if (owner && owner->IsHero() == false)
-	{
-		offsetX = -properties.fontSize / 1.5f;
-	}
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), width / 25, width / 25, L"1", properties);
-	// Health and Mana bars
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), 50, 50, L"1", properties);
 
+	// Health and Mana bars
 	if (owner)
 	{
-		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
-		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 11.75f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), width / 25.0f, height / 70.0f);
+		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
+		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
 	}
 	else
 	{
-		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 14.25f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), width / 25.0f, height / 70.0f);
-		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + height / 11.75f), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), width / 25.0f, height / 70.0f);
+		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
+		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
 	}
 }
 
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
 {
-	// Get the width and height of the window
-	UINT width = gMainWindow->getWidth();
-	UINT height = gMainWindow->getHeight();
 	// Set properties
 	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = height / 40.0f;
+	properties.fontSize = 18.0f;
 	properties.bold = true;
 
 	if (owner)
 	{
 		// Add Text2D element to the screen
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), width / 15, width / 15, L"11.25", properties);
+		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 72, 72, L"11.25", properties);
 	}
 	else
 	{
 		// Add Text2D element to the screen
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), width / 15, width / 15, L"11.25", properties);
+		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 72, 72, L"11.25", properties);
 	}
 }
 
@@ -544,26 +485,28 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
 	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
 	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
+
 	//Background Sound
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
+
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("BackgroundMenu");
 	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
-void createBuffIcon(float anchorX, float anchorY, int slot, int buildDirection, const wchar_t* image, float width, float height, Odyssey::UICanvas* canvas, Character* owner)
+void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
 {
 	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = gMainWindow->getHeight() / 65.0f;
+	properties.fontSize = 12.0f;
 	properties.bold = true;
-	float iconStepX = width * 1.25f;
-	float iconStepY = height * 1.25f;
+	UINT iconStepX = width * 1.25f;
+	UINT iconStepY = height * 1.25f;
 	slot -= 1;
 	int number = (slot % 3) + 1;
-	float xPos = anchorX + buildDirection * (static_cast<float>(slot % 3) * iconStepX);
-	float yPos = anchorY + (static_cast<float>(slot / 3) * iconStepY);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, static_cast<UINT>(width), static_cast<UINT>(height));
+	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
+	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
@@ -592,15 +535,18 @@ void setUpTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 2.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+
 	// Create the character's potrait and assign it's health and mana bars
 	float anchorX = width / 75.0f;
 	float anchorY = height / 25.0f;
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(20, 30, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+
 	// Get the newest Text2D element's index
 	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+
 	// Added the Character's health popup
-	createCharacterHealthPopup(width / 2.7f, height / 2.3f, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(480, 310, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
@@ -608,12 +554,14 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 2.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(20, 130, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+
 	// Get the newest Text2D element's index
 	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+
 	// Added the Character's health popup
-	createCharacterHealthPopup(width / 1.75f, height / 2.6f, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(735, 265, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
@@ -622,12 +570,14 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
 	anchorX = (width - anchorX) - (width / 25.0f);
 	anchorY = height / 25.0f;
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(1210, 30, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+
 	// Get the newest Text2D element's index
 	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+
 	// Added the Character's health popup
-	createCharacterHealthPopup(width / 3.6f, height / 3.3f, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(355, 210, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
@@ -635,12 +585,14 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.5f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
 	anchorY += (height / 7.0f);
-	createCharacterPortrait(anchorX, anchorY, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(1210, 130, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+
 	// Get the newest Text2D element's index
 	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+
 	// Added the Character's health popup
-	createCharacterHealthPopup(width / 2.4f, height / 3.6f, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(530, 200, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
@@ -682,6 +634,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	SetUnhandledExceptionFilter(DumpOutput);
+
 	//DumpFile Test
 	/*int test = 120;
 	int tester = 12;

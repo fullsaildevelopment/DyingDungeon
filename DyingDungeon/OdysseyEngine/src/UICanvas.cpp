@@ -11,4 +11,11 @@ namespace Odyssey
 	{
 		mActive = true;
 	}
+	void UICanvas::initialize()
+	{
+		for (std::shared_ptr<UIElement> element : mElements)
+		{
+			element->initialize();
+		}
+	}
 }

@@ -1,25 +1,11 @@
 #pragma once
 #include "EngineIncludes.h"
-#include "Event.h"
+#include "EngineEvents.h"
 #include "Keycode.h"
 #include <bitset>
 
 namespace Odyssey
 {
-	class KeypressEvent : public Event
-	{
-	public:
-		KeyCode keyCode;
-		KeypressEvent(KeyCode code) : keyCode(code) { }
-	};
-
-	class KeyUpEvent : public Event
-	{
-	public:
-		KeyCode keyCode;
-		KeyUpEvent(KeyCode code) : keyCode(code) { }
-	};
-
 	class InputManager
 	{
 	public: // Singleton pattern

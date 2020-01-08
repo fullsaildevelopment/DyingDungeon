@@ -17,11 +17,6 @@ namespace Odyssey
 			// Initialize the component
 			component->initialize();
 		}
-
-		for (UIElement* element : mElementList)
-		{
-			element->initialize();
-		}
 	}
 
 	void SceneDX11::update()

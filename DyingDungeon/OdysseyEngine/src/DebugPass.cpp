@@ -69,7 +69,7 @@ namespace Odyssey
 			{
 				if (animator->getDebugEnabled())
 				{
-					DirectX::XMFLOAT4X4 transform = debugObject->getComponent<Transform>()->getGlobalTransform();
+					DirectX::XMFLOAT4X4 transform = debugObject->getComponent<Transform>()->getLocalTransform();
 					animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
 				}
 			}

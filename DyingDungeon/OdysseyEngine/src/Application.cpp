@@ -325,12 +325,6 @@ namespace Odyssey
 				// Fire a thread tick event for the main thread. This is for profiling purposes only.
 				EventManager::getInstance().publish(new ThreadTickEvent("Main Thread"));
 
-				// TODO: For testing only.
-				if (InputManager::getInstance().getKeyPress(KeyCode::F4))
-				{
-					mRenderPipeline->getRenderPass(6)->setEnabled(!mRenderPipeline->getRenderPass(6)->isEnabled());
-				}
-
 				// Present the window
 				mActiveWindow->present();
 			}

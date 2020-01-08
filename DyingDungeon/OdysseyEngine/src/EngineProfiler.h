@@ -1,8 +1,8 @@
 #pragma once
 #include "XTime.h"
 #include <string>
-#include "Event.h"
 #include <map>
+#include "EngineEvents.h"
 
 namespace Odyssey
 {
@@ -21,6 +21,8 @@ namespace Odyssey
 		UINT culled;
 		RenderEvent(UINT numObjects, UINT numRendered, UINT numCulled) : totalObjects(numObjects), rendered(numRendered), culled(numCulled) { }
 	};
+
+	class UICanvas;
 
 	class EngineProfiler
 	{
@@ -49,10 +51,18 @@ namespace Odyssey
 	public: // Events
 		void onThreadTick(ThreadTickEvent* evnt);
 		void onOpaqueRender(RenderEvent* evnt);
+		void onDebugInput(KeypressEvent* evnt);
+		void onWindowResize(WindowResizeEvent* evnt);
+
+	private: // Helpers
+		void createDebugCanvas();
+		void updateDebugCanvas();
 
 	private: // Members
 		std::map<std::string, ThreadStats> statsMap;
 		RenderStats opaqueStats;
 		bool mOutputStats;
+		std::shared_ptr<UICanvas> mDebugCanvas;
+		UINT windowWidth, windowHeight;
 	};
 }
