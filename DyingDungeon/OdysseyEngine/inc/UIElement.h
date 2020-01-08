@@ -3,6 +3,7 @@
 #include "RenderIncludes.h"
 #include "EngineEvents.h"
 #include "Callback.h"
+#include <mutex>
 
 #pragma region Element Macros
 
@@ -233,5 +234,6 @@ namespace Odyssey
 		DirectX::XMFLOAT4 mColor;
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
+		std::mutex mLock;
 	};
 }

@@ -8,6 +8,7 @@ CLASS_DEFINITION(Component, Character)
 Character::Character()
 {
 	mDead = false;
+	mDisplaying = false;
 }
 
 void Character::initialize()
@@ -17,7 +18,14 @@ void Character::initialize()
 
 void Character::update(double deltaTime)
 {
-
+	if (mDisplaying)
+	{
+		pDmgText->addOpacity(-deltaTime / 2.0f);
+		if (pDmgText->getOpacity() == 0.0f)
+		{
+			mDisplaying = false;
+		}
+	}
 }
 
 bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
@@ -74,12 +82,27 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+
+	// TODO: FOR BUILD ONLY FIX LATER
+	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
+	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	pDmgText->setOpacity(1.0f);
+	mDisplaying = true;
+	/////////////////////////////////
+
 	std::cout << dmg << " damage!" << std::endl;
 }
 
 // Gives the character health back 
 void Character::ReceiveHealing(float healing)
 {
+	// TODO: FOR BUILD ONLY FIX LATER
+	pDmgText->setText(std::to_wstring(healing).substr(0, 5));
+	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
+	pDmgText->setOpacity(1.0f);
+	mDisplaying = true;
+	/////////////////////////////////
+
 	SetHP(mCurrentHP + healing);
 }
 

@@ -88,9 +88,12 @@ void setUpTowerManager();
 int playGame()
 {
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
+#if _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
 	//_CrtSetBreakAlloc(68315);
+#endif // _DEBUG
+
+
 
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
@@ -141,6 +144,7 @@ int playGame()
 
 	// Add the game scene to the application
 	application->addScene("Game", gGameScene);
+	application->setMultithreading(true);
 
 	// Play audio
 	setupAudio();
@@ -405,7 +409,7 @@ void setupGameInterface()
 	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = 40.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 10.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 1280, 0, L"Battle for Flavortown", properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 10.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), 1280, 0, L"Battle for Flavortown", properties);
 	
 	// Buff Icon Locations
 	createBuffIcon(80, 30, 1, 1, L"assets/images/AttackUp.png", 25, 25, canvas, nullptr);
@@ -444,18 +448,22 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	// Turn Order Text
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1, 0.84f, 0, 1), 50, 50, L"1", properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 50, 50, L"1", properties);
 
 	// Health and Mana bars
 	if (owner)
 	{
-		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
-		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
+		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), 50, 10);
+		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 255.0f, 255.0f, 1.0f), 50, 10);
+		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	}
 	else
 	{
-		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
-		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
+		Odyssey::Rectangle2D* rect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
+		rect->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+		rect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
+		rect->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -469,12 +477,14 @@ void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas*
 	if (owner)
 	{
 		// Add Text2D element to the screen
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 72, 72, L"11.25", properties);
+		owner->pDmgText = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 72, 72, L"11.25", properties);
+		owner->pDmgText->setOpacity(0.0f);
 	}
 	else
 	{
 		// Add Text2D element to the screen
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 72, 72, L"11.25", properties);
+		Odyssey::Text2D* text = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 72, 72, L"11.25", properties);
+		text->setOpacity(1.0f);
 	}
 }
 
@@ -491,8 +501,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 
 	//Play Initial Loop
-	//RedAudioManager::Instance().Loop("BackgroundMenu");
-	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+	RedAudioManager::Instance().Loop("BackgroundMenu");
+	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
@@ -507,7 +517,7 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
 	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), width, height, std::to_wstring(number), properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
 void setUpTowerManager()

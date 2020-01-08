@@ -88,6 +88,11 @@ public:
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
+
+	// TODO: FOR BUILD ONLY FIX LATER
+	Odyssey::Text2D* pDmgText;
+	bool mDisplaying;
+
 protected:
 	bool mHero;
 	bool mDead;

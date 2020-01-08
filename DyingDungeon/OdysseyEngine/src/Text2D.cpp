@@ -27,6 +27,7 @@ namespace Odyssey
 	void Text2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if we have a valid brush
+		mLock.lock();
 		if (mBrush == nullptr)
 		{
 			// Create the brush to render the text with
@@ -36,6 +37,7 @@ namespace Odyssey
 
 		// Render the text to the render target
 		context->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
+		mLock.unlock();
 	}
 
 	void Text2D::setText(std::wstring text)

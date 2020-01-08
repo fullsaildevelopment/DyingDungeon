@@ -22,6 +22,10 @@ namespace Odyssey
 		// Create the rectangle
 		createShape();
 
+		mColor.x /= 255.0f;
+		mColor.y /= 255.0f;
+		mColor.z /= 255.0f;
+
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
 	}
@@ -146,7 +150,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	void UIElement::addColor(float r, float g, float b)
@@ -160,7 +169,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	void UIElement::setColor(DirectX::XMFLOAT3 color)
@@ -172,7 +186,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	void UIElement::setColor(float r, float g, float b)
@@ -184,7 +203,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	DirectX::XMFLOAT4 UIElement::getColor()
@@ -202,7 +226,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	void UIElement::setOpacity(float opacity)
@@ -214,7 +243,12 @@ namespace Odyssey
 		clampColor(mColor);
 
 		// Reset the brush to be recreated on the next draw
-		mBrush.Reset();
+		mLock.lock();
+		if (mBrush)
+		{
+			mBrush.Reset();
+		}
+		mLock.unlock();
 	}
 
 	float UIElement::getOpacity()

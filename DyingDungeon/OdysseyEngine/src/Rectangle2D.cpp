@@ -22,7 +22,11 @@ namespace Odyssey
 			DirectX::XMFLOAT4 brushColor = colorLerp(mZeroFillColor, mColor, mFill);
 
 			// Reset and recreate the brush with the lerped color
-			mBrush.Reset();
+			if (mBrush)
+			{
+				mBrush = nullptr;
+			}
+				
 			HRESULT hr = context->CreateSolidColorBrush(D2D1::ColorF(brushColor.x, brushColor.y, brushColor.z, brushColor.w), mBrush.GetAddressOf());
 			assert(!FAILED(hr));
 		}
@@ -33,12 +37,6 @@ namespace Odyssey
 			// Recreate the brush with the base color
 			HRESULT hr = context->CreateSolidColorBrush(D2D1::ColorF(mColor.x, mColor.y, mColor.z, mColor.w), mBrush.GetAddressOf());
 			assert(!FAILED(hr));
-		}
-
-		// Copy the current shape and alter it's width using the fill
-		if (mFill < 1.0f)
-		{
-			int debug = 0;
 		}
 
 		// Copy the shape and apply the fill to the width

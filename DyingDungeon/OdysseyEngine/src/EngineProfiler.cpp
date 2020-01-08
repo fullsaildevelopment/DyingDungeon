@@ -121,27 +121,27 @@ namespace Odyssey
 		mDebugCanvas->addElement<Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f), windowWidth / 3, windowHeight / 3);
 
 		// Scene thread fps
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, sceneThread, defaultText);
 
 		// Render thread fps
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + padding + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + padding + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, renderThread, defaultText);
 
 		// Render frame time
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (2.0f * padding) + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (2.0f * padding) + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, frameTime, defaultText);
 
 		// Objects in scene
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (3.0f * padding) + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (3.0f * padding) + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, totalObjects, defaultText);
 
 		// Rendered objects
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (4.0f * padding) + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (4.0f * padding) + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, renderObjects, defaultText);
 
 		// Rendered objects
-		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (5.0f * padding) + indent), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f),
+		mDebugCanvas->addElement<Text2D>(DirectX::XMFLOAT2(x + indent, y + (5.0f * padding) + indent), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 0.5f),
 			(windowWidth / 3) - 10, (windowHeight / 3) - 10, culledObjects, defaultText);
 
 		// Initialize the canvas
