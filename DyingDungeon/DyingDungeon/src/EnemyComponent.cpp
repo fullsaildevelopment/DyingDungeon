@@ -56,16 +56,17 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	// Find my best option
 	switch (mCurrentState)
 	{
+	case STATE::STUNNED:
+	{
+		mCurrentState = STATE::NONE;
+		ManageAllEffects();
+		return true;
+	}
 	case STATE::NONE:
 	{
-		//TODO: Change to lanes new stuff
-		/*if (mStunned)
-		{
-			std::cout << GetName() << " is stunned!" << std::endl;
-			return ManageAllEffects();
-		}*/
-		ManageStatusEffects(mBleeds);
+		//TODO: Change to lanes new stuff... Lane was here :D
 		ManageStatusEffects(mRegens);
+		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -84,37 +85,104 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::INPROGRESS:
 	{
-		static bool trigger = false;
-
-		if (!trigger && mAnimator->getProgress() > 0.25f)
+		static bool triggerButBetter = false;
+		if (!triggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetAnimationTiming())
 		{
-			if (mMoves.GetMove()->target->IsHero())
-				mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
-			trigger = true;
+			// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed 
+			static bool trigger = false;
+			if (!trigger && mAnimator->getProgress() > mMoves.GetMove()->skill->GetAnimationTiming())
+			{
+				// If its ment for the enemies play the hit animation to time with the animation timing
+				if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+				{
+					if (mMoves.GetMove()->skill->IsAOE())
+					{
+						for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+						{
+							if (c != nullptr)
+								c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
+						}
+					}
+					else if (mMoves.GetMove()->target != nullptr)
+						mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
+				}
+				else
+				{
+					// If its ment for the players characters play the recived buff animation to time with the animation timing
+					if (mMoves.GetMove()->skill->IsAOE())
+					{
+						for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+						{
+							if (c != nullptr && c.get()->getComponent<EnemyComponent>() != this)
+								c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+						}
+					}
+					else if (mMoves.GetMove()->target != nullptr)
+						mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+				}
+				// Set trigger to true to avoid looping the recipents animation
+				triggerButBetter = true;
+			}
 		}
-
 		if (mAnimator->getProgress() > 0.9f)
 		{
-			// Use the best move
-			mMoves.GetMove()->skill->Use(*mEntity->getComponent<Character>(), *mMoves.GetMove()->target);
-			// If i have any buffs manage them 
-			//Reset best move score
-			mMoves.GetMove()->score = -10000;
-			mCurrentState = STATE::NONE;
-			trigger = false;
-			ManageStatusEffects(mBuffs);
-			ManageStatusEffects(mDebuffs);
-			return true;
+			if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+			{
+				if (mMoves.GetMove()->skill->IsAOE())
+				{
+					Character* temp = nullptr;
+					for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+					{
+						if (c != nullptr)
+						{
+							temp = c.get()->getComponent<Character>();
+							if (temp->GetState() != STATE::DEAD)
+								mMoves.GetMove()->skill->Use(*this, *temp);
+						}
+					}
+				}
+				else if (mMoves.GetMove()->target != nullptr)
+					mMoves.GetMove()->skill->Use(*this, *mMoves.GetMove()->target);
+			}
+			else
+			{
+				if (mMoves.GetMove()->skill->IsAOE())
+				{
+					Character* temp = nullptr;
+					for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+					{
+						if (c != nullptr)
+						{
+							temp = c.get()->getComponent<Character>();
+							if (temp->GetState() != STATE::DEAD)
+								mMoves.GetMove()->skill->Use(*this, *temp);
+						}
+					}
+				}
+				else if (mMoves.GetMove()->target != nullptr)
+					mMoves.GetMove()->skill->Use(*this, *mMoves.GetMove()->target);
+			}
+			mMoves.GetMove()->skill = nullptr;
+			mMoves.GetMove()->target = nullptr;
+			mMoves.GetMove()->score = -1000.0f;
+			triggerButBetter = false;
+			mCurrentState = STATE::FINISHED;
 		}
+		break;
+	}
+	case STATE::FINISHED:
+	{
+		mCurrentState = STATE::NONE;
+		ManageStatusEffects(mBuffs);
+		ManageStatusEffects(mDebuffs);
+		ManageStatusEffects(mSheilds);
+		return true;
 		break;
 	}
 	case STATE::DEAD:
 	{
 		if (mAnimator->getProgress() > 0.8f)
-		{
-			SetDead(true);
 			return true;
-		}
 		break;
 	}
 	default:
@@ -122,16 +190,11 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	return false;
 }
-
 void EnemyComponent::Die()
 {
-	if (GetHP() <= 0)
-	{
-		mCurrentState = STATE::DEAD;
-		ClearStatusEffects();
-
-		//TODO Uncomment for death animation
-		mAnimator->playClip("Dead");
-	}
+	mCurrentState = STATE::DEAD;
+	ClearStatusEffects();
+	mAnimator->playClip("Dead");
+	pTurnNumber->setText(L"X");
 }
 
