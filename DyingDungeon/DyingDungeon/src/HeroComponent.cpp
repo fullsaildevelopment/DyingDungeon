@@ -41,10 +41,10 @@ HeroComponent::HeroComponent(HEROID id)
 		mShielding = 0.0f;
 		for (int i = 0; i < TOTALSKILLS; ++i)
 		// Basic Attack (Add Provoke 30% chance)
-		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.40f, -5.0f, 150.0f, temp));
+		temp = std::make_shared<Bleed>(0.25f, 1, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.40f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.25f, 15.0f, 20.0f, 25.0f));
+		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.25f, 15.0f, 200.0f, 25.0f));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.25f, 20.0f, temp, true, true));

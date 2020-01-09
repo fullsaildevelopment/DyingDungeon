@@ -1,7 +1,13 @@
 #pragma once
 #include "AiMoves.h"
 #include "Character.h"
+//////
 #include "Attack.h"
+#include "Buffs.h"
+//////
+#include "Provoked.h"
+#include "Bleed.h"
+#include "Regens.h"
 
 AIMoves::AIMoves()
 {
@@ -34,8 +40,9 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 0:
 		{
 			//Setup Moves
-			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", 0.25f, -5, 200));
-			mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "BasicAttackButBetter", 0.25f, 20, 25));
+			std::shared_ptr<StatusEffect> temp = std::make_shared<Regens>(0.25f, 1, nullptr);
+			mSkillList.push_back(std::make_shared<Buffs>("Basic Attack", "BasicAttackButBetter", 0.25f, -5.0f, temp, true));
+			//mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "BasicAttackButBetter", 0.25f, 20.0f, 25.0f));
 			break;
 		}
 		default:

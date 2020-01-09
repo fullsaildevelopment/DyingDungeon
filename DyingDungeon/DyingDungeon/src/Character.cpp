@@ -449,6 +449,9 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	for (it = effectList.begin(); it != effectList.end();)
 	{
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return;
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -456,29 +459,16 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 			it = effectList.erase(it);
 		}
 		else
-		{
-			(*it)->Use();
 			it++;
-		}
 	}
 }
 
 bool Character::ManageAllEffects()
 {
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
 	for (it = mRegens.begin(); it != mRegens.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -488,13 +478,23 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
-	if (mCurrentHP <= 0.0f)
+	for (it = mBleeds.begin(); it != mBleeds.end();)
 	{
-		mCurrentState = STATE::DEAD;
-		return false;
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return false;
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
 	}
 	for (it = mBuffs.begin(); it != mBuffs.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -506,6 +506,7 @@ bool Character::ManageAllEffects()
 	}
 	for (it = mDebuffs.begin(); it != mDebuffs.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -517,6 +518,7 @@ bool Character::ManageAllEffects()
 	}
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
