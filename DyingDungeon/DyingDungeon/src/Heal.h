@@ -12,7 +12,8 @@ private:
 public:
 	// Constructors
 	Heal() = default;
-	Heal(std::string skillName, std::string animationId, float mpCost, float healing);
+	Heal(std::string skillName, std::string animationId,float animationTiming, float mpCost, float healing);
+	Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe);
 	// Applys healing to target
 	void Use(Character& caster, Character& target);
 	// Get how much the skill heals for
