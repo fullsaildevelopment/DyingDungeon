@@ -11,12 +11,6 @@ public:
 	EnemyComponent(ENEMYID _enemyID);
 	~EnemyComponent();
 	//virtual void initialize();
-	struct Move 
-	{
-		Character* target;
-		Skills* skill;
-		float score = -100;
-	};
 	//Attack Functions
 	bool FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> targets);
 	float ScoreMove(Skills* skillOption, Character* target);
@@ -27,7 +21,6 @@ public:
 	/////End of Get and Set Functions/////
 private:
 	//std::function<float(Skills, Character*)> fScoreMove = nullptr;
-	Move bestMove;
 	int currentSkillMoveCheck = 0;
 	AIMoves mMoves;
 	SKILLTYPE mMoveOverride;

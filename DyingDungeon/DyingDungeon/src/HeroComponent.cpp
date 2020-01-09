@@ -261,7 +261,7 @@ void HeroComponent::SelctionState(int moveIndex)
 		else
 		{
 			mCurrentTarget = mProvoked;
-			mCurrentState == STATE::CONFIRM;
+			mCurrentState = STATE::CONFIRM;
 			std::cout << "This will hit " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
 		}
 	}

@@ -7,8 +7,27 @@ CLASS_DEFINITION(Component, Character)
 
 Character::Character()
 {
+	mHero = false;
 	mDead = false;
 	mDisplaying = false;
+	mShielding = false;
+	mAttack = 0.0f;
+	mDefense = 0.0f;
+	mSpeed = 0.15f;
+	mBaseMaxHP = 100.0f;
+	mBaseMaxMana = 100.0f;
+	mCurrentHP = 100.0f;
+	mCurrentMana = 100.0f;
+	mPrevHealth = 100.0f;
+	mPrevMana = 100.0f;
+	mEXP = 0.0f;
+	mProvoked = nullptr;
+	mAnimator = nullptr;
+	pDmgText = nullptr;
+	pHealthBar = nullptr;
+	pManaBar = nullptr;
+	pTurnNumber = nullptr;
+	mCurrentState = STATE::NONE;
 }
 
 void Character::initialize()
@@ -20,7 +39,7 @@ void Character::update(double deltaTime)
 {
 	if (mDisplaying)
 	{
-		pDmgText->addOpacity(-deltaTime / 2.0f);
+		pDmgText->addOpacity(static_cast<float>(-deltaTime) / 2.0f);
 		if (pDmgText->getOpacity() == 0.0f)
 		{
 			mDisplaying = false;

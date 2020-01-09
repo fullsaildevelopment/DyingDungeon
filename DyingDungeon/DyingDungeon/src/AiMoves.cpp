@@ -14,11 +14,20 @@ AIMoves::AIMoves()
 
 AIMoves::AIMoves(int _enemyID, Character* _caster)
 {
+	//Priority Set To None
+	mPriorityMove = SKILLTYPE::UNDEFINED;
+	
+	//Best Move Initialization
 	mBestMove = std::make_shared<AIMoves::Move>();
-	mCurrMoveCheck = 0;
+	mBestMove->skill = nullptr;
+	mBestMove->target = nullptr;
+	mBestMove->score = -10000;
+
+	//My ID and Who I am
 	mEnemyID = _enemyID;
 	caster = _caster;
-	mPriorityMove = SKILLTYPE::UNDEFINED;
+	
+	mCurrMoveCheck = 0;
 
 	switch (_enemyID)
 	{
@@ -39,8 +48,6 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	mPriorityMove = priorityOverride;
-	mPlayerTeam = playerTeam;
-	mEnemyTeam = enemyTeam;
 	bool finished = false;
 
 	//Determine Enemy Type
@@ -58,17 +65,17 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 			break;
 		};
 	}
-
-	finished = FindBestMove();
+	
+	finished = FindBestMove(playerTeam, enemyTeam);
 	return finished;
 }
 
-bool AIMoves::FindBestMove()
+bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	bool finished = false;
 	Character* currTarget = nullptr;
 	
-	for (std::shared_ptr<Odyssey::Entity> t : mPlayerTeam)
+	for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
 	{
 		if (t)
 		{
@@ -137,4 +144,11 @@ void AIMoves::UngaAttackDeterminePriority()
 std::shared_ptr<AIMoves::Move> AIMoves::GetMove()
 {
 	return mBestMove;
+}
+
+void AIMoves::ResetMove()
+{
+	mBestMove->skill = nullptr;
+	mBestMove->target = nullptr;
+	mBestMove->score = -10000;
 }
