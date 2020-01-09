@@ -76,7 +76,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	case STATE::SELECTMOVE:
 	{
 		//if (FindBestMove(playerTeam))
-		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam))
+		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
 		{
 			mCurrentState = STATE::INPROGRESS;
 			mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
@@ -162,9 +162,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 				else if (mMoves.GetMove()->target != nullptr)
 					mMoves.GetMove()->skill->Use(*this, *mMoves.GetMove()->target);
 			}
-			mMoves.GetMove()->skill = nullptr;
-			mMoves.GetMove()->target = nullptr;
-			mMoves.GetMove()->score = -1000.0f;
+			mMoves.ResetMove();
 			triggerButBetter = false;
 			mCurrentState = STATE::FINISHED;
 		}

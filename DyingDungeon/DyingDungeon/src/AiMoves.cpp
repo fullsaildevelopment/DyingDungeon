@@ -89,26 +89,32 @@ bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerT
 		}
 	}
 
-	for (; mCurrMoveCheck < mSkillList.size();)
-	{
-		float score = ScoreMove(mSkillList[mCurrMoveCheck], currTarget);
-		
-		if (score > mBestMove->score)
+	if (currTarget != nullptr && currTarget->GetState() != STATE::DEAD)
+		for (; mCurrMoveCheck < mSkillList.size();)
 		{
-			mBestMove->skill = mSkillList[mCurrMoveCheck];
-			mBestMove->target = currTarget;
-			mBestMove->score = score;
-		}
+			float score = ScoreMove(mSkillList[mCurrMoveCheck], currTarget);
 
-		if (mCurrMoveCheck >= mSkillList.size() - 1)
-		{
-			mCurrMoveCheck = 0;
-			finished = true;
+			if (score > mBestMove->score)
+			{
+				mBestMove->skill = mSkillList[mCurrMoveCheck];
+				mBestMove->target = currTarget;
+				mBestMove->score = score;
+			}
+
+			if (mCurrMoveCheck >= mSkillList.size() - 1)
+			{
+				mCurrMoveCheck = 0;
+				finished = true;
+				break;
+			}
+
+			mCurrMoveCheck++;
 			break;
 		}
-
-		mCurrMoveCheck++;
-		break;
+	else
+	{
+		ResetMove();
+		finished = true;
 	}
 
 	return finished;
