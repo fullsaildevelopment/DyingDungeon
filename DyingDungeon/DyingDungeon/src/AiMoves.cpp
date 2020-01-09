@@ -81,7 +81,7 @@ bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerT
 		{
 			if (currTarget = t->getComponent<Character>())
 			{
-				if (currTarget->IsHero() == true && currTarget->IsDead() == false)
+				if (currTarget->IsHero() == true && currTarget->GetState() != STATE::DEAD)
 				{
 					break;
 				}
