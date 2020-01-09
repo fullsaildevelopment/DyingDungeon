@@ -121,6 +121,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			SelectTarget(heros, enemies, 1);
 		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
+		{
+			SelectTarget(heros, enemies, 2);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
+		{
+			SelectTarget(heros, enemies, 3);
+		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
 			ResetToSelection();

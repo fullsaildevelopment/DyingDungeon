@@ -3,7 +3,7 @@
 #include "Animator.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
-#include "Mesh.h"
+#include "Material.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
@@ -73,13 +73,16 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set the transform
 	impactIndicator->addComponent<Odyssey::Transform>();
 	// Position indicator over the head
-	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos + 5.0f, zPos);
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos + 4.5f, zPos);
 	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 	// Import Model
-	Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/ImpactIndicator.dxm", false);
-	// Assign the character's impact indicator
-	//newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
+	// Set the impact indicator's color
+	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
+	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
 	impactIndicator->setStatic(false);
+	// Assign the character's impact indicator
+	newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
 	return newCharacter;
 }

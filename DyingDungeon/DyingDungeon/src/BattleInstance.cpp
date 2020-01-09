@@ -30,7 +30,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 			mPlayerTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
 			turnOrderIndex++;
 
-			if (!mPlayerTeam[i]->getComponent<Character>()->IsDead())
+			if (mPlayerTeam[i]->getComponent<Character>()->GetState() != STATE::DEAD)
 			{
 				// Play an attack animation at the beginning of each battle
 				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
@@ -84,8 +84,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 int BattleInstance::UpdateBattle()
 {
 	// Check to see if the current charcter is even alive before the character takes its turn
-	// TODO :: if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::DEAD)
-	if (mCurrentCharacter->getComponent<Character>()->IsDead())
+	if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::DEAD)
 	{
 		std::cout << mCurrentCharacter->getComponent<Character>()->GetName() << " Died, R.I.P.\n" << std::endl;
 		//Update the character's turn number to an X - this will represent that he is dead
@@ -188,7 +187,7 @@ bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
 		if (_teamToCheck[i] != nullptr)
 		{
 			// Check to see if current character on the team is alive
-			if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+			if (_teamToCheck[i]->getComponent<Character>()->GetState() != STATE::DEAD)
 			{
 				// That person was alive so return true, we just need to make sure that at least one player is still alive
 				return true;
@@ -211,7 +210,7 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 	{
 		Character* currChar = tempBattleQueue.front()->getComponent<Character>();
 
-		if (currChar->IsDead())
+		if (currChar->GetState() == STATE::DEAD)
 		{
 			currChar->pTurnNumber->setText(L"X");
 			counter--;

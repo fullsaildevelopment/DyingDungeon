@@ -666,6 +666,22 @@ void setUpTowerManager()
 	turnIndicatorModel->setStatic(false);
 	gGameScene->addEntity(turnIndicatorModel);
 
+	// Create the impact indicator for each character
+	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
+	// Set the transform
+	impactIndicator->addComponent<Odyssey::Transform>();
+	// Position indicator over the head
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(6.0f, 5.0f, 4.5f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
+	// Import Model
+	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
+	// Set the impact indicator's color
+	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
+	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
+	impactIndicator->setStatic(false);
+	gGameScene->addEntity(impactIndicator);
+
 	// Set up the tower manager with the enemy and player teams
 	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);
 	gGameScene->addEntity(gCurrentTower);

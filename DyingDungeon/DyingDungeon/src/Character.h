@@ -74,6 +74,8 @@ public:
 	// State functions
 	STATE GetState();
 	void SetState(STATE newState);
+	// Impact Indicator Setter
+	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
 	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
@@ -116,6 +118,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;
 	float mPrevMana;
