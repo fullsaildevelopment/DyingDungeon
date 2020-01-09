@@ -19,6 +19,7 @@
 // Engine includes
 #include "OdysseyEngine.h"
 #pragma comment(lib, "dbghelp.lib")
+#include "Material.h"
 
 // Memory leak includes
 #define _CRTDBG_MAP_ALLOC
@@ -78,7 +79,7 @@ void setupGameInterface();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
-void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner);
+void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
@@ -434,20 +435,16 @@ void setupGameInterface()
 	canvas->setActive(false); // The rewards screen won't show up at the start
 }
 
-void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image, Odyssey::UICanvas* canvas, Character* owner)
+void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
 {
 	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = 14.0f;
 	properties.bold = true;
 
-	int imageSize = 32;
-	// Player Team - Character 1
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(anchorX, anchorY), image, imageSize, imageSize);
-
 	// Turn Order Text
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), imageSize, imageSize, L"1", properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
 
 	// Health and Mana bars
 	int manaBarHeight = 5;
@@ -455,9 +452,9 @@ void createCharacterPortrait(float anchorX, float anchorY, const wchar_t* image,
 	int barWidth = 100;
 	if (owner)
 	{
-		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX + imageSize, anchorY), DirectX::XMFLOAT4(0.0f, 255.0f, 255.0f, 1.0f), barWidth, manaBarHeight);
+		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(0.0f, 255.0f, 255.0f, 1.0f), barWidth, manaBarHeight);
 		owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX + imageSize, anchorY + manaBarHeight), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), barWidth, healthBarHeight);
+		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + manaBarHeight), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), barWidth, healthBarHeight);
 		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	}
 	else
@@ -512,8 +509,8 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 	Odyssey::TextProperties properties = gDefaultText;
 	properties.fontSize = 12.0f;
 	properties.bold = true;
-	UINT iconStepX = width * 1.25f;
-	UINT iconStepY = height * 1.25f;
+	UINT iconStepX = static_cast<UINT>(width * 1.25f);
+	UINT iconStepY = static_cast<UINT>(height * 1.25f);
 	slot -= 1;
 	int number = (slot % 3) + 1;
 	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
@@ -549,10 +546,10 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
 
 	// Create the character's potrait and assign it's health and mana bars
-	createCharacterPortrait(75, 375, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -563,10 +560,10 @@ void setUpTowerManager()
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
-	createCharacterPortrait(400, 425, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -577,10 +574,10 @@ void setUpTowerManager()
 	// Paladin #3
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
-	createCharacterPortrait(725, 425, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -591,10 +588,10 @@ void setUpTowerManager()
 	// Paladin #4
 	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
-	createCharacterPortrait(1050, 375, L"assets/images/Guy.png", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -605,10 +602,10 @@ void setUpTowerManager()
 	// Skeleton #1
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
-	createCharacterPortrait(250, 200, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -619,10 +616,10 @@ void setUpTowerManager()
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
-	createCharacterPortrait(450, 225, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -633,10 +630,10 @@ void setUpTowerManager()
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
-	createCharacterPortrait(650, 225, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -647,10 +644,10 @@ void setUpTowerManager()
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
-	createCharacterPortrait(850, 200, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
-	text2DIndex = canvas->getElements<Odyssey::Text2D>().size() - 1;
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
@@ -658,8 +655,19 @@ void setUpTowerManager()
 	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
+	// Create the turn indicator circle
+	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
+	turnIndicatorModel->addComponent<Odyssey::Transform>();
+	turnIndicatorModel->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	turnIndicatorModel->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(turnIndicatorModel, "assets/models/TurnIndicator.dxm", false);
+	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
+	turnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
+	turnIndicatorModel->setStatic(false);
+	gGameScene->addEntity(turnIndicatorModel);
+
 	// Set up the tower manager with the enemy and player teams
-	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5);
+	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);
 	gGameScene->addEntity(gCurrentTower);
 }
 

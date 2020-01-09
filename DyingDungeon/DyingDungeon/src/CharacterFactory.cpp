@@ -2,6 +2,8 @@
 #include "FileManager.h"
 #include "Animator.h"
 #include "Transform.h"
+#include "MeshRenderer.h"
+#include "Mesh.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
@@ -63,6 +65,19 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	newCharacter->getComponent<Character>()->SetDead(false);
 	newCharacter->getComponent<Character>()->SetStun(false);
+
+	// Create the impact indicator for each character
+	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
+	// Set the transform
+	impactIndicator->addComponent<Odyssey::Transform>();
+	// Position indicator over the head
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos + 5.0f, zPos);
+	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	// Import Model
+	Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/ImpactIndicator.dxm", false);
+	// Assign the character's impact indicator
+	//newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+	impactIndicator->setStatic(false);
 
 	return newCharacter;
 }

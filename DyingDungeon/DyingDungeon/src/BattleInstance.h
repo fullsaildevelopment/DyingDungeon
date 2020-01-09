@@ -13,7 +13,7 @@ class BattleInstance
 {
 
 public: // Constructors
-	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers);
+	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
 
 	enum BattleInstanceCommands
 	{
@@ -44,10 +44,11 @@ private: // Varibales
 
 	// Entitys
 	std::shared_ptr<Odyssey::Entity> mCurrentCharacter; // This will hold the current player who's turn it is
+	std::shared_ptr<Odyssey::Entity> mTurnIndicator; // This will be the object underneath the character who's turn it is
 
 	// Ints
-	int mTurnCounter;
-	int mCurrentRound;
+	int mTurnCounter = -1;
+	int mCurrentRound = -1;
 
 	// Floats
 
@@ -59,4 +60,14 @@ private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders
 	bool IsTeamAlive(EntityList _teamToCheck); // This will check to see if at least one character from the passed in team is alive
 	void UpdateCharacterTurnNumbers(); // This will update each character's turn order text
+	void SetTurnIndicatorPosition(); // This will update the turn indicator model to be at the feet of the current character who's turn it is
+};
+
+class SetPlayerToDead : public Odyssey::Event
+{
+public:
+	SetPlayerToDead()
+	{
+
+	}
 };
