@@ -40,9 +40,10 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 0:
 		{
 			//Setup Moves
-			std::shared_ptr<StatusEffect> temp = std::make_shared<Regens>(0.25f, 1, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>("Basic Attack", "BasicAttackButBetter", 0.25f, -5.0f, temp, true));
-			//mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "BasicAttackButBetter", 0.25f, 20.0f, 25.0f));
+			//std::shared_ptr<StatusEffect> temp = std::make_shared<Regens>(0.25f, 1, nullptr);
+			//mSkillList.push_back(std::make_shared<Buffs>("Basic Attack", "BasicAttackButBetter", 0.25f, -5.0f, temp, true));
+			mSkillList.push_back(std::make_shared<Attack>("Hit", "BasicAttackButBetter", 0.25f, -15.0f, 10.0f));
+			mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "SpinKick", 0.25f, 20.0f, 25.0f));
 			break;
 		}
 		default:
@@ -104,7 +105,7 @@ bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerT
 		{
 			float score = ScoreMove(mSkillList[mCurrMoveCheck], currTarget);
 
-			if (score > mBestMove->score)
+			if (score >= mBestMove->score)
 			{
 				mBestMove->skill = mSkillList[mCurrMoveCheck];
 				mBestMove->target = currTarget;
