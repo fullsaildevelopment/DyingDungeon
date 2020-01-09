@@ -35,7 +35,7 @@ class AIMoves
 		std::vector<Odyssey::Entity> mBestTarget;
 		Character* caster;
 
-		std::shared_ptr<Move> mBestMove;
+		std::shared_ptr<AIMoves::Move> mBestMove;
 		int mEnemyID;
 		int mCurrMoveCheck;
 		SKILLTYPE mPriorityMove;
@@ -43,7 +43,7 @@ class AIMoves
 
 		//////////////////////////GET FUNCTIONS//////////////////////////////////
 	public:
-		std::shared_ptr<Move> GetMove();
+		std::shared_ptr <AIMoves::Move> GetMove();
 
 		//////////////////////////SET FUNCTIONS//////////////////////////////////
 	public:
