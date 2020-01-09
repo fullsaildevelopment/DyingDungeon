@@ -223,7 +223,7 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 }
 
 void RedAudio::PlayInstance() {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	std::string cmd = "open ";
 	cmd.append(m_path);
 	cmd.append(" alias ");
@@ -269,7 +269,7 @@ void RedAudio::Pause()
 	}
 #endif
 	m_playing = false;
-	cmd.c_str();
+	//cmd.c_str();
 	delete[] in_cmd;
 	delete[] out_string;
 }
