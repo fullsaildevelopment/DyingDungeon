@@ -75,19 +75,22 @@ bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerT
 	bool finished = false;
 	Character* currTarget = nullptr;
 	
-	for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
-	{
-		if (t)
+	if (caster->GetProvoked() == nullptr)
+		for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
 		{
-			if (currTarget = t->getComponent<Character>())
+			if (t)
 			{
-				if (currTarget->IsHero() == true && currTarget->GetState() != STATE::DEAD)
+				if (currTarget = t->getComponent<Character>())
 				{
-					break;
+					if (currTarget->IsHero() == true && currTarget->GetState() != STATE::DEAD)
+					{
+						break;
+					}
 				}
 			}
 		}
-	}
+	else
+		currTarget = caster->GetProvoked();
 
 	if (currTarget != nullptr && currTarget->GetState() != STATE::DEAD)
 		for (; mCurrMoveCheck < mSkillList.size();)
