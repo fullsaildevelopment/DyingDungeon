@@ -63,14 +63,18 @@ HeroComponent::~HeroComponent()
 
 bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 {
+	// State machine to navigate while its the players turn.
 	switch (mCurrentState)
 	{
+		//If the player is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
-		ManageAllEffects();
 		mCurrentState = STATE::NONE;
+		ManageAllEffects();
 		return true;
 	}
+		//If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
+		//If the players character dies he will have his state set to dead, else he will start to select his move.
 	case STATE::NONE:
 	{
 		ManageStatusEffects(mRegens);
@@ -81,6 +85,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentState = STATE::SELECTMOVE;
 		break;
 	}
+		//Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -105,6 +110,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
+		//If the player character's selection is not Aoe or currently provoked they will then select thier target
 	case STATE::SELECTTARGET:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -121,6 +127,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
+		//Player will confirm that this is thier desired move
 	case STATE::CONFIRM:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -134,11 +141,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
+	// The move animation has begun, this will run until the animation is over
 	case STATE::INPROGRESS:
 	{
+		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed 
 		static bool trigger = false;
 		if (!trigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
+			// If its ment for the enemies play the hit animation to time with the animation timing
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
@@ -154,6 +164,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			}
 			else
 			{
+				// If its ment for the players characters play the recived buff animation to time with the animation timing
 				if (mCurrentSkill->IsAOE())
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
@@ -165,8 +176,10 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				else if (mCurrentTarget != nullptr)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 			}
+			// Set trigger to true to avoid looping the recipents animation
 			trigger = true;
 		}
+		// Once the animation is nearly finished use the skill and apply the effects
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
@@ -210,8 +223,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			trigger = false;
 			mCurrentState = STATE::FINISHED;			
 		}
-		break;
 	}
+	break;
+		// once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
 		mCurrentState = STATE::NONE;
@@ -221,6 +235,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		return true;
 		break;
 	}
+		// If here the character has died and will begin his death animation
 	case STATE::DEAD:
 	{
 		if (mAnimator->getProgress() > 0.8f)
@@ -236,10 +251,10 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 void HeroComponent::Die()
 {
 	mCurrentState = STATE::DEAD;
+	ClearStatusEffects();
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
 }
-
 void HeroComponent::SelctionState(int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
@@ -268,7 +283,6 @@ void HeroComponent::SelctionState(int moveIndex)
 	else
 		std::cout << "You dont have enough mana for that move." << std::endl;
 }
-
 void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targetIndex)
 {
 	if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
@@ -293,7 +307,6 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 	}
 	mCurrentState = STATE::CONFIRM;
 }
-
 void HeroComponent::ResetToSelection()
 {
 	mCurrentSkill = nullptr;
