@@ -15,6 +15,7 @@
 #include "MainMenuController.h"
 #include "TowerSelectController.h"
 #include "TeamSelectionController.h"
+#include "StatTracker.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -642,7 +643,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	SetUnhandledExceptionFilter(DumpOutput);
-
+	StatTracker::Instance().OutputStatSheet();
 	//DumpFile Test
 	/*int test = 120;
 	int tester = 12;

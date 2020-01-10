@@ -38,7 +38,7 @@ public:
 	}
 };
 
-class CharacterHealsCharacterEvent : public Odyssey::Event
+class CharacterHealsEvent : public Odyssey::Event
 {
 public:
 	std::string healerName;
@@ -46,7 +46,7 @@ public:
 	STATS actionEffect;
 	bool isSpell;
 	float health;
-	CharacterHealsCharacterEvent(std::string healer, std::string action, STATS effect, float healthAmount, bool isASpell) 
+	CharacterHealsEvent(std::string healer, std::string action, STATS effect, float healthAmount, bool isASpell) 
 	{
 		healerName = healer;
 		actionName = action;
@@ -68,16 +68,24 @@ public:
 	}
 };
 
-class CharacterDefendsEvent : public Odyssey::Event 
+class CharacterShieldsEvent : public Odyssey::Event 
 {
 	std::string chracterName;
 	std::string actionName;
 	float shieldBuff;
-	CharacterDefendsEvent(std::string character, std::string action, float shield_defense)
+	CharacterShieldsEvent(std::string character, std::string action, float shield_defense)
 	{
 		chracterName = character;
 		actionName = action;
 		shieldBuff = shield_defense;
+	}
+};
+
+class CharacterRecivesShieldEvent : public Odyssey::Event 
+{
+	std::string targetName;
+	CharacterRecivesShieldEvent(std::string target) {
+		targetName = target;
 	}
 };
 
