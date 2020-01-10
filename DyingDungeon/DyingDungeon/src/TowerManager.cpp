@@ -4,6 +4,7 @@
 #include "HeroComponent.h"
 #include "InputManager.h"
 #include "EventManager.h"
+#include "StatusEvents.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -101,7 +102,7 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles)
+void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
 	// Assign the player team and the enemy team
 	mPlayerTeam = _playerTeam;
@@ -121,6 +122,9 @@ void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTe
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
+
+	// Set the turn indicator model
+	tmTurnIndicator = _turnIndicatorModel;
 }
 
 void TowerManager::CreateBattleInstance()
@@ -130,7 +134,7 @@ void TowerManager::CreateBattleInstance()
 		system("CLS");
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers, tmTurnIndicator);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
@@ -140,7 +144,7 @@ void TowerManager::CreateBattleInstance()
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
-		std::cout << "- - " << myChar->GetName() <<  " - HP: " << myChar->GetHP() << "\n" << std::endl;
+		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
 	std::cout << "- Enemy Team\n" << std::endl;
@@ -151,6 +155,8 @@ void TowerManager::CreateBattleInstance()
 	}
 
 	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent());
 }
 
 void TowerManager::DestroyBattleInstance()

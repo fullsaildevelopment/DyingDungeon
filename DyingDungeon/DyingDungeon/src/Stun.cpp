@@ -14,12 +14,12 @@ Stun::~Stun()
 }
 void Stun::Apply(Character& target)
 {
-	if (target.GetStun() == false)
+	if (target.GetState() != STATE::STUNNED)
 	{
 		std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 		newStatusEffect = std::make_shared<Stun>(mDuration, &target);
 		target.AddStatusEffect(newStatusEffect);
-		target.SetStun(true);
+		target.SetState(STATE::STUNNED);
 		std::cout << target.GetName() << " has been stunned!" << std::endl;
 	}
 	else
@@ -28,11 +28,12 @@ void Stun::Apply(Character& target)
 }
 void Stun::Use()
 {
+	mRecipient->SetState(STATE::STUNNED);
 	return;
 }
 void Stun::Remove()
 {
-	mRecipient->SetStun(false);
+	mRecipient->SetState(STATE::NONE);
 	std::cout << mRecipient->GetName() << " is no longer stunned." << std::endl;
 	return;
 }

@@ -21,5 +21,9 @@ public:
 private:
 	Skills* mCurrentSkill;
 	Character* mCurrentTarget;
+	// State functions
+	void SelctionState(int moveIndex);
+	void SelectTarget(EntityList heros, EntityList enemies, int targetIndex);
+	void ResetToSelection();
 };
 

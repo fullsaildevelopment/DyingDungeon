@@ -82,6 +82,9 @@
     <ClCompile Include="src\Stun.cpp">
       <Filter>Source Files\Status Effects</Filter>
     </ClCompile>
+    <ClCompile Include="src\AiMoves.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DyingDungeon.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="src\StatusEvents.h">
       <Filter>Header Files\Stat Tracking</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AiMoves.h">
+      <Filter>Header Files\Characters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

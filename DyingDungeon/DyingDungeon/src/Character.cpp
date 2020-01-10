@@ -7,8 +7,27 @@ CLASS_DEFINITION(Component, Character)
 
 Character::Character()
 {
+	mHero = false;
 	mDead = false;
 	mDisplaying = false;
+	mShielding = false;
+	mAttack = 0.0f;
+	mDefense = 0.0f;
+	mSpeed = 0.15f;
+	mBaseMaxHP = 100.0f;
+	mBaseMaxMana = 100.0f;
+	mCurrentHP = 100.0f;
+	mCurrentMana = 100.0f;
+	mPrevHealth = 100.0f;
+	mPrevMana = 100.0f;
+	mEXP = 0.0f;
+	mProvoked = nullptr;
+	mAnimator = nullptr;
+	pDmgText = nullptr;
+	pHealthBar = nullptr;
+	pManaBar = nullptr;
+	pTurnNumber = nullptr;
+	mCurrentState = STATE::NONE;
 }
 
 void Character::initialize()
@@ -20,7 +39,7 @@ void Character::update(double deltaTime)
 {
 	if (mDisplaying)
 	{
-		pDmgText->addOpacity(-deltaTime / 2.0f);
+		pDmgText->addOpacity(static_cast<float>(-deltaTime) / 2.0f);
 		if (pDmgText->getOpacity() == 0.0f)
 		{
 			mDisplaying = false;
@@ -69,8 +88,7 @@ void Character::TakeDamage(float dmg)
 		{
 			(*it)->SetAmountOfEffect(dmg * -1.0f);
 			dmg = 0.0f;
-			std::cout << 0 << " damage!" << std::endl;
-			return;
+			++it;
 		}
 		else
 		{
@@ -80,15 +98,15 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
-
 	// TODO: FOR BUILD ONLY FIX LATER
 	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
-
 	std::cout << dmg << " damage!" << std::endl;
+	if (mCurrentHP <= 0.0f)
+		Die();
 }
 
 // Gives the character health back 
@@ -100,7 +118,6 @@ void Character::ReceiveHealing(float healing)
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
-
 	SetHP(mCurrentHP + healing);
 }
 
@@ -302,18 +319,6 @@ float Character::GetExp()
 	return mEXP;
 }
 
-//Set if the character is stunned
-void Character::SetStun(bool stun)
-{
-	mStunned = stun;
-}
-
-//Get if the character is stunned
-bool Character::GetStun()
-{
-	return mStunned;
-}
-
 Character* Character::GetProvoked()
 {
 	return mProvoked;
@@ -322,6 +327,16 @@ Character* Character::GetProvoked()
 void Character::SetProvoked(Character* provoker)
 {
 	mProvoked = provoker;
+}
+
+STATE Character::GetState()
+{
+	return mCurrentState;
+}
+
+void Character::SetState(STATE newState)
+{
+	mCurrentState = newState;
 }
 
 /*
@@ -429,12 +444,14 @@ void Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	}
 }
 
-// Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	for (it = effectList.begin(); it != effectList.end();)
 	{
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return;
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -442,29 +459,16 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 			it = effectList.erase(it);
 		}
 		else
-		{
-			(*it)->Use();
 			it++;
-		}
 	}
 }
 
 bool Character::ManageAllEffects()
 {
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
 	for (it = mRegens.begin(); it != mRegens.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -474,13 +478,23 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
-	if (mCurrentHP <= 0.0f)
+	for (it = mBleeds.begin(); it != mBleeds.end();)
 	{
-		mCurrentState = STATE::DEAD;
-		return false;
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return false;
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
 	}
 	for (it = mBuffs.begin(); it != mBuffs.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -492,6 +506,7 @@ bool Character::ManageAllEffects()
 	}
 	for (it = mDebuffs.begin(); it != mDebuffs.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
@@ -503,6 +518,7 @@ bool Character::ManageAllEffects()
 	}
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
+		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{

@@ -1,6 +1,6 @@
 #pragma once
 #include "StatusEffect.h"
-enum class SKILLTYPE {ATTACK = 0, HEAL, BUFF, DEBUFF};
+enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 //forward declare charater class
 class Character;
 
@@ -12,6 +12,8 @@ protected:
 	SKILLTYPE mTypeId;
 	//how much mana it will cost the caster
 	float mMpCost;
+	// Animation time for when effects such as hit animation or particle effects should go out
+	float mAnimationTime;
 	// Name of skill
 	std::string mName;
 	// Animation ID
@@ -31,6 +33,8 @@ public:
 	std::string GetName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
+	// Gets the animation timing
+	float GetAnimationTiming();
 	// Get TypeID
 	SKILLTYPE GetTypeId();
 	// Get isAOE

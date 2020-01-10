@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -163,6 +163,7 @@
     <ResourceCompile Include="DyingDungeon.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AiMoves.cpp" />
     <ClCompile Include="src\Attack.cpp" />
     <ClCompile Include="src\BattleInstance.cpp" />
     <ClCompile Include="src\Bleed.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="src\TowerSelectController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AiMoves.h" />
     <ClInclude Include="src\Attack.h" />
     <ClInclude Include="src\BattleInstance.h" />
     <ClInclude Include="src\Bleed.h" />
