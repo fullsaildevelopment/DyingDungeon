@@ -10,7 +10,7 @@
 
 enum class HEROID { Paladin = 0 };
 enum class ENEMYID { Skeleton = 0 };
-enum class STATE { NONE = 0, SELECTMOVE, AOECONFIRM, SELECTTARGET, INPROGRESS, FINISHED, DEAD };
+enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
 {
@@ -68,12 +68,14 @@ public:
 	// Skills Functions
 	void SetName(std::string newName);
 	std::vector<std::shared_ptr<Skills>> GetSkills();
-	//Stunned Functions
-	void SetStun(bool stun);
-	bool GetStun();
 	// mProvoked Functions
 	Character* GetProvoked();
 	void SetProvoked(Character* provoker);
+	// State functions
+	STATE GetState();
+	void SetState(STATE newState);
+	// Impact Indicator Setter
+	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
 	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
@@ -94,9 +96,9 @@ public:
 	bool mDisplaying;
 
 protected:
+	//Stats
 	bool mHero;
 	bool mDead;
-	//Stats
 	float mCurrentHP;
 	float mCurrentMana;
 	float mBaseMaxHP;
@@ -106,7 +108,6 @@ protected:
 	float mDefense;
 	float mSpeed;
 	float mEXP;
-	bool mStunned;
 	Character* mProvoked;
 	std::string mName;
 	std::vector<std::shared_ptr<Skills>> mSkillList;
@@ -117,6 +118,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;
 	float mPrevMana;

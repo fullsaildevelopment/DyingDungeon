@@ -31,7 +31,8 @@ void Bleed::Use()
 {
 	float totalBleed = 0;
 	totalBleed = mAmountOfEffect * mRecipient->GetMaxHP();
+	float totalBleedButBetter = totalBleed -  totalBleed * mRecipient->GetDef();
+	std::string tempName = mRecipient->GetName();
 	mRecipient->TakeDamage(totalBleed);
-	totalBleed -= totalBleed * mRecipient->GetDef();
-	std::cout << mRecipient->GetName() << " has bleed for " << totalBleed << "HP!" <<std::endl;
+	std::cout << tempName << " has bleed for " << totalBleedButBetter << "HP!" <<std::endl;
 }

@@ -2,6 +2,8 @@
 #include "FileManager.h"
 #include "Animator.h"
 #include "Transform.h"
+#include "MeshRenderer.h"
+#include "Material.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
@@ -39,6 +41,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Paladin/Paladin_Taunt.dxanim");
 		newCharacter->setStatic(false);
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		break;
@@ -52,6 +55,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 		newCharacter->setStatic(false);
 		break;
@@ -62,7 +66,23 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 	newCharacter->getComponent<Character>()->SetDead(false);
-	newCharacter->getComponent<Character>()->SetStun(false);
+	//newCharacter->getComponent<Character>()->SetStun(false);
+
+	// Create the impact indicator for each character
+	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
+	// Set the transform
+	impactIndicator->addComponent<Odyssey::Transform>();
+	// Position indicator over the head
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos + 4.5f, zPos);
+	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	// Import Model
+	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
+	// Set the impact indicator's color
+	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
+	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
+	impactIndicator->setStatic(false);
+	// Assign the character's impact indicator
+	newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
 	return newCharacter;
 }

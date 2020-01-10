@@ -30,7 +30,7 @@ public: // Functions
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	
-	void SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles);
+	void SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
 	void CreateBattleInstance();
 	
 	//Getters
@@ -63,7 +63,8 @@ private: // Varibales
 
 	// Queues
 
-	// GameObjects
+	// Entities
+	std::shared_ptr<Odyssey::Entity> tmTurnIndicator; // This will be the object underneath the character who's turn it is
 
 	// Ints
 	int mCurrentLevel;

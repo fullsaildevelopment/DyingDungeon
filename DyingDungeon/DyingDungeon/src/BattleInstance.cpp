@@ -4,20 +4,14 @@
 #include "Character.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
 	RedAudioManager::Instance().Stop("BackgroundMenu");
 
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 	mTurnOrderNumbers = _turnOrderNumbers;
-
-	/*mTurnOrderNumbers[0]->setText(L"420");
-	mTurnOrderNumbers[1]->setText(L"69");
-	mPlayerTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[0];
-	mPlayerTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[1];
-	mEnemyTeam[0]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[2];
-	mEnemyTeam[1]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[3];*/
+	mTurnIndicator = _turnIndicatorModel;
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
@@ -32,15 +26,17 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	{
 		if (mPlayerTeam[i] != nullptr)
 		{
-			// Play an attack animation at the beginning of each battle
-			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
-
 			// Set the player's turn order number
 			mPlayerTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
 			turnOrderIndex++;
 
-			// Put him into the mAllCharacters list
-			mAllCharacters.push_back(mPlayerTeam[i]);
+			if (mPlayerTeam[i]->getComponent<Character>()->GetState() != STATE::DEAD)
+			{
+				// Play an attack animation at the beginning of each battle
+				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
+				// Put him into the mAllCharacters list
+				mAllCharacters.push_back(mPlayerTeam[i]);
+			}
 		}
 	}
 
@@ -75,6 +71,9 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	// Set the pCurrentCharacter to the front of the battle queue
 	mCurrentCharacter = mBattleQueue.front();
 
+	// Set the circle to the current player's location
+	SetTurnIndicatorPosition();
+
 	// Set the current round to round 1 at the start
 	mCurrentRound = 1;
 	std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
@@ -85,7 +84,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 int BattleInstance::UpdateBattle()
 {
 	// Check to see if the current charcter is even alive before the character takes its turn
-	if (mCurrentCharacter->getComponent<Character>()->IsDead())
+	if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::DEAD)
 	{
 		std::cout << mCurrentCharacter->getComponent<Character>()->GetName() << " Died, R.I.P.\n" << std::endl;
 		//Update the character's turn number to an X - this will represent that he is dead
@@ -112,6 +111,8 @@ int BattleInstance::UpdateBattle()
 			mCurrentCharacter = mBattleQueue.front();
 			//Update the turn numbers
 			UpdateCharacterTurnNumbers();
+			// Reset the current turn indicator
+			SetTurnIndicatorPosition();
 
 			// Has everyone taken their turn in the round?
 			if (mTurnCounter == mBattleQueue.size())
@@ -186,7 +187,7 @@ bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
 		if (_teamToCheck[i] != nullptr)
 		{
 			// Check to see if current character on the team is alive
-			if (!_teamToCheck[i]->getComponent<Character>()->IsDead())
+			if (_teamToCheck[i]->getComponent<Character>()->GetState() != STATE::DEAD)
 			{
 				// That person was alive so return true, we just need to make sure that at least one player is still alive
 				return true;
@@ -209,7 +210,7 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 	{
 		Character* currChar = tempBattleQueue.front()->getComponent<Character>();
 
-		if (currChar->IsDead())
+		if (currChar->GetState() == STATE::DEAD)
 		{
 			currChar->pTurnNumber->setText(L"X");
 			counter--;
@@ -221,4 +222,14 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 		tempBattleQueue.pop();
 		counter++;
 	}
+}
+
+void BattleInstance::SetTurnIndicatorPosition()
+{
+	// Get the character's position
+	DirectX::XMFLOAT3 characterPosition = mCurrentCharacter->getComponent<Odyssey::Transform>()->getPosition();
+	
+	// Set the turn indicator's position based on the character's position
+	mTurnIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPosition.x, characterPosition.y + 0.05f, characterPosition.z);
+	mTurnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 }

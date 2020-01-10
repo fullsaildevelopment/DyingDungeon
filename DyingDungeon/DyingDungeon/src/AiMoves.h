@@ -1,5 +1,6 @@
 #pragma once
 #include "Skills.h"
+#include "Entity.h"
 
 class Character;
 
@@ -7,27 +8,44 @@ class AIMoves
 {
 	struct Move
 	{
-		Character* target;
-		Skills* skill;
+		Character* target = nullptr;
+		std::shared_ptr<Skills> skill = nullptr;
 		float score = -10000;
 	};
 
 	public:
-		AIMoves() = default;
-		AIMoves(ENEMYID _enemyID);
-		~AIMoves();
-		bool UseBestMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		AIMoves();
+		AIMoves(int _enemyID, Character* _caster);
+		~AIMoves() = default;
+		bool FindMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 
 	private:
+		//General Functions
+		bool FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		float ScoreMove(std::shared_ptr<Skills> skill, Character* target);
+
 		//Skeleton
-		bool FindBestMove(SKILLTYPE override);
-		SKILLTYPE SkeletonDeterminePriority(SKILLTYPE override);
+		void SkeletonDeterminePriority();
 		
 		//UngaAttack
-		SKILLTYPE UngaAttackDeterminePriority(SKILLTYPE override);
+		void UngaAttackDeterminePriority();
+		
+		//Member Variables
+		std::vector<std::shared_ptr<Skills>> mSkillList;
+		std::vector<Odyssey::Entity> mBestTarget;
+		Character* caster;
 
-		//Variables
-		std::vector<std::shared_ptr<Skills>> skillList;
-		Move mBestMove;
+		std::shared_ptr<AIMoves::Move> mBestMove;
+		int mEnemyID;
 		int mCurrMoveCheck;
+		SKILLTYPE mPriorityMove;
+
+
+		//////////////////////////GET FUNCTIONS//////////////////////////////////
+	public:
+		std::shared_ptr <AIMoves::Move> GetMove();
+
+		//////////////////////////SET FUNCTIONS//////////////////////////////////
+	public:
+		void ResetMove();
 };
