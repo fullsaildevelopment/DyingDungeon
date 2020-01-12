@@ -70,19 +70,23 @@ public:
 
 class CharacterShieldsEvent : public Odyssey::Event 
 {
+public:
 	std::string chracterName;
 	std::string actionName;
 	float shieldBuff;
-	CharacterShieldsEvent(std::string character, std::string action, float shield_defense)
+	bool isSpell;
+	CharacterShieldsEvent(std::string character, std::string action, float shield_defense, bool spell)
 	{
 		chracterName = character;
 		actionName = action;
 		shieldBuff = shield_defense;
+		isSpell = spell;
 	}
 };
 
 class CharacterRecivesShieldEvent : public Odyssey::Event 
 {
+public:
 	std::string targetName;
 	CharacterRecivesShieldEvent(std::string target) {
 		targetName = target;

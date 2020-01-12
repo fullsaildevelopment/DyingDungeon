@@ -25,6 +25,7 @@ public:
 		STATS effect = STATS::None;
 		StatTracker::Action actionType = StatTracker::Action::None;
 		bool isSpell = false;
+		bool isSheild = false;
 		bool isPlayer = false;
 		std::string actionName = "";
 	};
@@ -54,6 +55,9 @@ public:
 	void LogTakeDamageEvent(CharacterTakeDamage* ctdEvent);
 	void LogHealingEvent(CharacterHealsEvent* chcEvent);
 	void LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent);
+	void LogSheildingEvent(CharacterShieldsEvent* csEvent);
+
+	void LogReciveSheildEvent(CharacterRecivesShieldEvent* crsEvent);
 
 	void LevelStartReflex(LevelStartEvent* lsEvent);
 
@@ -63,12 +67,8 @@ public:
 private:
 	StatTracker();
 
-	unsigned int GetAttackCount();
-	unsigned int GetAttackCount(std::string name);
-	unsigned int GetDefendCount();
-	unsigned int GetDefendCount(std::string name);
-	unsigned int GetAidCount();
-	unsigned int GetAidCount(std::string name);
+	unsigned int GetStatCount(Action stat);
+	unsigned int GetStatCount(std::string name, Action stat);
 
 	float CalculateDamageDealt();
 	float CalculateDamageDealt(std::string name);
@@ -76,9 +76,15 @@ private:
 	float CalculateDamageDone(std::string name);
 	float CalculateDamageTaken();
 	float CalculateDamageTaken(std::string name);
-	float CalculateAttackPercentage();
-	float CalculateAttackPercentage(std::string name);
-	float roundf(float num, unsigned int decimal_places);
-	double round(double num, unsigned int decimal_places);
+	float CalculatePercentDamageSuccess();
+	float CalculateDamageMitigatated();
+	float CalculateHealthRecived();
+	float CalculateHealthRecived(std::string name);
+	float CalculateShieldGiven();
+	float CalculateShieldGiven(std::string name);
+	float CalculatePercentageStat(Action stat);
+	float CalculatePercentageStat(std::string name, Action stat);
+	float roundf(float num, unsigned int decimal_places = 0);
+	double round(double num, unsigned int decimal_places = 0);
 	//unsigned int CalculateRoundsInLevel(unsigned int levelNumber);
 };
