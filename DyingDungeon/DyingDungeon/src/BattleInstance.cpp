@@ -93,6 +93,8 @@ int BattleInstance::UpdateBattle()
 		mBattleQueue.pop();
 		// Reassign the next character to the 
 		mCurrentCharacter = mBattleQueue.front();
+		// Update Turn Indicator	
+		SetTurnIndicatorPosition();
 	}
 
 	// Check to see if both teams have at least one character still alive
