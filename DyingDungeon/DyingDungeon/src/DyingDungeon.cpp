@@ -496,11 +496,11 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
 	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
 	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
-
+	
 	//Background Sound
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
-
+	
 	//Play Initial Loop
 	RedAudioManager::Instance().Loop("BackgroundMenu");
 	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
@@ -545,7 +545,7 @@ void setUpTowerManager()
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 
 	// Create the character's potrait and assign it's health and mana bars
 	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
@@ -560,7 +560,7 @@ void setUpTowerManager()
 
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -573,7 +573,7 @@ void setUpTowerManager()
 
 	// Paladin #3
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Tres", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -586,7 +586,7 @@ void setUpTowerManager()
 
 	// Paladin #4
 	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Cuatro", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -594,12 +594,12 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
-	createCharacterHealthPopup(1225, 500, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(1100, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -612,7 +612,7 @@ void setUpTowerManager()
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -625,7 +625,7 @@ void setUpTowerManager()
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -638,7 +638,7 @@ void setUpTowerManager()
 
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
