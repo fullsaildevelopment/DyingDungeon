@@ -6,8 +6,6 @@
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
-	RedAudioManager::Instance().Stop("BackgroundMenu");
-
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 	mTurnOrderNumbers = _turnOrderNumbers;
@@ -66,11 +64,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 
 	// Create the battle queue before going to battle
 	GenerateBattleQueue();
+	// Update the turn numbers for each character
 	UpdateCharacterTurnNumbers();
-
-	// Set the pCurrentCharacter to the front of the battle queue
-	mCurrentCharacter = mBattleQueue.front();
-
 	// Set the circle to the current player's location
 	SetTurnIndicatorPosition();
 
@@ -91,8 +86,8 @@ int BattleInstance::UpdateBattle()
 		mCurrentCharacter->getComponent<Character>()->pTurnNumber->setText(L"X");
 		// Take the current character out of the battle queue
 		mBattleQueue.pop();
-		// Reassign the next character to the 
-		mCurrentCharacter = mBattleQueue.front();
+		// Update turn numbers
+		UpdateCharacterTurnNumbers();
 		// Update Turn Indicator	
 		SetTurnIndicatorPosition();
 	}
@@ -109,8 +104,6 @@ int BattleInstance::UpdateBattle()
 			mBattleQueue.pop();
 			// Put the current character to back into the queue, he will go to the back of the line
 			mBattleQueue.emplace(mCurrentCharacter);
-			// Reassign the next character to the 
-			mCurrentCharacter = mBattleQueue.front();
 			//Update the turn numbers
 			UpdateCharacterTurnNumbers();
 			// Reset the current turn indicator
@@ -228,6 +221,9 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 void BattleInstance::SetTurnIndicatorPosition()
 {
+	// The placement of the turn indicator should always be underneath the player who is in the front of the queue
+	mCurrentCharacter = mBattleQueue.front();
+
 	// Get the character's position
 	DirectX::XMFLOAT3 characterPosition = mCurrentCharacter->getComponent<Odyssey::Transform>()->getPosition();
 	
