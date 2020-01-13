@@ -1,5 +1,6 @@
 #pragma once
 #include "StatusEffect.h"
+#include "StatusEvents.h"
 #include <memory>
 enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 //forward declare charater class

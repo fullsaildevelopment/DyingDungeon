@@ -78,7 +78,12 @@ void Attack::Use(Character& caster, Character& target)
 	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	target.TakeDamage(totalDps);
 	if (mDebuff != nullptr)
+	{
 		mDebuff->Apply(target);
+		//Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, mDebuff->GetTypeId()));
+	}
+	/*else
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, EFFECTTYPE::None));*/
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }

@@ -157,7 +157,7 @@ void StatTracker::LoadStats(std::string loadFileName)
 
 				uint32_t effect = 0;
 				file.read((char*)&effect, sizeof(uint32_t));
-				m_levels[i].turns[j].effect = (STATS)effect;
+				m_levels[i].turns[j].effect = (EFFECTTYPE)effect;
 
 				uint32_t action = 0;
 				file.read((char*)&action, sizeof(uint32_t));
@@ -182,10 +182,9 @@ void StatTracker::LoadStats(std::string loadFileName)
 
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 {
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName = cddEvent->actionName;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionName = cddEvent->actionName;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Attack;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].effect = cddEvent->actionEffect;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSpell = cddEvent->isSpell;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cddEvent->damageAmount;
 
 }
@@ -201,7 +200,6 @@ void StatTracker::LogHealingEvent(CharacterHealsEvent* chcEvent)
 {
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionName = chcEvent->actionName;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Aid;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSpell = chcEvent->isSpell;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = chcEvent->health;
 
 }
@@ -218,7 +216,6 @@ void StatTracker::LogSheildingEvent(CharacterShieldsEvent* csEvent)
 {
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionName = csEvent->actionName;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Aid;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSpell = csEvent->isSpell;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = csEvent->shieldBuff;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSheild = true;
 }
@@ -289,7 +286,7 @@ float StatTracker::CalculateDamageDealt()
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (m_levels[i].turns[j].effect == STATS::Atk && m_levels[i].turns[j].isPlayer)
+			if (m_levels[i].turns[j].actionType == Action::Attack && m_levels[i].turns[j].isPlayer)
 			{
 				total += m_levels[i].turns[j].value;
 			}
@@ -305,7 +302,7 @@ float StatTracker::CalculateDamageDealt(std::string name)
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++) 
 		{
-			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].effect == STATS::Atk) 
+			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].actionType == Action::Attack) 
 			{
 				total += m_levels[i].turns[j].value;
 			}
@@ -321,7 +318,7 @@ float StatTracker::CalculateDamageDone()
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].effect == STATS::Atk)
+			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].actionType == Action::Attack)
 			{
 				for (unsigned int k = 0; k < m_levels[i].turns[j].blockValues.size(); k++)
 				{
@@ -340,7 +337,7 @@ float StatTracker::CalculateDamageDone(std::string name)
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].effect == STATS::Atk)
+			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].actionType == Action::Attack)
 			{
 				for (unsigned int k = 0; k < m_levels[i].turns[j].blockValues.size(); k++)
 				{
@@ -362,7 +359,7 @@ float StatTracker::CalculateDamageTaken()
 			if (!m_levels[i].turns[j].isPlayer) {
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++)
 				{
-					if (m_levels[i].turns[j].effect == STATS::Atk)
+					if (m_levels[i].turns[j].actionType == Action::Attack)
 					{
 						total += m_levels[i].turns[j].value - (m_levels[i].turns[j].blockValues[k] * m_levels[i].turns[j].value);
 					}
@@ -380,7 +377,7 @@ float StatTracker::CalculateDamageTaken(std::string name)
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (m_levels[i].turns[j].effect == STATS::Atk) {
+			if (m_levels[i].turns[j].actionType == Action::Attack) {
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++)
 				{
 					if (name == m_levels[i].turns[j].targetNames[k])
@@ -402,7 +399,7 @@ float StatTracker::CalculatePercentDamageSuccess()
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
-			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].effect == STATS::Atk) {
+			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].actionType == Action::Attack) {
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++)
 				{
 					totalDmg += m_levels[i].turns[j].value;
@@ -428,7 +425,7 @@ float StatTracker::CalculateDamageMitigatated()
 			if (!m_levels[i].turns[j].isPlayer) {
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++)
 				{
-					if (m_levels[i].turns[j].effect == STATS::Atk)
+					if (m_levels[i].turns[j].actionType == Action::Attack)
 					{
 						total += m_levels[i].turns[j].blockValues[k] * m_levels[i].turns[j].value;
 					}
@@ -675,11 +672,11 @@ void StatTracker::OutputStatSheet()
 					{
 						if (m_levels[i].turns[j].isSheild)
 						{
-							fileText.append("\Sheild: ");
+							fileText.append("\tSheild: ");
 						}
 						else
 						{
-							fileText.append("\  Heal: ");
+							fileText.append("\t  Heal: ");
 						}
 						fileText.append(std::to_string(m_levels[i].turns[j].value).substr(0, 4));
 					}
@@ -688,11 +685,11 @@ void StatTracker::OutputStatSheet()
 					{
 						if (m_levels[i].turns[j].isSheild)
 						{
-							fileText.append("\Sheild: ");
+							fileText.append("\tSheild: ");
 						}
 						else
 						{
-							fileText.append("\  Heal: ");
+							fileText.append("\t  Heal: ");
 						}
 						fileText.append(std::to_string(m_levels[i].turns[j].value).substr(0, 4));
 					}

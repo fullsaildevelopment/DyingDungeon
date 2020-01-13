@@ -50,7 +50,7 @@ HeroComponent::HeroComponent(HEROID id)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.25f, 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
-		temp = std::make_shared<StatUp>(0.50f, 3, STATS::Def, nullptr);
+		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.25f, 15.0f,temp,true,true));
 		break;
 	}
