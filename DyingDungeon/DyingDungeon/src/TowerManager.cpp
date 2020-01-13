@@ -156,7 +156,7 @@ void TowerManager::CreateBattleInstance()
 
 	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
 
-	Odyssey::EventManager::getInstance().publish(new LevelStartEvent());
+	//Odyssey::EventManager::getInstance().publish(new LevelStartEvent());
 }
 
 void TowerManager::DestroyBattleInstance()

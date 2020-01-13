@@ -531,7 +531,7 @@ float StatTracker::CalculatePercentageStat(Action stat)
 		return 0.00f;
 	}
 
-	return totalAttacks / toatalTurns;
+	return (totalAttacks / toatalTurns);
 }
 
 float StatTracker::CalculatePercentageStat(std::string name, Action stat)
