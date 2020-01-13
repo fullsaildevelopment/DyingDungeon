@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "RedAudioManager.h"
+#include "MeshRenderer.h"
 
 CLASS_DEFINITION(Component, Character)
 

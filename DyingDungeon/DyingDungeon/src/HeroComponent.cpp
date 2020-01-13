@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "EnemyComponent.h"
+#include "MeshRenderer.h"
 /// Check if better way
 #include "Attack.h"
 #include "Buffs.h"
@@ -90,23 +91,23 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
-			SelctionState(0);
+			SelctionState(heros, enemies, 0);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
-			SelctionState(1);
+			SelctionState(heros, enemies, 1);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
-			SelctionState(2);
+			SelctionState(heros, enemies, 2);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
-			SelctionState(3);
+			SelctionState(heros, enemies, 3);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -131,7 +132,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -145,7 +146,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -240,6 +241,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		ManageStatusEffects(mBuffs);
 		ManageStatusEffects(mDebuffs);
 		ManageStatusEffects(mSheilds);
+		ResetToSelection(heros, enemies);
 		return true;
 		break;
 	}
@@ -263,7 +265,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
 }
-void HeroComponent::SelctionState(int moveIndex)
+void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
 	{
@@ -271,10 +273,18 @@ void HeroComponent::SelctionState(int moveIndex)
 		std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 		if (mCurrentSkill->IsAOE())
 		{
-			if(mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			{
 				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
+				for(std::shared_ptr<Odyssey::Entity> e : enemies)
+					e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+			}
 			else
+			{
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
+				for (std::shared_ptr<Odyssey::Entity> h : heros)
+					h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+			}
 			mCurrentState = STATE::CONFIRM;
 		}
 		else if (mProvoked == nullptr)
@@ -313,10 +323,15 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 			return;
 		std::cout << "This will affect " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
 	}
+	mCurrentTarget->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
 	mCurrentState = STATE::CONFIRM;
 }
-void HeroComponent::ResetToSelection()
+void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
+	for (std::shared_ptr<Odyssey::Entity> e : enemies)
+		e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	for (std::shared_ptr<Odyssey::Entity> h : heros)
+		h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::SELECTMOVE;

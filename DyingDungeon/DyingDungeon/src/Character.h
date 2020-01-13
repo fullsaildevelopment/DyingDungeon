@@ -78,6 +78,8 @@ public:
 	void SetState(STATE newState);
 	// Impact Indicator Setter
 	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
+	// Impact Indicator Getter
+	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
 	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
@@ -88,7 +90,7 @@ public:
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
-	
+
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
