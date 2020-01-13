@@ -13,7 +13,9 @@ Character::Character()
 	mShielding = false;
 	mAttack = 0.0f;
 	mDefense = 0.0f;
+	mBaseDefense = 0.0f;
 	mSpeed = 0.15f;
+	mBaseSpeed = 0.0f;
 	mBaseMaxHP = 100.0f;
 	mBaseMaxMana = 100.0f;
 	mCurrentHP = 100.0f;
@@ -234,6 +236,11 @@ float Character::GetDef()
 	return mDefense;
 }
 
+float Character::GetBaseDef()
+{
+	return mBaseDefense;
+}
+
 // Increases the Defense stat
 void Character::IncreaseDef(float statIncrease)
 {
@@ -252,6 +259,11 @@ void Character::DecreaseDef(float statDecrease)
 float Character::GetSpeed()
 {
 	return mSpeed;
+}
+
+float Character::GetBaseSpeed()
+{
+	return mBaseSpeed;
 }
 
 // Increases the Speed stat

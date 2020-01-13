@@ -48,10 +48,12 @@ public:
 	void DecreaseAtk(float statDecrease);
 	// Defense Functions
 	float GetDef();
+	float GetBaseDef();
 	void IncreaseDef(float statIncrease);
 	void DecreaseDef(float statDecrease);
 	// Speed Functions
 	float GetSpeed();
+	float GetBaseSpeed();
 	void IncreaseSpd(float statIncrease);
 	void DecreaseSpd(float statDecrease);
 	// Dead Status Functions

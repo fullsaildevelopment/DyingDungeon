@@ -1,5 +1,6 @@
 #pragma once
 #include "StatusEffect.h"
+#include <memory>
 enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 //forward declare charater class
 class Character;
@@ -20,6 +21,7 @@ protected:
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
 	bool mIsAOE;
+	std::shared_ptr<StatusEffect> mDebuff;
 private:
 //public and private functions
 public:
@@ -39,6 +41,9 @@ public:
 	SKILLTYPE GetTypeId();
 	// Get isAOE
 	bool IsAOE();
+	StatusEffect* GetStatusEffect();
+	// Set the status Effect this applies
+	void SetStatusEffect(std::shared_ptr<StatusEffect> se);
 	//use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
 private:

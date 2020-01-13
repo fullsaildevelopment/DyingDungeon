@@ -86,14 +86,14 @@ float Attack::GetDamage()
 {
 	return mDamage;
 }
-StatusEffect* Attack::GetStatusEffect()
-{
-	return mDebuff.get();
-}
-
-void Attack::SetStatusEffect(std::shared_ptr<StatusEffect> se)
-{
-	mDebuff = se;
-}
+//StatusEffect* Attack::GetStatusEffect()
+//{
+//	return mDebuff.get();
+//}
+//
+//void Attack::SetStatusEffect(std::shared_ptr<StatusEffect> se)
+//{
+//	mDebuff = se;
+//}
 
 
