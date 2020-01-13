@@ -5,6 +5,9 @@
 #include "InputManager.h"
 #include "EventManager.h"
 #include "StatusEvents.h"
+#include "GameUIManager.h"
+#include "StatusEvents.h"
+#include "UICanvas.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -22,9 +25,14 @@ void TowerManager::initialize()
 void TowerManager::update(double deltaTime)
 {
 	// TODO: REMOVE POST BUILD 02
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P))
 	{
-		Rewards->setActive(!Rewards->isActive());
+		std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenu, !pauseMenu->getComponent<Odyssey::UICanvas>()->isActive());
+
+		// Loop through all of the characters and toggle their animator
+		for (int i = 0; i < mAllCharacters.size(); i++)
+			mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
 	}
 
 	// If we are in battle, Update the battle
@@ -72,21 +80,37 @@ void TowerManager::update(double deltaTime)
 
 				// Give player some XP
 				tempXP = 500.0f;
-				// Print how much XP was given to the player
-				mPlayerTeam[0]->getComponent<Character>()->AddExp(tempXP);
-				std::cout << "Paladin gained " << tempXP << "XP for completing the level.\n" << std::endl;
+				// Print how much XP was given to the players
+				for (int i = 0; i < mPlayerTeam.size(); i++)
+				{
+					mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
+				}
+				std::cout << "Player team characters gained " << tempXP << "XP for completing the tower.\n" << std::endl;
 				// Go to main menu screen
 				GoToMainMenu();
 			}
 			else
 			{
-				std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+				std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
+
+				// Publish the current level number
+				Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 				// Give player some XP
 				tempXP = 100.0f;
 				// Print how much XP was given to the player
-				mPlayerTeam[0]->getComponent<Character>()->AddExp(tempXP);
-				std::cout << "Paladin gained " << tempXP << "XP for completing the level.\n" << std::endl;
+				for (int i = 0; i < mPlayerTeam.size(); i++)
+				{
+					Character* currCharacter = mPlayerTeam[i]->getComponent<Character>();
+					currCharacter->AddExp(tempXP);
+
+					// If the player made the finishing kill set him back to NONE state
+					if (currCharacter->GetState() == STATE::FINISHED)
+					{
+						currCharacter->SetState(STATE::NONE);
+					}
+				}
+				std::cout << "Player team characters gained " << tempXP << "XP for completing the level.\n" << std::endl;
 
 				// Make a new battle to continue the tower
 				CreateBattleInstance();
@@ -133,6 +157,9 @@ void TowerManager::CreateBattleInstance()
 	if (mCurrentLevel == 1)
 		system("CLS");
 
+	// Send off the current level number
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
+
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers, tmTurnIndicator);
 
@@ -154,9 +181,8 @@ void TowerManager::CreateBattleInstance()
 		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
-	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
-	//Odyssey::EventManager::getInstance().publish(new LevelStartEvent());
 }
 
 void TowerManager::DestroyBattleInstance()
@@ -186,7 +212,7 @@ void TowerManager::GoToMainMenu()
 			// This will show a sim of entering a new battle
 			mPlayerTeam[i]->getComponent<Character>()->SetHP(1000);
 			mPlayerTeam[i]->getComponent<Character>()->SetMana(1000);
-			mPlayerTeam[i]->getComponent<Character>()->SetDead(false);
+			mPlayerTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
 			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 		}

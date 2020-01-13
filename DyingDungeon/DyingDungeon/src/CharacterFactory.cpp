@@ -7,7 +7,7 @@
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
 {
 	// Create the new pointer for the character we are creating
 	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
@@ -66,8 +66,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	default:
 		break;
 	}
-
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
+
+	// Set the character's name
+	newCharacter->getComponent<Character>()->SetName(_characterName);
 
 	// Create the impact indicator for each character
 	CreateCharacterImpactIndicator(newCharacter);
