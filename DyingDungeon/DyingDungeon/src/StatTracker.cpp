@@ -3,6 +3,7 @@
 StatTracker::StatTracker()
 {
 	m_currentLevel = 1;
+	m_maxPlayerCount = 3;
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogDamageDeltEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogTakeDamageEvent);
@@ -19,7 +20,7 @@ StatTracker::StatTracker()
 
 StatTracker::~StatTracker()
 {
-
+	//delete m_p_rewardsScreen;
 }
 
 StatTracker& StatTracker::Instance()
@@ -43,6 +44,26 @@ StatTracker& StatTracker::Instance()
 //	m_levels.push_back(newLevel);
 //	m_currentLevel = newLevel.levelNumber;
 //}
+
+void StatTracker::SetRewardsScreen(Odyssey::UICanvas& rewardScreen)
+{
+	m_p_rewardsScreen = &rewardScreen;
+}
+
+void StatTracker::UpdateRewardScreen() 
+{
+	if (characterNames.empty()) 
+	{
+		GetListPlayerCharacterNames();
+	}
+	for (unsigned int i = 1; i <= characterNames.size(); i++) {
+		std::wstring rewardsText;
+		rewardsText.append(L"P" + std::to_wstring(i) + L" - Attack: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Attack)).substr(0, 4) 
+													 + L" - Defend: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Defend)).substr(0, 4)
+													 + L" - Aid: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Aid)).substr(0, 4) + L"\n");
+		m_p_rewardsScreen->getElements<Odyssey::Text2D>()[i]->setText(rewardsText);
+	}
+}
 
 void StatTracker::SaveStats(std::string saveName)
 {
@@ -280,6 +301,78 @@ unsigned int StatTracker::GetStatCount(std::string name, Action stat)
 	}
 
 	return count;
+}
+
+std::vector<std::string>& StatTracker::GetListPlayerCharacterNames()
+{
+	for (int i = 0; i < m_levels.size(); i++) 
+	{
+		for (int j = 0; j < m_levels[i].turns.size(); j++) 
+		{
+			if (m_levels[i].turns[j].isPlayer) 
+			{
+				if (characterNames.empty()) 
+				{
+					characterNames.push_back(m_levels[i].turns[j].characterName);
+				}
+				else 
+				{
+					bool inList = false;
+					for (int k = 0; k < characterNames.size(); k++) {
+						if (characterNames[k] == m_levels[i].turns[j].characterName) {
+							inList = true;
+							break;
+						}
+					}
+					if (!inList) 
+					{
+						characterNames.push_back(m_levels[i].turns[j].characterName);
+						if (characterNames.size() == m_maxPlayerCount) {
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (characterNames.size() == m_maxPlayerCount) {
+			break;
+		}
+	}
+	return characterNames;
+}
+
+std::vector<std::string>& StatTracker::GetListPlayerCharacterNames(unsigned int level)
+{
+	std::vector<std::string> characterNames;
+	for (int j = 0; j < m_levels[level - 1].turns.size(); j++)
+	{
+		if (m_levels[level - 1].turns[j].isPlayer)
+		{
+			if (characterNames.empty())
+			{
+				characterNames.push_back(m_levels[level - 1].turns[j].characterName);
+			}
+			else
+			{
+				bool inList = false;
+				for (int k = 0; k < characterNames.size(); k++) {
+					if (characterNames[k] == m_levels[level - 1].turns[j].characterName) {
+						inList = true;
+						break;
+					}
+				}
+				if (!inList)
+				{
+					characterNames.push_back(m_levels[level - 1].turns[j].characterName);
+					if (characterNames.size() == m_maxPlayerCount) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	return characterNames;
 }
 
 float StatTracker::CalculateDamageDealt()
@@ -675,11 +768,11 @@ void StatTracker::OutputStatSheet()
 					{
 						if (m_levels[i].turns[j].isSheild)
 						{
-							fileText.append("\Sheild: ");
+							fileText.append("\tSheild: ");
 						}
 						else
 						{
-							fileText.append("\  Heal: ");
+							fileText.append("\t  Heal: ");
 						}
 						fileText.append(std::to_string(m_levels[i].turns[j].value).substr(0, 4));
 					}
@@ -688,11 +781,11 @@ void StatTracker::OutputStatSheet()
 					{
 						if (m_levels[i].turns[j].isSheild)
 						{
-							fileText.append("\Sheild: ");
+							fileText.append("\tSheild: ");
 						}
 						else
 						{
-							fileText.append("\  Heal: ");
+							fileText.append("\t  Heal: ");
 						}
 						fileText.append(std::to_string(m_levels[i].turns[j].value).substr(0, 4));
 					}

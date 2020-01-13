@@ -8,6 +8,8 @@
 #include "TowerManager.h"
 #include "EventManager.h"
 #include "StatusEvents.h"
+#include "UICanvas.h"
+#include "Rectangle2D.h"
 class StatTracker
 {
 
@@ -38,15 +40,21 @@ public:
 	};
 
 private:
-	uint32_t m_currentLevel = 1;
+	uint32_t m_currentLevel;
+	uint32_t m_maxPlayerCount;
 	std::vector<Level> m_levels;
+	std::vector<std::string> characterNames;
 	//TowerManager* m_towerManager;
+	//RewardScreen
+	Odyssey::UICanvas* m_p_rewardsScreen;
 public:
 	static StatTracker& Instance();
 	~StatTracker();
 
 	//void StartNextTurn();
 	//void StartNextLevel();
+
+	void SetRewardsScreen(Odyssey::UICanvas& rewardScreen);
 
 	void SaveStats(std::string saveName);
 	void LoadStats(std::string loadFileName);
@@ -66,10 +74,12 @@ public:
 
 private:
 	StatTracker();
+	void UpdateRewardScreen();
 
 	unsigned int GetStatCount(Action stat);
 	unsigned int GetStatCount(std::string name, Action stat);
-
+	std::vector<std::string>& GetListPlayerCharacterNames();
+	std::vector<std::string>& GetListPlayerCharacterNames(unsigned int levelNumber);
 	float CalculateDamageDealt();
 	float CalculateDamageDealt(std::string name);
 	float CalculateDamageDone();
