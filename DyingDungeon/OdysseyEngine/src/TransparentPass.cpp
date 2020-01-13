@@ -13,14 +13,15 @@
 
 namespace Odyssey
 {
-	TransparentPass::TransparentPass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> renderWindow)
+	TransparentPass::TransparentPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mDeviceContext = context;
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 
-		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 	}
 
 	void TransparentPass::preRender(RenderArgs& args)
@@ -35,10 +36,10 @@ namespace Odyssey
 		}
 		
 		// Update the buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 
-		mRenderWindow->get3DRenderTarget()->bind();
-		mRenderState->bind();
+		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
+		mRenderState->bind(mDeviceContext);
 	}
 
 	void TransparentPass::render(RenderArgs& args)
@@ -67,10 +68,10 @@ namespace Odyssey
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
 		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 
 		// Bind the mesh renderer
-		object->getComponent<MeshRenderer>()->bind();
+		object->getComponent<MeshRenderer>()->bind(mDeviceContext);
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);

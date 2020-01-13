@@ -23,7 +23,7 @@ namespace Odyssey
 		void setParticleData(std::vector<Particle> data);
 
 	private: // Helpers
-		void Run();
+		void Run(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 
 	public: // Members
 		std::shared_ptr<Shader> mVertexShader;
@@ -37,7 +37,6 @@ namespace Odyssey
 	private:
 		RenderDevice& mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		Microsoft::WRL::ComPtr<ID3D11BlendState> mBlendState;
 	};
 }

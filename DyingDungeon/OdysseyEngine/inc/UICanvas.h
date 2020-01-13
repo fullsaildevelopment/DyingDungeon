@@ -12,8 +12,6 @@ namespace Odyssey
 		CLASS_DECLARATION(UICanvas)
 
 	public: // Rule of 3
-		UICanvas();
-
 		virtual void initialize();
 
 	private: // Members

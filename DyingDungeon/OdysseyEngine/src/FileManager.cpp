@@ -20,7 +20,7 @@ namespace Odyssey
 		return instance;
 	}
 
-	void FileManager::initialize(RenderDevice* renderDevice)
+	void FileManager::initialize(std::shared_ptr<RenderDevice> renderDevice)
 	{
 		mRenderDevice = renderDevice;
 	}
@@ -225,7 +225,7 @@ namespace Odyssey
 		else
 		{
 			// This is a new mesh, allocate a new mesh pointer and put it in the map
-			mesh = std::make_shared<Mesh>(*mRenderDevice, meshData.vertexList, meshData.indexList);
+			mesh = std::make_shared<Mesh>(mRenderDevice, meshData.vertexList, meshData.indexList);
 			meshHashMap[meshData.hashID] = mesh;
 		}
 	}

@@ -7,9 +7,12 @@
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
 {
+	// Create the new pointer for the character we are creating
 	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
+	// Set the mGameScene
+	mGameScene = _gameScene;
 
 	// Get Position values
 	float xPos = DirectX::XMVectorGetX(_position);
@@ -63,26 +66,43 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	default:
 		break;
 	}
-
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
-	newCharacter->getComponent<Character>()->SetDead(false);
-	//newCharacter->getComponent<Character>()->SetStun(false);
+
+	// Set the character's name
+	newCharacter->getComponent<Character>()->SetName(_characterName);
 
 	// Create the impact indicator for each character
+	CreateCharacterImpactIndicator(newCharacter);
+
+	// Add the Character and Impact Indicator to the Game Scene
+	mGameScene->addEntity(newCharacter);
+
+	return newCharacter;
+}
+
+void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character)
+{
+	// Create the shared pointer for the impact indicator
 	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
 	// Set the transform
 	impactIndicator->addComponent<Odyssey::Transform>();
+	// Get player's position
+	DirectX::XMFLOAT3 characterPos = _character->getComponent<Odyssey::Transform>()->getPosition();
 	// Position indicator over the head
-	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos + 4.5f, zPos);
-	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPos.x, characterPos.y + 4.0f, characterPos.z);
+	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
 	// Import Model
 	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
 	// Set the impact indicator's color
 	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
 	impactIndicator->setStatic(false);
+	// Don't display the indicators when creating them. They will be toggled when character's attack.
+	impactIndicator->getComponent<Odyssey::MeshRenderer>()->setActive(false);
 	// Assign the character's impact indicator
-	newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+	_character->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
-	return newCharacter;
+	// Add the impact indicator to the game scene
+	mGameScene->addEntity(impactIndicator);
 }

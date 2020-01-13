@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Buffer.h"
 #include "Scene.h"
+#include "Entity.h"
 #include "ClearRenderTargetPass.h"
 #include "SkyboxPass.h"
 #include "ShadowPass.h"
@@ -20,13 +21,14 @@
 #include "FileManager.h"
 #include "Mesh.h"
 #include "Sprite2DPass.h"
+#include "ScriptDataLoader.h"
+#include "SceneDX11.h"
 
 namespace Odyssey
 {
-	RenderDevice::RenderDevice(Application& application, HINSTANCE moduleHandle)
+	RenderDevice::RenderDevice()
 	{
-		createDevice(moduleHandle);
-		FileManager::getInstance().initialize(this);
+		createDevice();
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Device> RenderDevice::getDevice()
@@ -44,82 +46,115 @@ namespace Odyssey
 		return mFactory;
 	}
 
+	RenderDevice::~RenderDevice()
+	{
+		int debug = 0;
+	}
+
 	std::shared_ptr<Scene> RenderDevice::createScene()
 	{
-		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+		static bool init = false;
+		if (init == false)
+		{
+			FileManager::getInstance().initialize(shared_from_this());
+			init = true;
+		}
+		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>();
 		return scene;
+	}
+
+	// TODO: DO I NEED TO DESTROY THE SCRIPT LOADER BEFORE I DESTROY THE RENDER DEVICE?
+
+	void RenderDevice::importScene(std::shared_ptr<Scene> scene, const char* filename)
+	{
+		//if (mScriptLoader == nullptr)
+		//	mScriptLoader = std::make_shared<ScriptDataLoader>(shared_from_this());
+		//mScriptLoader->importScene(scene, filename);
+	}
+	
+	void RenderDevice::importModel(std::shared_ptr<Entity> entity, const char* filename, bool isMultiMesh)
+	{
+		//if (mScriptLoader == nullptr)
+		//	mScriptLoader = std::make_shared<ScriptDataLoader>(shared_from_this());
+		//mScriptLoader->importModel(entity, filename, isMultiMesh);
 	}
 
 	std::shared_ptr<Buffer> RenderDevice::createBuffer(BufferBindFlag bindFlag, size_t size, UINT stride, const void* data)
 	{
-		std::shared_ptr<Buffer> buffer = std::make_shared<Buffer>(*this, bindFlag, size, stride, data);
+		std::shared_ptr<Buffer> buffer = std::make_shared<Buffer>(shared_from_this(), bindFlag, size, stride, data);
 		return buffer;
 	}
 
 	std::shared_ptr<RenderState> RenderDevice::createRenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap)
 	{
-		std::shared_ptr<RenderState> renderState = std::make_shared<RenderState>(*this, topology, cullMode, fillMode, frontCCW, depthClipping, isShadowMap);
+		std::shared_ptr<RenderState> renderState = std::make_shared<RenderState>(shared_from_this(), topology, cullMode, fillMode, frontCCW, depthClipping, isShadowMap);
 		return renderState;
 	}
 
 	std::shared_ptr<Material> RenderDevice::createMaterial()
 	{
-		std::shared_ptr<Material> material = std::make_shared<Material>(*this);
+		std::shared_ptr<Material> material = std::make_shared<Material>(shared_from_this());
 		return material;
 	}
 
 	std::shared_ptr<Material> RenderDevice::createMaterial(TextureType textureType, std::shared_ptr<Texture> texture)
 	{
-		std::shared_ptr<Material> material = std::make_shared<Material>(*this, textureType, texture);
+		std::shared_ptr<Material> material = std::make_shared<Material>(shared_from_this(), textureType, texture);
 		return material;
 	}
 
 	std::shared_ptr<SamplerState> RenderDevice::createSamplerState(ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
 	{
-		std::shared_ptr<SamplerState> sampler = std::make_shared<SamplerState>(*this, comparisonFunc, filter, bindSlot);
+		std::shared_ptr<SamplerState> sampler = std::make_shared<SamplerState>(shared_from_this(), comparisonFunc, filter, bindSlot);
 		return sampler;
 	}
 
 	std::shared_ptr<Shader> RenderDevice::createShader(ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements)
 	{
-		std::shared_ptr<Shader> shader = std::make_shared<Shader>(*this, shaderType, filename, layout, numberOfElements);
+		std::shared_ptr<Shader> shader = std::make_shared<Shader>(shared_from_this(), shaderType, filename, layout, numberOfElements);
 		return shader;
 	}
 
 	std::shared_ptr<Texture> RenderDevice::createRenderTexture()
 	{
-		std::shared_ptr<Texture> texture = std::make_shared<Texture>(*this);
+		std::shared_ptr<Texture> texture = std::make_shared<Texture>(shared_from_this());
 		return texture;
 	}
 
 	std::shared_ptr<Texture> RenderDevice::createTexture(TextureType textureType, const char* filename)
 	{
-		std::shared_ptr<Texture> texture = std::make_shared<Texture>(*this, textureType, filename);
+		std::shared_ptr<Texture> texture = std::make_shared<Texture>(shared_from_this(), textureType, filename);
 		return texture;
 	}
 
 	std::shared_ptr<Viewport> RenderDevice::createViewport(RenderWindow* renderWindow)
 	{
-		std::shared_ptr<Viewport> viewport = std::make_shared<Viewport>(*this, renderWindow);
+		std::shared_ptr<Viewport> viewport = std::make_shared<Viewport>(shared_from_this(), renderWindow);
 		return viewport;
 	}
 
 	std::shared_ptr<Viewport> RenderDevice::createViewport(int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth)
 	{
-		std::shared_ptr<Viewport> viewport = std::make_shared<Viewport>(*this, width, height, topLeftX, topLeftY, minDepth, maxDepth);
+		std::shared_ptr<Viewport> viewport = std::make_shared<Viewport>(shared_from_this(), width, height, topLeftX, topLeftY, minDepth, maxDepth);
 		return viewport;
 	}
 
 	std::shared_ptr<RenderTarget> RenderDevice::createRenderTarget(int width, int height, bool depthEnabled)
 	{
-		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(*this, width, height, depthEnabled);
+		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(shared_from_this(), width, height, depthEnabled);
 		return renderTarget;
 	}
 
 	std::shared_ptr<RenderTarget> RenderDevice::createRenderTarget(int width, int height, bool depthEnabled, RenderWindow* renderWindow)
 	{
-		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(*this, width, height, depthEnabled, renderWindow);
+		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(shared_from_this(), width, height, depthEnabled, renderWindow);
 		return renderTarget;
+	}
+
+	std::shared_ptr<Mesh> RenderDevice::createMesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
+	{
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(shared_from_this(), vertexList, indexList);
+		return mesh;
 	}
 
 	std::shared_ptr<Mesh> RenderDevice::createCube(DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 center)
@@ -152,54 +187,54 @@ namespace Odyssey
 		};
 
 		// Create the mesh and set it's index/vertex data
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(*this, vertexList, indexList);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(shared_from_this(), vertexList, indexList);
 
 		return mesh;
 	}
 
 	std::shared_ptr<ClearRenderTargetPass> RenderDevice::createClearRTVPass(std::shared_ptr<RenderWindow> renderWindow, bool clearDepth)
 	{
-		std::shared_ptr<ClearRenderTargetPass> renderPass = std::make_shared<ClearRenderTargetPass>(*this, renderWindow, clearDepth);
+		std::shared_ptr<ClearRenderTargetPass> renderPass = std::make_shared<ClearRenderTargetPass>(shared_from_this(), mDeviceContext, renderWindow, clearDepth);
 		return renderPass;
 	}
 
 	std::shared_ptr<SkyboxPass> RenderDevice::createSkyboxPass(const char* textureFilename, std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<SkyboxPass> renderPass = std::make_shared<SkyboxPass>(*this, textureFilename, renderWindow);
+		std::shared_ptr<SkyboxPass> renderPass = std::make_shared<SkyboxPass>(shared_from_this(), mDeviceContext, textureFilename, renderWindow);
 		return renderPass;
 	}
 
 	std::shared_ptr<ShadowPass> RenderDevice::createShadowPass(std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
 	{
-		std::shared_ptr<ShadowPass> renderPass = std::make_shared<ShadowPass>(*this, shadowLight, texWidth, texHeight);
+		std::shared_ptr<ShadowPass> renderPass = std::make_shared<ShadowPass>(shared_from_this(), mDeviceContext, shadowLight, texWidth, texHeight);
 		return renderPass;
 	}
 
 	std::shared_ptr<OpaquePass> RenderDevice::createOpaquePass(std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<OpaquePass> renderPass = std::make_shared<OpaquePass>(*this, renderWindow);
+		std::shared_ptr<OpaquePass> renderPass = std::make_shared<OpaquePass>(shared_from_this(), mDeviceContext, renderWindow);
 		return renderPass;
 	}
 
 	std::shared_ptr<TransparentPass> RenderDevice::createTransparentPass(std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<TransparentPass> renderPass = std::make_shared<TransparentPass>(*this, renderWindow);
+		std::shared_ptr<TransparentPass> renderPass = std::make_shared<TransparentPass>(shared_from_this(), mDeviceContext, renderWindow);
 		return renderPass;
 	}
 
 	std::shared_ptr<DebugPass> RenderDevice::createDebugPass(std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<DebugPass> renderPass = std::make_shared<DebugPass>(*this, renderWindow);
+		std::shared_ptr<DebugPass> renderPass = std::make_shared<DebugPass>(shared_from_this(), mDeviceContext, renderWindow);
 		return renderPass;
 	}
 
 	std::shared_ptr<Sprite2DPass> RenderDevice::createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<Sprite2DPass> renderPass = std::make_shared<Sprite2DPass>(*this, renderWindow);
+		std::shared_ptr<Sprite2DPass> renderPass = std::make_shared<Sprite2DPass>(shared_from_this(), renderWindow);
 		return renderPass;
 	}
 
-	void RenderDevice::createDevice(HINSTANCE hInstance)
+	void RenderDevice::createDevice()
 	{
 #ifdef _DEBUG
 		UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_SINGLETHREADED;

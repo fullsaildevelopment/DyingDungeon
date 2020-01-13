@@ -7,10 +7,6 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, UICanvas)
 
-	UICanvas::UICanvas()
-	{
-		mActive = true;
-	}
 	void UICanvas::initialize()
 	{
 		for (std::shared_ptr<UIElement> element : mElements)

@@ -5,6 +5,9 @@
 #include <DbgHelp.h>
 #include <time.h>
 
+//Game UI Manager
+#include "GameUIManager.h"
+
 // Game Includes
 #include "TowerManager.h"
 #include "HeroComponent.h"
@@ -107,7 +110,7 @@ int playGame()
 	gDefaultText.fontSize = 25.0f;
 	gDefaultText.textAlignment = Odyssey::TextAlignment::Left;
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	gDefaultText.fontName = L"Verdana";
+	gDefaultText.fontName = L"Constantia";
 
 	// Create the main scene
 	gGameScene = renderDevice->createScene();
@@ -141,6 +144,11 @@ int playGame()
 
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
+
+	// Assign the width and height for the UI Manager
+	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Create Pause Menu
+	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
 
 	// Add the game scene to the application
 	application->addScene("Game", gGameScene);
@@ -504,11 +512,11 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
 	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
 	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
-
+	
 	//Background Sound
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
-
+	
 	//Play Initial Loop
 	RedAudioManager::Instance().Loop("BackgroundMenu");
 	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
@@ -553,7 +561,7 @@ void setUpTowerManager()
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 
 	// Create the character's potrait and assign it's health and mana bars
 	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
@@ -564,12 +572,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -578,12 +585,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #3
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Tres", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -592,12 +598,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 550, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #4
 	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Cuatro", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -605,13 +610,12 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
-	createCharacterHealthPopup(1225, 500, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
+	createCharacterHealthPopup(1100, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -620,12 +624,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -634,12 +637,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -648,12 +650,11 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, charPosition, charRotation);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
 
 	// Get the newest Text2D element's index
@@ -662,7 +663,6 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Create the turn indicator circle
@@ -675,22 +675,6 @@ void setUpTowerManager()
 	turnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
 	turnIndicatorModel->setStatic(false);
 	gGameScene->addEntity(turnIndicatorModel);
-
-	// Create the impact indicator for each character
-	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
-	// Set the transform
-	impactIndicator->addComponent<Odyssey::Transform>();
-	// Position indicator over the head
-	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(6.0f, 5.0f, 4.5f);
-	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
-	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
-	// Import Model
-	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
-	// Set the impact indicator's color
-	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
-	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
-	impactIndicator->setStatic(false);
-	gGameScene->addEntity(impactIndicator);
 
 	// Set up the tower manager with the enemy and player teams
 	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);

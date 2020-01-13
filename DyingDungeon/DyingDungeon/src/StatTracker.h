@@ -24,7 +24,7 @@ public:
 		std::vector<float> blockValues;
 		uint32_t round = 1;
 		float value = 0.0f;
-		STATS effect = STATS::None;
+		EFFECTTYPE effect = EFFECTTYPE::None;
 		StatTracker::Action actionType = StatTracker::Action::None;
 		bool isSpell = false;
 		bool isSheild = false;

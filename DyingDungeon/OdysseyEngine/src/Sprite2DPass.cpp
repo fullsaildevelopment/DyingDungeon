@@ -8,10 +8,11 @@
 
 namespace Odyssey
 {
-	Sprite2DPass::Sprite2DPass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> targetWindow)
+	Sprite2DPass::Sprite2DPass(std::shared_ptr<RenderDevice> renderDevice, std::shared_ptr<RenderWindow> targetWindow)
 	{
+		mRenderDevice = renderDevice;
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(targetWindow);
-		mContext = renderDevice.getDevice2DContext();
+		mContext = renderDevice->getDevice2DContext();
 
 		EventManager::getInstance().subscribe(this, &Sprite2DPass::onDebugEngine);
 	}

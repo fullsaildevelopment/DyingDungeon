@@ -3,9 +3,53 @@
 #include "Component.h"
 #include "MeshRenderer.h"
 #include "UIElement.h"
+#include "EventManager.h"
 
 namespace Odyssey
 {
+	SceneDX11::SceneDX11()
+	{
+		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentAdd);
+		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentRemove);
+	}
+
+	void SceneDX11::onComponentAdd(ComponentAddEvent* evnt)
+	{ 
+		mLock.lock(LockState::Write);
+
+		for (std::shared_ptr<Entity> entity : mSceneEntities)
+		{
+			if (entity.get() == evnt->component->getEntity())
+			{
+				mComponentList.push_back(evnt->component);
+				mLock.unlock(LockState::Write);
+				return;
+			}
+		}
+		mLock.unlock(LockState::Write);
+	}
+
+	void SceneDX11::onComponentRemove(ComponentRemoveEvent* evnt)
+	{
+		mLock.lock(LockState::Write);
+		for (int i = 0; i < mSceneEntities.size(); i++)
+		{
+			if (mSceneEntities[i].get() == evnt->component->getEntity())
+			{
+				for (int j = 0; j < mComponentList.size(); j++)
+				{
+					if (mComponentList[j] == evnt->component)
+					{
+						mComponentList.erase(mComponentList.begin() + j);
+						mLock.unlock(LockState::Write);
+						return;
+					}
+				}
+			}
+		}
+		mLock.unlock(LockState::Write);
+	}
+
 	void SceneDX11::initialize()
 	{
 		// Restart the timer

@@ -16,13 +16,14 @@
 
 namespace Odyssey
 {
-	DebugPass::DebugPass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> renderWindow)
+	DebugPass::DebugPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mContext = context;
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
-		mRenderState = renderDevice.createRenderState(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice->createRenderState(Topology::LineList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, true, false);
 
 		// Create the input layout
 		D3D11_INPUT_ELEMENT_DESC cvLayout[] =
@@ -31,8 +32,8 @@ namespace Odyssey
 			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/DebugVertexShader.cso", cvLayout, 2);
-		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/DebugPixelShader.cso", nullptr);
+		mVertexShader = renderDevice->createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/DebugVertexShader.cso", cvLayout, 2);
+		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/DebugPixelShader.cso", nullptr);
 	}
 
 	void DebugPass::preRender(RenderArgs& args)
@@ -45,19 +46,19 @@ namespace Odyssey
 			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
 			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 			// Update the buffer
-			updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+			updatePerFrameBuffer(mContext, args.perFrame, args.perFrameBuffer);
 		}
 
 		// Calculate and set view proj
 		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
 		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 		// Update the buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		updatePerFrameBuffer(mContext, args.perFrame, args.perFrameBuffer);
 
-		mRenderWindow->get3DRenderTarget()->bind();
-		mVertexShader->bind();
-		mPixelShader->bind();
-		mRenderState->bind();
+		mRenderWindow->get3DRenderTarget()->bind(mContext);
+		mVertexShader->bind(mContext);
+		mPixelShader->bind(mContext);
+		mRenderState->bind(mContext);
 		DebugManager::getInstance().clearBuffer();
 	}
 
@@ -103,7 +104,7 @@ namespace Odyssey
 			lightObject->debugDraw();
 		}
 
-		DebugManager::getInstance().bind();
-		mDeviceContext->Draw(DebugManager::getInstance().getNumberOfVertices(), 0);
+		DebugManager::getInstance().bind(mContext);
+		mContext->Draw(DebugManager::getInstance().getNumberOfVertices(), 0);
 	}
 }

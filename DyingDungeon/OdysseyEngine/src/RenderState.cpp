@@ -3,12 +3,11 @@
 
 namespace Odyssey
 {
-	RenderState::RenderState(RenderDevice& renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
+	RenderState::RenderState(std::shared_ptr<RenderDevice> renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
 		mFrontCCW(frontCCW), mDepthClipping(depthClipping)
 	{
 		// Get the device and immediate context from the render manager
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mDevice = renderDevice->getDevice();
 
 		// Convert the custom enums to directX enums
 		convertToDirectX(topology, cullMode, fillMode);
@@ -27,10 +26,10 @@ namespace Odyssey
 		assert(!FAILED(hr));
 	}
 
-	void RenderState::bind()
+	void RenderState::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->IASetPrimitiveTopology(mTopology);
-		mDeviceContext->RSSetState(mRasterizerState.Get());
+		context->IASetPrimitiveTopology(mTopology);
+		context->RSSetState(mRasterizerState.Get());
 	}
 
 	Topology RenderState::getTopology()

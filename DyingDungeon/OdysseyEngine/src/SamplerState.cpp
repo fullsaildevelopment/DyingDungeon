@@ -3,10 +3,10 @@
 
 namespace Odyssey
 {
-	SamplerState::SamplerState(RenderDevice& renderDevice, ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
+	SamplerState::SamplerState(std::shared_ptr<RenderDevice> renderDevice, ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		mComparisonFunc = comparisonFunc;
 		mBindSlot = bindSlot;
@@ -95,13 +95,13 @@ namespace Odyssey
 		}
 	}
 
-	void SamplerState::bind()
+	void SamplerState::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->PSSetSamplers(mBindSlot, 1, mSamplerState.GetAddressOf());
+		context->PSSetSamplers(mBindSlot, 1, mSamplerState.GetAddressOf());
 	}
 
-	void SamplerState::unbind()
+	void SamplerState::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->PSSetSamplers(mBindSlot, 0, nullptr);
+		context->PSSetSamplers(mBindSlot, 0, nullptr);
 	}
 }

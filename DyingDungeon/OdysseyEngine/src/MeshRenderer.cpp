@@ -27,50 +27,68 @@ namespace Odyssey
 	void MeshRenderer::setMesh(std::shared_ptr<Mesh> mesh)
 	{
 		// Set the new Mesh
+		mLock.lock(LockState::Write);
 		mMesh = mesh;
+		mLock.unlock(LockState::Write);
 	}
 
 	void MeshRenderer::setMaterial(std::shared_ptr<Material> material)
 	{
 		// Set the new Material
+		mLock.lock(LockState::Write);
 		mMaterial = material;
+		mLock.unlock(LockState::Write);
 	}
 
 	void MeshRenderer::setDebugEnabled(bool enabled)
 	{
 		// Set the new debug state
+		mLock.lock(LockState::Write);
 		mDebugEnabled = enabled;
+		mLock.unlock(LockState::Write);
 	}
 
 	bool MeshRenderer::getDebugEnabled()
 	{
 		// Return the new debug state
-		return mDebugEnabled;
+		mLock.lock(LockState::Read);
+		bool debug = mDebugEnabled;
+		mLock.unlock(LockState::Read);
+
+		return debug;
 	}
 
 	Mesh* MeshRenderer::getMesh()
 	{
 		// Return a raw pointer to the Mesh
-		return mMesh.get();
+		mLock.lock(LockState::Read);
+		Mesh* mesh = mMesh.get();
+		mLock.unlock(LockState::Read);
+
+		return mesh;
 	}
 
 	Material* MeshRenderer::getMaterial()
 	{
 		// Return a raw pointer to the Material
-		return mMaterial.get();
+		mLock.lock(LockState::Read);
+		Material* material = mMaterial.get();
+		mLock.unlock(LockState::Read);
+
+		return material;
 	}
 
-	void MeshRenderer::bind()
+	void MeshRenderer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind the mesh and material to the rendering pipeline
-		mMesh->bind();
-		mMaterial->bind();
+		mMesh->bind(context);
+		mMaterial->bind(context);
 	}
 
-	void MeshRenderer::unbind()
+	void MeshRenderer::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Unbind the mesh and material from the rendering pipeline
-		mMesh->unbind();
-		mMaterial->unbind();
+		mMesh->unbind(context);
+		mMaterial->unbind(context);
 	}
 }

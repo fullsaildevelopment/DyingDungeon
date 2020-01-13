@@ -30,16 +30,16 @@ namespace Odyssey
 	{
 	}
 
-	void RenderPass::updatePerFrameBuffer(PerFrameBuffer& perFrame, Buffer* frameBuffer)
+	void RenderPass::updatePerFrameBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, PerFrameBuffer& perFrame, Buffer* frameBuffer)
 	{
 		// Update and bind the constant buffer
-		frameBuffer->updateData(&perFrame);
-		frameBuffer->bind(0, ShaderType::VertexShader);
+		frameBuffer->updateData(context , &perFrame);
+		frameBuffer->bind(context, 0, ShaderType::VertexShader);
 		//shaderMatrixBuffer->bind(0, ShaderType::GeometryShader);
 	}
-	void RenderPass::updatePerObjectBuffer(PerObjectBuffer& perObject, Buffer* objectBuffer)
+	void RenderPass::updatePerObjectBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, PerObjectBuffer& perObject, Buffer* objectBuffer)
 	{
-		objectBuffer->updateData(&perObject);
-		objectBuffer->bind(1, ShaderType::VertexShader);
+		objectBuffer->updateData(context , &perObject);
+		objectBuffer->bind(context, 1, ShaderType::VertexShader);
 	}
 }

@@ -2,6 +2,7 @@
 #include "EngineIncludes.h"
 #include "RenderTypes.h"
 #include "Component.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -70,5 +71,6 @@ namespace Odyssey
 		bool mIsPlaying;
 		bool mDebugEnabled;
 		std::map<std::string, AnimationClip> mAnimationMap;
+		ReadWriteLock mLock;
 	};
 }

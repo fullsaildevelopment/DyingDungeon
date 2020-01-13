@@ -22,7 +22,8 @@ class AIMoves
 	private:
 		//General Functions
 		bool FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
-		float ScoreMove(std::shared_ptr<Skills> skill, Character* target);
+		float ScoreMove(std::shared_ptr<Skills> skill, Character* target, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
+		float ScoreMoveAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
 
 		//Skeleton
 		void SkeletonDeterminePriority();
@@ -44,8 +45,12 @@ class AIMoves
 		//////////////////////////GET FUNCTIONS//////////////////////////////////
 	public:
 		std::shared_ptr <AIMoves::Move> GetMove();
+		AIMoves::Move mPrevMove;
 
 		//////////////////////////SET FUNCTIONS//////////////////////////////////
 	public:
 		void ResetMove();
+
+	private:
+		void SetPrevMove();
 };

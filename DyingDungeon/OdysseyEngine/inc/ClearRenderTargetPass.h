@@ -10,11 +10,12 @@ namespace Odyssey
 	class ClearRenderTargetPass : public RenderPass
 	{
 	public:
-		ClearRenderTargetPass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> renderWindow, bool clearDepth);
+		ClearRenderTargetPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow, bool clearDepth);
 		virtual void render(RenderArgs& args);
 	private:
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<RenderWindowDX11> mRenderWindow;
 		bool mClearDepth;
-		RenderDevice& mDevice;
 	};
 }

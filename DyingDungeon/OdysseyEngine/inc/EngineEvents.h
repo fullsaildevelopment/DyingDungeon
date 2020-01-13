@@ -56,17 +56,6 @@ namespace Odyssey
 		}
 	};
 
-	class UIElementResizeEvent : public Event
-	{
-	public:
-		float xScale, yScale;
-
-		UIElementResizeEvent(float xScaleFactor, float yScaleFactor) : xScale(xScaleFactor), yScale(yScaleFactor)
-		{
-
-		}
-	};
-
 	class SceneChangeEvent : public Event
 	{
 	public:
@@ -76,6 +65,17 @@ namespace Odyssey
 			priority = EventPriority::Deferred;
 		}
 		~SceneChangeEvent() = default;
+	};
+
+	class UIElementResizeEvent : public Event
+	{
+	public:
+		float xScale, yScale;
+
+		UIElementResizeEvent(float xScaleFactor, float yScaleFactor) : xScale(xScaleFactor), yScale(yScaleFactor)
+		{
+
+		}
 	};
 
 	class EngineShutdownEvent : public Event
@@ -106,6 +106,29 @@ namespace Odyssey
 		std::shared_ptr<UICanvas> canvas;
 
 		DebugEngine(std::shared_ptr<UICanvas> debugCanvas) : canvas(debugCanvas)
+		{
+
+		}
+	};
+
+	class Component;
+	class ComponentAddEvent : public Event
+	{
+	public:
+		Component* component;
+
+		ComponentAddEvent(Component* componentAdded) : component(componentAdded)
+		{
+
+		}
+	};
+
+	class ComponentRemoveEvent : public Event
+	{
+	public:
+		Component* component;
+
+		ComponentRemoveEvent(Component* componentRemoved) : component(componentRemoved)
 		{
 
 		}

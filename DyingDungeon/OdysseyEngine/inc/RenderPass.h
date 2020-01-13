@@ -39,8 +39,8 @@ namespace Odyssey
 		virtual void render(RenderArgs& args) = 0;
 		virtual void postRender(RenderArgs& args);
 	protected:
-		virtual void updatePerFrameBuffer(PerFrameBuffer& perFrame, Buffer* frameBuffer);
-		virtual void updatePerObjectBuffer(PerObjectBuffer& perObject, Buffer* objectBuffer);
+		virtual void updatePerFrameBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, PerFrameBuffer& perFrame, Buffer* frameBuffer);
+		virtual void updatePerObjectBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, PerObjectBuffer& perObject, Buffer* objectBuffer);
 	private:
 		bool mEnabled;
 	};

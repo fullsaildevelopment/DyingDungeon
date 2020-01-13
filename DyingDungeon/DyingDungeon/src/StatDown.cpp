@@ -36,7 +36,7 @@ void StatDown::Apply(Character& target)
 	}
 	case STATS::Spd:
 	{
-		target.DecreaseDef(mAmountOfEffect);
+		target.DecreaseSpd(mAmountOfEffect);
 		temp = " Speed";
 		break;
 	}

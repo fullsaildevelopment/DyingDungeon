@@ -5,11 +5,11 @@
 
 namespace Odyssey
 {
-	Shader::Shader(RenderDevice& renderDevice, ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements)
-		: mShaderType(shaderType)
+	Shader::Shader(std::shared_ptr<RenderDevice> renderDevice, ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mRenderDevice = renderDevice;
+		mShaderType = shaderType;
+		mDevice = renderDevice->getDevice();
 
 		// Read the shader from the cso file
 		char* byteCode = { 0 };
@@ -61,35 +61,35 @@ namespace Odyssey
 		byteCode = nullptr;
 	}
 
-	void Shader::bind()
+	void Shader::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (mShaderType == ShaderType::PixelShader && mPixelShader.Get())
 		{
 			// Set the pixel shader
-			mDeviceContext->PSSetShader(mPixelShader.Get(), 0, 0);
+			context->PSSetShader(mPixelShader.Get(), 0, 0);
 
 			// Iterate through each sampler and bind it
 			for (std::shared_ptr<SamplerState> sampler : samplerList)
 			{
-				sampler->bind();
+				sampler->bind(context);
 			}
 		}
 		else if (mShaderType == ShaderType::VertexShader && mVertexShader.Get())
 		{
 			// Set the vertex shader and input layout
-			mDeviceContext->VSSetShader(mVertexShader.Get(), 0, 0);
+			context->VSSetShader(mVertexShader.Get(), 0, 0);
 			if (mInputLayout)
 			{
-				mDeviceContext->IASetInputLayout(mInputLayout.Get());
+				context->IASetInputLayout(mInputLayout.Get());
 			}
 		}
 		else if (mShaderType == ShaderType::ComputeShader && mComputeShader.Get())
 		{
-			mDeviceContext->CSSetShader(mComputeShader.Get(), 0, 0);
+			context->CSSetShader(mComputeShader.Get(), 0, 0);
 		}
 		else if (mShaderType == ShaderType::GeometryShader && mGeometryShader.Get())
 		{
-			mDeviceContext->GSSetShader(mGeometryShader.Get(), 0, 0);
+			context->GSSetShader(mGeometryShader.Get(), 0, 0);
 		}
 	}
 
@@ -98,37 +98,37 @@ namespace Odyssey
 		samplerList.push_back(sampler);
 	}
 
-	void Shader::unbind()
+	void Shader::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (mShaderType == ShaderType::PixelShader && mPixelShader.Get())
 		{
-			mDeviceContext->PSSetShader(nullptr, 0, 0);
+			context->PSSetShader(nullptr, 0, 0);
 
 			// Iterate through each sampler and bind it
 			for (std::shared_ptr<SamplerState> sampler : samplerList)
 			{
-				sampler->unbind();
+				sampler->unbind(context);
 			}
 		}
 		else if (mShaderType == ShaderType::VertexShader && mVertexShader.Get())
 		{
-			mDeviceContext->VSSetShader(nullptr, 0, 0);
+			context->VSSetShader(nullptr, 0, 0);
 		}
 		else if (mShaderType == ShaderType::ComputeShader && mComputeShader.Get())
 		{
-			mDeviceContext->CSSetShader(nullptr, 0, 0);
+			context->CSSetShader(nullptr, 0, 0);
 		}
 		else if (mShaderType == ShaderType::GeometryShader && mGeometryShader.Get())
 		{
-			mDeviceContext->GSSetShader(nullptr, 0, 0);
+			context->GSSetShader(nullptr, 0, 0);
 		}
 	}
 
-	void Shader::dispatch(int x, int y, int z)
+	void Shader::dispatch(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int x, int y, int z)
 	{
 		if (mShaderType == ShaderType::ComputeShader)
 		{
-			mDeviceContext->Dispatch(x, y, z);
+			context->Dispatch(x, y, z);
 		}
 	}
 

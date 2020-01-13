@@ -16,6 +16,7 @@ namespace Odyssey
 	void Rectangle2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if color lerp is enabled
+		mLock.lock(LockState::Write);
 		if (mColorLerpEnabled)
 		{
 			// Calculate a lerped color
@@ -45,40 +46,51 @@ namespace Odyssey
 
 		// Draw the filled rectangle
 		context->FillRectangle(&fillShape, mBrush.Get());
+		mLock.unlock(LockState::Write);
 	}
 
 	void Rectangle2D::addFill(float value)
 	{
 		// Add the parameter value to the fill and clamp between 0.0 and 1.0
+		mLock.lock(LockState::Write);
 		mFill += value;
 		mFill = max(0.0f, min(mFill, 1.0f));
+		mLock.unlock(LockState::Write);
 	}
 
 	void Rectangle2D::setFill(float fill)
 	{
 		// Set the parameter value to the fill and clamp between 0.0 and 1.0
+		mLock.lock(LockState::Write);
 		mFill = fill;
 		mFill = max(0.0f, min(mFill, 1.0f));
+		mLock.unlock(LockState::Write);
 	}
 
 	void Rectangle2D::enableColorLerp(DirectX::XMFLOAT3 zeroFillColor)
 	{
 		// Enable color lerp, store the zero fill color and flag whether alpha lerp is enabled.
+		mLock.lock(LockState::Write);
 		mColorLerpEnabled = true;
 		mZeroFillColor = DirectX::XMFLOAT4(zeroFillColor.x / 255.0f, zeroFillColor.y / 255.0f, zeroFillColor.z / 255.0f, mColor.w);
+		mLock.unlock(LockState::Write);
 		clampColor(mZeroFillColor);
 	}
 
 	void Rectangle2D::setZeroFillOpacity(float opacity)
 	{
+		mLock.lock(LockState::Write);
 		mZeroFillColor.w = opacity;
+		mLock.unlock(LockState::Write);
 		clampColor(mZeroFillColor);
 	}
 
 	void Rectangle2D::disableColorLerp()
 	{
 		// Disable color lerp and alpha lerp.
+		mLock.lock(LockState::Write);
 		mColorLerpEnabled = false;
+		mLock.unlock(LockState::Write);
 	}
 
 	DirectX::XMFLOAT4 Rectangle2D::colorLerp(DirectX::XMFLOAT4 zeroFillColor, DirectX::XMFLOAT4 maxFillColor, float ratio)

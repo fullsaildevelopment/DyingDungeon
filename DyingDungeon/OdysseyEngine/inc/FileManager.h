@@ -40,7 +40,7 @@ namespace Odyssey
 		static FileManager& getInstance();
 		~FileManager() { }
 	public:
-		void initialize(RenderDevice* renderDevice);
+		void initialize(std::shared_ptr<RenderDevice> renderDevice);
 		void importScene(std::shared_ptr<Scene> scene, const char* filename);
 		void importModel(std::shared_ptr<Entity> Entity, const char* filename, bool isMultiMesh);
 	private:
@@ -52,7 +52,7 @@ namespace Odyssey
 		void constructEntity(std::fstream& file, std::shared_ptr<Entity> Entity);
 		void constructAABB(Transform* objectTransform, std::shared_ptr<Entity> Entity, MeshData& meshData);
 	private:
-		RenderDevice* mRenderDevice;
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::map<size_t, std::shared_ptr<Mesh>> meshHashMap;
 		std::map<std::string, std::shared_ptr<Texture>> textureFileMap;
 	private:

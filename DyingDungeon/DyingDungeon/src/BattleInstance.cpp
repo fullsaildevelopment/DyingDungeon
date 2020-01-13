@@ -2,12 +2,11 @@
 #include "RedAudioManager.h"
 #include "Transform.h"
 #include "Character.h"
+#include "StatusEvents.h"
 #include <string>
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
-	RedAudioManager::Instance().Stop("BackgroundMenu");
-
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
 	mTurnOrderNumbers = _turnOrderNumbers;
@@ -53,7 +52,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 			// This will show a sim of entering a new battle
 			mEnemyTeam[i]->getComponent<Character>()->SetHP(1000);
 			mEnemyTeam[i]->getComponent<Character>()->SetMana(1000);
-			mEnemyTeam[i]->getComponent<Character>()->SetDead(false);
+			mEnemyTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
 			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
@@ -66,11 +65,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 
 	// Create the battle queue before going to battle
 	GenerateBattleQueue();
+	// Update the turn numbers for each character
 	UpdateCharacterTurnNumbers();
-
-	// Set the pCurrentCharacter to the front of the battle queue
-	mCurrentCharacter = mBattleQueue.front();
-
 	// Set the circle to the current player's location
 	SetTurnIndicatorPosition();
 
@@ -91,12 +87,13 @@ int BattleInstance::UpdateBattle()
 		mCurrentCharacter->getComponent<Character>()->pTurnNumber->setText(L"X");
 		// Take the current character out of the battle queue
 		mBattleQueue.pop();
-		// Reassign the next character to the 
-		mCurrentCharacter = mBattleQueue.front();
+		// Update turn numbers
+		UpdateCharacterTurnNumbers();
+		// Update Turn Indicator	
+		SetTurnIndicatorPosition();
 	}
-
 	// Check to see if both teams have at least one character still alive
-	if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
+	else if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
 		// Has the current player taken it's turn yet
 		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
@@ -107,8 +104,6 @@ int BattleInstance::UpdateBattle()
 			mBattleQueue.pop();
 			// Put the current character to back into the queue, he will go to the back of the line
 			mBattleQueue.emplace(mCurrentCharacter);
-			// Reassign the next character to the 
-			mCurrentCharacter = mBattleQueue.front();
 			//Update the turn numbers
 			UpdateCharacterTurnNumbers();
 			// Reset the current turn indicator
@@ -178,6 +173,9 @@ void BattleInstance::GenerateBattleQueue()
 		// Remove the character from the character pool so he won't be added to the battle queue multiple times
 		characterPool.erase(characterPool.begin() + indexOfCharacter);
 	}
+
+	// Set the current character after the queue has been created
+	mCurrentCharacter = mBattleQueue.front();
 }
 
 bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
@@ -226,10 +224,17 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 void BattleInstance::SetTurnIndicatorPosition()
 {
+	// The placement of the turn indicator should always be underneath the player who is in the front of the queue
+	mCurrentCharacter = mBattleQueue.front();
+
 	// Get the character's position
 	DirectX::XMFLOAT3 characterPosition = mCurrentCharacter->getComponent<Odyssey::Transform>()->getPosition();
 	
 	// Set the turn indicator's position based on the character's position
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPosition.x, characterPosition.y + 0.05f, characterPosition.z);
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+
+	// Send out event letting the stat tracker know a new player is taking a turn
+	std::string characterName = mCurrentCharacter->getComponent<Character>()->GetName();
+	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mTurnCounter, mCurrentRound));
 }

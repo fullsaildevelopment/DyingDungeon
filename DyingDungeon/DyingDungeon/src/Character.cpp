@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "RedAudioManager.h"
+#include "MeshRenderer.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -13,7 +14,9 @@ Character::Character()
 	mShielding = false;
 	mAttack = 0.0f;
 	mDefense = 0.0f;
+	mBaseDefense = 0.0f;
 	mSpeed = 0.15f;
+	mBaseSpeed = 0.0f;
 	mBaseMaxHP = 100.0f;
 	mBaseMaxMana = 100.0f;
 	mCurrentHP = 100.0f;
@@ -224,6 +227,8 @@ void Character::IncreaseAtk(float statIncrease)
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= statDecrease;
+	if (mAttack <= -1.0f)
+		mAttack = -1.0f;
 }
 
 // Returns the Defense mod
@@ -232,16 +237,23 @@ float Character::GetDef()
 	return mDefense;
 }
 
+float Character::GetBaseDef()
+{
+	return mBaseDefense;
+}
+
 // Increases the Defense stat
 void Character::IncreaseDef(float statIncrease)
 {
-	mDefense += statIncrease;
+	mDefense += (mBaseDefense * statIncrease);
+	if (mDefense > 1.0f)
+		mDefense = 1.0f;
 }
 
 // Decreases the Defense stat
 void Character::DecreaseDef(float statDecrease)
 {
-	mDefense -= statDecrease;
+	mDefense -= (mBaseDefense * statDecrease);
 }
 
 // Returns the Speed stat
@@ -250,16 +262,21 @@ float Character::GetSpeed()
 	return mSpeed;
 }
 
+float Character::GetBaseSpeed()
+{
+	return mBaseSpeed;
+}
+
 // Increases the Speed stat
 void Character::IncreaseSpd(float statIncrease)
 {
-	mSpeed += statIncrease;
+	mSpeed += (mBaseSpeed * statIncrease);
 }
 
 // Decreases the Speed stat
 void Character::DecreaseSpd(float statDecrease)
 {
-	mSpeed -= statDecrease;
+	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "RenderIncludes.h"
 #include "Component.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -32,6 +34,10 @@ namespace Odyssey
 		 */
 		Mesh* getMesh();
 
+		std::shared_ptr<Mesh> getSMesh()
+		{
+			return mMesh;
+		}
 		/**
 		 *	Set the mesh renderer's material object.
 		 *	@param[in] material The mesh renderer's material object.
@@ -65,18 +71,19 @@ namespace Odyssey
 		 *	@param[in] void
 		 *	@return void
 		 */
-		void bind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 
 		/**
 		 *	Unbind the mesh renderer from the rendering pipeline.
 		 *	@param[in] void
 		 *	@return void
 		 */
-		void unbind();
+		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 
 	private: // Members
 		bool mDebugEnabled;
 		std::shared_ptr<Mesh> mMesh;
 		std::shared_ptr<Material> mMaterial;
+		ReadWriteLock mLock;
 	};
 }

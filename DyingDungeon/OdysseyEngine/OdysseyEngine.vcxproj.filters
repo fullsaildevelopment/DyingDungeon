@@ -276,6 +276,9 @@
     <ClInclude Include="inc\Callback.h">
       <Filter>Header Files\Game Engine\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ReadWriteLock.h">
+      <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -418,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="src\RenderDevice.cpp">
       <Filter>Source Files\Render Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadWriteLock.cpp">
+      <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
