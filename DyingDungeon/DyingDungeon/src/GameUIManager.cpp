@@ -50,7 +50,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
 	pauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 50, L"Paused", properties);
-	//pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
+	pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
 
 
 	// Add the pause menu to the game scene most likely
@@ -65,9 +65,7 @@ void GameUIManager::ToggleTitle()
 
 	if (yeehaw)
 	{
-		//pauseTitle->setColor(0.0f, 255.0f, 0.0f);
-		//pauseTitle->setOpacity(0.5f);
-		mPauseMenu->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Text2D>()->setText(L"L");
+		pauseTitle->setColor(0.0f, 255.0f, 0.0f);
 	}
 	else
 		pauseTitle->setColor(255.0f, 255.0f, 255.0f);
