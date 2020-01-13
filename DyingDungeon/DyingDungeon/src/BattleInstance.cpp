@@ -2,6 +2,7 @@
 #include "RedAudioManager.h"
 #include "Transform.h"
 #include "Character.h"
+#include "StatusEvents.h"
 #include <string>
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
@@ -232,4 +233,8 @@ void BattleInstance::SetTurnIndicatorPosition()
 	// Set the turn indicator's position based on the character's position
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPosition.x, characterPosition.y + 0.05f, characterPosition.z);
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+
+	// Send out event letting the stat tracker know a new player is taking a turn
+	std::string characterName = mCurrentCharacter->getComponent<Character>()->GetName();
+	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mTurnCounter, mCurrentRound));
 }

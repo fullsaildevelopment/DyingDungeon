@@ -6,6 +6,7 @@
 #include "EventManager.h"
 #include "StatusEvents.h"
 #include "GameUIManager.h"
+#include "StatusEvents.h"
 #include "UICanvas.h"
 
 CLASS_DEFINITION(Component, TowerManager)
@@ -90,7 +91,10 @@ void TowerManager::update(double deltaTime)
 			}
 			else
 			{
-				std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+				std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
+
+				// Publish the current level number
+				Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 				// Give player some XP
 				tempXP = 100.0f;
@@ -153,6 +157,9 @@ void TowerManager::CreateBattleInstance()
 	if (mCurrentLevel == 1)
 		system("CLS");
 
+	// Send off the current level number
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
+
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers, tmTurnIndicator);
 
@@ -174,9 +181,8 @@ void TowerManager::CreateBattleInstance()
 		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
-	std::cout << "The current level is " << GetCurrentLevel() << "\n" << std::endl;
+	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
-	//Odyssey::EventManager::getInstance().publish(new LevelStartEvent());
 }
 
 void TowerManager::DestroyBattleInstance()
