@@ -36,8 +36,8 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseMaxHP = mCurrentHP = 150.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
-		mDefense = 0.30f;
-		mSpeed = 35.0f;
+		mBaseDefense = mDefense = 0.30f;
+		mBaseSpeed = mSpeed = 35.0f;
 		mShielding = 0.0f;
 		for (int i = 0; i < TOTALSKILLS; ++i)
 		// Basic Attack (Add Provoke 30% chance)

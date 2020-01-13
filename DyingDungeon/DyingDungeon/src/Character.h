@@ -103,6 +103,8 @@ protected:
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
+	float mBaseDefense;
+	float mBaseSpeed;
 	float mShielding;
 	float mAttack;
 	float mDefense;

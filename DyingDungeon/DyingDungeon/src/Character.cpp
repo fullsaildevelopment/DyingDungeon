@@ -224,6 +224,8 @@ void Character::IncreaseAtk(float statIncrease)
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= statDecrease;
+	if (mAttack <= -1.0f)
+		mAttack = -1.0f;
 }
 
 // Returns the Defense mod
@@ -235,13 +237,15 @@ float Character::GetDef()
 // Increases the Defense stat
 void Character::IncreaseDef(float statIncrease)
 {
-	mDefense += statIncrease;
+	mDefense += (mBaseDefense * statIncrease);
+	if (mDefense > 1.0f)
+		mDefense = 1.0f;
 }
 
 // Decreases the Defense stat
 void Character::DecreaseDef(float statDecrease)
 {
-	mDefense -= statDecrease;
+	mDefense -= (mBaseDefense * statDecrease);
 }
 
 // Returns the Speed stat
@@ -253,13 +257,13 @@ float Character::GetSpeed()
 // Increases the Speed stat
 void Character::IncreaseSpd(float statIncrease)
 {
-	mSpeed += statIncrease;
+	mSpeed += (mBaseSpeed * statIncrease);
 }
 
 // Decreases the Speed stat
 void Character::DecreaseSpd(float statDecrease)
 {
-	mSpeed -= statDecrease;
+	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
 
