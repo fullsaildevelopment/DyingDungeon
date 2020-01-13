@@ -13,28 +13,27 @@ namespace Odyssey
 	class RenderTarget
 	{
 	public: // Constructors
-		RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled);
-		RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow);
+		RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled);
+		RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow);
+		~RenderTarget() = default;
 	public: // Creation Functions
 		void createDepthTarget(UINT bindFlags, int width, int height);
 		void setViewport(std::shared_ptr<Viewport> viewport);
-		void bind();
-		void bindDepthTexture(int slot);
-		void unBind();
-		void unbindDepthTexture();
-		void unbindDepthTexture(UINT slot);
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void bindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int slot);
+		void unBind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void unbindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void unbindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, UINT slot);
 		Texture* getRenderTexture();
 		Texture* getDepthTexture();
-		void clearRenderView();
-		void clearDepth();
-		~RenderTarget();
+		void clearRenderView(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void clearDepth(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	private:
-		void createRenderTargetView(RenderDevice& renderDevice, int width, int height);
-		void createDepthStencilView(RenderDevice& renderDevice, int width, int height);
+		void createRenderTargetView(int width, int height);
+		void createDepthStencilView(int width, int height);
 	private: // DirectX Resources
-		RenderDevice& mRenderDevice;
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
 	private: // Rendering Resources

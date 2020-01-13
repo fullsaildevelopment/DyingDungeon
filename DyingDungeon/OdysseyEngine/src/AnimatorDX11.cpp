@@ -57,17 +57,17 @@ namespace Odyssey
 		updateAnimationBuffer(mCurrentClip.currentFrame);
 	}
 
-	void AnimatorDX11::bind()
+	void AnimatorDX11::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Update the constant buffer and bind it to slot 1 of the vertex shader
-		mAnimationBuffer->updateData(&mAnimationData);
-		mAnimationBuffer->bind(2, ShaderType::VertexShader);
+		mAnimationBuffer->updateData(context , &mAnimationData);
+		mAnimationBuffer->bind(context, 2, ShaderType::VertexShader);
 	}
 
-	void AnimatorDX11::unbind()
+	void AnimatorDX11::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Ubbind the constant buffer from slot 1 of the vertex shader
-		mAnimationBuffer->unbind(2, ShaderType::VertexShader);
+		mAnimationBuffer->unbind(context, 2, ShaderType::VertexShader);
 	}
 
 	void AnimatorDX11::debugDraw(DirectX::XMFLOAT4X4& globalTransform, DirectX::XMFLOAT3 color)

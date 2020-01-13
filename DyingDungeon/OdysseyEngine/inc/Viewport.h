@@ -10,14 +10,14 @@ namespace Odyssey
 	class Viewport
 	{
 	public: // Constructors
-		Viewport(RenderDevice& renderDevice, RenderWindow* renderWindow);
-		Viewport(RenderDevice& renderDevice, UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth);
+		Viewport(std::shared_ptr<RenderDevice> renderDevice, RenderWindow* renderWindow);
+		Viewport(std::shared_ptr<RenderDevice> renderDevice, UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth);
 	public:
-		void bind();
-		void unbind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	private:
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		D3D11_VIEWPORT mViewport;
 		UINT mWidth;
 		UINT mHeight;

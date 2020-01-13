@@ -4,8 +4,10 @@
 
 namespace Odyssey
 {
-	RenderWindowDX11::RenderWindowDX11(RenderDevice& renderDevice, HWND& hWnd) : mRenderDevice(renderDevice)
+	RenderWindowDX11::RenderWindowDX11(std::shared_ptr<RenderDevice> renderDevice, HWND& hWnd)
 	{
+		mRenderDevice = renderDevice;
+
 		// Get the window properties
 		RECT mainWinRect;
 		GetClientRect(hWnd, &mainWinRect);
@@ -20,7 +22,6 @@ namespace Odyssey
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.Width = mProperties.width;
 		swapChainDesc.Height = mProperties.height;
-		//swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 		swapChainDesc.Stereo = false;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -37,7 +38,7 @@ namespace Odyssey
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
 
-		hr = factory->CreateSwapChainForHwnd(renderDevice.getDevice().Get(), hWnd,
+		hr = factory->CreateSwapChainForHwnd(renderDevice->getDevice().Get(), hWnd,
 			&swapChainDesc, &swapChainFullScreenDesc, nullptr, swapChain.GetAddressOf());
 		assert(!FAILED(hr));
 
@@ -46,7 +47,7 @@ namespace Odyssey
 
 		mWindowHandle = std::make_shared<HWND>(hWnd);
 
-		mFactory = renderDevice.get2DFactory();
+		mFactory = renderDevice->get2DFactory();
 
 		createRenderTargets();
 
@@ -89,11 +90,11 @@ namespace Odyssey
 
 		// Clear the output merger of any render targets and flush
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
-		mRenderDevice.getDevice()->GetImmediateContext(context.GetAddressOf());
+		mRenderDevice->getDevice()->GetImmediateContext(context.GetAddressOf());
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
 		context->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
 		context->Flush();
-		mRenderDevice.getDevice2DContext()->SetTarget(nullptr);
+		mRenderDevice->getDevice2DContext()->SetTarget(nullptr);
 
 		// Resize the swapchain buffers
 		mSwapChain->ResizeBuffers(0, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
@@ -119,7 +120,7 @@ namespace Odyssey
 		GetClientRect(*mWindowHandle, &mainWinRect);
 		mProperties.setBounds(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom);
 
-		m3DRenderTarget = mRenderDevice.createRenderTarget(mProperties.width, mProperties.height, true, this);
+		m3DRenderTarget = mRenderDevice->createRenderTarget(mProperties.width, mProperties.height, true, this);
 
 		// Generate 2D render target
 		Microsoft::WRL::ComPtr<IDXGISurface1> backBufferSurface;
@@ -132,8 +133,8 @@ namespace Odyssey
 			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
 			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpi, dpi);
 
-		mRenderDevice.getDevice2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
-		mRenderDevice.getDevice2DContext()->SetTarget(mBackBuffer.Get());
+		mRenderDevice->getDevice2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
+		mRenderDevice->getDevice2DContext()->SetTarget(mBackBuffer.Get());
 	}
 
 	DXGI_RATIONAL RenderWindowDX11::queryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync)

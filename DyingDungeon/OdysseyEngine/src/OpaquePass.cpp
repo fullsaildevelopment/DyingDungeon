@@ -22,19 +22,20 @@
 
 namespace Odyssey
 {
-	OpaquePass::OpaquePass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> renderWindow)
+	OpaquePass::OpaquePass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
 	{
 		// Get the device and context
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mDeviceContext = context;
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		// Get and store the render target
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 
 		// Create the render state for opaque objects
-		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
 
-		mLightingBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mLightingBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
@@ -49,14 +50,14 @@ namespace Odyssey
 		};
 
 		// Create the default pixel shader
-		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/LitPixelShader.cso", nullptr);
+		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/LitPixelShader.cso", nullptr);
 
 		// Create the default vertex shader
-		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/VertexShader.cso", vShaderLayout, 7);
+		mVertexShader = renderDevice->createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 		mFrustumCull = true;
 
 		// Create the per object lighting buffer
-		mLightingBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mLightingBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 	}
 
@@ -70,24 +71,17 @@ namespace Odyssey
 			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
 			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 			// Update the buffer
-			updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+			updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 		}
 
-		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
-		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-
-		// Update the buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
-
 		// Bind the render target
-		mRenderWindow->get3DRenderTarget()->bind();
+		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
 
 		// Bind the render state
-		mRenderState->bind();
+		mRenderState->bind(mDeviceContext);
 
-		mVertexShader->bind();
-		mPixelShader->bind();
+		mVertexShader->bind(mDeviceContext);
+		mPixelShader->bind(mDeviceContext);
 	}
 
 	void OpaquePass::render(RenderArgs& args)
@@ -103,47 +97,55 @@ namespace Odyssey
 		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
-		for (MeshRenderer* meshRenderer : args.renderList)
+		if (Camera* camera = args.camera->getComponent<Camera>())
 		{
-			if (meshRenderer->isActive())
+			for (MeshRenderer* meshRenderer : args.renderList)
 			{
-				if (mFrustumCull == true)
+				if (meshRenderer->isActive())
 				{
-					Entity* renderObject = meshRenderer->getEntity();
+					if (mFrustumCull == true)
+					{
+						Entity* renderObject = meshRenderer->getEntity();
 
-					if (renderObject->getStatic() == false || args.camera->getComponent<Camera>()->getFrustum()->checkFrustumView(*(renderObject->getComponent<AABB>())))
-					{
-						// Depth sorting
-						globalTransform = renderObject->getComponent<Transform>()->getGlobalTransform();
-						DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
-						float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
-						renderMap.insert(std::pair<float, MeshRenderer*>(depth, meshRenderer));
-					}
-					else
-					{
-						numCulled++;
+						AABB* aabb = renderObject->getComponent<AABB>();
+						bool inFrustum = camera->getFrustum()->checkFrustumView(*(aabb));
+						if (renderObject->getStatic() == false || inFrustum)
+						{
+							// Depth sorting
+							Transform* transform = renderObject->getComponent<Transform>();
+							globalTransform = transform->getGlobalTransform();
+							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
+							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
+							renderMap.insert(std::pair<float, MeshRenderer*>(depth, meshRenderer));
+						}
+						else
+						{
+							numCulled++;
+						}
 					}
 				}
+				total++;
 			}
-			total++;
-		}
-		for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
-		{
-			Entity* renderObject = itr->second->getEntity();
-
-			updateLightingBuffer(renderObject, args);
-
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+			for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 			{
-				rootAnimator->bind();
-			}
-			updateLightingBuffer(renderObject, args);
-			renderSceneObject(renderObject, args);
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
-			{
-				rootAnimator->unbind();
+				Entity* renderObject = itr->second->getEntity();
+
+				updateLightingBuffer(renderObject, args);
+
+				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				{
+					rootAnimator->bind(mDeviceContext);
+				}
+				updateLightingBuffer(renderObject, args);
+				renderSceneObject(renderObject, args);
+
+				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				{
+					rootAnimator->unbind(mDeviceContext);
+				}
 			}
 		}
+		
 
 		EventManager::getInstance().publish(new RenderEvent(total, static_cast<unsigned int>(renderMap.size()), numCulled));
 		performance->EndEvent();
@@ -189,18 +191,19 @@ namespace Odyssey
 		}
 
 		// Set the lighting constant buffer
-		mLightingBuffer->updateData(&sceneLighting);
-		mLightingBuffer->bind(1, ShaderType::PixelShader);
+		mLightingBuffer->updateData(mDeviceContext, &sceneLighting);
+		mLightingBuffer->bind(mDeviceContext, 1, ShaderType::PixelShader);
 	}
 
 	void OpaquePass::renderSceneObject(Entity* object, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
 		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
-		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
+		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer
-		object->getComponent<MeshRenderer>()->bind();
+		MeshRenderer* meshRenderer = object->getComponent<MeshRenderer>();
+		meshRenderer->bind(mDeviceContext);
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);

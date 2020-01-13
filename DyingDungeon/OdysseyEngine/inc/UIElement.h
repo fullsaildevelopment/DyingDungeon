@@ -3,7 +3,7 @@
 #include "RenderIncludes.h"
 #include "EngineEvents.h"
 #include "Callback.h"
-#include <mutex>
+#include "ReadWriteLock.h"
 
 #pragma region Element Macros
 
@@ -50,7 +50,7 @@ namespace Odyssey
 
 	public: // Rule of 3
 		UIElement(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height);
-		virtual ~UIElement() = default;
+		~UIElement() = default;
 
 	public:
 		typedef void (UIElement::*MemberFunction)(void);
@@ -72,7 +72,9 @@ namespace Odyssey
 		template<class T>
 		void registerCallback(std::string function, T* instance, void(T::*memberFunction)())
 		{
+			mLock.lock(LockState::Write);
 			mCallbackMap[function] = std::make_shared<CallbackHandler<T>>(instance, memberFunction);
+			mLock.unlock(LockState::Write);
 		}
 
 	public: // Interface
@@ -225,6 +227,8 @@ namespace Odyssey
 		 */
 		void createShape();
 
+		void resetBrush();
+
 	protected: // Members
 		Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> mBrush;
 		D2D_RECT_F mShape;
@@ -234,6 +238,6 @@ namespace Odyssey
 		DirectX::XMFLOAT4 mColor;
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
-		std::mutex mLock;
+		ReadWriteLock mLock;
 	};
 }

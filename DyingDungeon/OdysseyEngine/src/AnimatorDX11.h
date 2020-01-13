@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "RenderIncludes.h"
 #include "Animator.h"
 
 namespace Odyssey
@@ -39,14 +40,14 @@ namespace Odyssey
 		 *	@param[in] void
 		 *	@return void
 		 */
-		void bind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 
 		/**
 		 *	Unbind the animated joint matrices from the vertex shader.
 		 *	@param[in] void
 		 *	@return void
 		 */
-		void unbind();
+		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 
 		/**
 		 *	Draw the skeleton and joints in wireframe mode using the debug renderer.

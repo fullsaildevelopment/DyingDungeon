@@ -16,7 +16,7 @@ namespace Odyssey
 	class ShadowPass : public RenderPass
 	{
 	public: // Constructors
-		ShadowPass(RenderDevice& renderDevice, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight);
+		ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight);
 	public: // Inherited overrides
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
@@ -26,6 +26,7 @@ namespace Odyssey
 		void renderStaticObjects(std::vector<std::shared_ptr<Entity>> staticList, RenderArgs& args);
 		void renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args);
 	private:
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		std::shared_ptr<Light> mShadowLight;

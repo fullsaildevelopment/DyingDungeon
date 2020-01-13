@@ -8,7 +8,7 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Animator)
 
-	void Animator::importAnimation(std::string animationName, const char* filename, bool isLooping)
+		void Animator::importAnimation(std::string animationName, const char* filename, bool isLooping)
 	{
 		// Open/Create the mesh file
 		std::fstream animFile(filename, std::ios_base::in | std::ios_base::binary);
@@ -84,44 +84,60 @@ namespace Odyssey
 	void Animator::playClip(std::string animation)
 	{
 		// Check if the animation name ID matches something in the map
+		mLock.lock(LockState::Write);
 		if (mAnimationMap.count(animation))
 		{
 			// Assign the current clip and set it to play
 			mCurrentClip = mAnimationMap[animation];
 			mIsPlaying = true;
 		}
+		mLock.unlock(LockState::Write);
 	}
 
 	void Animator::pause()
 	{
 		// Stop playing the animation clip
+		mLock.lock(LockState::Write);
 		mIsPlaying = false;
+		mLock.unlock(LockState::Write);
 	}
 
 	void Animator::reset()
 	{
 		// Set the animation clip state to return to the start
+		mLock.lock(LockState::Write);
 		mCurrentClip.nextFrame = 1;
 		mCurrentClip.prevFrame = 0;
 		mCurrentClip.currentTime = mCurrentClip.keyframes[mCurrentClip.prevFrame].time;
 		mCurrentClip.maxFrames = static_cast<int>(mCurrentClip.keyframes.size());
+		mLock.unlock(LockState::Write);
 	}
 
 	float Animator::getProgress()
 	{
 		// Return the progress of the clip
-		return mCurrentClip.progress;
+		mLock.lock(LockState::Read);
+		float progress = mCurrentClip.progress;
+		mLock.unlock(LockState::Read);
+
+		return progress;
 	}
 
 	void Animator::setDebugEnabled(bool enabled)
 	{
 		// Set the debug enabled state
+		mLock.lock(LockState::Write);
 		mDebugEnabled = enabled;
+		mLock.unlock(LockState::Write);
 	}
 
 	bool Animator::getDebugEnabled()
 	{
 		// Return the debug enabled state
-		return mDebugEnabled;
+		mLock.lock(LockState::Read);
+		bool debug = mDebugEnabled;
+		mLock.unlock(LockState::Read);
+
+		return debug;
 	}
 }

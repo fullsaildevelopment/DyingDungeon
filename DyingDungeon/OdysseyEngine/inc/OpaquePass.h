@@ -23,7 +23,7 @@ namespace Odyssey
 		};
 
 	public:
-		OpaquePass(RenderDevice& renderDevice, std::shared_ptr<RenderWindow> renderWindow);
+		OpaquePass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow);
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
 		void setFrustumCullEnable(bool enable);
@@ -31,6 +31,7 @@ namespace Odyssey
 		void updateLightingBuffer(Entity* entity, RenderArgs& args);
 		void renderSceneObject(Entity* object, RenderArgs& args);
 	private:
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 		std::shared_ptr<RenderWindowDX11> mRenderWindow;

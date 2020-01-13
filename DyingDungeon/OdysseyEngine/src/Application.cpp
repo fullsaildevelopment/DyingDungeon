@@ -44,7 +44,7 @@ namespace Odyssey
 		RegisterClass(&renderWindowClass);
 
 		// Create the RenderDevice for this application
-		mRenderDevice = std::make_unique<RenderDevice>(*this, mHandleInstance);
+		mRenderDevice = std::make_shared<RenderDevice>();
 		mRenderPipeline = std::make_shared<RenderPipeline>(*(mRenderDevice.get()));
 
 		// Initialize the debug renderer
@@ -70,6 +70,7 @@ namespace Odyssey
 		{
 			mActiveScene = nullptr;
 		}
+		mRenderDevice = nullptr;
 	}
 
 	void Application::onSceneChange(SceneChangeEvent* evnt)
@@ -210,7 +211,7 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create a new RenderWindow associated with the window
-		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindowDX11>(*(mRenderDevice.get()), hWindow);
+		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindowDX11>(mRenderDevice, hWindow);
 
 		// Store the window in the list of windows
 		mWindows.emplace_back(std::static_pointer_cast<RenderWindowDX11>(window));
@@ -306,7 +307,7 @@ namespace Odyssey
 					mProcessCommands = false;
 				}
 
-				if (timer.TotalTime() > 0.016)
+				if (timer.TotalTime() > 0.016 || true)
 				{
 					timer.Restart();
 					// Check if multithreading is disabled

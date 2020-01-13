@@ -120,7 +120,7 @@ namespace Odyssey
 		std::map<std::string, std::shared_ptr<SceneDX11>> mSceneMap;
 		std::shared_ptr<SceneDX11> mActiveScene;
 		// Rendering Management
-		std::unique_ptr<RenderDevice> mRenderDevice;
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<RenderPipeline> mRenderPipeline;
 		bool mIsRunning;
 		bool mIsShutdown;

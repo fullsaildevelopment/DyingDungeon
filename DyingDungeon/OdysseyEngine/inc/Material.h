@@ -1,6 +1,8 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "RenderIncludes.h"
 #include "RenderTypes.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -32,12 +34,12 @@ namespace Odyssey
 	class Material
 	{
 	public:
-		Material(RenderDevice& renderDevice);
-		Material(RenderDevice& renderDevice, TextureType textureType, std::shared_ptr<Texture> texture);
+		Material(std::shared_ptr<RenderDevice> renderDevice);
+		Material(std::shared_ptr<RenderDevice> renderDevice, TextureType textureType, std::shared_ptr<Texture> texture);
 		~Material() = default;
 	public:
-		void bind();
-		void unbind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	public: // Mutators
 		void setTexture(TextureType textureType, std::shared_ptr<Texture> texture);
 		void setGlobalAmbient(DirectX::XMFLOAT4 globalAmbient);
@@ -50,8 +52,10 @@ namespace Odyssey
 		void setDefaultMaterialProperties();
 		MaterialProperties mProperties;
 	private:
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::map<TextureType, std::shared_ptr<Texture>> mTextureMap;
 		std::shared_ptr<Buffer> mMaterialBuffer;
 		std::shared_ptr<Shader> mPixelShader;
+		ReadWriteLock mLock;
 	};
 }

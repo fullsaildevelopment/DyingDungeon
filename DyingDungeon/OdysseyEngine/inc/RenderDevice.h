@@ -8,6 +8,7 @@ namespace Odyssey
 	class Application;
 	class Buffer;
 	class Sprite2DPass;
+	class Entity;
 	class ClearRenderTargetPass;
 	class Scene;
 	class SkyboxPass;
@@ -20,21 +21,25 @@ namespace Odyssey
 	class Light;
 	class Material;
 	class SamplerState;
+	class ScriptDataLoader;
 	class Shader;
 	class Texture;
 	class RenderWindow;
 	class Viewport;
 	class Mesh;
 
-	class RenderDevice
+	class RenderDevice : public std::enable_shared_from_this<RenderDevice>
 	{
 	public:
-		RenderDevice(Application& application, HINSTANCE moduleHandle);
+		RenderDevice();
 		Microsoft::WRL::ComPtr<ID3D11Device> getDevice();
 		Microsoft::WRL::ComPtr<ID2D1DeviceContext> getDevice2DContext();
 		Microsoft::WRL::ComPtr<ID2D1Factory1> get2DFactory();
+		~RenderDevice();
 	public:
 		std::shared_ptr<Scene> createScene();
+		void importScene(std::shared_ptr<Scene> scene, const char* filename);
+		void importModel(std::shared_ptr<Entity> entity, const char* filename, bool isMultiMesh);
 	public: // Rendering Resources
 		std::shared_ptr<Buffer> createBuffer(BufferBindFlag bindFlag, size_t size, UINT stride, const void* data);
 		std::shared_ptr<RenderState> createRenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW = false, bool depthClipping = true, bool isShadowMap = false);
@@ -48,6 +53,7 @@ namespace Odyssey
 		std::shared_ptr<Viewport> createViewport(int width, int height, int topLeftX, int topLeftY, float minDepth, float maxDepth);
 		std::shared_ptr<RenderTarget> createRenderTarget(int width, int height, bool depthEnabled);
 		std::shared_ptr<RenderTarget> createRenderTarget(int width, int height, bool depthEnabled, RenderWindow* renderWindow);
+		std::shared_ptr<Mesh> createMesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
 		std::shared_ptr<Mesh> createCube(DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 center);
 	public: // Render Passes
 		std::shared_ptr<ClearRenderTargetPass> createClearRTVPass(std::shared_ptr<RenderWindow> renderWindow, bool clearDepth);
@@ -58,7 +64,7 @@ namespace Odyssey
 		std::shared_ptr<DebugPass> createDebugPass(std::shared_ptr<RenderWindow> renderWindow);
 		std::shared_ptr<Sprite2DPass> createSprite2DPass(std::shared_ptr<RenderWindow> renderWindow);
 	private:
-		void createDevice(HINSTANCE hInstance);
+		void createDevice();
 		void findVideoCard();
 		// Direct3D
 		Microsoft::WRL::ComPtr<IDXGIAdapter> mVideoAdapter;
@@ -68,7 +74,7 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID2D1Factory1> mFactory;
 		Microsoft::WRL::ComPtr<ID2D1Device> mDevice2D;
 		Microsoft::WRL::ComPtr<ID2D1DeviceContext> mDevice2DContext;
-
+		std::shared_ptr<ScriptDataLoader> mScriptLoader;
 	private:
 		typedef std::vector<std::shared_ptr<Scene>> SceneList;
 		SceneList mScenes;

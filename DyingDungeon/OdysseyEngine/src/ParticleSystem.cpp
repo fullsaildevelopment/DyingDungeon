@@ -13,7 +13,7 @@ namespace Odyssey
 		: mRenderDevice(renderDevice)
 	{
 		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+
 		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/ParticleVertexShader.cso", nullptr, 0);
 		mGeometryShader = renderDevice.createShader(ShaderType::GeometryShader, "../OdysseyEngine/shaders/ParticleGeometryShader.cso", nullptr);
 		mComputeShader = renderDevice.createShader(ShaderType::ComputeShader, "../OdysseyEngine/shaders/ParticleComputeShader.cso", nullptr);
@@ -43,42 +43,42 @@ namespace Odyssey
 
 	void ParticleSystem::update(double deltaTime)
 	{
-		Run();
+		//Run();
 	}
 
-	void ParticleSystem::Run()
+	void ParticleSystem::Run(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind and dispatch the compute shader
-		mComputeShader->bind();
-		mParticleBuffer->bind(0, ShaderType::ComputeShader);
-		mComputeShader->dispatch(5000, 1, 1);
-		mParticleBuffer->unbind(0, ShaderType::ComputeShader);
+		mComputeShader->bind(context);
+		mParticleBuffer->bind(context, 0, ShaderType::ComputeShader);
+		mComputeShader->dispatch(context, 5000, 1, 1);
+		mParticleBuffer->unbind(context, 0, ShaderType::ComputeShader);
 
 		// Bind the geometry shader and particle buffer
-		mGeometryShader->bind();
-		mParticleBuffer->bind(0, ShaderType::GeometryShader);
+		mGeometryShader->bind(context);
+		mParticleBuffer->bind(context, 0, ShaderType::GeometryShader);
 
 		// Bind the render state
-		mRenderState->bind();
+		mRenderState->bind(context);
 
 		// Bind the vertex shader and material properties
-		mVertexShader->bind();
-		mMaterial->bind();
+		mVertexShader->bind(context);
+		mMaterial->bind(context);
 
 		// Bind the blend state
 		float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
-		mDeviceContext->OMSetBlendState(mBlendState.Get(), blendFactor, 0xffffffff);
+		context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xffffffff);
 
 		// Draw the particles
-		mDeviceContext->Draw(mNumberOfParticles, 0);
-		mDeviceContext->OMSetBlendState(0, 0, 0xffffffff);
+		context->Draw(mNumberOfParticles, 0);
+		context->OMSetBlendState(0, 0, 0xffffffff);
 
 		// Unbind the shaders and buffers
-		mParticleBuffer->unbind(0, ShaderType::ComputeShader);
-		mComputeShader->unbind();
-		mParticleBuffer->unbind(0, ShaderType::GeometryShader);
-		mGeometryShader->unbind();
-		mMaterial->unbind();
+		mParticleBuffer->unbind(context, 0, ShaderType::ComputeShader);
+		mComputeShader->unbind(context);
+		mParticleBuffer->unbind(context, 0, ShaderType::GeometryShader);
+		mGeometryShader->unbind(context);
+		mMaterial->unbind(context);
 	}
 	void ParticleSystem::setParticleData(std::vector<Particle> particles)
 	{
