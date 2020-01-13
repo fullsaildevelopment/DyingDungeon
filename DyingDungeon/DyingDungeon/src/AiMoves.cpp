@@ -8,6 +8,7 @@
 #include "Provoked.h"
 #include "Bleed.h"
 #include "Regens.h"
+#include "StatDown.h"
 
 AIMoves::AIMoves()
 {
@@ -34,16 +35,24 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	caster = _caster;
 	
 	mCurrMoveCheck = 0;
-
+	std::shared_ptr<StatusEffect> debuff;
 	switch (_enemyID)
 	{
 		case 0:
 		{
 			//Setup Moves
-			//std::shared_ptr<StatusEffect> temp = std::make_shared<Regens>(0.25f, 1, nullptr);
-			//mSkillList.push_back(std::make_shared<Buffs>("Basic Attack", "BasicAttackButBetter", 0.25f, -5.0f, temp, true));
-			mSkillList.push_back(std::make_shared<Attack>("Hit", "BasicAttackButBetter", 0.25f, -15.0f, 10.0f));
-			mSkillList.push_back(std::make_shared<Attack>("HitButBigger", "SpinKick", 0.25f, 20.0f, 25.0f));
+			// Debuff to slow speed
+			debuff = std::make_shared<StatDown>(10.0f,2,STATS::Spd,nullptr);
+			// Basic attack. mod dps, spd down
+			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttackButBetter", 0.25f, -15.0f, 10.0f, debuff));
+			//Bleed for dot
+			debuff = std::make_shared<Bleed>(0.15f,2,nullptr);
+			// Skelator slash for big dps, inflicts bleed
+			mSkillList.push_back(std::make_shared<Attack>("Skelator Slash", "SpinKick", 0.25f, 10.0f, 25.0f, debuff));
+			// Debuff to lower attack
+			debuff = std::make_shared<StatDown>(0.25f, 2, STATS::Atk, nullptr);
+			// Necrotic Infection big aoe dps, atk dwn
+			mSkillList.push_back(std::make_shared<Attack>("Necrotic Infection", "FwdKick", 0.25f, 20.0f, 40.0f, debuff, true));
 			break;
 		}
 		default:
