@@ -5,6 +5,8 @@
 #include "InputManager.h"
 #include "EventManager.h"
 #include "StatusEvents.h"
+#include "GameUIManager.h"
+#include "UICanvas.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -22,9 +24,14 @@ void TowerManager::initialize()
 void TowerManager::update(double deltaTime)
 {
 	// TODO: REMOVE POST BUILD 02
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P))
 	{
-		Rewards->setActive(!Rewards->isActive());
+		std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenu, !pauseMenu->getComponent<Odyssey::UICanvas>()->isActive());
+
+		// Loop through all of the characters and toggle their animator
+		for (int i = 0; i < mAllCharacters.size(); i++)
+			mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
 	}
 
 	// If we are in battle, Update the battle

@@ -5,6 +5,9 @@
 #include <DbgHelp.h>
 #include <time.h>
 
+//Game UI Manager
+#include "GameUIManager.h"
+
 // Game Includes
 #include "TowerManager.h"
 #include "HeroComponent.h"
@@ -107,7 +110,7 @@ int playGame()
 	gDefaultText.fontSize = 25.0f;
 	gDefaultText.textAlignment = Odyssey::TextAlignment::Left;
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	gDefaultText.fontName = L"Verdana";
+	gDefaultText.fontName = L"Constantia";
 
 	// Create the main scene
 	gGameScene = renderDevice->createScene();
@@ -141,6 +144,11 @@ int playGame()
 
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
+
+	// Assign the width and height for the UI Manager
+	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Create Pause Menu
+	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
 
 	// Add the game scene to the application
 	application->addScene("Game", gGameScene);
@@ -659,22 +667,6 @@ void setUpTowerManager()
 	turnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
 	turnIndicatorModel->setStatic(false);
 	gGameScene->addEntity(turnIndicatorModel);
-
-	//// Create the impact indicator for each character
-	//std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
-	//// Set the transform
-	//impactIndicator->addComponent<Odyssey::Transform>();
-	//// Position indicator over the head
-	//impactIndicator->getComponent<Odyssey::Transform>()->setPosition(6.0f, 5.0f, 4.5f);
-	//impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
-	//impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
-	//// Import Model
-	//Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
-	//// Set the impact indicator's color
-	//DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
-	//impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
-	//impactIndicator->setStatic(false);
-	//gGameScene->addEntity(impactIndicator);
 
 	// Set up the tower manager with the enemy and player teams
 	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);
