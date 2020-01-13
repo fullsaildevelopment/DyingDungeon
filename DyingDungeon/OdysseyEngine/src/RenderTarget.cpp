@@ -6,87 +6,85 @@
 
 namespace Odyssey
 {
-	RenderTarget::RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled)
-		: mRenderDevice(renderDevice)
+	RenderTarget::RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
-		createRenderTargetView(renderDevice, width, height);
+		createRenderTargetView(width, height);
 
 		if (depthEnabled)
 		{
-			createDepthStencilView(renderDevice, width, height);
+			createDepthStencilView(width, height);
 		}
 	}
 
-	RenderTarget::RenderTarget(RenderDevice& renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow)
-		: mRenderDevice(renderDevice)
+	RenderTarget::RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow)
 	{
+		mRenderDevice = renderDevice;
 		// Set up the device and device context
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mDevice = renderDevice->getDevice();
 
 		// Create the render target view
 		HRESULT hr = mDevice->CreateRenderTargetView(static_cast<RenderWindowDX11*>(renderWindow)->getBackBuffer().Get(), nullptr, mRenderTargetView.GetAddressOf());
 
 		// Set up a viewport for the render target
-		mViewport = renderDevice.createViewport(renderWindow);
+		mViewport = renderDevice->createViewport(renderWindow);
 
 		// If a depth stencil is enabled, create it
 		if (depthEnabled)
 		{
-			createDepthStencilView(renderDevice, width, height);
+			createDepthStencilView(width, height);
 		}
 	}
 
-	void RenderTarget::bind()
+	void RenderTarget::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (mRenderTargetView)
 		{
 			if (mDepthStencilView)
 			{
-				mDeviceContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+				context->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 			}
 			else
 			{
-				mDeviceContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), nullptr);
+				context->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), nullptr);
 			}
 		}
 		else if (mDepthStencilView)
 		{
-			mDeviceContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+			context->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 		}
 
 		if (mViewport)
 		{
-			mViewport->bind();
+			mViewport->bind(context);
 		}
 	}
 
-	void RenderTarget::bindDepthTexture(int slot)
+	void RenderTarget::bindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int slot)
 	{
-		mDSVTexture->bind(slot);
+		mDSVTexture->bind(context, slot);
 	}
 
-	void RenderTarget::unBind()
+	void RenderTarget::unBind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		context->OMSetRenderTargets(0, nullptr, nullptr);
 
 		if (mViewport)
 		{
-			mViewport->unbind();
+			mViewport->unbind(context);
 		}
 	}
 
-	void RenderTarget::unbindDepthTexture()
+	void RenderTarget::unbindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDSVTexture->unbind();
+		mDSVTexture->unbind(context);
 	}
 
-	void RenderTarget::unbindDepthTexture(UINT slot)
+	void RenderTarget::unbindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, UINT slot)
 	{
-		mDSVTexture->unbind(slot);
+		mDSVTexture->unbind(context, slot);
 	}
 
 	Texture* RenderTarget::getRenderTexture()
@@ -96,7 +94,7 @@ namespace Odyssey
 
 	void RenderTarget::createDepthTarget(UINT bindFlags, int width, int height)
 	{
-		mDSVTexture = mRenderDevice.createRenderTexture();
+		mDSVTexture = mRenderDevice->createRenderTexture();
 		UINT flag = bindFlags;
 		DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS;
 		mDSVTexture->loadRenderTargetTexture(width, height, format, flag);
@@ -126,30 +124,26 @@ namespace Odyssey
 		return mDSVTexture.get();
 	}
 
-	void RenderTarget::clearRenderView()
+	void RenderTarget::clearRenderView(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (mRenderTargetView.Get())
 		{
 			float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-			mDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), black);
+			context->ClearRenderTargetView(mRenderTargetView.Get(), black);
 		}
 	}
 
-	void RenderTarget::clearDepth()
+	void RenderTarget::clearDepth(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (mDepthStencilView.Get())
 		{
-			mDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+			context->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		}
 	}
 
-	RenderTarget::~RenderTarget()
+	void RenderTarget::createRenderTargetView(int width, int height)
 	{
-	}
-
-	void RenderTarget::createRenderTargetView(RenderDevice& renderDevice, int width, int height)
-	{
-		mRTVTexture = renderDevice.createRenderTexture();
+		mRTVTexture = mRenderDevice->createRenderTexture();
 		UINT flag = D3D11_BIND_RENDER_TARGET;
 		DXGI_FORMAT format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		mRTVTexture->loadRenderTargetTexture(width, height, format, flag);
@@ -167,9 +161,9 @@ namespace Odyssey
 		}
 	}
 
-	void RenderTarget::createDepthStencilView(RenderDevice& renderDevice, int width, int height)
+	void RenderTarget::createDepthStencilView(int width, int height)
 	{
-		mDSVTexture = renderDevice.createRenderTexture();
+		mDSVTexture = mRenderDevice->createRenderTexture();
 		UINT flag = D3D11_BIND_DEPTH_STENCIL;
 		DXGI_FORMAT format = DXGI_FORMAT_D32_FLOAT;
 		mDSVTexture->loadRenderTargetTexture(width, height, format, flag);

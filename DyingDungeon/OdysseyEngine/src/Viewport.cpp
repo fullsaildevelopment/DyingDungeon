@@ -4,10 +4,11 @@
 
 namespace Odyssey
 {
-	Viewport::Viewport(RenderDevice& renderDevice, RenderWindow* renderWindow)
+	Viewport::Viewport(std::shared_ptr<RenderDevice> renderDevice, RenderWindow* renderWindow)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
+
 		mWidth = renderWindow->getWidth();
 		mHeight = renderWindow->getHeight();
 		renderWindow->getPosition(mTopLeftX, mTopLeftY);
@@ -22,10 +23,11 @@ namespace Odyssey
 		mViewport.MaxDepth = mMaxDepth;
 	}
 
-	Viewport::Viewport(RenderDevice& renderDevice, UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth)
+	Viewport::Viewport(std::shared_ptr<RenderDevice> renderDevice, UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
+
 		mWidth = width;
 		mHeight = height;
 		mTopLeftX = topLeftX;
@@ -40,13 +42,13 @@ namespace Odyssey
 		mViewport.MaxDepth = mMaxDepth;
 	}
 
-	void Viewport::bind()
+	void Viewport::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->RSSetViewports(1, &mViewport);
+		context->RSSetViewports(1, &mViewport);
 	}
 
-	void Viewport::unbind()
+	void Viewport::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mDeviceContext->RSSetViewports(0, nullptr);
+		context->RSSetViewports(0, nullptr);
 	}
 }

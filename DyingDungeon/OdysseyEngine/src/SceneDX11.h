@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include <vector>
 #include <memory>
+#include "EngineEvents.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -14,9 +16,11 @@ namespace Odyssey
 	class SceneDX11 : public Scene
 	{
 	public:
-		SceneDX11() = default;
+		SceneDX11();
 		~SceneDX11() = default;
 
+		void onComponentAdd(ComponentAddEvent* evnt);
+		void onComponentRemove(ComponentRemoveEvent* evnt);
 	public:
 		/**
 		 *	Initialize the components of each entity contained within the scene.
@@ -73,5 +77,8 @@ namespace Odyssey
 		 *	@return vector<shared_ptr<Light>> A vector with all mesh renderers within the scene.
 		 */
 		std::vector<UIElement*> getElementList();
+
+	private:
+		ReadWriteLock mLock;
 	};
 }

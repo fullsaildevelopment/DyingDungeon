@@ -5,16 +5,17 @@
 
 namespace Odyssey
 {
-	Texture::Texture(RenderDevice& renderDevice)
+	Texture::Texture(std::shared_ptr<RenderDevice> renderDevice)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 	}
 
-	Texture::Texture(RenderDevice& renderDevice, TextureType textureType, const char* filename)
+	Texture::Texture(std::shared_ptr<RenderDevice> renderDevice, TextureType textureType, const char* filename)
 	{
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
+
 		mTextureType = textureType;
 		mBindFlag = TextureBindFlag::ShaderResource;
 
@@ -42,15 +43,15 @@ namespace Odyssey
 		assert(!FAILED(hr));
 	}
 
-	void Texture::bind()
+	void Texture::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		UINT slot = (UINT)mTextureType;
-		mDeviceContext->PSSetShaderResources(slot, 1, mShaderResource.GetAddressOf());
+		context->PSSetShaderResources(slot, 1, mShaderResource.GetAddressOf());
 	}
 
-	void Texture::bind(int slot)
+	void Texture::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int slot)
 	{
-		mDeviceContext->PSSetShaderResources(slot, 1, mShaderResource.GetAddressOf());
+		context->PSSetShaderResources(slot, 1, mShaderResource.GetAddressOf());
 	}
 
 	void Texture::loadRenderTargetTexture(int width, int height, DXGI_FORMAT format, UINT bindFlag)
@@ -92,17 +93,17 @@ namespace Odyssey
 		return mTexture2D.Get();
 	}
 
-	void Texture::unbind()
+	void Texture::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		UINT slot = (UINT)mTextureType;
 		ID3D11ShaderResourceView* nSRV = nullptr;
-		mDeviceContext->PSSetShaderResources(slot, 1, &nSRV);
+		context->PSSetShaderResources(slot, 1, &nSRV);
 	}
 
-	void Texture::unbind(UINT slot)
+	void Texture::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, UINT slot)
 	{
 		ID3D11ShaderResourceView* nSRV = nullptr;
-		mDeviceContext->PSSetShaderResources(slot, 1, &nSRV);
+		context->PSSetShaderResources(slot, 1, &nSRV);
 	}
 
 	void Texture::stringToWChar(const char* cPtr, wchar_t*& wPtr)

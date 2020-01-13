@@ -46,6 +46,7 @@
     <ClInclude Include="inc\OdysseyEngine.h" />
     <ClInclude Include="inc\OpaquePass.h" />
     <ClInclude Include="inc\ParticleSystem.h" />
+    <ClInclude Include="inc\ReadWriteLock.h" />
     <ClInclude Include="inc\Rectangle2D.h" />
     <ClInclude Include="inc\RenderDevice.h" />
     <ClInclude Include="inc\RenderIncludes.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\OpaquePass.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
+    <ClCompile Include="src\ReadWriteLock.cpp" />
     <ClCompile Include="src\Rectangle2D.cpp" />
     <ClCompile Include="src\RenderDevice.cpp" />
     <ClCompile Include="src\RenderPass.cpp" />

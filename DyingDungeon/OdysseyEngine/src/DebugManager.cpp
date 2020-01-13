@@ -118,10 +118,10 @@ namespace Odyssey
 		return static_cast<unsigned int>(mNumVertices);
 	}
 
-	void DebugManager::bind()
+	void DebugManager::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		mVertexBuffer->updateData(&mVertexList);
-		mVertexBuffer->bind();
+		mVertexBuffer->updateData(context , &mVertexList);
+		mVertexBuffer->bind(context);
 	}
 
 	void DebugManager::drawRing(DirectX::XMFLOAT4 center, DirectX::XMFLOAT4 majorAxis, DirectX::XMFLOAT4 minorAxis, DirectX::XMFLOAT3 color)

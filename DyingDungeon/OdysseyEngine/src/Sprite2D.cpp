@@ -17,6 +17,7 @@ namespace Odyssey
 
 	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
+		mLock.lock(LockState::Write);
 		if (mBitmap == nullptr && mBitmapConverter)
 		{
 			HRESULT hr = context->CreateBitmapFromWicBitmap(mBitmapConverter, nullptr, mBitmap.GetAddressOf());
@@ -25,15 +26,18 @@ namespace Odyssey
 
 		if (context && mBitmap)
 			context->DrawBitmap(mBitmap.Get(), D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + mDimensions.x, mPosition.y + mDimensions.y), mColor.w);
+		mLock.unlock(LockState::Write);
 	}
 
 	void Sprite2D::setSprite(LPCWSTR filename, UINT width, UINT height)
 	{
 		// TODO: Find a better way to swap sprites. Probably create a 2nd instance of a bitmap and only swap when ready.
+		mLock.lock(LockState::Write);
 		mBitmap.Reset();
 		delete mBitmapConverter;
 		mBitmapConverter = nullptr;
 		createBitmapFromFile(filename, width, height);
+		mLock.unlock(LockState::Write);
 	}
 
 	void Sprite2D::onElementClick()

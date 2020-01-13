@@ -21,25 +21,26 @@
 
 namespace Odyssey
 {
-	ShadowPass::ShadowPass(RenderDevice& renderDevice, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
+	ShadowPass::ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
 	{
 		// Get the device and context
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(mDeviceContext.GetAddressOf());
+		mDeviceContext = context;
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		// Set the properties of the shadow pass
 		mShadowLight = shadowLight;
 
 		// Create the render state
-		mRenderState = renderDevice.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
+		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
 
 		// Create a shadow buffer to tell the pixel shader a shadow map is bound
 		DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
 		shadowsEnabled.z = 1.0f / texWidth;
 		shadowsEnabled.w = 1.0f / texWidth;
-		mShadowBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mShadowBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(DirectX::XMFLOAT4)), &shadowsEnabled);
-		mShadowBuffer->bind(2, ShaderType::PixelShader);
+		mShadowBuffer->bind(mDeviceContext, 2, ShaderType::PixelShader);
 
 		// Create the vertex shader
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] = 
@@ -54,24 +55,24 @@ namespace Odyssey
 		};
 
 		// Create the depth vertex and pixel shaders
-		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
-		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/DepthPixelShader.cso", nullptr, 0);
+		mVertexShader = renderDevice->createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/DepthVertexShader.cso", vShaderLayout, 7);
+		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/DepthPixelShader.cso", nullptr, 0);
 
 		// Create the shadow map for dynamic objects
-		mDynamicTarget = renderDevice.createRenderTarget(texWidth, texHeight, false);
+		mDynamicTarget = renderDevice->createRenderTarget(texWidth, texHeight, false);
 		mDynamicTarget->createDepthTarget(D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL, texHeight, 4096);
 		mDynamicTarget->getDepthTexture()->createSRV(DXGI_FORMAT_R24_UNORM_X8_TYPELESS);
 
 		// Create the shadow map viewport
-		std::shared_ptr<Viewport> dynamicViewport = renderDevice.createViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
+		std::shared_ptr<Viewport> dynamicViewport = renderDevice->createViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
 		mDynamicTarget->setViewport(dynamicViewport);
 
 		// Create the shadow map for static objects
-		mStaticTarget = renderDevice.createRenderTarget(texWidth, texHeight, false);
+		mStaticTarget = renderDevice->createRenderTarget(texWidth, texHeight, false);
 		mStaticTarget->createDepthTarget(D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL, texWidth, texHeight);
 		mStaticTarget->getDepthTexture()->createSRV(DXGI_FORMAT_R24_UNORM_X8_TYPELESS);
 
-		std::shared_ptr<Viewport> staticViewport = renderDevice.createViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
+		std::shared_ptr<Viewport> staticViewport = renderDevice->createViewport(texWidth, texHeight, 0, 0, 0.0f, 1.0f);
 		mStaticTarget->setViewport(staticViewport);
 
 		//std::shared_ptr<Texture> t = renderDevice.createTexture(TextureType::Shadow, "ShadowMap.png");
@@ -92,37 +93,37 @@ namespace Odyssey
 		mShadowLight->buildLightTransformProjection(sceneCenter, sceneRadius, args.perFrame.lightViewProj);
 
 		// Update the per frame buffer
-		updatePerFrameBuffer(args.perFrame, args.perFrameBuffer);
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 
 		// Bind the render state to the pipeline
-		mRenderState->bind();
+		mRenderState->bind(mDeviceContext);
 
 		// Bind the shaders
-		mVertexShader->bind();
-		mPixelShader->bind();
+		mVertexShader->bind(mDeviceContext);
+		mPixelShader->bind(mDeviceContext);
 
 		if (renderDynamic)
 		{
 			// Unbind the depth texture from the pipeline
-			mDynamicTarget->unbindDepthTexture(9);
+			mDynamicTarget->unbindDepthTexture(mDeviceContext, 9);
 
 			// Clear the depth texture of the render target
-			mDynamicTarget->clearDepth();
+			mDynamicTarget->clearDepth(mDeviceContext);
 
 			// Bind the render target to the pipeline
-			mDynamicTarget->bind();
+			mDynamicTarget->bind(mDeviceContext);
 		}
 
 		if (renderStatic)
 		{
 			// Unbind the depth texture from the pipeline
-			mStaticTarget->unbindDepthTexture(8);
+			mStaticTarget->unbindDepthTexture(mDeviceContext, 8);
 
 			// Clear the depth texture of the render target
-			mStaticTarget->clearDepth();
+			mStaticTarget->clearDepth(mDeviceContext);
 
 			// Bind the render target to the pipeline
-			mStaticTarget->bind();
+			mStaticTarget->bind(mDeviceContext);
 		}
 	}
 
@@ -190,7 +191,7 @@ namespace Odyssey
 			{
 				performance->BeginEvent(L"Static Shadow Pass");
 				renderStaticObjects(staticObjects, args);
-				mStaticTarget->bindDepthTexture(8);
+				mStaticTarget->bindDepthTexture(mDeviceContext, 8);
 				performance->EndEvent();
 			}
 
@@ -198,7 +199,7 @@ namespace Odyssey
 			{
 				performance->BeginEvent(L"Dynamic Shadow Pass");
 				renderDynamicObjects(dynamicObjects, args);
-				mDynamicTarget->bindDepthTexture(9);
+				mDynamicTarget->bindDepthTexture(mDeviceContext, 9);
 				performance->EndEvent();
 			}
 		}
@@ -219,12 +220,12 @@ namespace Odyssey
 
 	void ShadowPass::renderDynamicObjects(std::vector<std::shared_ptr<Entity>> dynamicList, RenderArgs& args)
 	{
-		mDynamicTarget->bind();
+		mDynamicTarget->bind(mDeviceContext);
 		for (std::shared_ptr<Entity> renderObject : dynamicList)
 		{
 			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
-				rootAnimator->bind();
+				rootAnimator->bind(mDeviceContext);
 			}
 
 			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
@@ -248,20 +249,20 @@ namespace Odyssey
 
 			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
-				rootAnimator->unbind();
+				rootAnimator->unbind(mDeviceContext);
 			}
 		}
-		mDynamicTarget->unBind();
+		mDynamicTarget->unBind(mDeviceContext);
 	}
 
 	void ShadowPass::renderStaticObjects(std::vector<std::shared_ptr<Entity>> staticList, RenderArgs& args)
 	{
-		mStaticTarget->bind();
+		mStaticTarget->bind(mDeviceContext);
 		for (std::shared_ptr<Entity> renderObject : staticList)
 		{
 			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
-				rootAnimator->bind();
+				rootAnimator->bind(mDeviceContext);
 			}
 
 			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
@@ -285,10 +286,10 @@ namespace Odyssey
 
 			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
 			{
-				rootAnimator->unbind();
+				rootAnimator->unbind(mDeviceContext);
 			}
 		}
-		mStaticTarget->unBind();
+		mStaticTarget->unBind(mDeviceContext);
 	}
 
 	void ShadowPass::renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args)
@@ -297,11 +298,11 @@ namespace Odyssey
 		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
 
 		// Update and bind the constant buffer
-		updatePerObjectBuffer(args.perObject, args.perObjectBuffer);
+		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
-		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind();
-		object->getComponent<MeshRenderer>()->getMesh()->getVertexBuffer()->bind();
+		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind(mDeviceContext);
+		object->getComponent<MeshRenderer>()->getMesh()->getVertexBuffer()->bind(mDeviceContext);
 
 		// Draw the mesh
 		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);

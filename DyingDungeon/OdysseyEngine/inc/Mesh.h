@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "RenderIncludes.h"
 #include "RenderTypes.h"
 
 namespace Odyssey
@@ -10,11 +11,11 @@ namespace Odyssey
 	class Mesh
 	{
 	public: // Constructors
-		Mesh(RenderDevice& renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
+		Mesh(std::shared_ptr<RenderDevice> renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
 		~Mesh() = default;
 	public: // Functions
-		void bind();
-		void unbind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	public: // Accessors
 		Buffer* getVertexBuffer();
 		Buffer* getIndexBuffer();
@@ -23,6 +24,7 @@ namespace Odyssey
 		void setName(std::string name);
 		void setNumberOfindices(int id);
 	private:
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::string mName;
 		std::shared_ptr<Buffer> mVertexBuffer;
 		std::shared_ptr<Buffer> mIndexBuffer;

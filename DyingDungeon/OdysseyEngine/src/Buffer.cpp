@@ -3,12 +3,12 @@
 
 namespace Odyssey
 {
-	Buffer::Buffer(RenderDevice& renderDevice, BufferBindFlag bindFlag, size_t count, UINT stride, const void* data)
+	Buffer::Buffer(std::shared_ptr<RenderDevice> renderDevice, BufferBindFlag bindFlag, size_t count, UINT stride, const void* data)
 		: mBuffer(nullptr), mBindFlag(bindFlag), mCount(count), mStride(stride), mOffset(0)
 	{
 		// Get the device and device context
-		mDevice = renderDevice.getDevice();
-		mDevice->GetImmediateContext(&mDeviceContext);
+		mRenderDevice = renderDevice;
+		mDevice = renderDevice->getDevice();
 
 		// Create the buffer description with the parameter bind flag and calculated byte width
 		D3D11_BUFFER_DESC bufferDesc;
@@ -75,32 +75,37 @@ namespace Odyssey
 		}
 	}
 
-	void Buffer::updateData(const void* data)
+	void Buffer::updateData(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, const void* data)
 	{
 		// Update the buffer using the parameter data
-		mDeviceContext->UpdateSubresource(mBuffer.Get(), 0, nullptr, data, 0, 0);
+		mLock.lock(LockState::Write);
+		context->UpdateSubresource(mBuffer.Get(), 0, nullptr, data, 0, 0);
+		mLock.unlock(LockState::Write);
 	}
 
-	void Buffer::bind()
+	void Buffer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
+		mLock.lock(LockState::Read);
 		// Bind either a vertex or index buffer based on the bind flag of the buffer
 		switch (mBindFlag)
 		{
 		case BufferBindFlag::VertexBuffer:
 		{
-			mDeviceContext->IASetVertexBuffers(0, 1, mBuffer.GetAddressOf(), &mStride, &mOffset);
+			context->IASetVertexBuffers(0, 1, mBuffer.GetAddressOf(), &mStride, &mOffset);
 			break;
 		}
 		case BufferBindFlag::IndexBuffer:
 		{
-			mDeviceContext->IASetIndexBuffer(mBuffer.Get(), DXGI_FORMAT_R32_UINT, mOffset);
+			context->IASetIndexBuffer(mBuffer.Get(), DXGI_FORMAT_R32_UINT, mOffset);
 			break;
 		}
 		}
+		mLock.unlock(LockState::Read);
 	}
 
-	void Buffer::bind(UINT shaderSlot, ShaderType shaderType)
+	void Buffer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, UINT shaderSlot, ShaderType shaderType)
 	{
+		mLock.lock(LockState::Read);
 		// Bind the constant buffer to the shader type
 		if (mBindFlag == BufferBindFlag::ConstantBuffer)
 		{
@@ -108,17 +113,17 @@ namespace Odyssey
 			{
 			case ShaderType::PixelShader:
 			{
-				mDeviceContext->PSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
+				context->PSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
 				break;
 			}
 			case ShaderType::VertexShader:
 			{
-				mDeviceContext->VSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
+				context->VSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
 				break;
 			}
 			case ShaderType::GeometryShader:
 			{
-				mDeviceContext->GSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
+				context->GSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
 				break;
 			}
 			}
@@ -130,28 +135,30 @@ namespace Odyssey
 			{
 			case ShaderType::GeometryShader:
 			{
-				mDeviceContext->GSSetShaderResources(shaderSlot, 1, mSRV.GetAddressOf());
+				context->GSSetShaderResources(shaderSlot, 1, mSRV.GetAddressOf());
 				break;
 			}
 			case ShaderType::ComputeShader:
 			{
-				mDeviceContext->CSSetUnorderedAccessViews(shaderSlot, 1, mUAV.GetAddressOf(), nullptr);
+				context->CSSetUnorderedAccessViews(shaderSlot, 1, mUAV.GetAddressOf(), nullptr);
 				break;
 			}
 			}
 		}
+		mLock.unlock(LockState::Read);
 	}
-	void Buffer::unbind(UINT shaderSlot, ShaderType shaderType)
+
+	void Buffer::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, UINT shaderSlot, ShaderType shaderType)
 	{
 		if (mBindFlag == BufferBindFlag::VertexBuffer)
 		{
 			// Bind a null vertex buffer
 			ID3D11Buffer* nBuffs[] = { nullptr };
-			mDeviceContext->IASetVertexBuffers(shaderSlot, 1, nBuffs, &mStride, &mOffset);
+			context->IASetVertexBuffers(shaderSlot, 1, nBuffs, &mStride, &mOffset);
 		}
 		else if (mBindFlag == BufferBindFlag::IndexBuffer)
 		{
-			mDeviceContext->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
+			context->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
 		}
 		// Unbind the constant buffer from the rendering pipeline
 		else if (mBindFlag == BufferBindFlag::ConstantBuffer)
@@ -161,19 +168,19 @@ namespace Odyssey
 			case ShaderType::PixelShader:
 			{
 				ID3D11Buffer* nBuffer = nullptr;
-				mDeviceContext->PSSetConstantBuffers(shaderSlot, 1, &nBuffer);
+				context->PSSetConstantBuffers(shaderSlot, 1, &nBuffer);
 				break;
 			}
 			case ShaderType::VertexShader:
 			{
 				ID3D11Buffer* nBuffer = nullptr;
-				mDeviceContext->VSSetConstantBuffers(shaderSlot, 1, &nBuffer);
+				context->VSSetConstantBuffers(shaderSlot, 1, &nBuffer);
 				break;
 			}
 			case ShaderType::GeometryShader:
 			{
 				ID3D11Buffer* nBuffer = nullptr;
-				mDeviceContext->GSSetConstantBuffers(shaderSlot, 1, &nBuffer);
+				context->GSSetConstantBuffers(shaderSlot, 1, &nBuffer);
 			}
 			}
 		}
@@ -185,13 +192,13 @@ namespace Odyssey
 			case ShaderType::GeometryShader:
 			{
 				ID3D11ShaderResourceView* nSRV = nullptr;
-				mDeviceContext->GSSetShaderResources(shaderSlot, 1, &nSRV);
+				context->GSSetShaderResources(shaderSlot, 1, &nSRV);
 				break;
 			}
 			case ShaderType::ComputeShader:
 			{
 				ID3D11UnorderedAccessView* nUAV = nullptr;
-				mDeviceContext->CSSetUnorderedAccessViews(shaderSlot, 1, &nUAV, nullptr);
+				context->CSSetUnorderedAccessViews(shaderSlot, 1, &nUAV, nullptr);
 				break;
 			}
 			}

@@ -4,28 +4,28 @@
 
 namespace Odyssey
 {
-	Mesh::Mesh(RenderDevice& renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
+	Mesh::Mesh(std::shared_ptr<RenderDevice> renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList)
 	{
-		mVertexBuffer = renderDevice.createBuffer(BufferBindFlag::VertexBuffer, static_cast<size_t>(vertexList.size()),
+		mVertexBuffer = renderDevice->createBuffer(BufferBindFlag::VertexBuffer, static_cast<size_t>(vertexList.size()),
 			static_cast<UINT>(sizeof(Vertex)), (void*)vertexList.data());
 
-		mIndexBuffer = renderDevice.createBuffer(BufferBindFlag::IndexBuffer, static_cast<size_t>(indexList.size()),
+		mIndexBuffer = renderDevice->createBuffer(BufferBindFlag::IndexBuffer, static_cast<size_t>(indexList.size()),
 			static_cast<UINT>(sizeof(unsigned int)), (void*)indexList.data());
 		mNumberOfIndices = static_cast<int>(indexList.size());
 	}
 
-	void Mesh::bind()
+	void Mesh::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind the vertex and index buffer to the rendering pipeline.
-		mVertexBuffer->bind();
-		mIndexBuffer->bind();
+		mVertexBuffer->bind(context);
+		mIndexBuffer->bind(context);
 	}
 
-	void Mesh::unbind()
+	void Mesh::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind the vertex and index buffer to the rendering pipeline.
-		mVertexBuffer->unbind(0, ShaderType::VertexShader);
-		mIndexBuffer->unbind(0, ShaderType::VertexShader);
+		mVertexBuffer->unbind(context, 0, ShaderType::VertexShader);
+		mIndexBuffer->unbind(context, 0, ShaderType::VertexShader);
 	}
 
 	Buffer* Mesh::getVertexBuffer()

@@ -46,8 +46,8 @@ namespace Odyssey
 		virtual bool isClassType(const std::size_t classType) const;
 
 	public: // Rule of 3
-		Component() = default;
-		virtual ~Component() = default;
+		Component();
+		~Component();
 
 	public: // Interface
 		/**
@@ -92,8 +92,12 @@ namespace Odyssey
 		 */
 		bool isActive();
 
+	protected:
+		void lock(bool isWrite);
+		void unlock(bool isWrite);
 	protected: // Members
 		bool mActive;
 		Entity* mEntity;
+		SRWLOCK mComponentLock;
 	};
 }

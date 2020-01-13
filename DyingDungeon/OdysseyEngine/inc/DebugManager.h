@@ -28,7 +28,7 @@ namespace Odyssey
 		void addAABB(DirectX::XMFLOAT3& extents, DirectX::XMFLOAT3& center, DirectX::XMFLOAT3 color);
 		void clearBuffer();
 		unsigned int getNumberOfVertices();
-		void bind();
+		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	private:
 		void drawRing(DirectX::XMFLOAT4 center, DirectX::XMFLOAT4 majorAxis, DirectX::XMFLOAT4 minorAxis, DirectX::XMFLOAT3 color);
 	private:
