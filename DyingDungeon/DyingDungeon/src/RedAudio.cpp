@@ -33,7 +33,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 //#endif // DEBUG_AUDIO_CONSOLE_OUT
 //	cmd.clear();
 //	delete[] in_cmd;
-//	delete out_string;
+//	delete[] out_string;
 }
 
 RedAudio::~RedAudio()
@@ -81,7 +81,7 @@ void RedAudio::Close() {
 	m_looping = false;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::Open()
@@ -103,7 +103,7 @@ void RedAudio::Open()
 #endif
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::Play()
@@ -125,7 +125,7 @@ void RedAudio::Play()
 	m_playing = true;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::PlayLoop()
@@ -149,7 +149,7 @@ void RedAudio::PlayLoop()
 	m_looping = true;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::PlaySegment(unsigned int start, unsigned int end)
@@ -180,7 +180,7 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 	m_segmented = true;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 
@@ -219,11 +219,11 @@ void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 	m_looping = true;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::PlayInstance() {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	std::string cmd = "open ";
 	cmd.append(m_path);
 	cmd.append(" alias ");
@@ -269,9 +269,9 @@ void RedAudio::Pause()
 	}
 #endif
 	m_playing = false;
-	cmd.c_str();
+	//cmd.c_str();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::Stop()
@@ -292,7 +292,7 @@ void RedAudio::Stop()
 	m_playing = false;
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 	SeekBegin();
 }
 
@@ -320,7 +320,7 @@ void RedAudio::SeekBegin()
 	}
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::SeekEnd()
@@ -344,7 +344,7 @@ void RedAudio::SeekEnd()
 	}
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::SetVolume(unsigned int volume)
@@ -366,7 +366,7 @@ void RedAudio::SetVolume(unsigned int volume)
 #endif
 	cmd.clear();
 	delete[] in_cmd;
-	delete out_string;
+	delete[] out_string;
 }
 
 void RedAudio::Update()

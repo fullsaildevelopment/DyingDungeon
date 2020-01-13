@@ -15,6 +15,7 @@
 #include "MainMenuController.h"
 #include "TowerSelectController.h"
 #include "TeamSelectionController.h"
+#include "StatTracker.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -433,6 +434,7 @@ void setupGameInterface()
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
 	canvas->setActive(false); // The rewards screen won't show up at the start
+	StatTracker::Instance();
 }
 
 void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
@@ -712,7 +714,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	SetUnhandledExceptionFilter(DumpOutput);
-
+	//StatTracker::Instance().OutputStatSheet();
 	//DumpFile Test
 	/*int test = 120;
 	int tester = 12;

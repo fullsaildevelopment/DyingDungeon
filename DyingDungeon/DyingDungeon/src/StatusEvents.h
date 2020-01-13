@@ -38,19 +38,21 @@ public:
 	}
 };
 
-class CharacterHealsCharacterEvent : public Odyssey::Event
+class CharacterHealsEvent : public Odyssey::Event
 {
 public:
 	std::string healerName;
 	std::string actionName;
 	STATS actionEffect;
-	bool m_isSpell;
-	CharacterHealsCharacterEvent(std::string healer, std::string action, STATS effect, bool isSpell) 
+	bool isSpell;
+	float health;
+	CharacterHealsEvent(std::string healer, std::string action, STATS effect, float healthAmount, bool isASpell) 
 	{
 		healerName = healer;
 		actionName = action;
 		actionEffect = effect;
-		m_isSpell = isSpell;
+		isSpell = isASpell;
+		health = healthAmount;
 	}
 };
 
@@ -59,33 +61,58 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 public:
 	std::string targetName;
 	std::string actionName;
-	float health;
-	CharacterRecivesHealingEvent(std::string target, std::string actionName, float healthRestored)
+	CharacterRecivesHealingEvent(std::string target, std::string action)
 	{
-		targetName = 
-		health = healthRestored;
+		targetName = target;
+		actionName = action;
 	}
 };
 
-class CharacterDefendsEvent : public Odyssey::Event 
+class CharacterShieldsEvent : public Odyssey::Event 
 {
+public:
+	std::string chracterName;
+	std::string actionName;
+	float shieldBuff;
+	bool isSpell;
+	CharacterShieldsEvent(std::string character, std::string action, float shield_defense, bool spell)
+	{
+		chracterName = character;
+		actionName = action;
+		shieldBuff = shield_defense;
+		isSpell = spell;
+	}
+};
 
+class CharacterRecivesShieldEvent : public Odyssey::Event 
+{
+public:
+	std::string targetName;
+	CharacterRecivesShieldEvent(std::string target) {
+		targetName = target;
+	}
 };
 
 class LevelStartEvent : public Odyssey::Event
 {
 public:
-	LevelStartEvent()
+	unsigned int levelNumber;
+	LevelStartEvent(unsigned int level)
 	{
-
+		levelNumber = level;
 	}
 };
 
 class TurnStartEvent : public Odyssey::Event 
 {
 public:
-	TurnStartEvent()
+	std::string characterName;
+	unsigned int turn;
+	unsigned int round;
+	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber)
 	{
-
+		characterName = character;
+		turn = turnNumber;
+		round = roundNumber;
 	}
 };
