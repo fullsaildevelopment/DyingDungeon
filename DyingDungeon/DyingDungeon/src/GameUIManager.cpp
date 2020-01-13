@@ -1,7 +1,5 @@
 #include "GameUIManager.h"
 #include "UICanvas.h"
-#include "Rectangle2D.h"
-#include "Text2D.h"
 
 GameUIManager& GameUIManager::getInstance()
 {
@@ -30,7 +28,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	// Add the rectangle to the pause menu canvas
-	Odyssey::Rectangle2D* blackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	blackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
 	blackBackground->setOpacity(0.5f);
 
@@ -39,7 +37,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	height = 360;
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	// Add the rectangle to the pause menu canvas
-	Odyssey::Rectangle2D* smallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	smallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	smallerBlackBackground->setOpacity(0.8f);
 
 	// Create Pause Title
@@ -51,11 +49,28 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
-	Odyssey::Text2D* pauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 50, L"Paused", properties);
+	pauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 50, L"Paused", properties);
+	//pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
 
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mPauseMenu);
 	// Turn off the canvas when creating it
 	ToggleCanvas(mPauseMenu, false);
+}
+
+void GameUIManager::ToggleTitle()
+{
+	static bool yeehaw = true;
+
+	if (yeehaw)
+	{
+		//pauseTitle->setColor(0.0f, 255.0f, 0.0f);
+		//pauseTitle->setOpacity(0.5f);
+		mPauseMenu->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Text2D>()->setText(L"L");
+	}
+	else
+		pauseTitle->setColor(255.0f, 255.0f, 255.0f);
+
+		yeehaw = !yeehaw;
 }

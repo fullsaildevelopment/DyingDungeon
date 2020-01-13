@@ -152,7 +152,7 @@ int playGame()
 
 	// Add the game scene to the application
 	application->addScene("Game", gGameScene);
-	application->setMultithreading(true);
+	application->setMultithreading(false);
 
 	// Play audio
 	setupAudio();
@@ -183,8 +183,8 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 	std::shared_ptr<Odyssey::TransparentPass> transparentPass = renderDevice->createTransparentPass(gMainWindow);
 	application->addRenderPass(transparentPass);
 
-	std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
-	application->addRenderPass(spritePass);
+	//std::shared_ptr<Odyssey::Sprite2DPass> spritePass = renderDevice->createSprite2DPass(gMainWindow);
+	//application->addRenderPass(spritePass);
 }
 
 void setupLighting()

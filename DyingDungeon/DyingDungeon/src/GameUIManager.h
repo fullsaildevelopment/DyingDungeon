@@ -1,6 +1,8 @@
 #pragma once
 #include "Entity.h"
 #include "Scene.h"
+#include "Rectangle2D.h"
+#include "Text2D.h"
 
 class GameUIManager
 {
@@ -36,6 +38,11 @@ private: // Varibales
 	// Canvases
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 
+	// Pause Menu Items
+	Odyssey::Rectangle2D* blackBackground;
+	Odyssey::Rectangle2D* smallerBlackBackground;
+	Odyssey::Text2D* pauseTitle;
+
 	// Vectors
 
 	// Queues
@@ -50,5 +57,5 @@ private: // Varibales
 	// Bools
 
 private: // Functions
-
+	void ToggleTitle();
 };
