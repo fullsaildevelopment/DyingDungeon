@@ -80,10 +80,10 @@ void Attack::Use(Character& caster, Character& target)
 	if (mDebuff != nullptr)
 	{
 		mDebuff->Apply(target);
-		//Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, mDebuff->GetTypeId()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, mDebuff->GetTypeId()));
 	}
-	/*else
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, EFFECTTYPE::None));*/
+	else
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, EFFECTTYPE::None));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }

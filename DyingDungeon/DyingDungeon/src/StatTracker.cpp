@@ -243,6 +243,7 @@ void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 	newTurn.characterName = tsEvent->characterName;
 	newTurn.round = tsEvent->round;
 	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
+	m_levels[m_currentLevel - 1].turnCount = m_levels[m_currentLevel - 1].turns.size();
 }
 
 unsigned int StatTracker::GetStatCount(Action stat)
