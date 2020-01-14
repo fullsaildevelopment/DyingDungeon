@@ -32,6 +32,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	switch (_characterToCreate)
 	{
 	case Paladin:
+	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Paladin.dxm", true);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
@@ -48,8 +49,9 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->setStatic(false);
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		break;
-
+	}
 	case Skeleton:
+	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Skeleton.dxm", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
@@ -62,9 +64,17 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 		newCharacter->setStatic(false);
 		break;
-
-	default:
+	}
+	case TreeEnt:
+	{
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/TreeEnt.dxm", true);
 		break;
+	}
+	default:
+	{
+		break;
+	}
 	}
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 

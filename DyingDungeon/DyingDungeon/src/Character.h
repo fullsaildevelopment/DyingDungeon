@@ -9,7 +9,7 @@
 #define TOTALSKILLS 7
 
 enum class HEROID { Paladin = 0 };
-enum class ENEMYID { Skeleton = 0 };
+enum class ENEMYID { Skeleton = 0, TreeEnt };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component

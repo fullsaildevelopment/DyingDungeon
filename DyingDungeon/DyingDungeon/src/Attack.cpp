@@ -72,6 +72,7 @@ Attack::~Attack()
 
 void Attack::Use(Character& caster, Character& target)
 {
+	//TODO Fix aoe mana issue move into the controlers 
 	caster.DepleteMana(mMpCost);
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());

@@ -29,9 +29,20 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
-		mAttack = 0.15f;
-		mBaseDefense = mDefense = 0.05f;
-		mBaseSpeed = mSpeed = 20;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		mMoveOverride = SKILLTYPE::ATTACK;
+		break;
+	}
+	case ENEMYID::TreeEnt:
+	{
+		mName = "TreeEnt";
+		mBaseMaxHP = mCurrentHP = 300.0f;
+		mBaseMaxMana = mCurrentMana = 300.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.25f;
+		mBaseSpeed = mSpeed = 45.0f;
 		mMoveOverride = SKILLTYPE::ATTACK;
 		break;
 	}
