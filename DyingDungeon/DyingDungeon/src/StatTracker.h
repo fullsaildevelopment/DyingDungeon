@@ -65,8 +65,6 @@ public:
 	void LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent);
 	void LogSheildingEvent(CharacterShieldsEvent* csEvent);
 
-	void LogReciveSheildEvent(CharacterRecivesShieldEvent* crsEvent);
-
 	void LevelStartReflex(LevelStartEvent* lsEvent);
 
 	void TurnStartReflex(TurnStartEvent* tsEvent);
@@ -79,7 +77,7 @@ private:
 	unsigned int GetStatCount(Action stat);
 	unsigned int GetStatCount(std::string name, Action stat);
 	std::vector<std::string>& GetListPlayerCharacterNames();
-	std::vector<std::string>& GetListPlayerCharacterNames(unsigned int levelNumber);
+	std::vector<std::string> GetListPlayerCharacterNames(unsigned int levelNumber);
 	float CalculateDamageDealt();
 	float CalculateDamageDealt(std::string name);
 	float CalculateDamageDone();

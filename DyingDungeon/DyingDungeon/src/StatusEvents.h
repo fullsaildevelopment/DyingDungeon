@@ -82,15 +82,7 @@ public:
 	}
 };
 
-// Merged into the CharacterShieldsEvent
-class CharacterRecivesShieldEvent : public Odyssey::Event 
-{
-public:
-	std::string targetName;
-	CharacterRecivesShieldEvent(std::string target) {
-		targetName = target;
-	}
-};
+
 
 class LevelStartEvent : public Odyssey::Event
 {
@@ -121,7 +113,9 @@ public:
 class RewardsActiveEvnet : public Odyssey::Event
 {
 public:
-	RewardsActiveEvnet() {
-
+	unsigned int level;
+	RewardsActiveEvnet(unsigned int finishedLevel) 
+	{
+		level = finishedLevel;
 	}
 };

@@ -48,7 +48,7 @@ private: // Varibales
 
 	// Ints
 	int mTurnCounter = -1;
-	int mCurrentRound = -1;
+	int mCurrentRound = 1;
 
 	// Floats
 

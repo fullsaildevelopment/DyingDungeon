@@ -13,7 +13,6 @@ StatTracker::StatTracker()
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogReciveHealingEvent);
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogSheildingEvent);
-	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogReciveSheildEvent);
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LevelStartReflex);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::TurnStartReflex);
@@ -54,17 +53,19 @@ void StatTracker::SetRewardsScreen(Odyssey::UICanvas* rewardScreen)
 
 void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
 {
-	if (characterNames.empty()) 
+	/*if (characterNames.empty()) 
 	{
 		GetListPlayerCharacterNames();
-	}
-	for (unsigned int i = 1; i <= characterNames.size(); i++) {
+	}*/
+	std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
+	for (unsigned int i = 1; i <= temp_nameList.size(); i++) {
 		std::wstring rewardsText;
-		rewardsText.append(L"P" + std::to_wstring(i ) + L" - Attack: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Attack)).substr(0, 4) 
-													 + L" - Defend: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Defend)).substr(0, 4)
-													 + L" - Aid: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Aid)).substr(0, 4) + L"\n");
+		rewardsText.append(L"P" + std::to_wstring(i ) + L" - Attack: " + std::to_wstring(CalculatePercentageStat(temp_nameList[i - 1], Action::Attack)).substr(0, 4) + L"%"
+													 + L" - Defend: " + std::to_wstring(CalculatePercentageStat(temp_nameList[i - 1], Action::Defend)).substr(0, 4) + L"%"
+													 + L" - Aid: " + std::to_wstring(CalculatePercentageStat(temp_nameList[i - 1], Action::Aid)).substr(0, 4) + L"%\n");
 		m_p_rewardsScreen->getElements<Odyssey::Text2D>()[i - 1]->setText(rewardsText);
 	}
+	OutputStatSheet();
 }
 
 void StatTracker::SaveStats(std::string saveName)
@@ -97,6 +98,8 @@ void StatTracker::SaveStats(std::string saveName)
 				file.write((const char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
 
 				file.write((const char*)&m_levels[i].turns[j].value, sizeof(float));
+
+				file.write((const char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
 
 				uint32_t size_b = static_cast<uint32_t>(m_levels[i].turns[j].blockValues.size());
 				file.write((const char*)&size_b, sizeof(uint32_t));
@@ -169,6 +172,8 @@ void StatTracker::LoadStats(std::string loadFileName)
 
 				file.read((char*)&m_levels[i].turns[j].value, sizeof(float));
 
+				file.read((char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
+
 				uint32_t size_b = 0;
 				file.read((char*)&size_b, sizeof(uint32_t));
 				m_levels[i].turns[j].blockValues.resize(size_b);
@@ -205,7 +210,7 @@ void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Attack;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].effect = cddEvent->actionEffect;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cddEvent->damageAmount;
-	//m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].attackModifier = cddEvent->attackMod;
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].attackModifier = cddEvent->atkMod;
 
 }
 
@@ -226,9 +231,10 @@ void StatTracker::LogHealingEvent(CharacterHealsEvent* chcEvent)
 
 void StatTracker::LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent) 
 {
-	//Fix me 
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].targetNames.push_back(crhEvent->targetName);
-	if (m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName == crhEvent->targetName) {
+	if (m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName == crhEvent->targetName &&
+		m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType != Action::Attack) 
+	{
+		m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].targetNames.push_back(crhEvent->targetName);
 		m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Defend;
 	}
 }
@@ -239,12 +245,10 @@ void StatTracker::LogSheildingEvent(CharacterShieldsEvent* csEvent)
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Aid;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = csEvent->shieldBuff;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSheild = true;
-}
+	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].targetNames.push_back(csEvent->targetName);
 
-void StatTracker::LogReciveSheildEvent(CharacterRecivesShieldEvent* crsEvent) 
-{
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount].targetNames.push_back(crsEvent->targetName);
-	if (m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName == crsEvent->targetName) {
+	if (m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].characterName == csEvent->targetName &&
+		m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType != Action::Attack) {
 		m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Defend;
 	}
 }
@@ -265,7 +269,7 @@ void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 	newTurn.round = tsEvent->round;
 	newTurn.isPlayer = tsEvent->isPlayer;
 	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
-	m_levels[m_currentLevel - 1].turnCount = m_levels[m_currentLevel - 1].turns.size();
+	m_levels[m_currentLevel - 1].turnCount = static_cast<uint32_t>(m_levels[m_currentLevel - 1].turns.size());
 }
 
 unsigned int StatTracker::GetStatCount(Action stat)
@@ -340,30 +344,30 @@ std::vector<std::string>& StatTracker::GetListPlayerCharacterNames()
 	return characterNames;
 }
 
-std::vector<std::string>& StatTracker::GetListPlayerCharacterNames(unsigned int level)
+std::vector<std::string> StatTracker::GetListPlayerCharacterNames(unsigned int level)
 {
-	std::vector<std::string> characterNames;
+	std::vector<std::string> level_characterNames;
 	for (int j = 0; j < m_levels[level - 1].turns.size(); j++)
 	{
 		if (m_levels[level - 1].turns[j].isPlayer)
 		{
-			if (characterNames.empty())
+			if (level_characterNames.empty())
 			{
-				characterNames.push_back(m_levels[level - 1].turns[j].characterName);
+				level_characterNames.push_back(m_levels[level - 1].turns[j].characterName);
 			}
 			else
 			{
 				bool inList = false;
 				for (int k = 0; k < characterNames.size(); k++) {
-					if (characterNames[k] == m_levels[level - 1].turns[j].characterName) {
+					if (level_characterNames[k] == m_levels[level - 1].turns[j].characterName) {
 						inList = true;
 						break;
 					}
 				}
 				if (!inList)
 				{
-					characterNames.push_back(m_levels[level - 1].turns[j].characterName);
-					if (characterNames.size() == m_maxPlayerCount) {
+					level_characterNames.push_back(m_levels[level - 1].turns[j].characterName);
+					if (level_characterNames.size() == m_maxPlayerCount) {
 						break;
 					}
 				}
@@ -371,7 +375,7 @@ std::vector<std::string>& StatTracker::GetListPlayerCharacterNames(unsigned int 
 		}
 	}
 	
-	return characterNames;
+	return level_characterNames;
 }
 
 float StatTracker::CalculateDamageDealt()
@@ -653,7 +657,7 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat)
 }
 
 float StatTracker::roundf(float num, unsigned int decimal_places) {
-	return static_cast<float>(ceilf(num * std::powf(10.0f, decimal_places))/std::powf(10.0f, decimal_places));
+	return static_cast<float>(ceilf(num * std::powf(10.0f, static_cast<float>(decimal_places)))/std::powf(10.0f, static_cast<float>(decimal_places)));
 }
 
 double StatTracker::round(double num, unsigned int decimal_places) {
@@ -689,64 +693,151 @@ void StatTracker::OutputStatSheet()
 			}
 		}
 		fileText.append("         Attack   Damage Dealt   Damage Success\nAttack: |  ");
+
 		unsigned int attackCount = GetStatCount(Action::Attack);
 		if (attackCount < 10.0f) {
 			fileText.append("0");
 		}
 		fileText.append(std::to_string(attackCount) + "  | |    ");
+
 		float dmgDelt = CalculateDamageDealt();
 		if (dmgDelt < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(dmgDelt).substr(0, 4) + "   | |    ");
+
+		if (dmgDelt >= 100.0f)
+		{
+			fileText.append(std::to_string(dmgDelt).substr(0, 6) + "   | |    ");
+		}
+		else if (dmgDelt >= 10.0f)
+		{
+			fileText.append(std::to_string(dmgDelt).substr(0, 5) + "   | |    ");
+		}
+		else
+		{
+			fileText.append(std::to_string(dmgDelt).substr(0, 4) + "   | |    ");
+
+		}
+
 		float dmgScs = CalculatePercentDamageSuccess();
 		if (dmgScs < 10.0f) {
 			fileText.append("0");
 		}
-		if (dmgScs >= 100.0f) 
+		if (dmgScs >= 100.0f)
 		{
-			fileText.append(std::to_string(dmgDelt).substr(0, 5) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+			fileText.append(std::to_string(dmgScs).substr(0, 6) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+		}
+		else if (dmgScs  >= 10.0f) 
+		{
+			fileText.append(std::to_string(dmgScs).substr(0, 5) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
 		}
 		else 
 		{
-			fileText.append(std::to_string(dmgDelt).substr(0, 4) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+			fileText.append(std::to_string(dmgScs).substr(0, 4) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
 
 		}
+
 		unsigned int defendCount = GetStatCount(Action::Defend);
 		if (defendCount < 10.0f) {
 			fileText.append("0");
 		}
 		fileText.append(std::to_string(defendCount) + "  | |    ");
+
 		float dmgTkn = CalculateDamageTaken();
 		if (dmgTkn < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(dmgDelt).substr(0, 4) + "   | |     ");
+
+		if (dmgScs >= 100.0f)
+		{
+			fileText.append(std::to_string(dmgTkn).substr(0, 6) + "   | |     ");
+		}
+		else if(dmgTkn >= 10.0f)
+		{
+			fileText.append(std::to_string(dmgTkn).substr(0, 5) + "   | |     ");
+		}
+		else
+		{
+			fileText.append(std::to_string(dmgTkn).substr(0, 4) + "   | |     ");
+		}
+
 		float dmgMit = CalculateDamageMitigatated();
 		if (dmgMit < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(dmgMit).substr(0, 4) + "      | |    ");
+
+		if (dmgScs >= 100.0f)
+		{
+			fileText.append(std::to_string(dmgMit).substr(0, 6) + "      | |    ");
+		}
+		else if (dmgTkn >= 10.0f)
+		{
+			fileText.append(std::to_string(dmgMit).substr(0, 5) + "      | |    ");
+		}
+		else
+		{
+			fileText.append(std::to_string(dmgMit).substr(0, 6) + "      | |    ");
+		}
+
 		float hlthGand = CalculateHealthRecived();
-		if (dmgMit < 10.0f) {
+		if (hlthGand < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(hlthGand).substr(0, 4) + "    |\n\n          Aid     Heal    Deffence Buff\n   Aid: | ");
+
+		if (hlthGand >= 100.0f)
+		{
+			fileText.append(std::to_string(hlthGand).substr(0, 6) + "    |\n\n          Aid     Heal    Deffence Buff\n   Aid: | ");
+		}
+		else if (hlthGand >= 10.0f)
+		{
+			fileText.append(std::to_string(hlthGand).substr(0, 5) + "    |\n\n          Aid     Heal    Deffence Buff\n   Aid: | ");
+		}
+		else
+		{
+			fileText.append(std::to_string(hlthGand).substr(0, 4) + "    |\n\n          Aid     Heal    Deffence Buff\n   Aid: | ");
+		}
+
 		unsigned int aidCount = GetStatCount(Action::Aid);
 		if (aidCount < 10.0f) {
 			fileText.append("0");
 		}
 		fileText.append(std::to_string(aidCount) + " | | ");
+
 		float heal = CalculateHealthRecived();
 		if (heal < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(heal).substr(0, 4) + " | |    ");
+
+		if (heal >= 100.0f)
+		{
+			fileText.append(std::to_string(heal).substr(0, 6) + " | |    ");
+		}
+		else if (heal >= 10.0f)
+		{
+			fileText.append(std::to_string(heal).substr(0, 5) + " | |    ");
+		}
+		else
+		{
+			fileText.append(std::to_string(heal).substr(0, 4) + " | |    ");
+		}
+
 		float deffBuff = CalculateShieldGiven();
 		if (deffBuff < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(deffBuff).substr(0, 4) + "    |");
+		if (deffBuff >= 100.0f)
+		{
+			fileText.append(std::to_string(deffBuff).substr(0, 6) + "    |");
+		}
+		else if (deffBuff >= 10.0f)
+		{
+			fileText.append(std::to_string(deffBuff).substr(0, 5) + "    |");
+		}
+		else
+		{
+			fileText.append(std::to_string(deffBuff).substr(0, 4) + "    |");
+		}
+
 		unsigned int current_round = 0;
 		for (int i = 0; i < m_levels.size(); i++) {
 			fileText.append("\n\n----------------------------------------------------------\n                         Level " + std::to_string(i + 1) + "\n----------------------------------------------------------\n");
@@ -758,17 +849,21 @@ void StatTracker::OutputStatSheet()
 				fileText.append("\tTurn " + std::to_string(j + 1) + ": " + m_levels[i].turns[j].characterName + "\n\n\tAction: " + m_levels[i].turns[j].actionName + "\n\n");
 				for (int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++) {
 					if (k == 0) {
-						fileText.append("\tTarget: " + m_levels[i].turns[j].targetNames[k]);
+						fileText.append("\tTarget: " + m_levels[i].turns[j].targetNames[k] + "\n");
+						continue;
 					}
 					fileText.append("\t        " + m_levels[i].turns[j].targetNames[k] + "\n");
 				}
+
+				fileText.append("\n");
+
 				switch (m_levels[i].turns[j].actionType)
 				{
 					case StatTracker::Action::Attack: 
 					{
 						fileText.append("\tDamage: " + std::to_string(m_levels[i].turns[j].value).substr(0, 4));
 						for (int l = 0; l < m_levels[i].turns[j].targetNames.size(); l++) {
-							fileText.append("\tTarget " + std::to_string(l + 1) + ": " + m_levels[i].turns[j].targetNames[l] + "\n\tDamage Mitigated: " + std::to_string(roundf(m_levels[i].turns[j].blockValues[l], 2)) + "\n\t    Danage Taken: " + std::to_string((m_levels[i].turns[j].value - (m_levels[i].turns[j].value * m_levels[i].turns[j].blockValues[l]))));
+							fileText.append("\tTarget " + std::to_string(l + 1) + ": " + m_levels[i].turns[j].targetNames[l] + "\n\tDamage Mitigated: " + std::to_string(roundf(m_levels[i].turns[j].blockValues[l], 2)) + "\n\t    Danage Taken: " + std::to_string((m_levels[i].turns[j].value - (m_levels[i].turns[j].value * m_levels[i].turns[j].blockValues[l]))) + "\n\n");
 						}
 					}
 						break;
@@ -801,12 +896,7 @@ void StatTracker::OutputStatSheet()
 					default:
 						break;
 				}
-				/*if (m_levels[i].turns[j].actionType == Action::Attack) {
-					fileText.append("\tDamage: " + std::to_string(m_levels[i].turns[j].value).substr(0, 4));
-					for (int l = 0; l < m_levels[i].turns[j].targetNames.size(); l++) {
-						fileText.append("\tTarget " + std::to_string(l + 1) + ": " + m_levels[i].turns[j].targetNames[l] + "\n\tDamage Mitigated: " + std::to_string(roundf(m_levels[i].turns[j].blockValues[l], 2)) + "\n\t    Danage Taken: " + std::to_string((m_levels[i].turns[j].value - (m_levels[i].turns[j].value * m_levels[i].turns[j].blockValues[l]))));
-					}
-				}*/
+				fileText.append("\n");
 			}
 		}
 		file << fileText;

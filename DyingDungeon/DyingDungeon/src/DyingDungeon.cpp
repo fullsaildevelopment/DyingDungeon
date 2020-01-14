@@ -441,14 +441,19 @@ void setupGameInterface()
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 	//canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), L"assets/images/ResultsMenu.png", rewardsImageWidth, rewardsImageHeight);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), DirectX::XMFLOAT4(191.25f, 191.25f, 191.25f, 0.75f), rewardsImageWidth, rewardsImageHeight);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX, rewardsImageY), DirectX::XMFLOAT4(63.75f, 63.75f, 63.75f, 0.75f), rewardsImageWidth, rewardsImageHeight);
 
 	Odyssey::TextProperties rewardsTextProperties = gDefaultText;
 	rewardsTextProperties.fontSize = 30.0f;
+	rewardsTextProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 30.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 9, L"P1 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight *0.3333f)), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 9, L"P2 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 9, L"P3 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 30.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.3333f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f + (rewardsImageHeight / 4), rewardsImageY + 30.0f ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 6, L"P1 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f + (rewardsImageHeight / 4), rewardsImageY + (30.0f + rewardsImageHeight *0.3333f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 6, L"P2 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f + (rewardsImageHeight / 4), rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 6, L"P3 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
 	canvas->setActive(false); // The rewards screen won't show up at the start
 	StatTracker::Instance().SetRewardsScreen(canvas);
 }
@@ -516,6 +521,7 @@ void setupAudio()
 	//Background Sound
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_4.mp3", "NoMana");
 	
 	//Play Initial Loop
 	RedAudioManager::Instance().Loop("BackgroundMenu");
