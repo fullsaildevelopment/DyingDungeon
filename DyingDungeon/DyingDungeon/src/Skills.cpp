@@ -54,10 +54,10 @@ bool Skills::IsAOE()
 
 StatusEffect* Skills::GetStatusEffect()
 {
-    return mDebuff.get();
+    return mStatusEffect.get();
 }
 
 void Skills::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 {
-    mDebuff = se;
+	mStatusEffect = se;
 }

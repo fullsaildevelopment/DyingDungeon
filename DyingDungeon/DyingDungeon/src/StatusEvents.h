@@ -11,13 +11,14 @@ public:
 	std::string attackerName;
 	std::string actionName;
 	float damageAmount;
+	float atkMod;
 	EFFECTTYPE actionEffect;
-
-	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, EFFECTTYPE effect)
+	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, float attackMod, EFFECTTYPE effect)
 	{
 		attackerName = attacker;
 		actionName = action;
 		damageAmount = damage;
+		atkMod = attackMod;
 		actionEffect = effect;
 	}
 };
@@ -57,11 +58,11 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 {
 public:
 	std::string targetName;
-	std::string actionName;
-	CharacterRecivesHealingEvent(std::string target, std::string action)
+	float healingAmount;
+	CharacterRecivesHealingEvent(std::string target, float healing)
 	{
 		targetName = target;
-		actionName = action;
+		healingAmount = healing;
 	}
 };
 
@@ -70,15 +71,18 @@ class CharacterShieldsEvent : public Odyssey::Event
 public:
 	std::string chracterName;
 	std::string actionName;
+	std::string targetName;
 	float shieldBuff;
-	CharacterShieldsEvent(std::string character, std::string action, float shield_defense)
+	CharacterShieldsEvent(std::string character, std::string target, std::string action, float shield_defense)
 	{
 		chracterName = character;
+		targetName = target;
 		actionName = action;
 		shieldBuff = shield_defense;
 	}
 };
 
+// Merged into the CharacterShieldsEvent
 class CharacterRecivesShieldEvent : public Odyssey::Event 
 {
 public:

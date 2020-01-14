@@ -9,6 +9,7 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
 
@@ -20,6 +21,7 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffect = nullptr;
 	mIsAOE = isAoe;
 }
 
@@ -29,6 +31,7 @@ void Heal::Use(Character& caster, Character& target)
 	caster.DepleteMana(mMpCost);
 	target.ReceiveHealing(mHealing);
 	std::cout << caster.GetName() << " has healed " << target.GetName() << " for " << mHealing << " HP." << std::endl;
+	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::None, mHealing));
 }
 // Get the amount the heal is for
 float Heal::GetHealing()

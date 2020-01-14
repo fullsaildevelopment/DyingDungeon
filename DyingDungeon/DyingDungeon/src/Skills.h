@@ -22,7 +22,8 @@ protected:
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
 	bool mIsAOE;
-	std::shared_ptr<StatusEffect> mDebuff;
+	// Status Effect Attached to skill
+	std::shared_ptr<StatusEffect> mStatusEffect;
 private:
 //public and private functions
 public:

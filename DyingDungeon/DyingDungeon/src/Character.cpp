@@ -122,6 +122,7 @@ void Character::ReceiveHealing(float healing)
 	mDisplaying = true;
 	/////////////////////////////////
 	SetHP(mCurrentHP + healing);
+	Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 }
 
 /*
