@@ -13,6 +13,42 @@ void GameUIManager::ToggleCanvas(std::shared_ptr<Odyssey::Entity> _object, bool 
 	_object->getComponent<Odyssey::UICanvas>()->setActive(_isActive);
 }
 
+void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	// Create the tower select menu pointer
+	mTowerSelectMenu = std::make_shared<Odyssey::Entity>();
+	mTowerSelectMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the pause menu
+	Odyssey::UICanvas* towerSelectMenuCanvas = mTowerSelectMenu->getComponent<Odyssey::UICanvas>();
+
+	// Initialize variables
+	UINT width = screenWidth; // Width
+	UINT height = 100; // Height
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	Odyssey::TextProperties properties;
+
+	// Create tower select title
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 100.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Constantia";
+	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
+
+	// Create door to click on
+	width = 782.0f / 3.0f;
+	height = 927.0f / 3.0f;
+	position = { 100.0f, screenHeight - (height - 50.0f) };
+	mDoorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/MedievalDoor.png", width, height);
+
+	// Add the pause menu to the game scene most likely
+	_sceneToAddTo->addEntity(mTowerSelectMenu);
+	// Turn off the canvas when creating it
+	ToggleCanvas(mTowerSelectMenu, false);
+}
+
 // This is where I will design and add all elemnts into the pause menu canvas
 void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
@@ -50,7 +86,6 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
 	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
-	//pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
 
 	// Resume Button
 	width /= 2.5f;

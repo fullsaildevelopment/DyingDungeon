@@ -124,11 +124,17 @@ int playGame()
 	// Set up camera
 	setupCamera();
 
+	// Assign the width and height for the UI Manager
+	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+
 	// Set up the main menu
 	setupMenu(renderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png", "MainMenu", MenuComponent::eMainMenu);
 
 	// Set up the tower selection screen
-	setupMenu(renderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelection.png", "TowerSelection", MenuComponent::eTowerSelector);
+	setupMenu(renderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
+
+	// Create the tower selection menu
+	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
 	// Set up the team selection screen
 	setupMenu(renderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
@@ -145,8 +151,6 @@ int playGame()
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
 
-	// Assign the width and height for the UI Manager
-	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
 	// Create Pause Menu
 	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
 
@@ -367,7 +371,12 @@ void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* applic
 	_entityToAdd->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
-	_entityToAdd->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), _imageName, width, height);
+
+	// Only add image if there is one
+	if (_imageName != L"")
+	{
+		_entityToAdd->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), _imageName, width, height);
+	}
 
 	switch (_menuComponent)
 	{

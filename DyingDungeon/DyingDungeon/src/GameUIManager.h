@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "Rectangle2D.h"
 #include "Text2D.h"
+#include "Sprite2D.h"
 
 class GameUIManager
 {
@@ -22,13 +23,21 @@ public: // Functions
 	// Toggle canvases on and off
 	void ToggleCanvas(std::shared_ptr<Odyssey::Entity> _canvas, bool _isActive);
 
+	// Creation of the tower select menu
+	void CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
 	// Creation of the pause menu
 	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
 	//Getters
-	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
+	// Get the tower select menu
+	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
+	// Get the sprite buttons from the tower select menu
+	Odyssey::Sprite2D* GetDoorButton() { return mDoorImage; }
 
-	// Get the rectangle buttons
+	// Get the pause menu
+	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
+	// Get the rectangle buttons from the pause menu
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
@@ -41,7 +50,13 @@ public: // Functions
 private: // Varibales
 
 	// Canvases
+	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
+
+	// Tower Menu Items
+	Odyssey::Text2D* mTowerSelectTitle;
+	Odyssey::Sprite2D* mDoorImage;
+
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
@@ -68,5 +83,4 @@ private: // Varibales
 	// Bools
 
 private: // Functions
-	void ToggleTitle();
 };
