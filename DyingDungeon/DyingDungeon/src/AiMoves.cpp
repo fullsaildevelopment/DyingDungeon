@@ -239,7 +239,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 
 						attackScore += StatusEffectScore(skill, target);
 
-						std::cout << skill->GetName() << " scored: " << attackScore << std::endl;
+						//std::cout << skill->GetName() << " scored: " << attackScore << std::endl;
 
 						if (attackScore > mBestAttack.score)
 						{
@@ -247,7 +247,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 							mBestAttack.target = target;
 							mBestAttack.score = attackScore;
 
-							std::cout << "BEST ATTACK CHANGED" << std::endl;
+							//std::cout << "BEST ATTACK CHANGED" << std::endl;
 						}
 
 						target = nullptr;
@@ -321,7 +321,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 		mBestAttack.score = attackAOEScore;
 	}
 
-	std::cout << skill->GetName() << " aoe scored " << attackAOEScore << std::endl;
+	//std::cout << skill->GetName() << " aoe scored " << attackAOEScore << std::endl;
 }
 
 void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
@@ -509,7 +509,7 @@ void AIMoves::SkeletonDeterminePriority()
 
 	if (mPriorityMove == SKILLTYPE::UNDEFINED)
 	{
-
+		mPriorityMove = SKILLTYPE::ATTACK;
 	}
 }
 
