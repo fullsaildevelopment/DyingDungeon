@@ -121,7 +121,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 								c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 						}
 					}
-					else if (mMoves.GetMove()->target != nullptr)
+					else if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->target != this)
 						mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 				}
 				// Set trigger to true to avoid looping the recipents animation

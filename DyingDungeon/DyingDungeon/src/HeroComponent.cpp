@@ -42,7 +42,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mShielding = 0.0f;
 		for (int i = 0; i < TOTALSKILLS; ++i)
 		// Basic Attack (Add Provoke 30% chance)
-		temp = std::make_shared<Provoked>(1, this, nullptr);
+		temp = std::make_shared<Provoked>(2, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
 		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.50f, 15.0f, 20.0f, 25.0f));
@@ -51,7 +51,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true,true));
+		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
 		break;
 	}
 	default:
@@ -182,7 +182,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					}
 				}
-				else if (mCurrentTarget != nullptr)
+				else if (mCurrentTarget != nullptr && mCurrentTarget != this)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 			}
 			// Set trigger to true to avoid looping the recipents animation

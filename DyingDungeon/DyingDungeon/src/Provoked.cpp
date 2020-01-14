@@ -5,7 +5,7 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 {
 	mTypeId = EFFECTTYPE::Provoke;
 	mAmountOfEffect = 0.0f;
-	mDuration = 0;
+	mDuration = duration;
 	mRecipient = target;
 	mProvoker = provoker;
 }
