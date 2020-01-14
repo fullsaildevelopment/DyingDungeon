@@ -28,47 +28,65 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	// Add the rectangle to the pause menu canvas
-	blackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	blackBackground->setOpacity(0.5f);
+	mBlackBackground->setOpacity(0.5f);
 
 	// Create the pause menu smaller black rectangle
 	width = 640;
 	height = 360;
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	// Add the rectangle to the pause menu canvas
-	smallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	smallerBlackBackground->setOpacity(0.8f);
+	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackground->setOpacity(0.8f);
 
 	// Create Pause Title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	Odyssey::TextProperties properties;
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 50.0f;
+	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
-	pauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 50, L"Paused", properties);
-	pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
+	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
+	//pauseTitle->registerCallback("onMouseClick", this, &GameUIManager::ToggleTitle);
+
+	// Resume Button
+	width /= 2.5f;
+	height = 50;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position.y -= 50.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the reusume background to the canvas
+	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Resume text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.bold = false;
+	properties.fontSize = 30.0f;
+	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
+
+	// Options Button
+	position.y += 75.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the options background to the canvas
+	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Options text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
+
+	// Main Menu Button
+	position.y += 75.0f;
+	color = { 180.0f, 30.0f, 30.0f, 1.0f };
+	// Add the main menu background to the canvas
+	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Main menu text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mPauseMenu);
 	// Turn off the canvas when creating it
 	ToggleCanvas(mPauseMenu, false);
-}
-
-void GameUIManager::ToggleTitle()
-{
-	static bool yeehaw = true;
-
-	if (yeehaw)
-	{
-		pauseTitle->setColor(0.0f, 255.0f, 0.0f);
-	}
-	else
-		pauseTitle->setColor(255.0f, 255.0f, 255.0f);
-
-		yeehaw = !yeehaw;
 }

@@ -28,6 +28,11 @@ public: // Functions
 	//Getters
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
 
+	// Get the rectangle buttons
+	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
+	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
+	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
+
 	//Setters
 	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
 
@@ -39,9 +44,15 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 
 	// Pause Menu Items
-	Odyssey::Rectangle2D* blackBackground;
-	Odyssey::Rectangle2D* smallerBlackBackground;
-	Odyssey::Text2D* pauseTitle;
+	Odyssey::Rectangle2D* mBlackBackground;
+	Odyssey::Rectangle2D* mSmallerBlackBackground;
+	Odyssey::Text2D* mPauseTitle;
+	Odyssey::Rectangle2D* mResumeBackground;
+	Odyssey::Text2D* mResumeText;
+	Odyssey::Rectangle2D* mOptionsBackground;
+	Odyssey::Text2D* mOptionsText;
+	Odyssey::Rectangle2D* mMainMenuBackground;
+	Odyssey::Text2D* mMainMenuText;
 
 	// Vectors
 

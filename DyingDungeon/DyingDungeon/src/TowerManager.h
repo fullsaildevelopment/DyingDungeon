@@ -74,12 +74,14 @@ private: // Varibales
 	std::shared_ptr<float> mStatitics;
 
 	// Bools
+	bool mIsPaused = false;
 
 	// Tower State
 	TOWER_STATE mTowerState;
 
 private: // Functions
 	void DestroyBattleInstance();
+	void TogglePauseMenu();
 	void GoToMainMenu();
 };
 

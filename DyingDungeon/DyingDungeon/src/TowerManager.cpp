@@ -8,6 +8,7 @@
 #include "GameUIManager.h"
 #include "StatusEvents.h"
 #include "UICanvas.h"
+#include "RedAudioManager.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -24,105 +25,104 @@ void TowerManager::initialize()
 
 void TowerManager::update(double deltaTime)
 {
-	// TODO: REMOVE POST BUILD 02
+	// Always look for the pause input button
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P))
 	{
-		std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
-		GameUIManager::getInstance().ToggleCanvas(pauseMenu, !pauseMenu->getComponent<Odyssey::UICanvas>()->isActive());
-
-		// Loop through all of the characters and toggle their animator
-		for (int i = 0; i < mAllCharacters.size(); i++)
-			mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
+		TogglePauseMenu();
 	}
 
-	// If we are in battle, Update the battle
-	if (GetTowerState() == IN_BATTLE)
+	// Don't update unless the game is not paused
+	if (!mIsPaused)
 	{
-		// Update the current battle
-		int result = mCurrentBattle->UpdateBattle();
-
-		// If the result of the updated battle was DESTROY, destory the current battle instance
-		if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
+		// If we are in battle, Update the battle
+		if (GetTowerState() == IN_BATTLE)
 		{
-			// Destroy the battle instance
-			DestroyBattleInstance();
-			SetTowerState(IN_REWARDS);
-			Rewards->setActive(true);
+			// Update the current battle
+			int result = mCurrentBattle->UpdateBattle();
 
-			//Check to see if the update returned PLAYER_TEAM_DIED
-			if (result == mCurrentBattle->PLAYER_TEAM_DIED)
+			// If the result of the updated battle was DESTROY, destory the current battle instance
+			if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
 			{
-				std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
-				std::cout << "Your team DIED!!!!!!!\n" << std::endl;
+				// Destroy the battle instance
+				DestroyBattleInstance();
+				SetTowerState(IN_REWARDS);
+				Rewards->setActive(true);
 
-				SetTowerState(NOT_IN_BATTLE);
-				// Go to main menu screen
-				GoToMainMenu();
-			}
-			else
-			{
-				// Update to the next level
-				mCurrentLevel = GetCurrentLevel() + 1;
+				//Check to see if the update returned PLAYER_TEAM_DIED
+				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
+				{
+					std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
+					std::cout << "Your team DIED!!!!!!!\n" << std::endl;
+
+					SetTowerState(NOT_IN_BATTLE);
+					// Go to main menu screen
+					GoToMainMenu();
+				}
+				else
+				{
+					// Update to the next level
+					mCurrentLevel = GetCurrentLevel() + 1;
+				}
 			}
 		}
-	}
-	else if (GetTowerState() == IN_REWARDS)
-	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+		else if (GetTowerState() == IN_REWARDS)
 		{
-			float tempXP = 0.0f;
-
-			// Check to see if that was our last level for completing the tower
-			if (GetCurrentLevel() > mNumberOfLevels)
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 			{
-				std::cout << "You have completed the tower, Congratulations\n" << std::endl;
-				SetTowerState(NOT_IN_BATTLE);
+				float tempXP = 0.0f;
 
-				// Give player some XP
-				tempXP = 500.0f;
-				// Print how much XP was given to the players
-				for (int i = 0; i < mPlayerTeam.size(); i++)
+				// Check to see if that was our last level for completing the tower
+				if (GetCurrentLevel() > mNumberOfLevels)
 				{
-					mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
-				}
-				std::cout << "Player team characters gained " << tempXP << "XP for completing the tower.\n" << std::endl;
-				// Go to main menu screen
-				GoToMainMenu();
-			}
-			else
-			{
-				std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
+					std::cout << "You have completed the tower, Congratulations\n" << std::endl;
+					SetTowerState(NOT_IN_BATTLE);
 
-				// Publish the current level number
-				Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
-
-				// Give player some XP
-				tempXP = 100.0f;
-				// Print how much XP was given to the player
-				for (int i = 0; i < mPlayerTeam.size(); i++)
-				{
-					Character* currCharacter = mPlayerTeam[i]->getComponent<Character>();
-					currCharacter->AddExp(tempXP);
-
-					// If the player made the finishing kill set him back to NONE state
-					if (currCharacter->GetState() == STATE::FINISHED)
+					// Give player some XP
+					tempXP = 500.0f;
+					// Print how much XP was given to the players
+					for (int i = 0; i < mPlayerTeam.size(); i++)
 					{
-						currCharacter->SetState(STATE::NONE);
+						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
+					std::cout << "Player team characters gained " << tempXP << "XP for completing the tower.\n" << std::endl;
+					// Go to main menu screen
+					GoToMainMenu();
 				}
-				std::cout << "Player team characters gained " << tempXP << "XP for completing the level.\n" << std::endl;
+				else
+				{
+					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
-				// Make a new battle to continue the tower
-				CreateBattleInstance();
+					// Publish the current level number
+					Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
+
+					// Give player some XP
+					tempXP = 100.0f;
+					// Print how much XP was given to the player
+					for (int i = 0; i < mPlayerTeam.size(); i++)
+					{
+						Character* currCharacter = mPlayerTeam[i]->getComponent<Character>();
+						currCharacter->AddExp(tempXP);
+
+						// If the player made the finishing kill set him back to NONE state
+						if (currCharacter->GetState() == STATE::FINISHED)
+						{
+							currCharacter->SetState(STATE::NONE);
+						}
+					}
+					std::cout << "Player team characters gained " << tempXP << "XP for completing the level.\n" << std::endl;
+
+					// Make a new battle to continue the tower
+					CreateBattleInstance();
+				}
+
+				// Turn off the rewads screen
+				Rewards->setActive(false);
 			}
-
-			// Turn off the rewads screen
-			Rewards->setActive(false);
 		}
-	}
-	else if (GetTowerState() == NOT_IN_BATTLE)
-	{
+		else if (GetTowerState() == NOT_IN_BATTLE)
+		{
 
+		}
 	}
 }
 
@@ -200,6 +200,25 @@ void TowerManager::DestroyBattleInstance()
 	std::cout << "Destroyed a battle instance\n" << std::endl;
 }
 
+void TowerManager::TogglePauseMenu()
+{
+	//Toggle mIsPaused bool
+	mIsPaused = !mIsPaused;
+
+	// Toggle pause menu canvas
+	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
+	GameUIManager::getInstance().ToggleCanvas(pauseMenu, !pauseMenu->getComponent<Odyssey::UICanvas>()->isActive());
+
+	// Set the button callbacks
+	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+	//GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ToggleOptionsMenu);
+	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+
+	// Loop through all of the characters and toggle their animator
+	for (int i = 0; i < mAllCharacters.size(); i++)
+		mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
+}
+
 void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
@@ -218,8 +237,19 @@ void TowerManager::GoToMainMenu()
 		}
 	}
 
+	// Deactivate the rewards screen
 	Rewards->setActive(false);
+	// Deactivate the pause menu
+	mIsPaused = false;
+	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
+	GameUIManager::getInstance().ToggleCanvas(pauseMenu, false);
 
+	// Set the current level back to 1
 	mCurrentLevel = 1;
+	
+	// Turn off battle music
+	RedAudioManager::Instance().Stop("BackgroundBattle");
+
+	// Switch to main menu scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }
