@@ -12,7 +12,7 @@ public: // Constructors
 	{
 		Paladin,
 		Skeleton,
-		Drake
+		Boss
 	};
 
 public: // Functions

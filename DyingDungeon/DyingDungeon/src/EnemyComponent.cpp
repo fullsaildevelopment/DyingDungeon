@@ -35,9 +35,9 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mMoveOverride = SKILLTYPE::ATTACK;
 		break;
 	}
-	case ENEMYID::Drake:
+	case ENEMYID::Boss:
 	{
-		mName = "Drake";
+		mName = "Boss";
 		mBaseMaxHP = mCurrentHP = 300.0f;
 		mBaseMaxMana = mCurrentMana = 300.0f;
 		mAttack = 0.0f;
