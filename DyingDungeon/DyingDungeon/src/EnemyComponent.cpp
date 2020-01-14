@@ -35,9 +35,9 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mMoveOverride = SKILLTYPE::ATTACK;
 		break;
 	}
-	case ENEMYID::TreeEnt:
+	case ENEMYID::Drake:
 	{
-		mName = "TreeEnt";
+		mName = "Drake";
 		mBaseMaxHP = mCurrentHP = 300.0f;
 		mBaseMaxMana = mCurrentMana = 300.0f;
 		mAttack = 0.0f;
@@ -130,6 +130,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		}
 		if (mAnimator->getProgress() > 0.9f)
 		{
+			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
 			if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mMoves.GetMove()->skill->IsAOE())

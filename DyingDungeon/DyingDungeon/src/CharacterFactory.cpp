@@ -65,10 +65,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->setStatic(false);
 		break;
 	}
-	case TreeEnt:
+	case Drake:
 	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/TreeEnt.dxm", true);
+		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/.dxm", true);
 		break;
 	}
 	default:

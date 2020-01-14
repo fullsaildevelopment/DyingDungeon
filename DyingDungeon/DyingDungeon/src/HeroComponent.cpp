@@ -191,6 +191,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Once the animation is nearly finished use the skill and apply the effects
 		if (mAnimator->getProgress() > 0.9f)
 		{
+			DepleteMana(mCurrentSkill->GetManaCost());
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())

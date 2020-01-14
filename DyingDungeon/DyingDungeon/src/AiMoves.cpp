@@ -64,6 +64,11 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			//mSkillList.push_back(std::make_shared<Buffs>("Necrotic Infection", "FwdKick", 0.25f, 50.0f, 0.0f, debuff, true));
 			break;
 		}
+		case 1:
+		{
+
+			break;
+		}
 		default:
 		{
 			break;

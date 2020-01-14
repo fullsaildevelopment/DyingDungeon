@@ -12,7 +12,7 @@ public: // Constructors
 	{
 		Paladin,
 		Skeleton,
-		TreeEnt
+		Drake
 	};
 
 public: // Functions
