@@ -4,6 +4,7 @@ StatTracker::StatTracker()
 {
 	m_currentLevel = 1;
 	m_maxPlayerCount = 3;
+	m_p_rewardsScreen = nullptr;
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogDamageDeltEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogTakeDamageEvent);
@@ -16,6 +17,7 @@ StatTracker::StatTracker()
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LevelStartReflex);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::TurnStartReflex);
+	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::UpdateRewardScreen);
 }
 
 StatTracker::~StatTracker()
@@ -45,12 +47,12 @@ StatTracker& StatTracker::Instance()
 //	m_currentLevel = newLevel.levelNumber;
 //}
 
-void StatTracker::SetRewardsScreen(Odyssey::UICanvas& rewardScreen)
+void StatTracker::SetRewardsScreen(Odyssey::UICanvas* rewardScreen)
 {
-	m_p_rewardsScreen = &rewardScreen;
+	m_p_rewardsScreen = rewardScreen;
 }
 
-void StatTracker::UpdateRewardScreen() 
+void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
 {
 	if (characterNames.empty()) 
 	{
@@ -58,10 +60,10 @@ void StatTracker::UpdateRewardScreen()
 	}
 	for (unsigned int i = 1; i <= characterNames.size(); i++) {
 		std::wstring rewardsText;
-		rewardsText.append(L"P" + std::to_wstring(i) + L" - Attack: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Attack)).substr(0, 4) 
-													 + L" - Defend: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Defend)).substr(0, 4)
-													 + L" - Aid: " + std::to_wstring(CalculatePercentageStat(characterNames[i], Action::Aid)).substr(0, 4) + L"\n");
-		m_p_rewardsScreen->getElements<Odyssey::Text2D>()[i]->setText(rewardsText);
+		rewardsText.append(L"P" + std::to_wstring(i ) + L" - Attack: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Attack)).substr(0, 4) 
+													 + L" - Defend: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Defend)).substr(0, 4)
+													 + L" - Aid: " + std::to_wstring(CalculatePercentageStat(characterNames[i - 1], Action::Aid)).substr(0, 4) + L"\n");
+		m_p_rewardsScreen->getElements<Odyssey::Text2D>()[i - 1]->setText(rewardsText);
 	}
 }
 
@@ -107,8 +109,6 @@ void StatTracker::SaveStats(std::string saveName)
 
 				uint32_t action = (uint32_t)m_levels[i].turns[j].actionType;
 				file.write((const char*)&action, sizeof(uint32_t));
-
-				file.write((const char*)&m_levels[i].turns[j].isSpell, sizeof(bool));
 
 				file.write((const char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
 
@@ -184,8 +184,6 @@ void StatTracker::LoadStats(std::string loadFileName)
 				file.read((char*)&action, sizeof(uint32_t));
 				m_levels[i].turns[j].actionType = (Action)action;
 
-				file.read((char*)&m_levels[i].turns[j].isSpell, sizeof(bool));
-
 				file.read((char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
 
 				file.read((char*)&m_levels[i].turns[j].isPlayer, sizeof(bool));
@@ -207,6 +205,7 @@ void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Attack;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].effect = cddEvent->actionEffect;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cddEvent->damageAmount;
+	//m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].attackModifier = cddEvent->attackMod;
 
 }
 
@@ -263,6 +262,7 @@ void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 	m_levels[m_currentLevel - 1].turnCount = tsEvent->turn;
 	newTurn.characterName = tsEvent->characterName;
 	newTurn.round = tsEvent->round;
+	newTurn.isPlayer = tsEvent->isPlayer;
 	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
 	m_levels[m_currentLevel - 1].turnCount = m_levels[m_currentLevel - 1].turns.size();
 }
@@ -382,7 +382,7 @@ float StatTracker::CalculateDamageDealt()
 		{
 			if (m_levels[i].turns[j].actionType == Action::Attack && m_levels[i].turns[j].isPlayer)
 			{
-				total += m_levels[i].turns[j].value;
+				total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
 			}
 		}
 	}
@@ -398,7 +398,8 @@ float StatTracker::CalculateDamageDealt(std::string name)
 		{
 			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].actionType == Action::Attack) 
 			{
-				total += m_levels[i].turns[j].value;
+				total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
+
 			}
 		}
 	}
@@ -506,7 +507,7 @@ float StatTracker::CalculatePercentDamageSuccess()
 	{
 		return 0.0f;
 	}
-	return total/totalDmg;
+	return (total/totalDmg)*100.0f;
 }
 
 float StatTracker::CalculateDamageMitigatated() 
@@ -622,7 +623,7 @@ float StatTracker::CalculatePercentageStat(Action stat)
 		return 0.00f;
 	}
 
-	return (totalAttacks / toatalTurns);
+	return (totalAttacks / toatalTurns)*100.0f;
 }
 
 float StatTracker::CalculatePercentageStat(std::string name, Action stat)
@@ -647,7 +648,7 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat)
 	if (toatalTurns == 0.0f) {
 		return 0.00f;
 	}
-	return totalStat / toatalTurns;
+	return (totalStat / toatalTurns)*100.0f;
 }
 
 float StatTracker::roundf(float num, unsigned int decimal_places) {
@@ -701,7 +702,15 @@ void StatTracker::OutputStatSheet()
 		if (dmgScs < 10.0f) {
 			fileText.append("0");
 		}
-		fileText.append(std::to_string(dmgDelt).substr(0, 4) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+		if (dmgScs >= 100.0f) 
+		{
+			fileText.append(std::to_string(dmgDelt).substr(0, 5) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+		}
+		else 
+		{
+			fileText.append(std::to_string(dmgDelt).substr(0, 4) + "%    |\n\n         Defend   Damage Taken   Damage Mitigated   Health Gained\nDefend: |  ");
+
+		}
 		unsigned int defendCount = GetStatCount(Action::Defend);
 		if (defendCount < 10.0f) {
 			fileText.append("0");

@@ -20,13 +20,13 @@ public:
 	struct Turn
 	{
 		std::string characterName = "";
+		float attackModifier = 0.0f;
 		std::vector<std::string> targetNames;
 		std::vector<float> blockValues;
 		uint32_t round = 1;
 		float value = 0.0f;
 		EFFECTTYPE effect = EFFECTTYPE::None;
 		StatTracker::Action actionType = StatTracker::Action::None;
-		bool isSpell = false;
 		bool isSheild = false;
 		bool isPlayer = false;
 		std::string actionName = "";
@@ -54,7 +54,7 @@ public:
 	//void StartNextTurn();
 	//void StartNextLevel();
 
-	void SetRewardsScreen(Odyssey::UICanvas& rewardScreen);
+	void SetRewardsScreen(Odyssey::UICanvas* rewardScreen);
 
 	void SaveStats(std::string saveName);
 	void LoadStats(std::string loadFileName);
@@ -74,7 +74,7 @@ public:
 
 private:
 	StatTracker();
-	void UpdateRewardScreen();
+	void UpdateRewardScreen(RewardsActiveEvnet* raEvent);
 
 	unsigned int GetStatCount(Action stat);
 	unsigned int GetStatCount(std::string name, Action stat);

@@ -104,10 +104,20 @@ public:
 	std::string characterName;
 	unsigned int turn;
 	unsigned int round;
-	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber)
+	bool isPlayer;
+	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
 		characterName = character;
 		turn = turnNumber;
 		round = roundNumber;
+		isPlayer = isAPlayer;
+	}
+};
+
+class RewardsActiveEvnet : public Odyssey::Event
+{
+public:
+	RewardsActiveEvnet() {
+
 	}
 };

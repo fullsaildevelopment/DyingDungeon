@@ -450,7 +450,7 @@ void setupGameInterface()
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight *0.3333f)), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 9, L"P2 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 9, L"P3 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
 	canvas->setActive(false); // The rewards screen won't show up at the start
-	StatTracker::Instance().SetRewardsScreen(*canvas);
+	StatTracker::Instance().SetRewardsScreen(canvas);
 }
 
 void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
