@@ -39,6 +39,8 @@ class AIMoves
 		
 		//UngaAttack
 		void UngaAttackDeterminePriority();
+
+		void BossDeterminePriority();
 		
 		//Member Variables
 		std::vector<std::shared_ptr<Skills>> mSkillList;
