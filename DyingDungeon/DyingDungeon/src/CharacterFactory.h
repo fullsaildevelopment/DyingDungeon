@@ -11,12 +11,13 @@ public: // Constructors
 	enum CharacterOptions
 	{
 		Paladin,
-		Skeleton
+		Skeleton,
+		Boss
 	};
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene);
+	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene);
 
 	//Getters
 

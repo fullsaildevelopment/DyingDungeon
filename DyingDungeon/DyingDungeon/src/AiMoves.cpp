@@ -10,6 +10,7 @@
 #include "Regens.h"
 #include "StatDown.h"
 #include "StatUp.h"
+#include "Stun.h"
 
 AIMoves::AIMoves()
 {
@@ -46,7 +47,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	{
 		case 0:
 		{
-			//Setup Moves
+			////Setup Moves
 			// Debuff to slow speed
 			debuff = std::make_shared<StatDown>(10.0f,2,STATS::Spd,nullptr);
 			// Basic attack. mod dps, spd down
@@ -62,6 +63,17 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			//Test Regen
 			//debuff = std::make_shared<Regens>(0.15f, 2, nullptr);
 			//mSkillList.push_back(std::make_shared<Buffs>("Necrotic Infection", "FwdKick", 0.25f, 50.0f, 0.0f, debuff, true));
+			break;
+		}
+		case 1:
+		{
+			// Basic Attack, good dps, stun
+			debuff = std::make_shared<Stun>(1,nullptr);
+			mSkillList.push_back(std::make_shared<Attack>("Rock Smash", "BasicAttack", 0.25f, -15.0f, 25.0f, debuff));
+			// Rock Throw, good dps, aoe
+			mSkillList.push_back(std::make_shared<Attack>("Rock Throw", "RockThrow", 0.25f, 20.0f, 15.0f, true));
+			// Rock Crushing Punch, Big smack
+			mSkillList.push_back(std::make_shared<Attack>("Rock Crushing Punch", "RockCrushingPunch", 0.25f, 50.0f, 45.0f));
 			break;
 		}
 		default:

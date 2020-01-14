@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "RedAudioManager.h"
+#include "MeshRenderer.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -121,6 +122,7 @@ void Character::ReceiveHealing(float healing)
 	mDisplaying = true;
 	/////////////////////////////////
 	SetHP(mCurrentHP + healing);
+	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 }
 
 /*

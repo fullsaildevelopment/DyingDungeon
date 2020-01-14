@@ -1,29 +1,40 @@
 #pragma once
-#include "Component.h"
-#include "UICanvas.h"
-#include "Text2D.h"
+#include "Entity.h"
+#include "Scene.h"
 
-class GameManagerUI : public Odyssey::Component
+class GameUIManager
 {
-	CLASS_DECLARATION(GameManagerUI);
-
-public: // Constructors
-	GameManagerUI() = default;
-	virtual ~GameManagerUI();
-
-	std::shared_ptr<Odyssey::UICanvas> mPauseMenu;
+public: // Singleton pattern
+		/**
+		 *	Get the singleton instance of the game ui manager.
+		 *	@param[in] void
+		 *	@return InputManager& The singleton instance of the game ui manager.
+		 */
+	static GameUIManager& getInstance();
+	~GameUIManager() { }
+private: // Singleton pattern
+	GameUIManager() { }
 
 public: // Functions
 
-	// Necessary
-	virtual void initialize();
-	virtual void update(double deltaTime);
+	// Toggle canvases on and off
+	void ToggleCanvas(std::shared_ptr<Odyssey::Entity> _canvas, bool _isActive);
+
+	// Creation of the pause menu
+	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
 	//Getters
+	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
 
 	//Setters
+	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
+
+	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
 	
 private: // Varibales
+
+	// Canvases
+	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 
 	// Vectors
 
@@ -32,12 +43,11 @@ private: // Varibales
 	// Entities
 
 	// Ints
-
+	UINT screenWidth = 0;
+	UINT screenHeight = 0;
 	// Floats
 
 	// Bools
-
-	// Canvases
 
 private: // Functions
 

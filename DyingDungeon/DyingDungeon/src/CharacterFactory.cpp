@@ -7,7 +7,7 @@
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
 {
 	// Create the new pointer for the character we are creating
 	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
@@ -32,6 +32,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	switch (_characterToCreate)
 	{
 	case Paladin:
+	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Paladin.dxm", true);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
@@ -48,8 +49,9 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->setStatic(false);
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		break;
-
+	}
 	case Skeleton:
+	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Skeleton.dxm", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
@@ -62,12 +64,22 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 		newCharacter->setStatic(false);
 		break;
-
-	default:
+	}
+	case Boss:
+	{
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/.dxm", true);
 		break;
 	}
-
+	default:
+	{
+		break;
+	}
+	}
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
+
+	// Set the character's name
+	newCharacter->getComponent<Character>()->SetName(_characterName);
 
 	// Create the impact indicator for each character
 	CreateCharacterImpactIndicator(newCharacter);

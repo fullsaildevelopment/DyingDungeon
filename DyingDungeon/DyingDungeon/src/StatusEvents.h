@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Event.h"
+#include "EventManager.h"
 #include "Skills.h"
 
 class CharacterDealtDamageEvent : public Odyssey::Event
@@ -10,16 +11,15 @@ public:
 	std::string attackerName;
 	std::string actionName;
 	float damageAmount;
-	STATS actionEffect;
-	bool isSpell;
-
-	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, STATS effect, bool isASpell)
+	float atkMod;
+	EFFECTTYPE actionEffect;
+	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, float attackMod, EFFECTTYPE effect)
 	{
 		attackerName = attacker;
 		actionName = action;
 		damageAmount = damage;
+		atkMod = attackMod;
 		actionEffect = effect;
-		isSpell = isASpell;
 	}
 };
 
@@ -43,15 +43,13 @@ class CharacterHealsEvent : public Odyssey::Event
 public:
 	std::string healerName;
 	std::string actionName;
-	STATS actionEffect;
-	bool isSpell;
+	EFFECTTYPE actionEffect;
 	float health;
-	CharacterHealsEvent(std::string healer, std::string action, STATS effect, float healthAmount, bool isASpell) 
+	CharacterHealsEvent(std::string healer, std::string action, EFFECTTYPE effect, float healthAmount) 
 	{
 		healerName = healer;
 		actionName = action;
 		actionEffect = effect;
-		isSpell = isASpell;
 		health = healthAmount;
 	}
 };
@@ -60,11 +58,11 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 {
 public:
 	std::string targetName;
-	std::string actionName;
-	CharacterRecivesHealingEvent(std::string target, std::string action)
+	float healingAmount;
+	CharacterRecivesHealingEvent(std::string target, float healing)
 	{
 		targetName = target;
-		actionName = action;
+		healingAmount = healing;
 	}
 };
 
@@ -73,17 +71,18 @@ class CharacterShieldsEvent : public Odyssey::Event
 public:
 	std::string chracterName;
 	std::string actionName;
+	std::string targetName;
 	float shieldBuff;
-	bool isSpell;
-	CharacterShieldsEvent(std::string character, std::string action, float shield_defense, bool spell)
+	CharacterShieldsEvent(std::string character, std::string target, std::string action, float shield_defense)
 	{
 		chracterName = character;
+		targetName = target;
 		actionName = action;
 		shieldBuff = shield_defense;
-		isSpell = spell;
 	}
 };
 
+// Merged into the CharacterShieldsEvent
 class CharacterRecivesShieldEvent : public Odyssey::Event 
 {
 public:

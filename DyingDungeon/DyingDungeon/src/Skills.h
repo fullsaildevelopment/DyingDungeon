@@ -1,5 +1,6 @@
 #pragma once
 #include "StatusEffect.h"
+#include "StatusEvents.h"
 #include <memory>
 enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 //forward declare charater class
@@ -21,7 +22,8 @@ protected:
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
 	bool mIsAOE;
-	std::shared_ptr<StatusEffect> mDebuff;
+	// Status Effect Attached to skill
+	std::shared_ptr<StatusEffect> mStatusEffect;
 private:
 //public and private functions
 public:

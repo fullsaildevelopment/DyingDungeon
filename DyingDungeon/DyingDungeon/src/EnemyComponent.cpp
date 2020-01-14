@@ -29,9 +29,20 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
-		mAttack = 0.15f;
-		mBaseDefense = mDefense = 0.05f;
-		mBaseSpeed = mSpeed = 20;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		mMoveOverride = SKILLTYPE::ATTACK;
+		break;
+	}
+	case ENEMYID::Boss:
+	{
+		mName = "Boss";
+		mBaseMaxHP = mCurrentHP = 300.0f;
+		mBaseMaxMana = mCurrentMana = 300.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.25f;
+		mBaseSpeed = mSpeed = 45.0f;
 		mMoveOverride = SKILLTYPE::ATTACK;
 		break;
 	}
@@ -110,7 +121,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 								c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 						}
 					}
-					else if (mMoves.GetMove()->target != nullptr)
+					else if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->target != this)
 						mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 				}
 				// Set trigger to true to avoid looping the recipents animation
@@ -119,6 +130,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		}
 		if (mAnimator->getProgress() > 0.9f)
 		{
+			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
 			if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mMoves.GetMove()->skill->IsAOE())
