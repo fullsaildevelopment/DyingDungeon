@@ -118,9 +118,42 @@ bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerT
 
 	if (finished)
 	{
-		mBestMove->score = mBestAttack.score;
-		mBestMove->target = mBestAttack.target;
-		mBestMove->skill = mBestAttack.skill;
+		switch (mPriorityMove)
+		{
+			case SKILLTYPE::ATTACK:
+			{
+				mBestMove->score = mBestAttack.score;
+				mBestMove->target = mBestAttack.target;
+				mBestMove->skill = mBestAttack.skill;
+				break;
+			}
+			case SKILLTYPE::BUFF:
+			{
+				mBestMove->score = mBestBuff.score;
+				mBestMove->target = mBestBuff.target;
+				mBestMove->skill = mBestBuff.skill;
+				break;
+			}
+			case SKILLTYPE::HEAL:
+			{
+				mBestMove->score = mBestHeal.score;
+				mBestMove->target = mBestHeal.target;
+				mBestMove->skill = mBestHeal.skill;
+				break;
+			}
+			case SKILLTYPE::DEBUFF:
+			{
+				mBestMove->score = mBestDebuff.score;
+				mBestMove->target = mBestDebuff.target;
+				mBestMove->skill = mBestDebuff.skill;
+				break;
+			}
+			default:
+			{
+				//Ya messed up somewhere if you reached this
+				break;
+			}
+		}
 	}
 
 	return finished;
@@ -264,8 +297,6 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 						attackAOEScore += tempATK->GetDamage();
 
 					attackAOEScore += StatusEffectScore(skill, currTarget);
-
-					
 				}
 			}
 		}
@@ -281,14 +312,68 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 	std::cout << skill->GetName() << " aoe scored " << attackAOEScore << std::endl;
 }
 
-float AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
-	return 0.0f;
+	float buffScore = 0.0f;
+	Character* target = nullptr;
+
+	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
+	{
+		if (t)
+		{
+			if (target = t->getComponent<Character>())
+			{
+				if (target->IsHero() == false && target->GetState() != STATE::DEAD)
+				{
+					if (target != caster)
+						buffScore += 20.0f;
+
+					buffScore += StatusEffectScore(skill, target);
+
+					if (buffScore > mBestBuff.score)
+					{
+						mBestBuff.score = buffScore;
+						mBestBuff.skill = skill;
+						mBestBuff.target = target;
+					}
+
+					buffScore = 0.0f;
+					target = nullptr;
+				}
+			}
+		}
+	}
+	
 }
 
-float AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
-	return 0.0f;
+	float buffAOEScore = 0.0f;
+	Character* target = nullptr;
+
+	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
+	{
+		if (t)
+		{
+			if (target = t->getComponent<Character>())
+			{
+				if (target->IsHero() == false && target->GetState() != STATE::DEAD)
+				{
+					if (target != caster)
+						buffAOEScore += 20.0f;
+
+					buffAOEScore += StatusEffectScore(skill, target);
+				}
+			}
+		}
+	}
+
+	if (buffAOEScore > mBestBuff.score)
+	{
+		mBestBuff.score = buffAOEScore;
+		mBestBuff.skill = skill;
+		mBestBuff.target = target;
+	}
 }
 
 float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* target)
@@ -366,6 +451,9 @@ float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* targe
 			{
 				if (target->GetSpeed() >= target->GetBaseSpeed())
 					statScore += 20.0f;
+				if (target == caster)
+					statScore += 10.0f;
+
 				break;
 			}
 			default:
@@ -406,6 +494,11 @@ void AIMoves::SkeletonDeterminePriority()
 {
 	if (caster->GetProvoked() != nullptr)
 		mPriorityMove = SKILLTYPE::ATTACK;
+
+	if (mPriorityMove == SKILLTYPE::UNDEFINED)
+	{
+
+	}
 }
 
 void AIMoves::UngaAttackDeterminePriority()
