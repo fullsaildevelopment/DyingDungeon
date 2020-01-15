@@ -7,10 +7,10 @@ GameUIManager& GameUIManager::getInstance()
 	return instance;
 }
 
-void GameUIManager::ToggleCanvas(std::shared_ptr<Odyssey::Entity> _object, bool _isActive)
+void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 {
 	// Set the passed in entity's canvas to active or deactived based on the bool _isActive.
-	_object->getComponent<Odyssey::UICanvas>()->setActive(_isActive);
+	_canvas->setActive(_isActive);
 }
 
 void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
@@ -46,7 +46,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mTowerSelectMenu);
 	// Turn off the canvas when creating it
-	ToggleCanvas(mTowerSelectMenu, false);
+	ToggleCanvas(mTowerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
 // This is where I will design and add all elemnts into the pause menu canvas
@@ -119,9 +119,8 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
-
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mPauseMenu);
 	// Turn off the canvas when creating it
-	ToggleCanvas(mPauseMenu, false);
+	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
 }

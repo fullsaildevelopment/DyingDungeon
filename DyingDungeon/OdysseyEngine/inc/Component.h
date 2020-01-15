@@ -93,7 +93,7 @@ namespace Odyssey
 		bool isActive();
 
 	protected: // Members
-		bool mActive;
+		bool mIsActive;
 		Entity* mEntity;
 	};
 }

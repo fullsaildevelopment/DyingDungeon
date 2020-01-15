@@ -10,8 +10,7 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, ParticleSystem)
 
-		ParticleSystem::ParticleSystem(RenderDevice& renderDevice)
-		: mRenderDevice(renderDevice)
+		ParticleSystem::ParticleSystem(RenderDevice& renderDevice) : mRenderDevice(renderDevice)
 	{
 		mDevice = renderDevice.getDevice();
 
@@ -25,11 +24,11 @@ namespace Odyssey
 
 		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 		depthStencilDesc.StencilEnable = false;
-		depthStencilDesc.StencilReadMask = 0xFF;
-		depthStencilDesc.StencilWriteMask = 0xFF;
+		depthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+		depthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
 		// Stencil operations if pixel is front-facing
 		depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
@@ -62,7 +61,8 @@ namespace Odyssey
 		desc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		desc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		blendDesc.AlphaToCoverageEnable = false;
+		blendDesc.AlphaToCoverageEnable = true;
+		blendDesc.IndependentBlendEnable = false;
 		blendDesc.RenderTarget[0] = desc;
 
 		mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
@@ -97,7 +97,7 @@ namespace Odyssey
 		mPixelShader->bind(context);
 
 		// Bind the blend state
-		float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xffffffff);
 
 		mFire->bind(context);

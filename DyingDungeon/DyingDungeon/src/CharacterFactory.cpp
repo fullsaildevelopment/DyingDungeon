@@ -127,6 +127,8 @@ void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::E
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->setActive(false);
 	// Assign the character's impact indicator
 	_character->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+	// Don't show impact indicator when creating it
+	impactIndicator->setActive(false);
 
 	// Add the impact indicator to the game scene
 	mGameScene->addEntity(impactIndicator);

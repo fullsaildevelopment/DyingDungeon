@@ -25,16 +25,10 @@ void TowerManager::initialize()
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	CreateBattleInstance();
 
-	static bool registeredCallbacks = false;
-	if (!registeredCallbacks)
-	{
-		// Set the pause menu button callbacks
-		GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-		//GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ToggleOptionsMenu);
-		GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
-
-		registeredCallbacks = true;
-	}
+	// Set the pause menu button callbacks
+	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+	//GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ToggleOptionsMenu);
+	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
 }
 
 void TowerManager::update(double deltaTime)
@@ -60,7 +54,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
-			  Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
+			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
@@ -221,8 +215,8 @@ void TowerManager::TogglePauseMenu()
 	mIsPaused = !mIsPaused;
 
 	// Toggle pause menu canvas
-	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenu, !pauseMenu->getComponent<Odyssey::UICanvas>()->isActive());
+	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
+	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
 
 	// Loop through all of the characters and toggle their animator
 	for (int i = 0; i < mAllCharacters.size(); i++)
@@ -251,7 +245,13 @@ void TowerManager::GoToMainMenu()
 	Rewards->setActive(false);
 	// Deactivate the pause menu
 	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenu, false);
+	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Unregister callbacks for the buttons
+	// Set the pause menu button callbacks
+	//GameUIManager::getInstance().GetResumeButton()->unregisterCallback("onMouseClick");
+	//GameUIManager::getInstance().GetOptionsButton()->unregisterCallback("onMouseClick");
+	//GameUIManager::getInstance().GetMainMenuButton()->unregisterCallback("onMouseClick");
 
 	// Set the current level back to 1
 	mCurrentLevel = 1;

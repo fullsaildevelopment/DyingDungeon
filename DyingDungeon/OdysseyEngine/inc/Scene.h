@@ -56,6 +56,8 @@ namespace Odyssey
 		 */
 		Entity* getMainCamera();
 
+		void setActive(bool active);
+
 	protected: // Members
 		std::shared_ptr<Entity> mMainCamera;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
@@ -67,5 +69,6 @@ namespace Odyssey
 		std::vector<ParticleSystem*> mSystemList;
 		XTime mXTimer;
 		double mDeltaTime;
+		bool mActive;
 	};
 }

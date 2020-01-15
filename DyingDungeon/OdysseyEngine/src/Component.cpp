@@ -13,7 +13,7 @@ namespace Odyssey
 
 	Component::Component()
 	{
-		mActive = true;
+		mIsActive = true;
 		mEntity = nullptr;
 	}
 
@@ -44,11 +44,11 @@ namespace Odyssey
 
 	void Component::setActive(bool enable)
 	{
-		mActive = enable;
+		mIsActive = enable;
 	}
 
 	bool Component::isActive()
 	{
-		return mActive;
+		return mIsActive;
 	}
 }

@@ -106,4 +106,13 @@ namespace Odyssey
 		// Return the entity registered with the main camera
 		return mMainCamera.get();
 	}
+	void Scene::setActive(bool active)
+	{
+		mActive = active;
+
+		//for (Component* component : mComponentList)
+		//{
+		//	component->setActive(mActive);
+		//}
+	}
 }
