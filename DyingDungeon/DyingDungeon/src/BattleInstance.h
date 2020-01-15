@@ -47,8 +47,8 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mTurnIndicator; // This will be the object underneath the character who's turn it is
 
 	// Ints
-	int mTurnCounter = -1;
-	int mCurrentRound = -1;
+	int mTurnCounter;
+	int mCurrentRound;
 
 	// Floats
 

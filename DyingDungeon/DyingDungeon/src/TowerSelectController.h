@@ -15,5 +15,8 @@ public:
 	Odyssey::Rectangle2D* mRect;
 private:
 	Odyssey::Application* mApplication;
+
+private: //Functions
+	void GoToTeamSelection();
 };
 
