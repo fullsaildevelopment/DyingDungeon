@@ -50,6 +50,15 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		break;
 	}
+	case Wizard:
+	{
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/.dxm", true);
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "", false);
+		newCharacter->setStatic(false);
+		newCharacter->addComponent<HeroComponent>(HEROID::Wizard);
+		break;
+	}
 	case Skeleton:
 	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
@@ -65,12 +74,12 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->setStatic(false);
 		break;
 	}
-	case Boss:
+	case Ganfaul:
 	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Ganfaul.dxm", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Ganfaul/Ganfaul_Idle");
-		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack"); 
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
