@@ -9,7 +9,6 @@ CLASS_DEFINITION(Component, Character)
 Character::Character()
 {
 	mHero = false;
-	mDead = false;
 	mDisplaying = false;
 	mShielding = false;
 	mAttack = 0.0f;
@@ -291,38 +290,6 @@ float Character::GetShielding()
 void Character::SetShielding(float shield)
 {
 	mShielding = shield;
-}
-
-/*
- * Function:  IsDead()
- * --------------------
- * Check to see if the character is dead
- *
- * returns: bool
- */
-bool Character::IsDead()
-{
-	return mDead;
-}
-
-/*
- * Function:  SetMana(float Mana)
- * --------------------
- * Set the dead staus of the character
- *
- * returns: void
- */
-void Character::SetDead(bool deadStatus)
-{
-	mDead = deadStatus;
-	if (deadStatus == true)
-	{
-		mCurrentState = STATE::DEAD;
-	}
-	else
-	{
-		mCurrentState = STATE::NONE;
-	}
 }
 
 // Adds Exp to the charater

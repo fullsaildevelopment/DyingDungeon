@@ -21,9 +21,9 @@ CLASS_DEFINITION(Character, HeroComponent)
 
 HeroComponent::HeroComponent(HEROID id)
 {
-	mDead = false;
 	SetHero(true);
 	mEXP = 0;
+	mShielding = 0.0f;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
@@ -39,9 +39,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.30f;
 		mBaseSpeed = mSpeed = 35.0f;
-		mShielding = 0.0f;
-		for (int i = 0; i < TOTALSKILLS; ++i)
-		// Basic Attack (Add Provoke 30% chance)
+		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
@@ -52,6 +50,27 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
+		break;
+	}
+	case HEROID::Wizard:
+	{
+		mName = "Wizard";
+		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxMana = mCurrentMana = 150.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.10f;
+		mBaseSpeed = mSpeed = 40.0f;
+		// Basic attack, stun
+		temp = std::make_shared<Stun>(1,nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "", 0.25f, -10.0f, 10.0f,temp));
+		// Wind Slash, aoe dps, speed down 
+		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Wind Slash", "", 0.25f, 10.0f, 15.0f, temp, true));
+		// Fire sTrom BIIIIGGGGG DPS with bleed
+		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("FireStorm", "", 0.25f, 30.0f, 50.0f, temp, true));
+		// Lighting Bolt BIGGGGG siongle target dps
+		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "", 0.25f, 35.0f, 60.0f));
 		break;
 	}
 	default:
