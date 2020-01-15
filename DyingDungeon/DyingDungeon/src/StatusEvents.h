@@ -82,15 +82,7 @@ public:
 	}
 };
 
-// Merged into the CharacterShieldsEvent
-class CharacterRecivesShieldEvent : public Odyssey::Event 
-{
-public:
-	std::string targetName;
-	CharacterRecivesShieldEvent(std::string target) {
-		targetName = target;
-	}
-};
+
 
 class LevelStartEvent : public Odyssey::Event
 {
@@ -108,10 +100,22 @@ public:
 	std::string characterName;
 	unsigned int turn;
 	unsigned int round;
-	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber)
+	bool isPlayer;
+	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
 		characterName = character;
 		turn = turnNumber;
 		round = roundNumber;
+		isPlayer = isAPlayer;
+	}
+};
+
+class RewardsActiveEvnet : public Odyssey::Event
+{
+public:
+	unsigned int level;
+	RewardsActiveEvnet(unsigned int finishedLevel) 
+	{
+		level = finishedLevel;
 	}
 };

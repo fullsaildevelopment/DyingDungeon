@@ -52,8 +52,7 @@ void TowerManager::update(double deltaTime)
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
 		{
-			// Update the current battle
-			int result = mCurrentBattle->UpdateBattle();
+      int result = mCurrentBattle->UpdateBattle();
 
 			// If the result of the updated battle was DESTROY, destory the current battle instance
 			if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
@@ -61,6 +60,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
+			  Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
