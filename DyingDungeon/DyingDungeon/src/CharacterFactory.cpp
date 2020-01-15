@@ -73,7 +73,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack"); 
-		newCharacter->addComponent<EnemyComponent>(ENEMYID::Boss);
+		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
 		newCharacter->setStatic(false);
 		break;
 	}

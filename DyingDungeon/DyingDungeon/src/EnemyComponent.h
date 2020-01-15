@@ -11,12 +11,12 @@ public:
 	EnemyComponent(ENEMYID _enemyID);
 	~EnemyComponent();
 	//virtual void initialize();
-	//Attack Functions
-	bool FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> targets);
-	float ScoreMove(Skills* skillOption, Character* target);
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 	//Death Functions
 	virtual void Die();
+	// Extra Mechanics for enemys 
+	void (EnemyComponent::*mMechPtr)() = nullptr;
+	void GanfaulPhaseMechanic();
 	/////Get and Set Functions/////
 	/////End of Get and Set Functions/////
 private:
