@@ -72,7 +72,6 @@ Attack::~Attack()
 
 void Attack::Use(Character& caster, Character& target)
 {
-	caster.DepleteMana(mMpCost);
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
 	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";

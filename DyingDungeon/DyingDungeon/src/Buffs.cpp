@@ -31,7 +31,6 @@ void Buffs::Use(Character& caster, Character& target)
 {
 	if (mStatusEffect != nullptr)
 	{
-		caster.DepleteMana(mMpCost);
 		mStatusEffect->Apply(target);
 		std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << "." << std::endl;
 		if (mStatusEffect->GetTypeId() == EFFECTTYPE::Regen)

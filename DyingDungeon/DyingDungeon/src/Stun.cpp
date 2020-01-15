@@ -33,7 +33,10 @@ void Stun::Use()
 }
 void Stun::Remove()
 {
-	mRecipient->SetState(STATE::NONE);
-	std::cout << mRecipient->GetName() << " is no longer stunned." << std::endl;
+	if (mRecipient->GetState() != STATE::DEAD)
+	{
+		mRecipient->SetState(STATE::NONE);
+		std::cout << mRecipient->GetName() << " is no longer stunned." << std::endl;
+	}
 	return;
 }
