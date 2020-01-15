@@ -36,8 +36,7 @@ void Buffs::Use(Character& caster, Character& target)
 		if (mStatusEffect->GetTypeId() == EFFECTTYPE::Regen)
 			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
 		else if (mStatusEffect->GetTypeId() == EFFECTTYPE::Shield)
-			Odyssey::EventManager::getInstance().publish(new CharacterShieldsEvent(caster.GetName(), target.GetName(), mName, mStatusEffect->GetAmountOfEffect()));
-
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
 	}
 }
 

@@ -63,10 +63,9 @@ public:
 	void LogTakeDamageEvent(CharacterTakeDamage* ctdEvent);
 	void LogHealingEvent(CharacterHealsEvent* chcEvent);
 	void LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent);
-	void LogSheildingEvent(CharacterShieldsEvent* csEvent);
-
+	void LogBuffingEvent(CharacterBuffsEvent* csEvent);
+	void LogDebuffingEvent(CharacterDebuffsEvent* cdEvent);
 	void LevelStartReflex(LevelStartEvent* lsEvent);
-
 	void TurnStartReflex(TurnStartEvent* tsEvent);
 	void OutputStatSheet();
 
