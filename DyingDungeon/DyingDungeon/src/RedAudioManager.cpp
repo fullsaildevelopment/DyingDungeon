@@ -23,6 +23,7 @@ RedAudioManager& RedAudioManager::Instance()
 RedAudioManager::RedAudioManager()
 {
 	//default_audio = nullptr;
+	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::StopEvent);
 	default_audio = new RedAudio("assets/audio/wheres_the_lamb_sauce.mp3", "DEFAULT");
 	default_audio->Open();
 }
@@ -48,6 +49,11 @@ RedAudioManager::~RedAudioManager()
 void RedAudioManager::Play(const char* alias)
 {
 	FindAudio(alias)->Play();
+}
+
+void RedAudioManager::StopEvent(AudioStopEvent* asEvent)
+{
+	Stop(asEvent->alias.c_str());
 }
 
 void RedAudioManager::Stop(const char* alias) 

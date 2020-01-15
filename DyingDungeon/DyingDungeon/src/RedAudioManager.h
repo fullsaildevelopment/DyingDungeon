@@ -1,6 +1,20 @@
 #pragma once
 #include "RedAudio.h"
 #include <vector>
+#include "Event.h"
+#include "EventManager.h"
+
+class AudioStopEvent : public Odyssey::Event
+{
+public:
+	std::string alias;
+	AudioStopEvent(std::string audio_alias)
+	{
+		alias = audio_alias;
+		priority = Odyssey::EventPriority::Deferred;
+	}
+};
+
 class RedAudioManager
 {
 	private:
@@ -20,6 +34,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		void Play(const char* alias);
+		void StopEvent(AudioStopEvent* asEvent);
 		void Stop(const char* alias);
 		/// <summary>
 		/// 
