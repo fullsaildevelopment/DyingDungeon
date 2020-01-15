@@ -8,6 +8,8 @@ namespace Odyssey
 		mParent = nullptr;
 		mIsStatic = true;
 		mDebugEnabled = false;
+		mIsActive = true;
+		mIsVisible = true;
 	}
 
 	void Entity::addChild(std::shared_ptr<Entity> child)
@@ -53,6 +55,26 @@ namespace Odyssey
 	bool Entity::getStatic()
 	{
 		return mIsStatic;
+	}
+
+	void Entity::setActive(bool active)
+	{
+		mIsActive = active;
+	}
+
+	bool Entity::isActive()
+	{
+		return mIsActive;
+	}
+
+	void Entity::setVisible(bool active)
+	{
+		mIsVisible = active;
+	}
+
+	bool Entity::isVisible()
+	{
+		return mIsVisible;
 	}
 
 	bool Entity::getDebugEnabled()

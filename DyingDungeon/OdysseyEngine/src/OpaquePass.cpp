@@ -101,7 +101,7 @@ namespace Odyssey
 		{
 			for (MeshRenderer* meshRenderer : args.renderList)
 			{
-				if (meshRenderer->isActive())
+				if (meshRenderer->isActive() && meshRenderer->getEntity()->isActive() && meshRenderer->getEntity()->isVisible())
 				{
 					if (mFrustumCull == true)
 					{
