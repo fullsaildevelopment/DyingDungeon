@@ -66,23 +66,41 @@ public:
 	}
 };
 
-class CharacterShieldsEvent : public Odyssey::Event 
+class CharacterBuffsEvent : public Odyssey::Event 
 {
 public:
 	std::string chracterName;
 	std::string actionName;
 	std::string targetName;
-	float shieldBuff;
-	CharacterShieldsEvent(std::string character, std::string target, std::string action, float shield_defense)
+	EFFECTTYPE buffType;
+	float buffValue;
+	CharacterBuffsEvent(std::string character, std::string target, std::string action, EFFECTTYPE buff, float buffAmount)
 	{
 		chracterName = character;
 		targetName = target;
 		actionName = action;
-		shieldBuff = shield_defense;
+		buffType = buff;
+		buffValue = buffAmount;
 	}
 };
 
-
+class CharacterDebuffsEvent : public Odyssey::Event
+{
+public:
+	std::string characterName;
+	std::string actionName;
+	std::string targetName;
+	EFFECTTYPE debuffType;
+	float debuffValue;
+	CharacterDebuffsEvent(std::string character, std::string target, std::string action, EFFECTTYPE debuff, float debuff_Value)
+	{
+		characterName = character;
+		actionName = action;
+		targetName = target;
+		debuffType = debuff;
+		debuffValue = debuff_Value;
+	}
+};
 
 class LevelStartEvent : public Odyssey::Event
 {
