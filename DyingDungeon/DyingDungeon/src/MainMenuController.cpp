@@ -1,6 +1,7 @@
 #include "MainMenuController.h"
 #include "InputManager.h"
 #include "RedAudioManager.h"
+#include "EventManager.h"
 
 CLASS_DEFINITION(Odyssey::Component, MainMenuController)
 MainMenuController::MainMenuController(Odyssey::Application* application)
@@ -11,15 +12,16 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 
 void MainMenuController::initialize()
 {
-	RedAudioManager::Instance()->Play("BackgroundMenu");
+	RedAudioManager::Instance().Loop("BackgroundMenu");
+	RedAudioManager::Instance().Stop("BackgroundBattle");
 }
 
 void MainMenuController::update(double deltaTime)
 {
-	if (Odyssey::InputManager::getInstance().getKeyPress(VK_RETURN))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 	{
-		RedAudioManager::Instance()->GetAudio("BackgroundMenu")->Pause();
-		RedAudioManager::Instance()->Play("BackgroundBattle");
-		mApplication->setActiveScene("Game");
+		//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+		//RedAudioManager::Instance().Play("BackgroundBattle");
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 	}
 }

@@ -1,6 +1,8 @@
 #pragma once
-#include "Buffs.h"
-
+#include "StatusEffect.h"
+#include "StatusEvents.h"
+#include <memory>
+enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 //forward declare charater class
 class Character;
 
@@ -8,42 +10,44 @@ class Skills
 {
 //public and private variables
 public:
-private:
-	//how much damage this skill will do to HP
-	float mDamage;
+protected:
+	SKILLTYPE mTypeId;
 	//how much mana it will cost the caster
 	float mMpCost;
-	// If any the buff it contains
-	Buffs mBuff;
-	// If attack or support
-	bool mAttack;
+	// Animation time for when effects such as hit animation or particle effects should go out
+	float mAnimationTime;
 	// Name of skill
 	std::string mName;
 	// Animation ID
 	std::string mAnimationId;
+	// Tell if it affects a whole team or a single target
+	bool mIsAOE;
+	// Status Effect Attached to skill
+	std::shared_ptr<StatusEffect> mStatusEffect;
+private:
 //public and private functions
 public:
+	//constructor
 	Skills() = default;
-	//constructor, give how much damage you want the skill to do and how much mana you want it to cost 
-	Skills(float dps, float mana,bool attack, std::string skillName, std::string animationID);
-	//additionally if it has a buff/debuff give it here 
-	Skills(float dps, float mana, bool attack, Buffs buff, std::string skillName, std::string animationID);
 	//deconstructor
-	~Skills();
+	~Skills() = default;
 	//get how much mana the skill cost
 	float GetManaCost();
-	// Get if it has a buff or not
-	Buffs GetBuff();
 	// Get Skill name
 	std::string GetName();
-	//Get Damage
-	float GetDamage();
-	// Get Attack
-	bool IsAttack();
 	// Gets the Animation ID
 	std::string GetAnimationId();
+	// Gets the animation timing
+	float GetAnimationTiming();
+	// Get TypeID
+	SKILLTYPE GetTypeId();
+	// Get isAOE
+	bool IsAOE();
+	StatusEffect* GetStatusEffect();
+	// Set the status Effect this applies
+	void SetStatusEffect(std::shared_ptr<StatusEffect> se);
 	//use the skill
-	void Use(Character& caster, Character& target);
+	virtual void Use(Character& caster, Character& target) = 0;
 private:
 
 };

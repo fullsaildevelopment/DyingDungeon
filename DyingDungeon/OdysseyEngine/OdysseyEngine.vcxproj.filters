@@ -1,0 +1,476 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{93411c14-e657-470d-af02-66eea9a7c6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine">
+      <UniqueIdentifier>{d2af7993-61dd-4de7-b6a2-0f04cbbcc62d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine">
+      <UniqueIdentifier>{8c5aa76a-bde9-4fef-ae33-1aa7f58ff87b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine\Managers">
+      <UniqueIdentifier>{3ca820b1-5ce4-45db-89ad-4322de94882b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine\Components">
+      <UniqueIdentifier>{deccaf21-deff-47dc-bfa3-60199c01c322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine\Helpers/Loaders">
+      <UniqueIdentifier>{6f5420ea-e835-4183-8d6a-852ee18cc819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine\Interfaces">
+      <UniqueIdentifier>{c06f8ea2-7784-4fb5-ab37-0585cc53e195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine">
+      <UniqueIdentifier>{65c2d9b0-180e-4587-9924-8c8cead7a94d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\DirectX 11">
+      <UniqueIdentifier>{c847d0e4-247a-4142-bfe6-62d48f022f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine">
+      <UniqueIdentifier>{acdb2774-62ea-4e33-bf72-91fa9cad8761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine\Components">
+      <UniqueIdentifier>{dc1dc4a4-d758-4ed8-ab77-d30682e9b587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine\Managers">
+      <UniqueIdentifier>{f726fedd-deb8-4e13-a423-7f81138050ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine\Helpers/Loaders">
+      <UniqueIdentifier>{4592bdcd-3dd3-4e13-9e93-374dbcc4ed85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine\Interfaces">
+      <UniqueIdentifier>{be6f1a67-0b8b-4903-8142-0e6239a2fd70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Engine\Physics">
+      <UniqueIdentifier>{a799e634-fe55-4b71-8cc4-4122adeb60ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\DirectX 11">
+      <UniqueIdentifier>{c6c2e583-d22b-44f9-9b19-ecbdb4742406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\UI Elements">
+      <UniqueIdentifier>{b87f02a4-9517-4f12-a3df-bf911140d1c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Components">
+      <UniqueIdentifier>{b7a92492-1463-411f-8d40-5efcdd9bbd1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Managers">
+      <UniqueIdentifier>{3f071460-1587-4831-bb1c-b8c0207f82cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\Components">
+      <UniqueIdentifier>{ac5016f4-bfb8-46d4-a518-93cc7304790b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\Managers">
+      <UniqueIdentifier>{ba52eb93-0070-4ede-b6ff-74819dc4ecba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\UI Elements">
+      <UniqueIdentifier>{c2fb4c38-c4c5-4771-81c2-b3dfd91ccf34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\Interfaces">
+      <UniqueIdentifier>{a8f17310-885d-4cd8-b3d3-6ca7f9b2de00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\Interfaces\Render Passes">
+      <UniqueIdentifier>{127039be-d9e8-4e89-866c-8d0456e30b23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Engine\Render Resources">
+      <UniqueIdentifier>{6f203bdc-6784-431b-b0f1-2e533d537db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Interfaces">
+      <UniqueIdentifier>{39af6fe9-8d1c-4a76-9b92-fc8dea9c0ea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Render Resources">
+      <UniqueIdentifier>{659380d6-506c-4bca-acf9-91ef61d8f8a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Interfaces\Render Passes">
+      <UniqueIdentifier>{33c43af4-d9bc-4b2e-b914-bc299fd63ddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render Engine\Includes">
+      <UniqueIdentifier>{5f6fd323-9297-431f-b6d2-ccc880363a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Engine\Includes">
+      <UniqueIdentifier>{0fd7a7c1-167e-461a-be75-346269f4c54a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Includes">
+      <UniqueIdentifier>{2a5caa8c-9536-4753-afb0-49fa4bb30480}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\UICanvas.h">
+      <Filter>Header Files\Render Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DebugManager.h">
+      <Filter>Header Files\Render Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FileManager.h">
+      <Filter>Header Files\Render Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Camera.h">
+      <Filter>Header Files\Game Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Component.h">
+      <Filter>Header Files\Game Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Transform.h">
+      <Filter>Header Files\Game Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\InputManager.h">
+      <Filter>Header Files\Game Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\XTime.h">
+      <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Application.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Scene.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ThreadManager.h">
+      <Filter>Header Files\Game Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Rectangle2D.h">
+      <Filter>Header Files\Render Engine\UI Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Sprite2D.h">
+      <Filter>Header Files\Render Engine\UI Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Text2D.h">
+      <Filter>Header Files\Render Engine\UI Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UIElement.h">
+      <Filter>Header Files\Render Engine\UI Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\EventManager.h">
+      <Filter>Header Files\Game Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Event.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\EventHandler.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Material.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mesh.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Animator.h">
+      <Filter>Header Files\Render Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AnimatorDX11.h">
+      <Filter>Header Files\Render Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\MeshRenderer.h">
+      <Filter>Header Files\Render Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ParticleSystem.h">
+      <Filter>Header Files\Render Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderWindowDX11.h">
+      <Filter>Header Files\Render Engine\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Buffer.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderState.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderTarget.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SamplerState.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Shader.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Texture.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Viewport.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EngineProfiler.h">
+      <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Entity.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneDX11.h">
+      <Filter>Header Files\Render Engine\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AABB.h">
+      <Filter>Header Files\Game Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Frustum.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\TransparentPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ClearRenderTargetPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DebugPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\OpaquePass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderPipeline.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ShadowPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SkyboxPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Sprite2DPass.h">
+      <Filter>Header Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderWindow.h">
+      <Filter>Header Files\Render Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderDevice.h">
+      <Filter>Header Files\Render Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Light.h">
+      <Filter>Header Files\Render Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderIncludes.h">
+      <Filter>Header Files\Render Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\EngineEvents.h">
+      <Filter>Header Files\Game Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\EngineIncludes.h">
+      <Filter>Header Files\Game Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Keycode.h">
+      <Filter>Header Files\Game Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\RenderTypes.h">
+      <Filter>Header Files\Render Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\OdysseyEngine.h">
+      <Filter>Header Files\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Callback.h">
+      <Filter>Header Files\Game Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ReadWriteLock.h">
+      <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\Game Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component.cpp">
+      <Filter>Source Files\Game Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files\Game Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ThreadManager.cpp">
+      <Filter>Source Files\Game Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InputManager.cpp">
+      <Filter>Source Files\Game Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XTime.cpp">
+      <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files\Game Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source Files\Game Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AABB.cpp">
+      <Filter>Source Files\Game Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frustum.cpp">
+      <Filter>Source Files\Game Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animator.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnimatorDX11.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugManager.cpp">
+      <Filter>Source Files\Render Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileManager.cpp">
+      <Filter>Source Files\Render Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sprite2D.cpp">
+      <Filter>Source Files\Render Engine\UI Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rectangle2D.cpp">
+      <Filter>Source Files\Render Engine\UI Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Text2D.cpp">
+      <Filter>Source Files\Render Engine\UI Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UIElement.cpp">
+      <Filter>Source Files\Render Engine\UI Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventManager.cpp">
+      <Filter>Source Files\Game Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffer.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderState.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SamplerState.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Viewport.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderWindowDX11.cpp">
+      <Filter>Source Files\Render Engine\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UICanvas.cpp">
+      <Filter>Source Files\Render Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineProfiler.cpp">
+      <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>Source Files\Game Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneDX11.cpp">
+      <Filter>Source Files\Render Engine\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransparentPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClearRenderTargetPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpaquePass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderPipeline.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyboxPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sprite2DPass.cpp">
+      <Filter>Source Files\Render Engine\Interfaces\Render Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderWindow.cpp">
+      <Filter>Source Files\Render Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderDevice.cpp">
+      <Filter>Source Files\Render Engine\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadWriteLock.cpp">
+      <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\DebugPixelShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\DebugVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\DepthPixelShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\DepthVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\LitPixelShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ParticleComputeShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ParticleGeometryShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ParticlePixelShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ParticleVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\SkyboxPixelShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\SkyboxVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\VertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\PixelShaderIncludes.hlsli">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\VertexShaderIncludes.hlsli">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

@@ -1,46 +1,19 @@
 #pragma once
-#include "Component.h"
-#include "GameObject.h"
+#include "Skills.h"
+#include <memory>
 
-class Character;
-
-// enum used for readablity 
-enum class STATS { NONE = 0,HP, MP, Atk, Def, Spd, Shd, Stn };
-
-class Buffs
+class Buffs : public Skills
 {
-	// public and private variables
 public:
+	
 private:
-	float mAmountOfEffect;
-	int mDuration;
-	STATS mEffectedStat;
-	bool mBleed;
-	Character* mRecipient;
-	// public and private functions
 public:
-	// Constructors, Deconstructors
+	// Constructors
 	Buffs() = default;
-	Buffs(STATS effectedStat, float effect, int duration, bool isBleed, Character* recipient);
-	~Buffs();
-	// Apply the buff effect functions
-	void InitalEffect();
-	void RevertEffect();
-	bool Bleed();
-	//  mDuration functions
-	int GetDuration();
-	void SetDuration(int newDuration);
-	void ReduceDuration(int deduction);
-	// mBleed functions
-	bool IsBleed();
-	// mEffectedStat functions
-	STATS GetEffectedStat();
-	void SetEffectedStat(STATS statEffected);
-	// mAmountOfEffect functions
-	float GetAmountOfEffect();
-	// mRecipient functions
-	Character* GetRecipient();
-	void SetRecipient(Character* recipient);
+	Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff);
+	Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE);
+	// Use the skill 
+	void Use(Character& caster, Character& target);
 private:
 };
 

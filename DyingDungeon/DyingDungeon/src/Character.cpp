@@ -1,22 +1,56 @@
 #include "Character.h"
-#include "GameObject.h"
+#include "Entity.h"
 #include "Transform.h"
 #include "RedAudioManager.h"
+#include "MeshRenderer.h"
 
 CLASS_DEFINITION(Component, Character)
 
+Character::Character()
+{
+	mHero = false;
+	mDead = false;
+	mDisplaying = false;
+	mShielding = false;
+	mAttack = 0.0f;
+	mDefense = 0.0f;
+	mBaseDefense = 0.0f;
+	mSpeed = 0.15f;
+	mBaseSpeed = 0.0f;
+	mBaseMaxHP = 100.0f;
+	mBaseMaxMana = 100.0f;
+	mCurrentHP = 100.0f;
+	mCurrentMana = 100.0f;
+	mPrevHealth = 100.0f;
+	mPrevMana = 100.0f;
+	mEXP = 0.0f;
+	mProvoked = nullptr;
+	mAnimator = nullptr;
+	pDmgText = nullptr;
+	pHealthBar = nullptr;
+	pManaBar = nullptr;
+	pTurnNumber = nullptr;
+	mCurrentState = STATE::NONE;
+}
+
 void Character::initialize()
 {
-	onEnable();
-	mAnimator = mGameObject->getComponent<Odyssey::Animator>();
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 }
 
 void Character::update(double deltaTime)
 {
-
+	if (mDisplaying)
+	{
+		pDmgText->addOpacity(static_cast<float>(-deltaTime) / 2.0f);
+		if (pDmgText->getOpacity() == 0.0f)
+		{
+			mDisplaying = false;
+		}
+	}
 }
 
-bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::GameObject>> playerTeam, std::vector<std::shared_ptr<Odyssey::GameObject>> enemyTeam)
+bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	return false;
 }
@@ -44,26 +78,51 @@ void Character::Die()
  */
 void Character::TakeDamage(float dmg)
 {
-	RedAudioManager::Instance()->Play("PaladinHit");
+	RedAudioManager::Instance().PlaySFX("PaladinHit");
 
 	//TODO calculate damage reduction here
-	if (dmg > 0)
+	dmg = dmg - (dmg * mDefense);
+	// Shielding algorithim
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
-		dmg = dmg - (dmg * mDefense);
-		if (mShielding > 0)
+		dmg -= (*it)->GetAmountOfEffect();
+		if (dmg < 0.0f)
 		{
-			dmg = dmg - mShielding;
-			if (dmg <= 0)
-			{
-				mShielding = fabsf(dmg);
-				dmg = 0;
-			}
-			else
-				mShielding = 0;
+			(*it)->SetAmountOfEffect(dmg * -1.0f);
+			dmg = 0.0f;
+			++it;
+		}
+		else
+		{
+			(*it)->Remove();
+			it = mSheilds.erase(it);
 		}
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
+	// TODO: FOR BUILD ONLY FIX LATER
+	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
+	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	pDmgText->setOpacity(1.0f);
+	mDisplaying = true;
+	/////////////////////////////////
+	std::cout << dmg << " damage!" << std::endl;
+	if (mCurrentHP <= 0.0f)
+		Die();
+}
+
+// Gives the character health back 
+void Character::ReceiveHealing(float healing)
+{
+	// TODO: FOR BUILD ONLY FIX LATER
+	pDmgText->setText(std::to_wstring(healing).substr(0, 5));
+	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
+	pDmgText->setOpacity(1.0f);
+	mDisplaying = true;
+	/////////////////////////////////
+	SetHP(mCurrentHP + healing);
+	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 }
 
 /*
@@ -169,6 +228,8 @@ void Character::IncreaseAtk(float statIncrease)
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= statDecrease;
+	if (mAttack <= -1.0f)
+		mAttack = -1.0f;
 }
 
 // Returns the Defense mod
@@ -177,16 +238,23 @@ float Character::GetDef()
 	return mDefense;
 }
 
+float Character::GetBaseDef()
+{
+	return mBaseDefense;
+}
+
 // Increases the Defense stat
 void Character::IncreaseDef(float statIncrease)
 {
-	mDefense += statIncrease;
+	mDefense += (mBaseDefense * statIncrease);
+	if (mDefense > 1.0f)
+		mDefense = 1.0f;
 }
 
 // Decreases the Defense stat
 void Character::DecreaseDef(float statDecrease)
 {
-	mDefense -= statDecrease;
+	mDefense -= (mBaseDefense * statDecrease);
 }
 
 // Returns the Speed stat
@@ -195,16 +263,21 @@ float Character::GetSpeed()
 	return mSpeed;
 }
 
+float Character::GetBaseSpeed()
+{
+	return mBaseSpeed;
+}
+
 // Increases the Speed stat
 void Character::IncreaseSpd(float statIncrease)
 {
-	mSpeed += statIncrease;
+	mSpeed += (mBaseSpeed * statIncrease);
 }
 
 // Decreases the Speed stat
 void Character::DecreaseSpd(float statDecrease)
 {
-	mSpeed -= statDecrease;
+	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
 
@@ -248,7 +321,7 @@ void Character::SetDead(bool deadStatus)
 	}
 	else
 	{
-		mCurrentState = STATE::SELECTMOVE;
+		mCurrentState = STATE::NONE;
 	}
 }
 
@@ -264,16 +337,24 @@ float Character::GetExp()
 	return mEXP;
 }
 
-//Set if the character is stunned
-void Character::SetStun(bool stun)
+Character* Character::GetProvoked()
 {
-	mStunned = stun;
+	return mProvoked;
 }
 
-//Get if the character is stunned
-bool Character::GetStun()
+void Character::SetProvoked(Character* provoker)
 {
-	return mStunned;
+	mProvoked = provoker;
+}
+
+STATE Character::GetState()
+{
+	return mCurrentState;
+}
+
+void Character::SetState(STATE newState)
+{
+	mCurrentState = newState;
 }
 
 /*
@@ -323,17 +404,6 @@ void Character::SetName(std::string newName)
 {
 	mName = newName;
 }
-/*
-*Function:  SetSkills(string newWSkillList)
-* --------------------
-* Set the character's skill list
-*
-*returns : void
-*/
-void Character::SetSkills(Skills newSkillList)
-{
-	mSkillList[0] = newSkillList;
-}
 
 /*
 *Function:  GetSkills()
@@ -342,66 +412,151 @@ void Character::SetSkills(Skills newSkillList)
 *
 *returns : Skills*
 */
-Skills* Character::GetSkills()
+std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 {
 	return mSkillList;
 }
 
 // Adds a new status effect to the list of status effects
-void Character::AddStatusEffect(Buffs* newEffect)
+void Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 {
-	mStatusEffects.push_back(newEffect);
+	switch (newEffect->GetTypeId())
+	{
+	case EFFECTTYPE::Bleed:
+	{
+		mBleeds.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Regen:
+	{
+		mRegens.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::StatUp:
+	{
+		mBuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::StatDown:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Stun:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Shield:
+	{
+		mSheilds.push_back(newEffect);
+		break;
+	}
+	case EFFECTTYPE::Provoke:
+	{
+		mDebuffs.push_back(newEffect);
+		break;
+	}
+	default:
+		break;
+	}
 }
 
-// Called at the end of the charaters turn, will call Bleed() if IsBleed(), will also remove buffs if they have expired reverting stats back to normal
-void Character::ManageStatusEffects()
+void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
-	std::vector<Buffs*>::iterator it;
-	for (it = mStatusEffects.begin(); it != mStatusEffects.end();)
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	for (it = effectList.begin(); it != effectList.end();)
 	{
-		if ((*it)->IsBleed())
-		{
-			if ((*it)->Bleed())
-				return;
-		}
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return;
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->IsBleed() && (*it)->GetEffectedStat() != STATS::Shd)
-				(*it)->RevertEffect();
-			else
-			{
-				bool dontLoseShield = false;
-				for (int i = 0; i < mStatusEffects.size(); ++i)
-				{
-					if (mStatusEffects[i]->GetEffectedStat() == STATS::Shd && mStatusEffects[i] != (*it))
-					{
-						dontLoseShield = true;
-						break;
-					}
-				}
-				if (dontLoseShield == false)
-					(*it)->RevertEffect();
-			}
-			delete((*it));
-			(*it) = nullptr;
-			it = mStatusEffects.erase(it);
+			(*it)->Remove();
+			it = effectList.erase(it);
 		}
 		else
 			it++;
 	}
 }
 
+bool Character::ManageAllEffects()
+{
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	for (it = mRegens.begin(); it != mRegens.end();)
+	{
+		(*it)->Use();
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mRegens.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mBleeds.begin(); it != mBleeds.end();)
+	{
+		(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return false;
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mBuffs.begin(); it != mBuffs.end();)
+	{
+		(*it)->Use();
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mBuffs.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	{
+		(*it)->Use();
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mDebuffs.erase(it);
+		}
+		else
+			it++;
+	}
+	for (it = mSheilds.begin(); it != mSheilds.end();)
+	{
+		(*it)->Use();
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
+		{
+			(*it)->Remove();
+			it = mSheilds.erase(it);
+		}
+		else
+			it++;
+	}
+	return true;
+}
+
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
-	for (Buffs* b : mStatusEffects)
-	{
-		b->RevertEffect();
-		delete(b);
-		b = nullptr;
-	}
-	mStatusEffects.clear();
+	mDebuffs.clear();
+	mBuffs.clear();
+	mBleeds.clear();
+	mRegens.clear();
+	mSheilds.clear();
 }
 
 
