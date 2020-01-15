@@ -126,6 +126,10 @@ namespace Odyssey
 				}
 				total++;
 			}
+			if (renderMap.size() == 0)
+			{
+				int debug = 0;
+			}
 			for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 			{
 				Entity* renderObject = itr->second->getEntity();

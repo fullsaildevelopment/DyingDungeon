@@ -21,6 +21,7 @@ namespace Odyssey
 		// If we are creating a structured buffer set the misc flag 
 		if (bindFlag == BufferBindFlag::StructuredBuffer)
 		{
+			bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 			bufferDesc.StructureByteStride = stride;
 		}
@@ -78,9 +79,7 @@ namespace Odyssey
 	void Buffer::updateData(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, const void* data)
 	{
 		// Update the buffer using the parameter data
-		mLock.lock(LockState::Write);
 		context->UpdateSubresource(mBuffer.Get(), 0, nullptr, data, 0, 0);
-		mLock.unlock(LockState::Write);
 	}
 
 	void Buffer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
@@ -125,6 +124,10 @@ namespace Odyssey
 			{
 				context->GSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
 				break;
+			}
+			case ShaderType::ComputeShader:
+			{
+				context->CSSetConstantBuffers(shaderSlot, 1, mBuffer.GetAddressOf());
 			}
 			}
 		}

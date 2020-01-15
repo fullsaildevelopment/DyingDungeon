@@ -4,6 +4,7 @@
 #include "UICanvas.h"
 #include "Scene.h"
 #include "MeshRenderer.h"
+#include "ParticleSystem.h"
 
 namespace Odyssey
 {
@@ -21,11 +22,27 @@ namespace Odyssey
 		for (Component* component : entity->getComponents<Component>())
 		{
 			mComponentList.push_back(component);
-		}
 
-		for (MeshRenderer* meshRenderer : entity->getComponents<MeshRenderer>())
-		{
-			mRenderList.push_back(meshRenderer);
+			if (component->isClassType(MeshRenderer::Type))
+			{
+				mRenderList.push_back(static_cast<MeshRenderer*>(component));
+			}
+
+			if (component->isClassType(UICanvas::Type))
+			{
+				// Add it to the vector of UI canvas objects
+				mSceneCanvas.push_back(static_cast<UICanvas*>(component));
+
+				for (UIElement* element : static_cast<UICanvas*>(component)->getElements<UIElement>())
+				{
+					mElementList.push_back(element);
+				}
+			}
+
+			if (component->isClassType(ParticleSystem::Type))
+			{
+				mSystemList.push_back(static_cast<ParticleSystem*>(component));
+			}
 		}
 
 		for (std::shared_ptr<Entity> child : entity->getChildren())
@@ -33,11 +50,27 @@ namespace Odyssey
 			for (Component* component : child->getComponents<Component>())
 			{
 				mComponentList.push_back(component);
-			}
 
-			for (MeshRenderer* childMesh : child->getComponents<MeshRenderer>())
-			{
-				mRenderList.push_back(childMesh);
+				if (component->isClassType(MeshRenderer::Type))
+				{
+					mRenderList.push_back(static_cast<MeshRenderer*>(component));
+				}
+
+				if (component->isClassType(UICanvas::Type))
+				{
+					// Add it to the vector of UI canvas objects
+					mSceneCanvas.push_back(static_cast<UICanvas*>(component));
+
+					for (UIElement* element : static_cast<UICanvas*>(component)->getElements<UIElement>())
+					{
+						mElementList.push_back(element);
+					}
+				}
+
+				if (component->isClassType(ParticleSystem::Type))
+				{
+					mSystemList.push_back(static_cast<ParticleSystem*>(component));
+				}
 			}
 		}
 
@@ -46,18 +79,6 @@ namespace Odyssey
 		{
 			// Set this as the main camera
 			mMainCamera = entity;
-		}
-
-		// Check if the entity has a UI canvas component
-		for (UICanvas* canvas : entity->getComponents<UICanvas>())
-		{
-			// Add it to the vector of UI canvas objects
-			mSceneCanvas.push_back(canvas);
-
-			for (UIElement* element : canvas->getElements<UIElement>())
-			{
-				mElementList.push_back(element);
-			}
 		}
 	}
 

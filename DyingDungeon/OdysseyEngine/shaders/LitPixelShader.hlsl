@@ -54,7 +54,7 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	// Sample the specular texture if one is bound
     if (mat.hasSpecularTexture)
     {
-        texSpecular = txSpecular.Sample(samLinear, input.tex);
+        //texSpecular = txSpecular.Sample(samLinear, input.tex);
     }
 
 	// If a normal map is bound, transform the surface normal accordingly

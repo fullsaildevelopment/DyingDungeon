@@ -49,6 +49,7 @@ namespace
 	// Rendering resources
 	std::shared_ptr<Odyssey::RenderWindow> gMainWindow;
 	std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
+	Odyssey::RenderDevice* gRenderDevice;
 	// Scene resources
 	std::shared_ptr<Odyssey::Scene> gGameScene;
 	std::shared_ptr<Odyssey::Scene> gMainMenu;
@@ -87,6 +88,8 @@ void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* ca
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
+// BUILD 2 STUFF
+void setupFire();
 //Tristen's Stuff
 void setUpTowerManager();
 
@@ -103,7 +106,7 @@ int playGame()
 	gMainWindow = application->createRenderWindow(L"Dying Dungeon", 1280, 720);
 	
 	// Get the render device
-	Odyssey::RenderDevice* renderDevice = application->getRenderDevice();
+	gRenderDevice = application->getRenderDevice();
 
 	gDefaultText.bold = false;
 	gDefaultText.italic = false;
@@ -113,13 +116,13 @@ int playGame()
 	gDefaultText.fontName = L"Constantia";
 
 	// Create the main scene
-	gGameScene = renderDevice->createScene();
+	gGameScene = gRenderDevice->createScene();
 
 	// Set up the scene lighting
 	setupLighting();
 
 	// Set up the default rendering pipeline
-	setupPipeline(renderDevice, application);
+	setupPipeline(gRenderDevice, application);
 
 	// Set up camera
 	setupCamera();
@@ -128,19 +131,22 @@ int playGame()
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
 
 	// Set up the main menu
-	setupMenu(renderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png", "MainMenu", MenuComponent::eMainMenu);
+	setupMenu(gRenderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png", "MainMenu", MenuComponent::eMainMenu);
 
 	// Set up the tower selection screen
-	setupMenu(renderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
+	setupMenu(gRenderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
 
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
 	// Set up the team selection screen
-	setupMenu(renderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
+	setupMenu(gRenderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
 
 	// Load the arena scene
 	setupArena();
+
+	// BUILD 2
+	setupFire();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -421,12 +427,6 @@ void setupGameInterface()
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
-
-	// Battle for Flavortown Title
-	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = 40.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 10.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), 1280, 0, L"Battle for Flavortown", properties);
 	
 	// Buff Icon Locations
 	//createBuffIcon(80, 30, 1, 1, L"assets/images/AttackUp.png", 25, 25, canvas, nullptr);
@@ -536,6 +536,40 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, std::to_wstring(number), properties);
+}
+
+void setupFire()
+{
+	std::shared_ptr<Odyssey::Entity> fire1 = std::make_shared<Odyssey::Entity>();
+	fire1->addComponent<Odyssey::Transform>();
+	fire1->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -6.42f);
+	fire1->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+
+	std::shared_ptr<Odyssey::Entity> fire2 = std::make_shared<Odyssey::Entity>();
+	fire2->addComponent<Odyssey::Transform>();
+	fire2->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -13.42f);
+	fire2->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+
+	std::shared_ptr<Odyssey::Entity> fire3 = std::make_shared<Odyssey::Entity>();
+	fire3->addComponent<Odyssey::Transform>();
+	fire3->getComponent<Odyssey::Transform>()->setPosition(5.65f, 4.67f, -13.42f);
+	fire3->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+
+	std::shared_ptr<Odyssey::Entity> fire4 = std::make_shared<Odyssey::Entity>();
+	fire4->addComponent<Odyssey::Transform>();
+	fire4->getComponent<Odyssey::Transform>()->setPosition(-12.55f, 4.37f, -6.42f);
+	fire4->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+
+	std::shared_ptr<Odyssey::Entity> fire5 = std::make_shared<Odyssey::Entity>();
+	fire5->addComponent<Odyssey::Transform>();
+	fire5->getComponent<Odyssey::Transform>()->setPosition(12.65f, 4.67f, -2.92f);
+	fire5->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+
+	gGameScene->addEntity(fire1);
+	gGameScene->addEntity(fire2);
+	gGameScene->addEntity(fire3);
+	gGameScene->addEntity(fire4);
+	gGameScene->addEntity(fire5);
 }
 
 void setUpTowerManager()

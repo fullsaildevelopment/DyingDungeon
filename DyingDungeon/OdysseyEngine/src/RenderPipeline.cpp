@@ -53,5 +53,6 @@ namespace Odyssey
 		args.entityList = scene->getEntities();
 		args.elementList = scene->getElementList();
 		args.renderList = scene->getRenderList();
+		args.systemList = scene->getSystemList();
 	}
 }

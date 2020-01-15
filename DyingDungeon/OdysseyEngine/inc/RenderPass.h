@@ -10,6 +10,7 @@ namespace Odyssey
 	class Light;
 	class Entity;
 	class MeshRenderer;
+	class ParticleSystem;
 	class RenderWindow;
 	class UICanvas;
 	class UIElement;
@@ -26,6 +27,7 @@ namespace Odyssey
 		std::vector<std::shared_ptr<Light>> lightList;
 		std::vector<UIElement*> elementList;
 		std::vector<MeshRenderer*> renderList;
+		std::vector<ParticleSystem*> systemList;
 	};
 
 	class RenderPass

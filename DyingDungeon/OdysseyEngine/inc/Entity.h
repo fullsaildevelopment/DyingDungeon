@@ -104,7 +104,7 @@ namespace Odyssey
 			// Return a raw pointer to the created component
 			ComponentType* component = static_cast<ComponentType*>(mComponents[mComponents.size() - 1].get());
 			mLock.unlock(LockState::Write);
-			return component;;
+			return component;
 		}
 
 		/**

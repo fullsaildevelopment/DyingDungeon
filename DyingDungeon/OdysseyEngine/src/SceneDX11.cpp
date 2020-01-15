@@ -108,4 +108,8 @@ namespace Odyssey
 	{
 		return mElementList;
 	}
+	std::vector<ParticleSystem*> SceneDX11::getSystemList()
+	{
+		return mSystemList;
+	}
 }

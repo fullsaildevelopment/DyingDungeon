@@ -35,7 +35,6 @@ namespace Odyssey
 		// Update and bind the constant buffer
 		frameBuffer->updateData(context , &perFrame);
 		frameBuffer->bind(context, 0, ShaderType::VertexShader);
-		//shaderMatrixBuffer->bind(0, ShaderType::GeometryShader);
 	}
 	void RenderPass::updatePerObjectBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, PerObjectBuffer& perObject, Buffer* objectBuffer)
 	{

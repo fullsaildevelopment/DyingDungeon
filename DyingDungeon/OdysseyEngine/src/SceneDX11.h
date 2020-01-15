@@ -78,6 +78,8 @@ namespace Odyssey
 		 */
 		std::vector<UIElement*> getElementList();
 
+		std::vector<ParticleSystem*> getSystemList();
+
 	private:
 		ReadWriteLock mLock;
 	};

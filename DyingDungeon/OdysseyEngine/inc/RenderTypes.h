@@ -19,6 +19,18 @@ namespace Odyssey
 		DirectX::XMFLOAT3 velocity;
 		DirectX::XMFLOAT3 color;
 		float lifeTime;
+		float startLifetime;
+		bool active;
+
+		Particle()
+		{
+			origin = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+			position = origin;
+			velocity = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+			color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+			lifeTime = 5.0f;
+			active = false;
+		}
 	};
 
 	struct PerFrameBuffer

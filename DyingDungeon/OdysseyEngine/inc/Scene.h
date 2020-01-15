@@ -10,6 +10,7 @@ namespace Odyssey
 	class Light;
 	class Entity;
 	class MeshRenderer;
+	class ParticleSystem;
 	class UICanvas;
 	class UIElement;
 
@@ -63,6 +64,7 @@ namespace Odyssey
 		std::vector<MeshRenderer*> mRenderList;
 		std::vector<UIElement*> mElementList;
 		std::vector<Component*> mComponentList;
+		std::vector<ParticleSystem*> mSystemList;
 		XTime mXTimer;
 		double mDeltaTime;
 	};

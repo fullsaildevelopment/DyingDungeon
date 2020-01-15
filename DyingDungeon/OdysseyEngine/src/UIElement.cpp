@@ -49,23 +49,15 @@ namespace Odyssey
 		int xPosition = evnt->xPosition;
 		int yPosition = evnt->yPosition;
 
-		mLock.lock(LockState::Read);
+		mLock.lock(LockState::Write);
 		if (xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom)
 		{
 			if (mCallbackMap.count(__func__) > 0)
 			{
-				mLock.unlock(LockState::Read);
 				mCallbackMap[__func__]->execute();
 			}
-			else
-			{
-				mLock.unlock(LockState::Read);
-			}
 		}
-		else
-		{
-			mLock.unlock(LockState::Read);
-		}
+		mLock.unlock(LockState::Write);
 	}
 
 	void UIElement::initialize()

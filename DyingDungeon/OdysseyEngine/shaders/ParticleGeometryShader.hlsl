@@ -6,7 +6,9 @@ struct Particle
 	float3 position;
 	float3 velocity;
 	float3 color;
-	float lifeTime;
+    float lifeTime;
+    float startLifetime;
+	bool active;
 };
 
 struct GSOutput
@@ -15,6 +17,7 @@ struct GSOutput
 	float4 position : SV_Position;
 	float3 velocity : VELOCITY;
 	float3 color : COLOR;
+    float2 tex : TEXCOORD;
 	float lifeTime : LIFETIME;
 };
 
@@ -33,7 +36,14 @@ void main(point uint input[1] : PRIMITIVE_ID, inout TriangleStream<GSOutput> out
 		float4(+1.0f, +1.0f, 0.0f, 0.0f), // UPPER RIGHT
 		float4(-1.0f, +1.0f, 0.0f, 0.0f) // UPPER LEFT
 	};
-	float size = 0.25f;
+    float2 tex[4] =
+    {
+        float2(0.0f, 1.0f), // LOWER LEFT
+		float2(1.0f, 1.0f), // LOWER RIGHT
+		float2(1.0f, 0.0f), // UPPER RIGHT
+		float2(0.0f, 0.0f) // UPPER LEFT
+    };
+	float size = 0.3f;
 	float3 camRight = float3(view[0].xyz);
 	float3 camUp = float3(view[1].xyz);
 	GSOutput vOut[4];
@@ -41,7 +51,7 @@ void main(point uint input[1] : PRIMITIVE_ID, inout TriangleStream<GSOutput> out
 	{
 		float4 pos = float4(p.position + camRight * offsets[i].x * size + camUp * offsets[i].y * size, 1.0f);
 		vOut[i].position = mul(world, pos);
-		vOut[i].position = mul(viewProj, pos);
+		vOut[i].position = mul(viewProj, vOut[i].position);
 		float3 uv;
 		uv.x = max(offsets[i].x + 1.0f, 1.0f);
 		uv.y = max(offsets[i].y + 1.0f, 1.0f);
@@ -50,7 +60,9 @@ void main(point uint input[1] : PRIMITIVE_ID, inout TriangleStream<GSOutput> out
 		vOut[i].velocity = p.velocity;
 		vOut[i].color = p.color;
 		vOut[i].lifeTime = p.lifeTime;
-	}
+        vOut[i].tex = tex[i];
+
+    }
 
 	output.Append(vOut[3]);
 	output.Append(vOut[2]);

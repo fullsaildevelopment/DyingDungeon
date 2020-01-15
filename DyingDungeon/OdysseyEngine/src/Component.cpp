@@ -15,7 +15,6 @@ namespace Odyssey
 	{
 		mActive = true;
 		mEntity = nullptr;
-		InitializeSRWLock(&mComponentLock);
 	}
 
 	Component::~Component()
@@ -51,20 +50,5 @@ namespace Odyssey
 	bool Component::isActive()
 	{
 		return mActive;
-	}
-	void Component::lock(bool isWrite)
-	{
-		if (isWrite)
-			AcquireSRWLockExclusive(&mComponentLock);
-		else
-			AcquireSRWLockShared(&mComponentLock);
-	}
-
-	void Component::unlock(bool isWrite)
-	{
-		if (isWrite)
-			ReleaseSRWLockExclusive(&mComponentLock);
-		else
-			ReleaseSRWLockShared(&mComponentLock);
 	}
 }

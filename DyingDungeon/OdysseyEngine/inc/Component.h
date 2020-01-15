@@ -92,12 +92,8 @@ namespace Odyssey
 		 */
 		bool isActive();
 
-	protected:
-		void lock(bool isWrite);
-		void unlock(bool isWrite);
 	protected: // Members
 		bool mActive;
 		Entity* mEntity;
-		SRWLOCK mComponentLock;
 	};
 }
