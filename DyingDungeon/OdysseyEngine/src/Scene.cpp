@@ -110,9 +110,9 @@ namespace Odyssey
 	{
 		mActive = active;
 
-		for (Component* component : mComponentList)
-		{
-			component->setActive(mActive);
-		}
+		//for (Component* component : mComponentList)
+		//{
+		//	component->setActive(mActive);
+		//}
 	}
 }

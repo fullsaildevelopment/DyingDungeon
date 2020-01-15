@@ -77,7 +77,6 @@ namespace Odyssey
 			mLock.unlock(LockState::Write);
 		}
 
-		template<class T>
 		void unregisterCallback(std::string function)
 		{
 			mLock.lock(LockState::Write);
