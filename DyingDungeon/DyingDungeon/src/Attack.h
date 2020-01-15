@@ -8,7 +8,7 @@ class Attack : public Skills
 private:
 	float mDamage;
 	float mHealing;
-	std::shared_ptr<StatusEffect> mDebuff;
+	//std::shared_ptr<StatusEffect> mDebuff;
 	// Functions
 public:
 	// Constructors, Destructors
@@ -24,9 +24,9 @@ public:
 	// Get how much damage the attack does
 	float GetDamage();
 	// Get what debuff this applys
-	StatusEffect* GetStatusEffect();
-	// Set the status Effect this applies
-	void SetStatusEffect(std::shared_ptr<StatusEffect> se);
+	//StatusEffect* GetStatusEffect();
+	//// Set the status Effect this applies
+	//void SetStatusEffect(std::shared_ptr<StatusEffect> se);
 private:
 };
 

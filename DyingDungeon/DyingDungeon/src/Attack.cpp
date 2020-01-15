@@ -10,7 +10,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
-	mDebuff = nullptr;
+	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
 
@@ -23,7 +23,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = healing;
-	mDebuff = nullptr;
+	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
 
@@ -36,7 +36,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
-	mDebuff = debuff;
+	mStatusEffect = debuff;
 	mIsAOE = false;
 }
 
@@ -49,9 +49,10 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
-	mDebuff = nullptr;
+	mStatusEffect = nullptr;
 	mIsAOE = AOE;
 }
+
 Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
 	mTypeId = SKILLTYPE::ATTACK;
@@ -61,7 +62,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
-	mDebuff = debuff;
+	mStatusEffect = debuff;
 	mIsAOE = AOE;
 }
 
@@ -69,31 +70,28 @@ Attack::~Attack()
 {
 }
 
-
 void Attack::Use(Character& caster, Character& target)
 {
-	caster.DepleteMana(mMpCost);
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
 	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	target.TakeDamage(totalDps);
-	if (mDebuff != nullptr)
-		mDebuff->Apply(target);
+	if (mStatusEffect != nullptr)
+	{
+		mStatusEffect->Apply(target);
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, caster.GetAtk(), mStatusEffect->GetTypeId()));
+	}
+	else
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
+	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mName, target.GetDef()));
 }
+
 float Attack::GetDamage()
 {
 	return mDamage;
 }
-StatusEffect* Attack::GetStatusEffect()
-{
-	return mDebuff.get();
-}
 
-void Attack::SetStatusEffect(std::shared_ptr<StatusEffect> se)
-{
-	mDebuff = se;
-}
 
 

@@ -11,7 +11,8 @@ public: // Constructors
 	enum CharacterOptions
 	{
 		Paladin,
-		Skeleton
+		Skeleton,
+		Boss
 	};
 
 public: // Functions

@@ -22,30 +22,52 @@ class AIMoves
 	private:
 		//General Functions
 		bool FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
-		float ScoreMove(std::shared_ptr<Skills> skill, Character* target);
+		float ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		
+		void ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
+		void ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
+
+		void ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		void ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+
+		float StatusEffectScore(std::shared_ptr<Skills> skill, Character* target);
+
+		void ResetDecidingMoves();
 
 		//Skeleton
 		void SkeletonDeterminePriority();
 		
 		//UngaAttack
 		void UngaAttackDeterminePriority();
+
+		void BossDeterminePriority();
 		
 		//Member Variables
 		std::vector<std::shared_ptr<Skills>> mSkillList;
 		std::vector<Odyssey::Entity> mBestTarget;
 		Character* caster;
 
+		//Moves
 		std::shared_ptr<AIMoves::Move> mBestMove;
-		int mEnemyID;
+		AIMoves::Move mBestAttack;
+		AIMoves::Move mBestBuff;
+		AIMoves::Move mBestDebuff;
+		AIMoves::Move mBestHeal;
+
 		int mCurrMoveCheck;
 		SKILLTYPE mPriorityMove;
 
+		int mEnemyID;
 
 		//////////////////////////GET FUNCTIONS//////////////////////////////////
 	public:
 		std::shared_ptr <AIMoves::Move> GetMove();
+		AIMoves::Move mPrevMove;
 
 		//////////////////////////SET FUNCTIONS//////////////////////////////////
 	public:
 		void ResetMove();
+
+	private:
+		void SetPrevMove();
 };

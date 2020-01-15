@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "EnemyComponent.h"
+#include "MeshRenderer.h"
 /// Check if better way
 #include "Attack.h"
 #include "Buffs.h"
@@ -36,21 +37,21 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseMaxHP = mCurrentHP = 150.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
-		mDefense = 0.30f;
-		mSpeed = 35.0f;
+		mBaseDefense = mDefense = 0.30f;
+		mBaseSpeed = mSpeed = 35.0f;
 		mShielding = 0.0f;
 		for (int i = 0; i < TOTALSKILLS; ++i)
 		// Basic Attack (Add Provoke 30% chance)
-		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.40f, -5.0f, 15.0f, temp));
+		temp = std::make_shared<Provoked>(2, this, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.25f, 15.0f, 200.0f, 25.0f));
+		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.50f, 15.0f, 20.0f, 25.0f));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.25f, 20.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
-		temp = std::make_shared<StatUp>(0.50f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.25f, 15.0f,temp,true,true));
+		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
+		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
 		break;
 	}
 	default:
@@ -90,23 +91,23 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
-			SelctionState(0);
+			SelctionState(heros, enemies, 0);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
-			SelctionState(1);
+			SelctionState(heros, enemies, 1);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
-			SelctionState(2);
+			SelctionState(heros, enemies, 2);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
-			SelctionState(3);
+			SelctionState(heros, enemies, 3);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -131,7 +132,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -145,7 +146,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection();
+			ResetToSelection(heros, enemies);
 		}
 		break;
 	}
@@ -181,7 +182,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					}
 				}
-				else if (mCurrentTarget != nullptr)
+				else if (mCurrentTarget != nullptr && mCurrentTarget != this)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 			}
 			// Set trigger to true to avoid looping the recipents animation
@@ -190,6 +191,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Once the animation is nearly finished use the skill and apply the effects
 		if (mAnimator->getProgress() > 0.9f)
 		{
+			DepleteMana(mCurrentSkill->GetManaCost());
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
@@ -240,6 +242,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		ManageStatusEffects(mBuffs);
 		ManageStatusEffects(mDebuffs);
 		ManageStatusEffects(mSheilds);
+		ResetToSelection(heros, enemies);
 		return true;
 		break;
 	}
@@ -263,7 +266,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
 }
-void HeroComponent::SelctionState(int moveIndex)
+void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
 	{
@@ -271,10 +274,18 @@ void HeroComponent::SelctionState(int moveIndex)
 		std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
 		if (mCurrentSkill->IsAOE())
 		{
-			if(mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			{
 				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
+				for(std::shared_ptr<Odyssey::Entity> e : enemies)
+					e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+			}
 			else
+			{
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
+				for (std::shared_ptr<Odyssey::Entity> h : heros)
+					h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+			}
 			mCurrentState = STATE::CONFIRM;
 		}
 		else if (mProvoked == nullptr)
@@ -313,10 +324,15 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 			return;
 		std::cout << "This will affect " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
 	}
+	mCurrentTarget->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
 	mCurrentState = STATE::CONFIRM;
 }
-void HeroComponent::ResetToSelection()
+void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
+	for (std::shared_ptr<Odyssey::Entity> e : enemies)
+		e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	for (std::shared_ptr<Odyssey::Entity> h : heros)
+		h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::SELECTMOVE;

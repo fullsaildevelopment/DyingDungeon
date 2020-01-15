@@ -9,7 +9,7 @@
 #define TOTALSKILLS 7
 
 enum class HEROID { Paladin = 0 };
-enum class ENEMYID { Skeleton = 0 };
+enum class ENEMYID { Skeleton = 0, Boss };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
@@ -48,10 +48,12 @@ public:
 	void DecreaseAtk(float statDecrease);
 	// Defense Functions
 	float GetDef();
+	float GetBaseDef();
 	void IncreaseDef(float statIncrease);
 	void DecreaseDef(float statDecrease);
 	// Speed Functions
 	float GetSpeed();
+	float GetBaseSpeed();
 	void IncreaseSpd(float statIncrease);
 	void DecreaseSpd(float statDecrease);
 	// Dead Status Functions
@@ -76,6 +78,8 @@ public:
 	void SetState(STATE newState);
 	// Impact Indicator Setter
 	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
+	// Impact Indicator Getter
+	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
 	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
@@ -86,7 +90,7 @@ public:
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
-	
+
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
@@ -103,6 +107,8 @@ protected:
 	float mCurrentMana;
 	float mBaseMaxHP;
 	float mBaseMaxMana;
+	float mBaseDefense;
+	float mBaseSpeed;
 	float mShielding;
 	float mAttack;
 	float mDefense;
