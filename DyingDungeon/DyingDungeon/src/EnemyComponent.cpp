@@ -1,14 +1,6 @@
 #include "EnemyComponent.h"
 #include "Entity.h"
 #include "Transform.h"
-/// Check if better way
-#include "Attack.h"
-#include "Buffs.h"
-#include "Heal.h"
-//////////////////
-#include "Bleed.h"
-#include "StatUp.h"
-#include "StatDown.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -23,9 +15,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
-		// TODO: FIX YOUR SHIT - WHOEVER
 		mName = "Skeleton";
-		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
@@ -43,7 +33,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.25f;
 		mBaseSpeed = mSpeed = 45.0f;
-		mMoveOverride = SKILLTYPE::ATTACK;
+		mMoveOverride = SKILLTYPE::UNDEFINED;
 		mMechPtr = &EnemyComponent::GanfaulPhaseMechanic;
 		break;
 	}
