@@ -21,7 +21,7 @@ private: // Singleton pattern
 public: // Functions
 
 	// Toggle canvases on and off
-	void ToggleCanvas(std::shared_ptr<Odyssey::Entity> _canvas, bool _isActive);
+	void ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive);
 
 	// Creation of the tower select menu
 	void CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);

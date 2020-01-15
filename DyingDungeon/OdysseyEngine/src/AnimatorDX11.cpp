@@ -15,7 +15,7 @@ namespace Odyssey
 		mCurrentClip.maxFrames = 0;
 		mCurrentClip.currentTime = 0.0f;
 		mCurrentClip.progress = 0.0f;
-		mActive = false;
+		mIsActive = false;
 		mIsPlaying = false;
 		mDebugEnabled = false;
 
@@ -35,7 +35,7 @@ namespace Odyssey
 	void AnimatorDX11::update(double deltaTime)
 	{
 		// Don't update while paused or inactive or if there are no keyframes in the clip
-		if (mIsPlaying == false || mActive == false || mCurrentClip.keyframes.size() == 0)
+		if (mIsPlaying == false || mIsActive == false || mCurrentClip.keyframes.size() == 0)
 		{
 			return;
 		}
@@ -73,7 +73,7 @@ namespace Odyssey
 	void AnimatorDX11::debugDraw(DirectX::XMFLOAT4X4& globalTransform, DirectX::XMFLOAT3 color)
 	{
 		// Don't debug inactive animators
-		if (mActive == false) { return; }
+		if (mIsActive == false) { return; }
 		if (mDebugEnabled == false) { return; }
 
 		// Iterate over each joint
@@ -111,11 +111,11 @@ namespace Odyssey
 		// If there are not frames inside of the clip, set the animator to inactive
 		if (mAnimationMap.size() == 0)
 		{
-			mActive = false;
+			mIsActive = false;
 		}
 		else
 		{
-			mActive = true;
+			mIsActive = true;
 		}
 	}
 

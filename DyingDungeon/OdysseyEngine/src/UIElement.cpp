@@ -1,5 +1,6 @@
 #include "UIElement.h"
 #include "EventManager.h"
+#include "UICanvas.h"
 
 namespace Odyssey
 {
@@ -18,6 +19,8 @@ namespace Odyssey
 
 		// Set the default scale
 		mScale = DirectX::XMFLOAT2(1.0f, 1.0f);
+
+		mIsVisible = true;
 
 		// Create the rectangle
 		createShape();
@@ -50,11 +53,14 @@ namespace Odyssey
 		int yPosition = evnt->yPosition;
 
 		mLock.lock(LockState::Write);
-		if (xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom)
+		if (mCanvas->isActive())
 		{
-			if (mCallbackMap.count(__func__) > 0)
+			if (xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom)
 			{
-				mCallbackMap[__func__]->execute();
+				if (mCallbackMap.count(__func__) > 0)
+				{
+					mCallbackMap[__func__]->execute();
+				}
 			}
 		}
 		mLock.unlock(LockState::Write);
@@ -259,6 +265,16 @@ namespace Odyssey
 		float opacity = mColor.w;
 		mLock.unlock(LockState::Read);
 		return mColor.w;
+	}
+
+	void UIElement::setVisible(bool visible)
+	{
+		mIsVisible = visible;
+	}
+
+	bool UIElement::isVisible()
+	{
+		return mIsVisible;
 	}
 
 	void UIElement::clampColor(DirectX::XMFLOAT4& color)

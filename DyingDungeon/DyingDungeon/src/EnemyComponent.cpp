@@ -1,14 +1,6 @@
 #include "EnemyComponent.h"
 #include "Entity.h"
 #include "Transform.h"
-/// Check if better way
-#include "Attack.h"
-#include "Buffs.h"
-#include "Heal.h"
-//////////////////
-#include "Bleed.h"
-#include "StatUp.h"
-#include "StatDown.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -19,31 +11,30 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	mMoveOverride = SKILLTYPE::UNDEFINED;
 	mCurrentState = STATE::NONE;
 	mMoves = AIMoves(static_cast<int>(_enemyID), this);
-
 	switch (_enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
-		// TODO: FIX YOUR SHIT - WHOEVER
 		mName = "Skeleton";
-		//fScoreMove = ScoreMove;
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.0f;
 		mBaseSpeed = mSpeed = 20.0f;
 		mMoveOverride = SKILLTYPE::ATTACK;
+		mMechPtr = nullptr;
 		break;
 	}
-	case ENEMYID::Boss:
+	case ENEMYID::Ganfaul:
 	{
-		mName = "Boss";
+		mName = "Ganfaul";
 		mBaseMaxHP = mCurrentHP = 300.0f;
 		mBaseMaxMana = mCurrentMana = 300.0f;
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.25f;
 		mBaseSpeed = mSpeed = 45.0f;
-		mMoveOverride = SKILLTYPE::ATTACK;
+		mMoveOverride = SKILLTYPE::UNDEFINED;
+		mMechPtr = &EnemyComponent::GanfaulPhaseMechanic;
 		break;
 	}
 	default:
@@ -68,6 +59,8 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::NONE:
 	{
+		if(mMechPtr)
+			(this->*mMechPtr)();
 		//TODO: Change to lanes new stuff... Lane was here :D
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
@@ -199,5 +192,10 @@ void EnemyComponent::Die()
 	ClearStatusEffects();
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
+}
+
+void EnemyComponent::GanfaulPhaseMechanic()
+{
+	std::cout << "I DID IT!!!!" << std::endl;
 }
 

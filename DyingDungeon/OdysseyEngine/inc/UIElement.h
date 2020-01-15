@@ -77,6 +77,16 @@ namespace Odyssey
 			mLock.unlock(LockState::Write);
 		}
 
+		void unregisterCallback(std::string function)
+		{
+			mLock.lock(LockState::Write);
+			if (mCallbackMap.count(function) != 0)
+			{
+				mCallbackMap.erase(function);
+			}
+			mLock.unlock(LockState::Write);
+		}
+
 	public: // Interface
 		virtual void initialize();
 
@@ -212,6 +222,9 @@ namespace Odyssey
 		 */
 		float getOpacity();
 
+		void setVisible(bool visible);
+
+		bool isVisible();
 	protected:
 		/**
 		 *	Clamp the color channels between 0.0 and 1.0
@@ -239,5 +252,6 @@ namespace Odyssey
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 		ReadWriteLock mLock;
+		bool mIsVisible;
 	};
 }

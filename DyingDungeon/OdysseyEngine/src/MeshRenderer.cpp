@@ -11,13 +11,13 @@ namespace Odyssey
 	{
 		// Set default values
 		mDebugEnabled = false;
-		mActive = false;
+		mIsActive = false;
 	}
 
 	MeshRenderer::MeshRenderer(std::shared_ptr<Mesh> meshID, std::shared_ptr<Material> material)
 	{
 		// The MeshRenderer is now active
-		mActive = true;
+		mIsActive = true;
 
 		// Store the new Mesh and Material
 		mMesh = meshID;

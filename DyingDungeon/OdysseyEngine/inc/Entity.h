@@ -64,6 +64,34 @@ namespace Odyssey
 		bool getStatic();
 
 		/**
+		 *	Set the entity's active state.
+		 *	@param[in] active The entity's active state.
+		 *	@return void 
+		 */
+		void setActive(bool active);
+
+		/**
+		 *	Get the entity's active state.
+		 *	@param[in] void
+		 *	@return bool The entity's active state.
+		 */
+		bool isActive();
+
+		/**
+		 *	Set the entity's visible state.
+		 *	@param[in] active The entity's visible state.
+		 *	@return void
+		 */
+		void setVisible(bool active);
+
+		/**
+		 *	Get the entity's visible state.
+		 *	@param[in] void
+		 *	@return bool The entity's visible state.
+		 */
+		bool isVisible();
+
+		/**
 		 *	Set the entity's debug enabled state.
 		 *	@param[in] debug The entity's debug enabled state.
 		 *	@return void
@@ -83,6 +111,8 @@ namespace Odyssey
 		Entity* mParent;
 		bool mDebugEnabled;
 		bool mIsStatic;
+		bool mIsActive;
+		bool mIsVisible;
 		ReadWriteLock mLock;
 
 	public: // Templated interface

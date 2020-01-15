@@ -74,7 +74,7 @@ namespace Odyssey
 		mCurrentClip.currentFrame.jointTransforms.resize(mCurrentClip.keyframes[0].jointTransforms.size());
 
 		// Set the animator to active and playing
-		mActive = true;
+		mIsActive = true;
 		mIsPlaying = true;
 
 		// Reset the frame
