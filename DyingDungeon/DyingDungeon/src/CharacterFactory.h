@@ -12,7 +12,7 @@ public: // Constructors
 	{
 		Paladin,
 		Skeleton,
-		Boss
+		Ganfaul
 	};
 
 public: // Functions

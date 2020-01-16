@@ -717,6 +717,22 @@ void setUpTowerManager()
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
 
+	// Ganfaul
+	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
+	createCharacterPortrait(575.0f, (height/2) - 200, canvas, characterToAdd->getComponent<Character>());
+
+	// Get the newest Text2D element's index
+	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
+	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+
+	// Added the Character's health popup
+	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
+	//characterToAdd->setActive(false);
+	// Assign the boss character for the tower
+	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+	
+
 	// Create the turn indicator circle
 	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
 	turnIndicatorModel->addComponent<Odyssey::Transform>();
