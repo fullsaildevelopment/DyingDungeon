@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "EnemyComponent.h"
 #include "MeshRenderer.h"
+#include "ParticleSystem.h"
 /// Check if better way
 #include "Attack.h"
 #include "Buffs.h"
@@ -62,15 +63,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseSpeed = mSpeed = 40.0f;
 		// Basic attack, stun
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "", 0.25f, -10.0f, 10.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "OneHandedCast", 0.25f, -10.0f, 10.0f,temp));
 		// Wind Slash, aoe dps, speed down 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Wind Slash", "", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>("Wind Slash", "OneHandedCast", 0.25f, 10.0f, 15.0f, temp, true));
 		// Fire sTrom BIIIIGGGGG DPS with bleed
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("FireStorm", "", 0.25f, 30.0f, 50.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>("FireStorm", "TwoHandedCast", 0.25f, 30.0f, 50.0f, temp, true));
 		// Lighting Bolt BIGGGGG siongle target dps
-		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "", 0.25f, 35.0f, 60.0f));
+		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
 	default:
