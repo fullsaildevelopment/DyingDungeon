@@ -114,14 +114,14 @@ namespace Odyssey
 		 *	@param[out] void
 		 *	@return XMFLOAT4X4 The transform's local-space matrix.
 		 */
-		DirectX::XMFLOAT4X4 getLocalTransform();
+		DirectX::XMFLOAT4X4 getLocalTransform(bool ignoreScale = false);
 
 		/**
 		 *	Get the transform's global-space matrix.
 		 *	@param[out] void 
 		 *	@return XMFLOAT4X4 The transform's global-space matrix.
 		 */
-		DirectX::XMFLOAT4X4 getGlobalTransform();
+		DirectX::XMFLOAT4X4 getGlobalTransform(bool ignoreScale = false);
 
 	private: // Helpers
 		/**

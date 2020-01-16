@@ -94,7 +94,10 @@ namespace Odyssey
 	DirectX::XMFLOAT3 Transform::getForward()
 	{
 		// Set the out parameter to the forward vector from the world matrix
-		return DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
+		DirectX::XMVECTOR fwd = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2])));
+		DirectX::XMFLOAT3 f3Fwd;
+		DirectX::XMStoreFloat3(&f3Fwd, fwd);
+		return f3Fwd;
 	}
 
 	DirectX::XMFLOAT3 Transform::getRight()
@@ -109,16 +112,27 @@ namespace Odyssey
 		return DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
 	}
 
-	DirectX::XMFLOAT4X4 Transform::getLocalTransform()
+	DirectX::XMFLOAT4X4 Transform::getLocalTransform(bool ignoreScale)
 	{
 		// Set the out parameter to the local-space world matrix
+		if (ignoreScale)
+		{
+			DirectX::XMFLOAT3 tScale = mScale;
+			mScale = { 1.0f, 1.0f, 1.0f };
+			recalculateWorldMatrix();
+			DirectX::XMFLOAT4X4 nonScaled = mWorldMatrix;
+			mScale = tScale;
+			recalculateWorldMatrix();
+			return nonScaled;
+		}
+
 		return mWorldMatrix;
 	}
 
-	DirectX::XMFLOAT4X4 Transform::getGlobalTransform()
+	DirectX::XMFLOAT4X4 Transform::getGlobalTransform(bool ignoreScale)
 	{
 		// Store the world matrix in an XMMatrix
-		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&mWorldMatrix);
+		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&getLocalTransform(ignoreScale));
 
 		// Get the entity we are attached to's parent
 		Entity* parent = mEntity->getParent();
@@ -127,7 +141,7 @@ namespace Odyssey
 		while (parent != nullptr)
 		{
 			// Get the parent's local transform
-			DirectX::XMFLOAT4X4 localTransform = parent->getComponent<Transform>()->getLocalTransform();
+			DirectX::XMFLOAT4X4 localTransform = parent->getComponent<Transform>()->getLocalTransform(ignoreScale);
 
 			// Move our world matrix into the parent's local-space
 			transform = DirectX::XMMatrixMultiply(transform, DirectX::XMLoadFloat4x4(&localTransform));

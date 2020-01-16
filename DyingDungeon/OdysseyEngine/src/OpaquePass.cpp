@@ -63,16 +63,8 @@ namespace Odyssey
 
 	void OpaquePass::preRender(RenderArgs& args)
 	{
-		// Set the view
-		if (Camera* camera = args.camera->getComponent<Camera>())
-		{
-			args.perFrame.view = camera->getInverseViewMatrix();
-			// Calculate and set view proj
-			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
-			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-			// Update the buffer
-			updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
-		}
+		// Update the buffer
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 
 		// Bind the render target
 		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);

@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "UICanvas.h"
 #include "EventManager.h"
+#include "Camera.h"
 
 namespace Odyssey
 {
@@ -48,6 +49,14 @@ namespace Odyssey
 
 	void RenderPipeline::generateRenderArgs(std::shared_ptr<SceneDX11> scene)
 	{
+		if (Camera* camera = scene->getMainCamera()->getComponent<Camera>())
+		{
+			args.perFrame.view = camera->getInverseViewMatrix();
+			// Calculate and set view proj
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
+			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
+		}
+
 		args.camera = scene->getMainCamera();
 		args.lightList = scene->getSceneLights();
 		args.entityList = scene->getEntities();

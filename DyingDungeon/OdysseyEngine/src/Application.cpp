@@ -79,7 +79,9 @@ namespace Odyssey
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
 			// Change the active scene
-			mActiveScene->setActive(false);
+			if (mActiveScene)
+				mActiveScene->setActive(false);
+
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set
@@ -240,8 +242,6 @@ namespace Odyssey
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
 		{
-			// Fire the scene change event and set this as the new active scene
-			EventManager::getInstance().publish(new SceneChangeEvent(name));
 			mActiveScene = std::static_pointer_cast<SceneDX11>(scene);
 		}
 	}
@@ -272,6 +272,7 @@ namespace Odyssey
 			if (mActiveScene)
 			{
 				// Execute the scene thread with the active scene
+				mActiveScene->initialize();
 				ThreadManager::getInstance().executeSceneThread(mActiveScene);
 			}
 		}
