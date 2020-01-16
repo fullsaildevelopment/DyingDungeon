@@ -536,8 +536,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_1.mp3", "NoManaLow");
 	
 	//Play Initial Loop
-	RedAudioManager::Instance().Loop("BackgroundMenu");
-	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+	//RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)

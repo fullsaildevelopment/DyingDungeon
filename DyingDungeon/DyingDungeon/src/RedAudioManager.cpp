@@ -53,12 +53,13 @@ void RedAudioManager::Play(const char* alias)
 
 void RedAudioManager::StopEvent(AudioStopEvent* asEvent)
 {
-	Stop(asEvent->alias.c_str());
+	//Stop(asEvent->alias.c_str());
+	FindAudio(asEvent->alias.c_str())->Stop();
 }
 
 void RedAudioManager::Stop(const char* alias) 
 {
-	FindAudio(alias)->Stop();
+	Odyssey::EventManager::getInstance().publish(new AudioStopEvent(alias));
 }
 
 void RedAudioManager::PlaySFX(const char* alias)
