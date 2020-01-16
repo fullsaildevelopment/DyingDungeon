@@ -89,7 +89,6 @@ namespace Odyssey
 		// Recalculate the light's transform and set the shader matrix's lightViewProj
 		float sceneRadius = 50.0f;
 		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
-		mShadowLight->buildLightTransform(sceneCenter, sceneRadius, args.perFrame.view);
 		mShadowLight->buildLightTransformProjection(sceneCenter, sceneRadius, args.perFrame.lightViewProj);
 
 		// Update the per frame buffer

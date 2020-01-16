@@ -33,10 +33,50 @@ void Buffs::Use(Character& caster, Character& target)
 	{
 		mStatusEffect->Apply(target);
 		std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << "." << std::endl;
-		if (mStatusEffect->GetTypeId() == EFFECTTYPE::Regen)
+		switch (mStatusEffect->GetTypeId())
+		{
+		case EFFECTTYPE::None:
+		{
+			break;
+		}
+		case EFFECTTYPE::Bleed:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Regen:
+		{
 			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
-		else if (mStatusEffect->GetTypeId() == EFFECTTYPE::Shield)
+			break;
+		}
+		case EFFECTTYPE::StatUp:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::StatDown:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Stun:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Shield:
+		{
 			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Provoke:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }
 

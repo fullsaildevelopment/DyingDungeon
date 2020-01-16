@@ -47,6 +47,20 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Paladin/Paladin_Taunt.dxanim");
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
+		newCharacter->setStatic(false);
+		break;
+	}
+	case Mage:
+	{
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Mage.dxm", true);
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Mage/Mage_Hit.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("OneHandedCast", "assets/animations/Mage/Mage_1H_Attack.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("TwoHandedCast", "assets/animations/Mage/Mage_2H_Attack.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Mage/Mage_Death.dxanim", false);
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Mage/Mage_Idle.dxanim");
+		newCharacter->addComponent<HeroComponent>(HEROID::Mage);
+		newCharacter->setStatic(false);
 		break;
 	}
 	case Skeleton:
@@ -68,7 +82,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 		Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Ganfaul.dxm", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Ganfaul/Ganfaul_Idle.dxanim");
-		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death.dxanim");
+		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death.dxanim", false);
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack.dxanim"); 
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
