@@ -5,11 +5,10 @@
 #include "StatusEvents.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
-	mTurnOrderNumbers = _turnOrderNumbers;
 	mTurnIndicator = _turnIndicatorModel;
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
@@ -25,10 +24,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	{
 		if (mPlayerTeam[i] != nullptr)
 		{
-			// Set the player's turn order number
-			mPlayerTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
-			turnOrderIndex++;
-
+			// Have player team do cool animation at the start of each battle
 			if (mPlayerTeam[i]->getComponent<Character>()->GetState() != STATE::DEAD)
 			{
 				// Play an attack animation at the beginning of each battle
@@ -44,10 +40,6 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 	{
 		if (mEnemyTeam[i] != nullptr)
 		{
-			// Set the player's turn order number
-			mEnemyTeam[i]->getComponent<Character>()->pTurnNumber = mTurnOrderNumbers[turnOrderIndex];
-			turnOrderIndex++;
-
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
 			mEnemyTeam[i]->getComponent<Character>()->SetHP(1000);

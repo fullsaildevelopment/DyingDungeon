@@ -22,7 +22,6 @@ public: // Constructors
 
 	Odyssey::UICanvas* UI;
 	Odyssey::UICanvas* Rewards;
-	std::vector<Odyssey::Text2D*> TurnOrderNumbers;
 
 public: // Functions
 
