@@ -517,7 +517,7 @@ float StatTracker::CalculatePercentDamageSuccess()
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
 			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].actionType == Action::Attack) {
-				for (unsigned int k = 0; k < m_levels[i].turns[j].targetNames.size(); k++)
+				for (unsigned int k = 0; k < m_levels[i].turns[j].blockValues.size(); k++)
 				{
 					totalDmg += m_levels[i].turns[j].value;
 					total += m_levels[i].turns[j].value - (m_levels[i].turns[j].blockValues[k] * m_levels[i].turns[j].value);
