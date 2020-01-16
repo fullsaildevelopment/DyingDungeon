@@ -75,7 +75,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
-		newCharacter->setStatic(false);
 		break;
 	}
 	case Ganfaul:
@@ -87,7 +86,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack"); 
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
-		newCharacter->setStatic(false);
 		break;
 	}
 	default:
@@ -95,6 +93,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		break;
 	}
 	}
+	newCharacter->setStatic(false);
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 
 	// Set the character's name

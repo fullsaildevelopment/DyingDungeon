@@ -99,6 +99,22 @@ void TowerManager::update(double deltaTime)
 				}
 				else
 				{
+					// If this is the last level of the tower, spawn the boss
+					if (mCurrentLevel == mNumberOfLevels)
+					{
+						// Turn off the other enemies
+						for (int i = 0; i < mEnemyTeam.size(); i++)
+						{
+							mEnemyTeam[i]->setActive(false);
+						}
+						// Clear all enemies from the current enemy list
+						mEnemyTeam.clear();
+
+						// Now active the boos and only add the boss to the enemy list
+						mBossCharacter->setActive(true);
+						mEnemyTeam.push_back(mBossCharacter);
+					}
+
 					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
 					// Publish the current level number
@@ -170,7 +186,7 @@ void TowerManager::CreateBattleInstance()
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers, tmTurnIndicator);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);

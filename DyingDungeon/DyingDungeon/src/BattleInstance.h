@@ -13,7 +13,7 @@ class BattleInstance
 {
 
 public: // Constructors
-	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::vector<Odyssey::Text2D*> _turnOrderNumbers, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
+	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
 
 	enum BattleInstanceCommands
 	{
@@ -37,7 +37,6 @@ private: // Varibales
 	EntityList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
 	EntityList mPlayerTeam; // playerTeam will hold the Entitys associated with the Player's team
 	EntityList mEnemyTeam; // enemyTeam will hold the Entitys associated with the Overlord's team
-	std::vector<Odyssey::Text2D*> mTurnOrderNumbers;
 
 	// Queues
 	EntityQueue mBattleQueue; // Battle Queue that will hodl the order in which players can attack
