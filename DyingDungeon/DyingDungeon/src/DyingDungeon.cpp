@@ -71,6 +71,8 @@ namespace
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
 	Odyssey::TextProperties gDefaultText;
+	// Particle systems
+	std::shared_ptr<Odyssey::Entity> gFireBall;
 }
 
 // Forward declarations
@@ -90,6 +92,8 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 
 // BUILD 2 STUFF
 void setupFire();
+void setUpFireButBetter();
+
 //Tristen's Stuff
 void setUpTowerManager();
 
@@ -147,6 +151,9 @@ int playGame()
 
 	// BUILD 2
 	setupFire();
+
+	// Particle Systems
+	setUpFireButBetter();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -644,6 +651,24 @@ void setupFire()
 	gGameScene->addEntity(fire3);
 	gGameScene->addEntity(fire4);
 	gGameScene->addEntity(fire5);
+}
+
+void setUpFireButBetter()
+{
+	gFireBall = std::make_shared<Odyssey::Entity>();
+	gFireBall->addComponent<Odyssey::Transform>();
+	gFireBall->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLifetime(0.75f, 1.0f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setParticleCount(100);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(125);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
+	gGameScene->addEntity(gFireBall);
 }
 
 void setUpTowerManager()
