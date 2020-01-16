@@ -118,6 +118,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;

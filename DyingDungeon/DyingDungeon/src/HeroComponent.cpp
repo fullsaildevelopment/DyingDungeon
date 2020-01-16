@@ -297,14 +297,20 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
-				for(std::shared_ptr<Odyssey::Entity> e : enemies)
-					e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+				for (std::shared_ptr<Odyssey::Entity> e : enemies)
+				{
+					if(e != nullptr && e->getComponent<Character>()->GetHP() > 0.0f)
+						e->getComponent<Character>()->mImpactIndicator->setActive(true);
+				}
 			}
 			else
 			{
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
 				for (std::shared_ptr<Odyssey::Entity> h : heros)
-					h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+				{
+					if (h != nullptr && h->getComponent<Character>()->GetHP() > 0.0f)
+						h->getComponent<Character>()->mImpactIndicator->setActive(true);
+				}
 			}
 			mCurrentState = STATE::CONFIRM;
 		}
@@ -344,15 +350,21 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 			return;
 		std::cout << "This will affect " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
 	}
-	mCurrentTarget->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+	mCurrentTarget->mImpactIndicator->setActive(true);
 	mCurrentState = STATE::CONFIRM;
 }
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
 	for (std::shared_ptr<Odyssey::Entity> e : enemies)
-		e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	{
+		if (e != nullptr)
+			e->getComponent<Character>()->mImpactIndicator->setActive(false);
+	}
 	for (std::shared_ptr<Odyssey::Entity> h : heros)
-		h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	{
+		if(h != nullptr)
+			h->getComponent<Character>()->mImpactIndicator->setActive(false);
+	}
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::SELECTMOVE;
