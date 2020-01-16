@@ -52,9 +52,9 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
 		break;
 	}
-	case HEROID::Wizard:
+	case HEROID::Mage:
 	{
-		mName = "Wizard";
+		mName = "Mage";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 150.0f;
 		mAttack = 0.0f;
