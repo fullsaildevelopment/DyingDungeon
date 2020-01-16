@@ -45,7 +45,7 @@ HeroComponent::HeroComponent(HEROID id)
 		temp = std::make_shared<Provoked>(2, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.50f, 15.0f, 20.0f, 25.0f));
+		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.50f, 15.0f, 200.0f, 25.0f));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));

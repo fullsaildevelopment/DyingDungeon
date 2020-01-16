@@ -473,10 +473,17 @@ void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* ca
 	properties.fontSize = 14.0f;
 	properties.bold = true;
 
-	// Turn Order Text
+	// Assign the character's turn order text
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	if (owner)
+	{
+		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	}
+	else
+	{
+		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	}
 
 	// Health and Mana bars
 	int manaBarHeight = 5;
@@ -597,9 +604,6 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	
-	// Get the number of Text2D elements in the GameMenu before adding them
-	int text2DIndex;
-
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
@@ -618,10 +622,6 @@ void setUpTowerManager()
 	// Create the character's potrait and assign it's health and mana bars
 	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
@@ -630,10 +630,6 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
@@ -644,22 +640,14 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Tres", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
-	createCharacterHealthPopup(900, 550, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #4
 	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Cuatro", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(1100, 500, canvas, characterToAdd->getComponent<Character>());
@@ -670,10 +658,6 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
@@ -682,10 +666,6 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
@@ -696,10 +676,6 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
@@ -709,13 +685,21 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
+
+	// Ganfaul
+	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
+	createCharacterPortrait(575.0f, (height/2) - 200, canvas, characterToAdd->getComponent<Character>());
+
+	// Added the Character's health popup
+	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
+	characterToAdd->setActive(false);
+	// Assign the boss character for the tower
+	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+	
 
 	// Create the turn indicator circle
 	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
@@ -729,7 +713,7 @@ void setUpTowerManager()
 	gGameScene->addEntity(turnIndicatorModel);
 
 	// Set up the tower manager with the enemy and player teams
-	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);
+	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 2, turnIndicatorModel);
 	gGameScene->addEntity(gCurrentTower);
 }
 
