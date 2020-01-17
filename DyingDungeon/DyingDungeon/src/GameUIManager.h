@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Character.h"
 #include "Scene.h"
 #include "Rectangle2D.h"
 #include "Text2D.h"
@@ -28,6 +29,9 @@ public: // Functions
 
 	// Creation of the pause menu
 	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	 
+	// Create The UI portraits for the characters
+	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::UICanvas* canvas, Character* owner);
 
 	//Getters
 	// Get the tower select menu

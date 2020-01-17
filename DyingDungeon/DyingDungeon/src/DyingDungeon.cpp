@@ -621,7 +621,7 @@ void setUpTowerManager()
 
 	// Create the character's potrait and assign it's health and mana bars
 	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
-
+	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
