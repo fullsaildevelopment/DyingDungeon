@@ -169,7 +169,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
 			if (mPS != nullptr)
 			{
-				mPS->getComponent<ParticleMover>()->SetTargetPos(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				DirectX::XMFLOAT3 temp(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				temp.y += 3.0f;
+				mPS->getComponent<ParticleMover>()->SetTargetPos(temp);
 				mPS->setActive(true);
 				mPS->setVisible(true);
 			}
