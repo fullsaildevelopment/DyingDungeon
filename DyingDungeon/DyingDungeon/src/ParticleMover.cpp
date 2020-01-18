@@ -7,7 +7,6 @@ void ParticleMover::initialize()
 {
 	mFuckYouMax = mEntity->getComponent<Odyssey::Transform>();
 	mOrigin = mFuckYouMax->getPosition();
-	
 }
 
 void ParticleMover::update(double deltaTime)
@@ -85,7 +84,7 @@ void ParticleMover::SetLifeTime(float newLifeTime)
 
 void ParticleMover::Reset()
 {
-	setActive(false);
+	mEntity->setActive(false);
 	mEntity->setVisible(false);
 	mFuckYouMax->setPosition(mOrigin.x, mOrigin.y, mOrigin.z);
 }

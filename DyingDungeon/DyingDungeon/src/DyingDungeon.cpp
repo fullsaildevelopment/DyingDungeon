@@ -671,7 +671,7 @@ void setUpFireButBetter()
 	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
 	gFireBall->getComponent<Odyssey::Transform>()->setPosition(6.0f, 1.3f, 4.5f);
 	gFireBall->addComponent<ParticleMover>();
-	gFireBall->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+	gFireBall->getComponent<ParticleMover>()->SetLifeTime(5.0f);
 	gFireBall->getComponent<ParticleMover>()->SetSpeed(5.0f);
 	gGameScene->addEntity(gFireBall);
 }

@@ -167,6 +167,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
+			if (mPS != nullptr)
+			{
+				mPS->getComponent<ParticleMover>()->SetTargetPos(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				mPS->setActive(true);
+				mPS->setVisible(true);
+			}
 			mCurrentState = STATE::INPROGRESS;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))

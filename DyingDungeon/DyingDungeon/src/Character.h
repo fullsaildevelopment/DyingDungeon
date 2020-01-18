@@ -4,6 +4,7 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"
+#include "ParticleMover.h"
 #include <vector>
 
 enum class HEROID { Paladin = 0, Mage };
