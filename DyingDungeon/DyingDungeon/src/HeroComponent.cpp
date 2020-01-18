@@ -109,6 +109,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		//Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
+		{
+			mPS->setActive(true);
+			mPS->setVisible(true);
+		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			SelctionState(heros, enemies, 0);

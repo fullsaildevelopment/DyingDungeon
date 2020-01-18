@@ -19,6 +19,7 @@
 #include "TowerSelectController.h"
 #include "TeamSelectionController.h"
 #include "StatTracker.h"
+#include "ParticleMover.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -668,6 +669,10 @@ void setUpFireButBetter()
 	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
 	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
 	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
+	gFireBall->getComponent<Odyssey::Transform>()->setPosition(6.0f, 1.3f, 4.5f);
+	gFireBall->addComponent<ParticleMover>();
+	gFireBall->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+	gFireBall->getComponent<ParticleMover>()->SetSpeed(5.0f);
 	gGameScene->addEntity(gFireBall);
 }
 
@@ -692,7 +697,10 @@ void setUpTowerManager()
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Paladin Uno", charPosition, charRotation, gGameScene);
+	gFireBall->getComponent<ParticleMover>()->SetTargetPos(DirectX::XMFLOAT3(7.5f, 0.3f, -5.0f));
+	gFireBall->setActive(false);
+	characterToAdd->getComponent<Character>()->SetPS(gFireBall);
 
 	// Create the character's potrait and assign it's health and mana bars
 	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());

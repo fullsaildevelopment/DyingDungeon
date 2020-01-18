@@ -16,7 +16,7 @@ private:
 public:
 	ParticleMover() = default;
 	~ParticleMover() = default;
-	virtual void initilize();
+	virtual void initialize();
 	virtual void update(double deltaTime);
 	Odyssey::ParticleSystem* GetPS();
 	void SetPS(Odyssey::ParticleSystem* newPS);
@@ -28,6 +28,8 @@ public:
 	void SetPos(Odyssey::Transform* newPos);
 	float GetSpeed();
 	void SetSpeed(float newSpeed);
+	float GetLifeTime();
+	void SetLifeTime(float newLifeTime);
 	void Reset();
 private:
 };

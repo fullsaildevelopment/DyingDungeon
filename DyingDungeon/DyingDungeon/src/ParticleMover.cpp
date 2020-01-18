@@ -3,10 +3,11 @@
 
 CLASS_DEFINITION(Component, ParticleMover)
 
-void ParticleMover::initilize()
+void ParticleMover::initialize()
 {
 	mFuckYouMax = mEntity->getComponent<Odyssey::Transform>();
 	mOrigin = mFuckYouMax->getPosition();
+	
 }
 
 void ParticleMover::update(double deltaTime)
@@ -16,8 +17,6 @@ void ParticleMover::update(double deltaTime)
 	tempTime += deltaTime;
 	if (tempTime > mLifeTime)
 	{
-		setActive(true);
-		mEntity->setVisible(true);
 		Reset();
 		tempTime = 0.0f;
 	}
@@ -74,8 +73,19 @@ void ParticleMover::SetSpeed(float newSpeed)
 	mSpeed = newSpeed;
 }
 
+float ParticleMover::GetLifeTime()
+{
+	return mLifeTime;
+}
+
+void ParticleMover::SetLifeTime(float newLifeTime)
+{
+	mLifeTime = newLifeTime;
+}
+
 void ParticleMover::Reset()
 {
 	setActive(false);
+	mEntity->setVisible(false);
 	mFuckYouMax->setPosition(mOrigin.x, mOrigin.y, mOrigin.z);
 }
