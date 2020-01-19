@@ -109,11 +109,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		//Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
-		{
-			mPS->setActive(true);
-			mPS->setVisible(true);
-		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			SelctionState(heros, enemies, 0);
@@ -164,6 +159,18 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		//Player will confirm that this is thier desired move
 	case STATE::CONFIRM:
 	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
+		{
+			mAnimator->playClip(mCurrentSkill->GetAnimationId());
+			if (mPS != nullptr)
+			{
+				DirectX::XMFLOAT3 temp(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				temp.y += 3.0f;
+				mPS->getComponent<ParticleMover>()->SetTargetPos(temp);
+				mPS->setActive(true);
+				mPS->setVisible(true);
+			}
+		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
