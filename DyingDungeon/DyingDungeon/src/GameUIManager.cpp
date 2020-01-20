@@ -12,7 +12,6 @@ void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 	// Set the passed in entity's canvas to active or deactived based on the bool _isActive.
 	_canvas->setActive(_isActive);
 }
- 
 
 // This is where I will design and add all the lements into the tower select screen
 void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
@@ -127,7 +126,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
-
+// Create the character's UI Portrait
 void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::UICanvas* canvas, Character* owner)
 {
 	Odyssey::TextProperties properties;
@@ -170,9 +169,15 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 	color = { 0.0f, 0.0f, 0.0f, 1.0f };
 	position.x += 7.5f;
 	// Convert name to wstring
-	std::wstring characterName(owner->GetName().length(), L' ');
-	std::copy(owner->GetName().begin(), owner->GetName().end(), characterName.begin());
+	size_t cSize = strlen(owner->GetName().c_str()) + 1;
+	size_t convertedChars = 0;
+	wchar_t* characterName = new wchar_t[cSize];
+	mbstowcs_s(&convertedChars, characterName, cSize, owner->GetName().c_str(), _TRUNCATE);
+	// Add the name to the canvas
 	canvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, characterName, properties);
+	// Delete the newed pointer
+	delete characterName;
+	characterName = nullptr;
 
 	// Create the character's level number text next to the XP bar
 	position.x += barWidth;
