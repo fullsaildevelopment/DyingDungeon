@@ -41,6 +41,8 @@ public: // Functions
 
 	// Get the pause menu
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
+	// Get the options menu
+	std::shared_ptr<Odyssey::Entity> GetOptionsMenu() { return mOptionsMenu; }
 	// Get the rectangle buttons from the pause menu
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
@@ -49,6 +51,8 @@ public: // Functions
 	//Setters
 	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
 
+	void SetOptionsMenu(std::shared_ptr<Odyssey::Entity> _optionsMenu) { mOptionsMenu = _optionsMenu; }
+
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
 	
 private: // Varibales
@@ -56,11 +60,11 @@ private: // Varibales
 	// Canvases
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
+	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
 	Odyssey::Sprite2D* mDoorImage;
-
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
@@ -72,6 +76,14 @@ private: // Varibales
 	Odyssey::Text2D* mOptionsText;
 	Odyssey::Rectangle2D* mMainMenuBackground;
 	Odyssey::Text2D* mMainMenuText;
+
+	// Options Menu Items
+	Odyssey::Text2D* mOptionsTitle;
+	Odyssey::Text2D* mVolumeText;
+	Odyssey::Rectangle2D* mVolumeBar;
+	Odyssey::Sprite2D* mPlusImage;
+	Odyssey::Sprite2D* mMinusImage;
+	Odyssey::Text2D* mBackButtonText;
 
 	// Vectors
 
@@ -87,4 +99,6 @@ private: // Varibales
 	// Bools
 
 private: // Functions
+	void CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void OptionsBackButton();
 };

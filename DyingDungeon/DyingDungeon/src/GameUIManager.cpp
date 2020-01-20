@@ -1,6 +1,9 @@
 #include "GameUIManager.h"
 #include "UICanvas.h"
 
+#define BackgroundBigOpacity 0.5f
+#define BackgroundSmallOpacity 0.8f
+
 GameUIManager& GameUIManager::getInstance()
 {
 	static GameUIManager instance;
@@ -67,7 +70,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	// Add the rectangle to the pause menu canvas
 	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(0.5f);
+	mBlackBackground->setOpacity(BackgroundBigOpacity);
 
 	// Create the pause menu smaller black rectangle
 	width = 640;
@@ -75,7 +78,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	// Add the rectangle to the pause menu canvas
 	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(0.8f);
+	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
 
 	// Create Pause Title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -124,6 +127,99 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	_sceneToAddTo->addEntity(mPauseMenu);
 	// Turn off the canvas when creating it
 	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Make options menu
+	CreateOptionsMenu(_sceneToAddTo);
+}
+
+
+void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	// Set options menu pointer and add a canvas
+	mOptionsMenu = std::make_shared<Odyssey::Entity>();
+	mOptionsMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the options menu
+	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenu->getComponent<Odyssey::UICanvas>();
+
+	// Set init values
+	// Create the rectangle object
+	UINT width = 1920; // Width
+	UINT height = 1080; // Height
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
+	// Add the rectangle to the options menu canvas
+	mBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Make the rectangle have 50% transparency
+	mBlackBackground->setOpacity(BackgroundBigOpacity);
+
+	// Create the pause menu smaller black rectangle
+	width = 640;
+	height = 360;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	DirectX::XMFLOAT2 originalPosition = position;
+	// Add the rectangle to the options menu canvas
+	mSmallerBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+
+	// Create options title
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Constantia";
+	mOptionsTitle = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, 60, L"Options", properties);
+
+	// Adjust volume text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.bold = false;
+	properties.fontSize = 20.0f;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position.y -= 75.0f;
+	mVolumeText = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Adjust Volume", properties);
+	// Volume bar
+	width /= 2.0f;
+	height = 25;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position.y -= 45.0f;
+	// Create the volume bar background
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x - 2.5f, position.y - 2.5f), color, width + 5.0f, height + 5.0f);
+	color = { 70.0f, 70.0f, 70.0f, 1.0f };
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Add the volume bar to the canvas
+	color = { 50.0f, 180.0f, 255.0f, 1.0f };
+	mVolumeBar = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+
+	// Create the options back button
+	position = originalPosition;
+	width = 100.0f;
+	height = 30.0f;
+	position.y += 360.0f - height;
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	// Add the back button text
+	mBackButtonText = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
+	// Have the back button go to the pause menu
+	mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
+
+	// Add the options menu to the game scene most likely
+	_sceneToAddTo->addEntity(mOptionsMenu);
+	// Turn off the canvas when creating it
+	ToggleCanvas(mOptionsMenu->getComponent<Odyssey::UICanvas>(), false);
+}
+
+void GameUIManager::OptionsBackButton()
+{
+	// Turn off the options menu's canvas
+	mOptionsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	
+	// Turn on the pause menu's canvas
+	mPauseMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
 }
 
 // Create the character's UI Portrait

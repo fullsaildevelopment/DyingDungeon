@@ -86,6 +86,7 @@ private: // Varibales
 private: // Functions
 	void DestroyBattleInstance();
 	void TogglePauseMenu();
+	void ShowOptionsMenu();
 	void GoToMainMenu();
 };
 
