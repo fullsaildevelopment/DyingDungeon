@@ -1,4 +1,5 @@
 #include "GameUIManager.h"
+#include "RedAudioManager.h"
 #include "UICanvas.h"
 
 #define BackgroundBigOpacity 0.5f
@@ -16,7 +17,43 @@ void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 	_canvas->setActive(_isActive);
 }
 
-// This is where I will design and add all the lements into the tower select screen
+// This is where I will design and add all the elements into the main menu screen
+void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	//Create the pause menu pointer
+	mMainMenu = std::make_shared<Odyssey::Entity>();
+	mMainMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the main menu
+	Odyssey::UICanvas* mainMenuCanvas = mMainMenu->getComponent<Odyssey::UICanvas>();
+
+	// Setup init values
+	UINT width = screenWidth;
+	UINT height = screenHeight;
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Constantia";
+
+	// Create new game text 
+	position.x += 200.0f;
+	position.y += 200.0f;
+	width = 200;
+	height = 60;
+	mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
+
+	// Add the pause menu to the main scene
+	_sceneToAddTo->addEntity(mMainMenu);
+}
+
+// This is where I will design and add all the elements into the tower select screen
 void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
 	// Create the tower select menu pointer
@@ -53,7 +90,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	ToggleCanvas(mTowerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
-// This is where I will design and add all elemnts into the pause menu canvas
+// This is where I will design and add all elements into the pause menu canvas
 void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
 	//Create the pause menu pointer
@@ -132,7 +169,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	CreateOptionsMenu(_sceneToAddTo);
 }
 
-
+// This is where I will design and add all elements into the options menu canvas
 void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
 	// Set options menu pointer and add a canvas
@@ -193,6 +230,20 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	color = { 50.0f, 180.0f, 255.0f, 1.0f };
 	mVolumeBar = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+	mVolumeBar->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f);
+
+	// Create the plus and minus symbols that the user can click on to adjust the volume
+	UINT imageWidth = 32;
+	UINT imageHeight = 32;
+	position.x -= static_cast<float>(imageWidth) * 1.5f;
+	position.y -= 4.0f;
+	// Minus Symbol
+	mMinusImage = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+	mMinusImage->registerCallback("onMouseClick", this, &GameUIManager::DecreaseVolume);
+	// Plus Symbol
+	position.x += (static_cast<float>(imageWidth) * 1.5f) + width + (static_cast<float>(imageWidth) / 2.0f);
+	mPlusImage = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	mPlusImage->registerCallback("onMouseClick", this, &GameUIManager::IncreaseVolume);
 
 	// Create the options back button
 	position = originalPosition;
@@ -213,6 +264,7 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	ToggleCanvas(mOptionsMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
+// This function will get called when you click on the back button on the options menu in pause
 void GameUIManager::OptionsBackButton()
 {
 	// Turn off the options menu's canvas
@@ -303,24 +355,24 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 	if (owner)
 	{
 		// Create and assign the health bar
-		color = { 0.0f, 255.0f, 0.0f, 1.0f };
+		color = { 0.0f, 180.0f, 0.0f, 1.0f };
 		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
 		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 		// Create the text for the health numbers of the character
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		properties.fontSize = 10.5f;
 		position.x += 5.0f;
-		canvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
+		//owner->mHpText = canvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
 		// Create and assign the mana bar
 		position.x -= 5.0f;
 		position.y += barHeight;
-		color = { 0.0f, 255.0f, 255.0f, 1.0f };
+		color = { 0.0f, 180.0f, 180.0f, 1.0f };
 		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
 		owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 		// Create the text for the mana numbers of the character
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		position.x += 5.0f;
-		canvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
+		//owner->mManaText = canvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
 	}
 	else
 	{
@@ -339,4 +391,24 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
 	else
 		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+}
+
+void GameUIManager::DecreaseVolume()
+{
+	// Decrease volume with Red's audio manager
+	RedAudioManager::Instance().SetVolume(RedAudioManager::Instance().GetVolume() - 50);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
+	mVolumeBar->setFill(volumeRatio);
+}
+
+void GameUIManager::IncreaseVolume()
+{
+	// Increase volume with Red's audio manager
+	RedAudioManager::Instance().SetVolume(RedAudioManager::Instance().GetVolume() + 50);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
+	mVolumeBar->setFill(volumeRatio);
 }

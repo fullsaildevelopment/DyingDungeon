@@ -142,6 +142,8 @@ int playGame()
 	// Set up the team selection screen
 	setupMenu(gRenderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
 
+	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
+
 	// Load the arena scene
 	setupArena();
 
@@ -668,10 +670,8 @@ void setUpTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
-
-	// Create the character's potrait and assign it's health and mana bars
-	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
-	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/Gordon.jpg", canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
@@ -679,28 +679,19 @@ void setUpTowerManager()
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
-
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 198.5f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
-	// Paladin #3
+	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Tres", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
-
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
-	gPlayerUnit.push_back(characterToAdd);
-
-	// Paladin #4
-	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Cuatro", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
-
-	// Added the Character's health popup
-	createCharacterHealthPopup(1100, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1

@@ -24,6 +24,9 @@ public: // Functions
 	// Toggle canvases on and off
 	void ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive);
 
+	// Creation of the main menu
+	void CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
 	// Creation of the tower select menu
 	void CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
@@ -34,6 +37,9 @@ public: // Functions
 	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::UICanvas* canvas, Character* owner);
 
 	//Getters
+	// Get the main menu
+	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
+
 	// Get the tower select menu
 	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
 	// Get the sprite buttons from the tower select menu
@@ -57,10 +63,14 @@ public: // Functions
 	
 private: // Varibales
 
-	// Canvases
+	// Menu Entities
+	std::shared_ptr<Odyssey::Entity> mMainMenu;
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
+
+	// Main Menu Items
+	Odyssey::Text2D* mNewGameText;
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
@@ -101,4 +111,6 @@ private: // Varibales
 private: // Functions
 	void CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 	void OptionsBackButton();
+	void DecreaseVolume();
+	void IncreaseVolume();
 };
