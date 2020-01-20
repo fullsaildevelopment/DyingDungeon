@@ -30,6 +30,7 @@ public:
 	void SetSpeed(float newSpeed);
 	float GetLifeTime();
 	void SetLifeTime(float newLifeTime);
+	DirectX::XMFLOAT3 GetVelocity();
 	void Reset();
 private:
 };

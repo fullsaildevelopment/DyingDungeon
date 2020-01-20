@@ -4,7 +4,6 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"
-#include "ParticleMover.h"
 #include <vector>
 
 enum class HEROID { Paladin = 0, Mage };
@@ -72,9 +71,6 @@ public:
 	// State functions
 	STATE GetState();
 	void SetState(STATE newState);
-	// Particle system functions
-	std::shared_ptr<Odyssey::Entity> GetPS();
-	void SetPS(std::shared_ptr<Odyssey::Entity> newPS);
 	// Impact Indicator Setter
 	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
 	// Impact Indicator Getter
@@ -121,7 +117,6 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mRegens; 
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
-	std::shared_ptr<Odyssey::Entity> mPS;
 	STATE mCurrentState;
 	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;

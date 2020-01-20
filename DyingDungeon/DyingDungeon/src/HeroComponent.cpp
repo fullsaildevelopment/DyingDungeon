@@ -87,15 +87,15 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// State machine to navigate while its the players turn.
 	switch (mCurrentState)
 	{
-		//If the player is stunned manage all his effects and exit the loop.
+	// If the player is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
 		mCurrentState = STATE::NONE;
 		ManageAllEffects();
 		return true;
 	}
-		//If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
-		//If the players character dies he will have his state set to dead, else he will start to select his move.
+	// If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
+	// If the players character dies he will have his state set to dead, else he will start to select his move.
 	case STATE::NONE:
 	{
 		ManageStatusEffects(mRegens);
@@ -106,7 +106,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentState = STATE::SELECTMOVE;
 		break;
 	}
-		//Here the player will be able to select from his four options for skills
+	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -131,7 +131,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
-		//If the player character's selection is not Aoe or currently provoked they will then select thier target
+	// If the player character's selection is not Aoe or currently provoked they will then select thier target
 	case STATE::SELECTTARGET:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -156,31 +156,55 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
-		//Player will confirm that this is thier desired move
+	// Player will confirm that this is thier desired move
 	case STATE::CONFIRM:
 	{
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mPS != nullptr)
+			if (mCurrentSkill->GetParticleSystem() != nullptr)
 			{
-				DirectX::XMFLOAT3 temp(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-				temp.y += 3.0f;
-				mPS->getComponent<ParticleMover>()->SetTargetPos(temp);
-				mPS->setActive(true);
-				mPS->setVisible(true);
+				// Set position to start in desired postion
+				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
+				temp.x += mCurrentSkill->GetPosOffset().x;
+				temp.y += mCurrentSkill->GetPosOffset().y;
+				temp.z += mCurrentSkill->GetPosOffset().z;
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(temp);
+				// Set target position
+				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				temp2.y += 3.0f;
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetTargetPos(temp2);
+				// Use velocity to calc lifetime
+				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->GetVelocity();
+				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+				// Turn particle effect on
+				mCurrentSkill->GetParticleSystem()->setActive(true);
+				mCurrentSkill->GetParticleSystem()->setVisible(true);
 			}
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mPS != nullptr)
+			if (mCurrentSkill->GetParticleSystem() != nullptr)
 			{
-				DirectX::XMFLOAT3 temp(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-				temp.y += 3.0f;
-				mPS->getComponent<ParticleMover>()->SetTargetPos(temp);
-				mPS->setActive(true);
-				mPS->setVisible(true);
+				// Set position to start in desired postion
+				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
+				temp.x += mCurrentSkill->GetPosOffset().x;
+				temp.y += mCurrentSkill->GetPosOffset().y;
+				temp.z += mCurrentSkill->GetPosOffset().z;
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(temp);
+				// Set target position
+				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+				temp2.y += 3.0f;
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetTargetPos(temp2);
+				// Use velocity to calc lifetime
+				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->GetVelocity();
+				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+				// Turn particle effect on
+				mCurrentSkill->GetParticleSystem()->setActive(true);
+				mCurrentSkill->GetParticleSystem()->setVisible(true);
 			}
 			mCurrentState = STATE::INPROGRESS;
 		}
@@ -275,7 +299,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 	}
 	break;
-		// once here loop through remaining status effects and reset current state
+		// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
 		mCurrentState = STATE::NONE;
@@ -306,6 +330,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
 }
+
 void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
@@ -348,6 +373,7 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 	else
 		std::cout << "You dont have enough mana for that move." << std::endl;
 }
+
 void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targetIndex)
 {
 	if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
@@ -373,6 +399,7 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 	mCurrentTarget->mImpactIndicator->setActive(true);
 	mCurrentState = STATE::CONFIRM;
 }
+
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
 	for (std::shared_ptr<Odyssey::Entity> e : enemies)

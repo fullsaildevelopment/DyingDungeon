@@ -11,7 +11,7 @@ void ParticleMover::initialize()
 
 void ParticleMover::update(double deltaTime)
 {
-	mFuckYouMax->addPosition(mVelocity.x * deltaTime, mVelocity.y * deltaTime, mVelocity.z * deltaTime);
+	mFuckYouMax->addPosition(mVelocity.x * deltaTime, mVelocity.y * deltaTime, mVelocity.z * deltaTime); 
 	static double tempTime = 0.0f;
 	tempTime += deltaTime;
 	if (tempTime > mLifeTime)
@@ -50,6 +50,7 @@ DirectX::XMFLOAT3 ParticleMover::GetOriginPos()
 void ParticleMover::SetOrigin(DirectX::XMFLOAT3 newOrigin)
 {
 	mOrigin = newOrigin;
+	mEntity->getComponent<Odyssey::Transform>()->setPosition(newOrigin.x, newOrigin.y, newOrigin.z);
 }
 
 Odyssey::Transform* ParticleMover::GetPos()
@@ -80,6 +81,11 @@ float ParticleMover::GetLifeTime()
 void ParticleMover::SetLifeTime(float newLifeTime)
 {
 	mLifeTime = newLifeTime;
+}
+
+DirectX::XMFLOAT3 ParticleMover::GetVelocity()
+{
+	return mVelocity;
 }
 
 void ParticleMover::Reset()

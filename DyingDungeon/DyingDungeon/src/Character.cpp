@@ -324,15 +324,6 @@ void Character::SetState(STATE newState)
 	mCurrentState = newState;
 }
 
-std::shared_ptr<Odyssey::Entity> Character::GetPS()
-{
-	return mPS;
-}
-
-void Character::SetPS(std::shared_ptr<Odyssey::Entity> newPS)
-{
-	mPS = newPS;
-}
 /*
  * Function:  IsHero()
  * --------------------
