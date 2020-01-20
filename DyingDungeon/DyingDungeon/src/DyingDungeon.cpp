@@ -19,6 +19,7 @@
 #include "TowerSelectController.h"
 #include "TeamSelectionController.h"
 #include "StatTracker.h"
+#include "ParticleMover.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -71,6 +72,8 @@ namespace
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
 	Odyssey::TextProperties gDefaultText;
+	// Particle systems
+	std::shared_ptr<Odyssey::Entity> gFireBall;
 }
 
 // Forward declarations
@@ -90,6 +93,8 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 
 // BUILD 2 STUFF
 void setupFire();
+void setUpFireButBetter();
+
 //Tristen's Stuff
 void setUpTowerManager();
 
@@ -149,6 +154,9 @@ int playGame()
 
 	// BUILD 2
 	setupFire();
+
+	// Particle Systems
+	setUpFireButBetter();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -648,6 +656,28 @@ void setupFire()
 	gGameScene->addEntity(fire5);
 }
 
+void setUpFireButBetter()
+{
+	gFireBall = std::make_shared<Odyssey::Entity>();
+	gFireBall->addComponent<Odyssey::Transform>();
+	gFireBall->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLifetime(0.75f, 1.0f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setParticleCount(100);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(125);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
+	gFireBall->addComponent<ParticleMover>();
+	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);
+	gFireBall->getComponent<ParticleMover>()->SetSpeed(1.0f);
+	gFireBall->setActive(false);
+	gGameScene->addEntity(gFireBall);
+}
+
 void setUpTowerManager()
 {
 	// Create the current tower entity
@@ -672,6 +702,7 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
@@ -688,6 +719,13 @@ void setUpTowerManager()
 	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
+	Character* temp = characterToAdd->getComponent<Character>();
+	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
+	temp->GetSkills()[0]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[3]->SetParticleSystem(gFireBall);
+	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup

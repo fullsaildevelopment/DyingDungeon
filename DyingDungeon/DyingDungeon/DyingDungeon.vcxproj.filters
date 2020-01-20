@@ -85,6 +85,9 @@
     <ClCompile Include="src\AiMoves.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleMover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DyingDungeon.h">
@@ -182,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="src\Skills.h">
       <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleMover.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
