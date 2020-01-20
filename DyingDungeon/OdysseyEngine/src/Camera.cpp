@@ -15,7 +15,7 @@ namespace Odyssey
 
 	void Camera::initialize()
 	{
-		setProjectionValues(60.0f, mAspectRatio, 0.1f, 150.0f);
+		setProjectionValues(60.0f, mAspectRatio, 0.1f, 1500.0f);
 	}
 
 	void Camera::setFieldOfView(float angleInDegrees)

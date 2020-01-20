@@ -146,20 +146,20 @@ namespace Odyssey
 		ComponentType* getComponent()
 		{
 			// Iterate through the components vector
-			mLock.lock(LockState::Read);
+			//mLock.lock(LockState::Read);
 			for (auto&& component : mComponents)
 			{
 				// Check the type against the templated type
 				if (component->isClassType(ComponentType::Type))
 				{
 					ComponentType* foundComponent = static_cast<ComponentType*>(component.get());
-					mLock.unlock(LockState::Read);
+					//mLock.unlock(LockState::Read);
 					return foundComponent;
 				}
 			}
 
 			// Nothing found, return nullptr
-			mLock.unlock(LockState::Read);
+			//mLock.unlock(LockState::Read);
 			return std::shared_ptr<ComponentType>(nullptr).get();
 		}
 

@@ -6,7 +6,6 @@ CLASS_DEFINITION(Character, EnemyComponent)
 
 EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 {
-	mDead = false;
 	SetHero(false);
 	mMoveOverride = SKILLTYPE::UNDEFINED;
 	mCurrentState = STATE::NONE;

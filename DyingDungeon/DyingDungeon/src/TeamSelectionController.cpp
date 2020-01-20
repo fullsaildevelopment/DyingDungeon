@@ -12,15 +12,15 @@ TeamSelectionController::TeamSelectionController(Odyssey::Application* applicati
 
 void TeamSelectionController::initialize()
 {
-	//RedAudioManager::Instance().Play("BackgroundMenu");
-	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+	//RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void TeamSelectionController::update(double deltaTime)
 {
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 	{
-		//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+		RedAudioManager::Instance().Stop("BackgroundMenu");
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}

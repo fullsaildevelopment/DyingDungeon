@@ -50,24 +50,12 @@ namespace Odyssey
 
 	void SkyboxPass::preRender(RenderArgs& args)
 	{
-		// Set the view
-		if (args.camera)
-		{
-			if (Camera* camera = args.camera->getComponent<Camera>())
-			{
-				args.perFrame.view = camera->getInverseViewMatrix();
-				// Calculate and set view proj
-				DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
-				DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-				// Update the buffer
-				updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
-			}
-
-			mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
-			mRenderState->bind(mDeviceContext);
-			mVertexShader->bind(mDeviceContext);
-			mPixelShader->bind(mDeviceContext);
-		}
+		// Update the buffer
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
+		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
+		mRenderState->bind(mDeviceContext);
+		mVertexShader->bind(mDeviceContext);
+		mPixelShader->bind(mDeviceContext);
 	}
 
 	void SkyboxPass::render(RenderArgs& args)

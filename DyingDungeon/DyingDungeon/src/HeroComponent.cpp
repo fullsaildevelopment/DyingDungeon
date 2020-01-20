@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "EnemyComponent.h"
 #include "MeshRenderer.h"
+#include "ParticleSystem.h"
 /// Check if better way
 #include "Attack.h"
 #include "Buffs.h"
@@ -21,9 +22,9 @@ CLASS_DEFINITION(Character, HeroComponent)
 
 HeroComponent::HeroComponent(HEROID id)
 {
-	mDead = false;
 	SetHero(true);
 	mEXP = 0;
+	mShielding = 0.0f;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::NONE;
@@ -39,9 +40,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.30f;
 		mBaseSpeed = mSpeed = 35.0f;
-		mShielding = 0.0f;
-		for (int i = 0; i < TOTALSKILLS; ++i)
-		// Basic Attack (Add Provoke 30% chance)
+		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
@@ -52,6 +51,27 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
+		break;
+	}
+	case HEROID::Mage:
+	{
+		mName = "Mage";
+		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxMana = mCurrentMana = 150.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.10f;
+		mBaseSpeed = mSpeed = 40.0f;
+		// Basic attack, stun
+		temp = std::make_shared<Stun>(1,nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "OneHandedCast", 0.25f, -10.0f, 10.0f,temp));
+		// Wind Slash, aoe dps, speed down 
+		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("Wind Slash", "OneHandedCast", 0.25f, 10.0f, 15.0f, temp, true));
+		// Fire sTrom BIIIIGGGGG DPS with bleed
+		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>("FireStorm", "TwoHandedCast", 0.25f, 30.0f, 50.0f, temp, true));
+		// Lighting Bolt BIGGGGG siongle target dps
+		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
 	default:
@@ -277,14 +297,20 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 			{
 				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
-				for(std::shared_ptr<Odyssey::Entity> e : enemies)
-					e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+				for (std::shared_ptr<Odyssey::Entity> e : enemies)
+				{
+					if(e != nullptr && e->getComponent<Character>()->GetHP() > 0.0f)
+						e->getComponent<Character>()->mImpactIndicator->setActive(true);
+				}
 			}
 			else
 			{
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
 				for (std::shared_ptr<Odyssey::Entity> h : heros)
-					h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+				{
+					if (h != nullptr && h->getComponent<Character>()->GetHP() > 0.0f)
+						h->getComponent<Character>()->mImpactIndicator->setActive(true);
+				}
 			}
 			mCurrentState = STATE::CONFIRM;
 		}
@@ -324,15 +350,21 @@ void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targe
 			return;
 		std::cout << "This will affect " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
 	}
-	mCurrentTarget->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(true);
+	mCurrentTarget->mImpactIndicator->setActive(true);
 	mCurrentState = STATE::CONFIRM;
 }
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
 	for (std::shared_ptr<Odyssey::Entity> e : enemies)
-		e.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	{
+		if (e != nullptr)
+			e->getComponent<Character>()->mImpactIndicator->setActive(false);
+	}
 	for (std::shared_ptr<Odyssey::Entity> h : heros)
-		h.get()->getComponent<Character>()->GetInpactIndicator()->getComponent<Odyssey::MeshRenderer>()->setActive(false);
+	{
+		if(h != nullptr)
+			h->getComponent<Character>()->mImpactIndicator->setActive(false);
+	}
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::SELECTMOVE;

@@ -12,8 +12,8 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 
 void MainMenuController::initialize()
 {
-	RedAudioManager::Instance().Loop("BackgroundMenu");
 	RedAudioManager::Instance().Stop("BackgroundBattle");
+	RedAudioManager::Instance().Loop("BackgroundMenu");
 }
 
 void MainMenuController::update(double deltaTime)

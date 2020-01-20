@@ -6,9 +6,7 @@
 #include "Skills.h"
 #include <vector>
 
-#define TOTALSKILLS 7
-
-enum class HEROID { Paladin = 0 };
+enum class HEROID { Paladin = 0, Mage };
 enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
@@ -56,9 +54,6 @@ public:
 	float GetBaseSpeed();
 	void IncreaseSpd(float statIncrease);
 	void DecreaseSpd(float statDecrease);
-	// Dead Status Functions
-	bool IsDead();
-	void SetDead(bool deadStatus);
 	// EXP Functions
 	void AddExp(float exp);
 	float GetExp();
@@ -102,7 +97,6 @@ public:
 protected:
 	//Stats
 	bool mHero;
-	bool mDead;
 	float mCurrentHP;
 	float mCurrentMana;
 	float mBaseMaxHP;
@@ -124,6 +118,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;
