@@ -159,6 +159,85 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Player will confirm that this is thier desired move
 	case STATE::CONFIRM:
 	{
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Back))
+		{
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(1000.0f);
+			mCurrentSkill->GetParticleSystem()->setActive(true);
+			mCurrentSkill->GetParticleSystem()->setVisible(true);
+		}
+		if(Odyssey::InputManager::getInstance().getKeyPress(KeyCode::T))
+			mAnimator->playClip(mCurrentSkill->GetAnimationId());
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::H))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.x += 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::J))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.y += 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::K))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.z += 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::B))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.x -= 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::N))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.y -= 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+		{
+			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
+			temp.z -= 0.1f;
+			mCurrentSkill->SetParticleOffset(temp);
+			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
+			testing.x += mCurrentSkill->GetPosOffset().x;
+			testing.y += mCurrentSkill->GetPosOffset().y;
+			testing.z += mCurrentSkill->GetPosOffset().z;
+			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
