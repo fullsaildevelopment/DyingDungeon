@@ -14,20 +14,20 @@ class StatTracker
 {
 
 private:
-	enum class Action { None = -1, Attack, Defend, Aid };
+	enum class Action { None = -1, Attack, Defend, Aid};
 public:
 
 	struct Turn
 	{
 		std::string characterName = "";
 		float attackModifier = 0.0f;
-		std::vector<std::string> targetNames;
-		std::vector<float> blockValues;
+		//std::vector<std::string> targetNames;
+		std::vector <std::pair<std::string, float>> targets;
 		uint32_t round = 1;
 		float value = 0.0f;
 		EFFECTTYPE effect = EFFECTTYPE::None;
 		StatTracker::Action actionType = StatTracker::Action::None;
-		bool isSheild = false;
+		//bool isSheild = false;
 		bool isPlayer = false;
 		std::string actionName = "";
 	};
@@ -56,8 +56,8 @@ public:
 
 	void SetRewardsScreen(Odyssey::UICanvas* rewardScreen);
 
-	void SaveStats(std::string saveName);
-	void LoadStats(std::string loadFileName);
+	bool SaveStats(std::string saveName);
+	bool LoadStats(std::string loadFileName);
 
 	void LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent);
 	void LogTakeDamageEvent(CharacterTakeDamage* ctdEvent);
@@ -91,6 +91,8 @@ private:
 	float CalculateShieldGiven(std::string name);
 	float CalculatePercentageStat(Action stat);
 	float CalculatePercentageStat(std::string name, Action stat);
+	std::string FormatToPercentage(float number);
+	std::wstring FormatToPercentageW(float number);
 	float roundf(float num, unsigned int decimal_places = 0);
 	double round(double num, unsigned int decimal_places = 0);
 	//unsigned int CalculateRoundsInLevel(unsigned int levelNumber);
