@@ -186,7 +186,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mCurrentSkill->GetParticleSystem() != nullptr)
+			if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 			{
 				// Set position to start in desired postion
 				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
@@ -202,9 +202,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->GetVelocity();
 				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
 				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
-				// Turn particle effect on
-				mCurrentSkill->GetParticleSystem()->setActive(true);
-				mCurrentSkill->GetParticleSystem()->setVisible(true);
 			}
 			mCurrentState = STATE::INPROGRESS;
 		}
@@ -218,8 +215,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	case STATE::INPROGRESS:
 	{
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed 
-		static bool trigger = false;
-		if (!trigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
+		static bool particleTrigger = false;
+		static bool animeTrigger = false;
+		if (!particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
+		{
+			// Turn particle effect on
+			mCurrentSkill->GetParticleSystem()->setActive(true);
+			mCurrentSkill->GetParticleSystem()->setVisible(true);
+			particleTrigger = true;
+		}
+		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
 			// If its ment for the enemies play the hit animation to time with the animation timing
 			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
@@ -228,11 +233,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : enemies)
 					{
-						if(c != nullptr)
+						if(c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
 					}
 				}
-				else if(mCurrentTarget != nullptr)
+				else if(mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 			}
 			else
@@ -242,15 +247,15 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
-						if(c != nullptr && c.get()->getComponent<HeroComponent>() != this)
+						if(c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					}
 				}
-				else if (mCurrentTarget != nullptr && mCurrentTarget != this)
+				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD && mCurrentTarget != this)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 			}
 			// Set trigger to true to avoid looping the recipents animation
-			trigger = true;
+			animeTrigger = true;
 		}
 		// Once the animation is nearly finished use the skill and apply the effects
 		if (mAnimator->getProgress() > 0.9f)
@@ -294,7 +299,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			}
 			mCurrentSkill = nullptr;
 			mCurrentTarget = nullptr;
-			trigger = false;
+			animeTrigger = false;
+			particleTrigger = false;
 			mCurrentState = STATE::FINISHED;			
 		}
 	}
@@ -344,7 +350,7 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
 				for (std::shared_ptr<Odyssey::Entity> e : enemies)
 				{
-					if(e != nullptr && e->getComponent<Character>()->GetHP() > 0.0f)
+					if(e != nullptr && e->getComponent<Character>()->GetState() != STATE::DEAD)
 						e->getComponent<Character>()->mImpactIndicator->setActive(true);
 				}
 			}
@@ -353,7 +359,7 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
 				for (std::shared_ptr<Odyssey::Entity> h : heros)
 				{
-					if (h != nullptr && h->getComponent<Character>()->GetHP() > 0.0f)
+					if (h != nullptr && h->getComponent<Character>()->GetState() != STATE::DEAD)
 						h->getComponent<Character>()->mImpactIndicator->setActive(true);
 				}
 			}
