@@ -16,7 +16,7 @@ void ParticleMover::update(double deltaTime)
 	tempTime += deltaTime;
 	if (tempTime > mLifeTime)
 	{
-		Reset();
+		//Reset();
 		tempTime = 0.0f;
 	}
 }
@@ -90,7 +90,5 @@ DirectX::XMFLOAT3 ParticleMover::GetVelocity()
 
 void ParticleMover::Reset()
 {
-	mEntity->setActive(false);
-	mEntity->setVisible(false);
 	mFuckYouMax->setPosition(mOrigin.x, mOrigin.y, mOrigin.z);
 }

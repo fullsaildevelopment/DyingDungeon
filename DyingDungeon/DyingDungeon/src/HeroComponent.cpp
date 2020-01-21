@@ -165,11 +165,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			std::shared_ptr<Odyssey::Entity> testMePls = mCurrentSkill->GetParticleSystem();
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(1000.0f);
-			mCurrentSkill->GetParticleSystem()->setActive(true);
-			mCurrentSkill->GetParticleSystem()->setVisible(true);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(1000.0f);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad8))
 		{
@@ -184,7 +181,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad5))
 		{
@@ -195,7 +192,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad9))
 		{
@@ -206,7 +203,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad1))
 		{
@@ -217,7 +214,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad2))
 		{
@@ -228,7 +225,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad7))
 		{
@@ -239,7 +236,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad4))
 		{
@@ -282,11 +279,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					aoeSpawn.y /= static_cast<float>(heros.size());
 					aoeSpawn.z /= static_cast<float>(heros.size());
 				}
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
-				// Turn particle effect on
-				mCurrentSkill->GetParticleSystem()->setActive(true);
-				mCurrentSkill->GetParticleSystem()->setVisible(true);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
 			}
 			else if (mCurrentSkill->GetParticleSystem() != nullptr)
 			{
@@ -295,18 +289,17 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				temp.x += mCurrentSkill->GetPosOffset().x;
 				temp.y += mCurrentSkill->GetPosOffset().y;
 				temp.z += mCurrentSkill->GetPosOffset().z;
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(temp);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
 				// Set target position
 				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
 				temp2.y += 3.0f;
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetTargetPos(temp2);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
 				// Use velocity to calc lifetime
-				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->GetVelocity();
+				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
 				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
 				// Turn particle effect on
-				mCurrentSkill->GetParticleSystem()->setActive(true);
-				mCurrentSkill->GetParticleSystem()->setVisible(true);
+				mCurrentSkill->GetParticleSystem()->play();
 			}
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
@@ -342,11 +335,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					aoeSpawn.y /= static_cast<float>(heros.size());
 					aoeSpawn.z /= static_cast<float>(heros.size());
 				}
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
-				// Turn particle effect on
-				mCurrentSkill->GetParticleSystem()->setActive(true);
-				mCurrentSkill->GetParticleSystem()->setVisible(true);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
 			}
 			else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 			{
@@ -355,15 +345,15 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				temp.x += mCurrentSkill->GetPosOffset().x;
 				temp.y += mCurrentSkill->GetPosOffset().y;
 				temp.z += mCurrentSkill->GetPosOffset().z;
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(temp);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
 				// Set target position
 				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
 				temp2.y += 3.0f;
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetTargetPos(temp2);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
 				// Use velocity to calc lifetime
-				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->GetVelocity();
+				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
 				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
 			}
 			mCurrentState = STATE::INPROGRESS;
 		}
@@ -382,8 +372,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
 			// Turn particle effect on
-			mCurrentSkill->GetParticleSystem()->setActive(true);
-			mCurrentSkill->GetParticleSystem()->setVisible(true);
+			mCurrentSkill->GetParticleSystem()->play();
 			particleTrigger = true;
 		}
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
@@ -400,8 +389,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit"); 
 							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
 							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->setVisible(true);
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->setActive(true);
+							c.get()->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
@@ -410,8 +398,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
 					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-					mCurrentTarget->GetPSBlood()->getEntity()->setVisible(true);
-					mCurrentTarget->GetPSBlood()->getEntity()->setActive(true);
+					mCurrentTarget->GetPSBlood()->play();
 				}
 			}
 			else

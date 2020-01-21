@@ -5,6 +5,7 @@
 #include "RenderDevice.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Entity.h"
 
 namespace Odyssey
 {
@@ -32,22 +33,20 @@ namespace Odyssey
 		mTexture = renderDevice.createTexture(TextureType::Diffuse, "Flare.png");
 
 		// Create the particle data buffer
+		mStartCount = 10;
+		mMaxCount = 100;
+		mEmissionRate = 10;
 		mShape = SpherePS();
 		mStartColor = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 		mEndColor = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-		mMinLife = 0.0f;
-		mMaxLife = 1.0f;
 		mMinSpeed = 0.0f;
 		mMaxSpeed = 1.0f;
 		mMinSize = 0.25f;
 		mMaxSize = 1.0f;
-		mParticleCount = 0;
-		mMaxCount = 100;
-		setParticleCount(100);
-		mEmissionRate = 0;
-		mIsLooping = false;
-		mIsPlaying = true;
-		mDuration = 0.0;
+		mMinLife = 0.0f;
+		mMaxLife = 1.0f;
+		mGravity = 0.0f;
+		mGravityEnabled = false;
 	}
 
 	void ParticleSystem::run(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
@@ -124,10 +123,11 @@ namespace Odyssey
 		mMaxLife = max;
 	}
 
-	void ParticleSystem::setParticleCount(int particleCount)
+	void ParticleSystem::setParticleCount(int startingCount, int maxCount)
 	{
-		mMaxCount = particleCount;
-		mParticleData.resize(particleCount);
+		mStartCount = startingCount;
+		mMaxCount = maxCount;
+		mParticleData.resize(mMaxCount);
 		createParticleBuffer();
 	}
 
@@ -168,9 +168,19 @@ namespace Odyssey
 		mDuration = duration;
 	}
 
+	void ParticleSystem::setGravity(float gravity)
+	{
+		mGravity = gravity;
+		mGravityEnabled = true;
+	}
+
 	void ParticleSystem::play()
 	{
+		mIsActive = true;
 		mIsPlaying = true;
+		mCurrentTime = 0.0f;
+
+		setInitialData();
 	}
 
 	void ParticleSystem::pause()
@@ -180,9 +190,11 @@ namespace Odyssey
 
 	void ParticleSystem::stop()
 	{
+		mIsActive = false;
+		mIsPlaying = false;
 		mParticleData.clear();
 		mParticleData.resize(mMaxCount);
-		mIsPlaying = false;
+		mCurrentTime = 0.0f;
 	}
 
 	void ParticleSystem::createDepthState()
@@ -234,6 +246,16 @@ namespace Odyssey
 		mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
 	}
 
+	void ParticleSystem::setInitialData()
+	{
+		for (int i = 0; i < mStartCount; i++)
+		{
+			Particle p;
+			createParticle(p);
+			mParticleData[i] = p;
+		}
+	}
+
 	void ParticleSystem::createParticleBuffer()
 	{
 		if (mParticleData.size() != mMaxCount)
@@ -249,9 +271,9 @@ namespace Odyssey
 	void ParticleSystem::createParticle(Particle& particle)
 	{
 		std::mt19937 generator(rnd());
-		std::uniform_real_distribution<float> xPosition(-1.0f * mShape.center.x * mShape.radius, mShape.center.x * mShape.radius);
-		std::uniform_real_distribution<float> yPosition(-1.0f * mShape.center.y * mShape.radius, mShape.center.y * mShape.radius);
-		std::uniform_real_distribution<float> zPosition(-1.0f * mShape.center.z * mShape.radius, mShape.center.z * mShape.radius);
+		std::uniform_real_distribution<float> xPosition(-1.0f * mShape.radius + mShape.center.x, mShape.center.x + mShape.radius);
+		std::uniform_real_distribution<float> yPosition(-1.0f * mShape.radius + mShape.center.y, mShape.center.y + mShape.radius);
+		std::uniform_real_distribution<float> zPosition(-1.0f * mShape.radius + mShape.center.z, mShape.center.z + mShape.radius);
 		std::uniform_real_distribution<float> xDirection(mShape.minXDirection, mShape.maxXDirection);
 		std::uniform_real_distribution<float> yDirection(mShape.minYDirection, mShape.maxYDirection);
 		std::uniform_real_distribution<float> zDirection(mShape.minZDirection, mShape.maxZDirection);
@@ -263,17 +285,12 @@ namespace Odyssey
 		particle.color = colorLerp(mStartColor, mEndColor, 0.0f);
 		particle.position = DirectX::XMFLOAT3(xPosition(generator), yPosition(generator), zPosition(generator));
 		particle.velocity = DirectX::XMFLOAT3(xDirection(generator), yDirection(generator), zDirection(generator));
-		//DirectX::XMStoreFloat3(&particle.velocity, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&particle.velocity)));
+		DirectX::XMStoreFloat3(&particle.velocity, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&particle.velocity)));
 		particle.velocity = DirectX::XMFLOAT3(particle.velocity.x * speed, particle.velocity.y * speed, particle.velocity.z * speed);
 		particle.size = size(generator);
 		particle.active = true;
 		particle.lifeTime = lf(generator);
 		particle.startLifetime = particle.lifeTime;
-	}
-
-	void ParticleSystem::generatePosition(Particle& particle)
-	{
-
 	}
 
 	int ParticleSystem::runEmission(double deltaTime)
@@ -317,9 +334,28 @@ namespace Odyssey
 		return finalColor;
 	}
 
+	float ParticleSystem::lerp(float start, float end, float ratio)
+	{
+		return (1.0f - ratio) * start + (ratio * end);
+	}
+
+	void ParticleSystem::initialize()
+	{
+		if (mIsPlaying)
+			setInitialData();
+	}
+
 	void ParticleSystem::update(double deltaTime)
 	{
 		mLock.lock(LockState::Write);
+
+		if (mCurrentTime >= mDuration && mIsPlaying)
+		{
+			mCurrentGravity = 0.0f;
+			stop();
+			mLock.unlock(LockState::Write);
+			return;
+		}
 
 		if (mIsPlaying == false)
 		{
@@ -327,8 +363,9 @@ namespace Odyssey
 			return;
 		}
 
-		static double time = 0.0; time += deltaTime;
-		bool allowEmit = (mIsLooping || time < mDuration);
+		mCurrentTime += deltaTime;
+
+		bool allowEmit = (mIsLooping || mCurrentTime < mDuration);
 
 		int emission = runEmission(deltaTime);
 
@@ -338,6 +375,8 @@ namespace Odyssey
 		for (int i = 0; i < mParticleData.size(); i++)
 		{
 			mParticleData[i].lifeTime -= deltaTime;
+
+			mCurrentGravity = lerp(0.0f, mGravity, (1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime));
 
 			if (mParticleData[i].lifeTime <= 0.0f && mParticleData[i].active)
 			{
@@ -349,6 +388,9 @@ namespace Odyssey
 				mParticleData[i].position.x += mParticleData[i].velocity.x * deltaTime;
 				mParticleData[i].position.y += mParticleData[i].velocity.y * deltaTime;
 				mParticleData[i].position.z += mParticleData[i].velocity.z * deltaTime;
+				
+				if (mGravityEnabled)
+					mParticleData[i].position.y -= mCurrentGravity * deltaTime;
 
 				mParticleData[i].color = colorLerp(mStartColor, mEndColor, 1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime);
 			}

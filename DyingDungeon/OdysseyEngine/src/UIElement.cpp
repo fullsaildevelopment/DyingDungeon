@@ -31,6 +31,7 @@ namespace Odyssey
 
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
+
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
@@ -66,9 +67,57 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
+	void UIElement::onMouseMove(MouseMoveEvent* evnt)
+	{
+		int xPosition = evnt->mouseX;
+		int yPosition = evnt->mouseY;
+
+		mLock.lock(LockState::Write);
+
+		if (mCanvas->isActive())
+		{
+			if (xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom)
+			{
+				if (mTrackMouseEnter)
+				{
+					onMouseEnter();
+				}
+			}
+			else if (mTrackMouseExit)
+			{
+				onMouseExit();
+			}
+		}
+
+		mLock.unlock(LockState::Write);
+	}
+
+	void UIElement::onMouseEnter()
+	{
+		mTrackMouseExit = true;
+		mTrackMouseEnter = false;
+
+		if (mCallbackMap.count(__func__) > 0)
+		{
+			mCallbackMap[__func__]->execute();
+		}
+	}
+
+	void UIElement::onMouseExit()
+	{
+		mTrackMouseExit = false;
+		mTrackMouseEnter = true;
+
+		if (mCallbackMap.count(__func__) > 0)
+		{
+			mCallbackMap[__func__]->execute();
+		}
+	}
+
 	void UIElement::initialize()
 	{
 		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
+		EventManager::getInstance().subscribe(this, &UIElement::onMouseMove);
 	}
 
 	void UIElement::setCanvas(UICanvas* canvas)

@@ -45,7 +45,7 @@ private: // Varibales
 
 private: // Functions
 	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
-	std::shared_ptr<Odyssey::Entity> setUpFireButBetter();
-	std::shared_ptr<Odyssey::Entity> setUpFireStorm();
+	Odyssey::ParticleSystem* setUpFireButBetter();
+	Odyssey::ParticleSystem* setUpFireStorm();
 };
 
