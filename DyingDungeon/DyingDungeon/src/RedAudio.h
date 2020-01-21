@@ -72,6 +72,7 @@ class RedAudio
 		/// </summary>
 		/// <param name="volume">unsigned intiger value of the audio level between 0 and 1000</param>
 		void SetVolume(unsigned int volume);
+		unsigned int GetVolume();
 		/// <summary>
 		///		<para><c>Update</c> checks how long the track has played and if not looping changes playing to false</para>
 		/// </summary>

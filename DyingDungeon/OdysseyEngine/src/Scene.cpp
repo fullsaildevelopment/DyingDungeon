@@ -47,31 +47,7 @@ namespace Odyssey
 
 		for (std::shared_ptr<Entity> child : entity->getChildren())
 		{
-			for (Component* component : child->getComponents<Component>())
-			{
-				mComponentList.push_back(component);
-
-				if (component->isClassType(MeshRenderer::Type))
-				{
-					mRenderList.push_back(static_cast<MeshRenderer*>(component));
-				}
-
-				if (component->isClassType(UICanvas::Type))
-				{
-					// Add it to the vector of UI canvas objects
-					mSceneCanvas.push_back(static_cast<UICanvas*>(component));
-
-					for (UIElement* element : static_cast<UICanvas*>(component)->getElements<UIElement>())
-					{
-						mElementList.push_back(element);
-					}
-				}
-
-				if (component->isClassType(ParticleSystem::Type))
-				{
-					mSystemList.push_back(static_cast<ParticleSystem*>(component));
-				}
-			}
+			addEntity(child);
 		}
 
 		// Check if the entity has a camera component
@@ -109,10 +85,5 @@ namespace Odyssey
 	void Scene::setActive(bool active)
 	{
 		mActive = active;
-
-		//for (Component* component : mComponentList)
-		//{
-		//	component->setActive(mActive);
-		//}
 	}
 }

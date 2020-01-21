@@ -27,7 +27,7 @@ void TowerManager::initialize()
 
 	// Set the pause menu button callbacks
 	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	//GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ToggleOptionsMenu);
+	GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
 	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
 }
 
@@ -99,6 +99,22 @@ void TowerManager::update(double deltaTime)
 				}
 				else
 				{
+					// If this is the last level of the tower, spawn the boss
+					if (mCurrentLevel == mNumberOfLevels)
+					{
+						// Turn off the other enemies
+						for (int i = 0; i < mEnemyTeam.size(); i++)
+						{
+							mEnemyTeam[i]->setActive(false);
+						}
+						// Clear all enemies from the current enemy list
+						mEnemyTeam.clear();
+
+						// Now active the boos and only add the boss to the enemy list
+						mBossCharacter->setActive(true);
+						mEnemyTeam.push_back(mBossCharacter);
+					}
+
 					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
 					// Publish the current level number
@@ -170,7 +186,7 @@ void TowerManager::CreateBattleInstance()
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, TurnOrderNumbers, tmTurnIndicator);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
@@ -221,6 +237,17 @@ void TowerManager::TogglePauseMenu()
 	// Loop through all of the characters and toggle their animator
 	for (int i = 0; i < mAllCharacters.size(); i++)
 		mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
+}
+
+void TowerManager::ShowOptionsMenu()
+{
+	// Turn off the pause menu
+	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
+	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+
+	// Turn on the options menu
+	Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>();
+	GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
 }
 
 void TowerManager::GoToMainMenu()

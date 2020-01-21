@@ -6,9 +6,7 @@
 #include "Skills.h"
 #include <vector>
 
-#define TOTALSKILLS 7
-
-enum class HEROID { Paladin = 0, Wizard };
+enum class HEROID { Paladin = 0, Mage };
 enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
@@ -120,6 +118,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;

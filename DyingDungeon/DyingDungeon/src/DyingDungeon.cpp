@@ -19,6 +19,7 @@
 #include "TowerSelectController.h"
 #include "TeamSelectionController.h"
 #include "StatTracker.h"
+#include "ParticleMover.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -71,6 +72,8 @@ namespace
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
 	Odyssey::TextProperties gDefaultText;
+	// Particle systems
+	std::shared_ptr<Odyssey::Entity> gFireBall;
 }
 
 // Forward declarations
@@ -79,6 +82,7 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 void setupLighting();
 void setupCamera();
 void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene>& _sceneObject, std::shared_ptr<Odyssey::Entity>& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
+void setupMainMenu(Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
 void setupAudio();
@@ -90,6 +94,8 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 
 // BUILD 2 STUFF
 void setupFire();
+void setUpFireButBetter();
+
 //Tristen's Stuff
 void setUpTowerManager();
 
@@ -131,7 +137,7 @@ int playGame()
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
 
 	// Set up the main menu
-	setupMenu(gRenderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png", "MainMenu", MenuComponent::eMainMenu);
+	setupMainMenu(application.get());
 
 	// Set up the tower selection screen
 	setupMenu(gRenderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
@@ -142,11 +148,19 @@ int playGame()
 	// Set up the team selection screen
 	setupMenu(gRenderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
 
+	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
+
+	// Create the battle log for the game
+	GameUIManager::getInstance().CreateBattleLog(gGameScene);
+
 	// Load the arena scene
 	setupArena();
 
 	// BUILD 2
 	setupFire();
+
+	// Particle Systems
+	setUpFireButBetter();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -359,8 +373,8 @@ void setupCamera()
 {
 	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.0f, 8.13f, 10.82f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(24.81f, -180.0f, 0.0f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(3.432f, 7.053f, 14.602f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(25.189f, -160.439f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
@@ -403,6 +417,41 @@ void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* applic
 
 	// Add the scene to the application
 	application->addScene(_menuName, _sceneObject);
+}
+
+void setupMainMenu(Odyssey::Application* application)
+{
+	// Create Menu
+	setupMenu(gRenderDevice, application, gMainMenu, gMenu, L"", "MainMenu", MenuComponent::eMainMenu);
+
+	// Set up a directional light
+	std::shared_ptr<Odyssey::Light> dirLight = std::make_shared<Odyssey::Light>();
+	dirLight->setLightType(Odyssey::LightType::Directional);
+	dirLight->setPosition(0, 0, 0);
+	dirLight->setDirection(0.75f, -0.45f, -0.055f);
+	dirLight->setColor(0.4f, 0.5f, 0.7f);
+	dirLight->setIntensity(1.0f);
+	dirLight->setRange(0.0f);
+	dirLight->setSpotAngle(0.0f);
+	gMainMenu->addLight(dirLight);
+
+	// Set up an ambient light
+	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
+	ambientLight->setLightType(Odyssey::LightType::Point);
+	ambientLight->setPosition(0.0, 10.0f, 0.0f);
+	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
+	ambientLight->setColor(0.5f, 0.5f, 0.5f);
+	ambientLight->setIntensity(10.0f);
+	ambientLight->setRange(30.0f);
+	ambientLight->setSpotAngle(0.0f);
+	gMainMenu->addLight(ambientLight);
+
+	// Create a paladin and add him to the main menu scene
+	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
 }
 
 void setupArena()
@@ -473,10 +522,17 @@ void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* ca
 	properties.fontSize = 14.0f;
 	properties.bold = true;
 
-	// Turn Order Text
+	// Assign the character's turn order text
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	if (owner)
+	{
+		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	}
+	else
+	{
+		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+	}
 
 	// Health and Mana bars
 	int manaBarHeight = 5;
@@ -536,8 +592,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_1.mp3", "NoManaLow");
 	
 	//Play Initial Loop
-	RedAudioManager::Instance().Loop("BackgroundMenu");
-	RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+	//RedAudioManager::Instance().Loop("BackgroundMenu");
+	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
 }
 
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
@@ -561,32 +617,104 @@ void setupFire()
 	fire1->addComponent<Odyssey::Transform>();
 	fire1->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -6.42f);
 	fire1->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire2 = std::make_shared<Odyssey::Entity>();
 	fire2->addComponent<Odyssey::Transform>();
 	fire2->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -13.42f);
 	fire2->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire3 = std::make_shared<Odyssey::Entity>();
 	fire3->addComponent<Odyssey::Transform>();
 	fire3->getComponent<Odyssey::Transform>()->setPosition(5.65f, 4.67f, -13.42f);
 	fire3->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire4 = std::make_shared<Odyssey::Entity>();
 	fire4->addComponent<Odyssey::Transform>();
-	fire4->getComponent<Odyssey::Transform>()->setPosition(-12.55f, 4.37f, -6.42f);
+	fire4->getComponent<Odyssey::Transform>()->setPosition(-12.6f, 4.17f, -6.42f);
 	fire4->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire5 = std::make_shared<Odyssey::Entity>();
 	fire5->addComponent<Odyssey::Transform>();
 	fire5->getComponent<Odyssey::Transform>()->setPosition(12.65f, 4.67f, -2.92f);
 	fire5->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire5->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire5->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
 
 	gGameScene->addEntity(fire1);
 	gGameScene->addEntity(fire2);
 	gGameScene->addEntity(fire3);
 	gGameScene->addEntity(fire4);
 	gGameScene->addEntity(fire5);
+}
+
+void setUpFireButBetter()
+{
+	gFireBall = std::make_shared<Odyssey::Entity>();
+	gFireBall->addComponent<Odyssey::Transform>();
+	gFireBall->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLifetime(0.75f, 1.0f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setParticleCount(100);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(125);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
+	gFireBall->addComponent<ParticleMover>();
+	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);
+	gFireBall->getComponent<ParticleMover>()->SetSpeed(1.0f);
+	gFireBall->setActive(false);
+	gGameScene->addEntity(gFireBall);
 }
 
 void setUpTowerManager()
@@ -597,9 +725,6 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	
-	// Get the number of Text2D elements in the GameMenu before adding them
-	int text2DIndex;
-
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
@@ -614,13 +739,8 @@ void setUpTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
-
-	// Create the character's potrait and assign it's health and mana bars
-	createCharacterPortrait(150, 375, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
@@ -629,50 +749,34 @@ void setUpTowerManager()
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(425, 425, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 198.5f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
-	// Paladin #3
+	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Tres", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(750, 425, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
+	Character* temp = characterToAdd->getComponent<Character>();
+	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
+	temp->GetSkills()[0]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[3]->SetParticleSystem(gFireBall);
+	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
-	createCharacterHealthPopup(900, 550, canvas, characterToAdd->getComponent<Character>());
-	gPlayerUnit.push_back(characterToAdd);
-
-	// Paladin #4
-	charPosition = DirectX::XMVectorSet(-6.0f, 0.3f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Cuatro", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(1075, 375, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
-	// Added the Character's health popup
-	createCharacterHealthPopup(1100, 500, canvas, characterToAdd->getComponent<Character>());
+	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
+	//createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait(0.0f, 0.0f, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
@@ -683,10 +787,6 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
@@ -695,10 +795,6 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
-
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
@@ -709,13 +805,21 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
 	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
 
-	// Get the newest Text2D element's index
-	text2DIndex = static_cast<int>(canvas->getElements<Odyssey::Text2D>().size()) - 1;
-	gCurrentTower->getComponent<TowerManager>()->TurnOrderNumbers.push_back(canvas->getElements<Odyssey::Text2D>()[text2DIndex]);
-
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
+
+	// Ganfaul
+	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
+	createCharacterPortrait(575.0f, (height/2) - 200, canvas, characterToAdd->getComponent<Character>());
+
+	// Added the Character's health popup
+	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
+	characterToAdd->setActive(false);
+	// Assign the boss character for the tower
+	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+	
 
 	// Create the turn indicator circle
 	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
@@ -729,7 +833,7 @@ void setUpTowerManager()
 	gGameScene->addEntity(turnIndicatorModel);
 
 	// Set up the tower manager with the enemy and player teams
-	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 5, turnIndicatorModel);
+	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 2, turnIndicatorModel);
 	gGameScene->addEntity(gCurrentTower);
 }
 
