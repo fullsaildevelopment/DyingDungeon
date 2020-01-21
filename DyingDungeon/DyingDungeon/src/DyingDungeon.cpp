@@ -150,6 +150,9 @@ int playGame()
 
 	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
 
+	// Create the battle log for the game
+	GameUIManager::getInstance().CreateBattleLog(gGameScene);
+
 	// Load the arena scene
 	setupArena();
 
@@ -370,8 +373,8 @@ void setupCamera()
 {
 	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.608f, 17.315f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(32.759f, -180.0f, 0.0f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(3.432f, 7.053f, 14.602f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(25.189f, -160.439f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
@@ -438,7 +441,7 @@ void setupMainMenu(Odyssey::Application* application)
 	ambientLight->setPosition(0.0, 10.0f, 0.0f);
 	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
 	ambientLight->setColor(0.5f, 0.5f, 0.5f);
-	ambientLight->setIntensity(3.0f);
+	ambientLight->setIntensity(10.0f);
 	ambientLight->setRange(30.0f);
 	ambientLight->setSpotAngle(0.0f);
 	gMainMenu->addLight(ambientLight);
@@ -771,7 +774,9 @@ void setUpTowerManager()
 	// Skeleton #1
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
+	//createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	GameUIManager::getInstance().CreateCharacterPortrait(0.0f, 0.0f, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());

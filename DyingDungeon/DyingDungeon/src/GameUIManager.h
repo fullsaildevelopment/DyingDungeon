@@ -21,6 +21,9 @@ private: // Singleton pattern
 
 public: // Functions
 
+	// Create the battle log UI 
+	void CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
 	// Toggle canvases on and off
 	void ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive);
 
@@ -37,6 +40,9 @@ public: // Functions
 	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::UICanvas* canvas, Character* owner);
 
 	//Getters
+	// Get battle log text
+	Odyssey::Text2D* GetBattleLogText() { return mBattleLogText; }
+
 	// Get the main menu
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
 	Odyssey::Sprite2D* GetTeamLogo() { return mTeamLogo; }
@@ -64,6 +70,10 @@ public: // Functions
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
 	
 private: // Varibales
+
+	// Battle Log Object
+	std::shared_ptr<Odyssey::Entity> mBattleLog;
+	Odyssey::Text2D* mBattleLogText;
 
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
