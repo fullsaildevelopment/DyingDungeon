@@ -159,7 +159,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Player will confirm that this is thier desired move
 	case STATE::CONFIRM:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Back))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad0))
 		{
 			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
 			testing.x += mCurrentSkill->GetPosOffset().x;
@@ -170,9 +170,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentSkill->GetParticleSystem()->setActive(true);
 			mCurrentSkill->GetParticleSystem()->setVisible(true);
 		}
-		if(Odyssey::InputManager::getInstance().getKeyPress(KeyCode::T))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad8))
+		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::H))
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad3))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.x += 0.1f;
@@ -183,7 +185,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::J))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad5))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.y += 0.1f;
@@ -194,7 +196,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::K))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad9))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.z += 0.1f;
@@ -205,7 +207,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::B))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad1))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.x -= 0.1f;
@@ -216,7 +218,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::N))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad2))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.y -= 0.1f;
@@ -227,7 +229,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad7))
 		{
 			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
 			temp.z -= 0.1f;
@@ -237,6 +239,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad4))
+		{
+			mCurrentSkill->SetParticleFiringTime(mCurrentSkill->GetPSFiringTime() + 0.1f);
+		}
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad6))
+		{
+			mCurrentSkill->SetParticleFiringTime(mCurrentSkill->GetPSFiringTime() - 0.1f);
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
@@ -296,7 +306,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed 
 		static bool particleTrigger = false;
 		static bool animeTrigger = false;
-		if (!particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
+		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
 			// Turn particle effect on
 			mCurrentSkill->GetParticleSystem()->setActive(true);

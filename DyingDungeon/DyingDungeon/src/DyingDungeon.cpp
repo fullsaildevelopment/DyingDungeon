@@ -721,8 +721,8 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
 	Character* temp = characterToAdd->getComponent<Character>();
 	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
-	temp->GetSkills()[0]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[0]->SetParticleFiringTime(0.23f);
+	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
 	temp->GetSkills()[3]->SetParticleSystem(gFireBall);
 	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
 	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
