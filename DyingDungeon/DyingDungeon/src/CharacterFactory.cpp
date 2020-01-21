@@ -126,8 +126,6 @@ void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::E
 	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
 	impactIndicator->setStatic(false);
-	// Don't display the indicators when creating them. They will be toggled when character's attack.
-	impactIndicator->getComponent<Odyssey::MeshRenderer>()->setActive(false);
 	// Assign the character's impact indicator
 	_character->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 	// Don't show impact indicator when creating it

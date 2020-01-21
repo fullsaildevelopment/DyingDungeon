@@ -11,6 +11,8 @@ public:
 	MainMenuController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
+private:
+	void EnterTowerSelectScreen();
 public:
 	Odyssey::Rectangle2D* mRect;
 private:
