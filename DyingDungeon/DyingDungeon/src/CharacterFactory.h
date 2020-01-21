@@ -47,5 +47,6 @@ private: // Functions
 	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
 	Odyssey::ParticleSystem* setUpFireButBetter();
 	Odyssey::ParticleSystem* setUpFireStorm();
+	Odyssey::ParticleSystem* setupBlood();
 };
 

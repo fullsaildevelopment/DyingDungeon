@@ -7,6 +7,7 @@ void ParticleMover::initialize()
 {
 	mFuckYouMax = mEntity->getComponent<Odyssey::Transform>();
 	mOrigin = mFuckYouMax->getPosition();
+	mIsActive = false;
 }
 
 void ParticleMover::update(double deltaTime)
@@ -16,7 +17,7 @@ void ParticleMover::update(double deltaTime)
 	tempTime += deltaTime;
 	if (tempTime > mLifeTime)
 	{
-		//Reset();
+		Reset();
 		tempTime = 0.0f;
 	}
 }
@@ -90,5 +91,6 @@ DirectX::XMFLOAT3 ParticleMover::GetVelocity()
 
 void ParticleMover::Reset()
 {
+	mEntity->getComponent<Odyssey::ParticleSystem>()->stop();
 	mFuckYouMax->setPosition(mOrigin.x, mOrigin.y, mOrigin.z);
 }

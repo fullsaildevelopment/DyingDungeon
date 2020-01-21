@@ -373,6 +373,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			// Turn particle effect on
 			mCurrentSkill->GetParticleSystem()->play();
+			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			
 			particleTrigger = true;
 		}
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())

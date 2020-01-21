@@ -87,7 +87,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
 		EnemyComponent* tempEnemy = newCharacter->getComponent<EnemyComponent>();
-		tempEnemy->SetPSBlood(setUpFireStorm());
+		tempEnemy->SetPSBlood(setupBlood());
 		break;
 	}
 	case Ganfaul:
@@ -163,7 +163,7 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 	fireButBetter->setDuration(5.0);
 	fireButBetter->setSpeed(1.0f, 1.5f);
 	fireButBetter->setSize(1.0f, 1.5f);
-	fireButBetter->setLooping(true);
+	fireButBetter->setLooping(false);
 	fireButBetter->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.15f));
 	fireButBetter->stop();
 	gFireBall->addComponent<ParticleMover>();
@@ -195,4 +195,26 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	mGameScene->addEntity(gFireStorm);
 
 	return fireStorm;
+}
+
+Odyssey::ParticleSystem* CharacterFactory::setupBlood()
+{
+	std::shared_ptr<Odyssey::Entity> hitEffect = std::make_shared<Odyssey::Entity>();
+	hitEffect->addComponent<Odyssey::Transform>();
+	Odyssey::ParticleSystem* blood = hitEffect->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
+	blood->setTexture(Odyssey::TextureType::Diffuse, "Particle.png");
+	blood->setColor(DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	blood->setLifetime(0.5f, 0.75f);
+	blood->setParticleCount(150, 300);
+	blood->setRateOverTime(150);
+	blood->setDuration(1.25);
+	blood->setSpeed(5.0f, 7.5f);
+	blood->setSize(0.25f, 0.5f);
+	blood->setGravity(12.5f);
+	blood->setLooping(true);
+	blood->setShape(Odyssey::SpherePS(0.0f, 2.5f, 0.0f, 0.2f));
+	blood->stop();
+	mGameScene->addEntity(hitEffect);
+
+	return blood;
 }
