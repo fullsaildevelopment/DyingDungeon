@@ -103,6 +103,8 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 			//FindBestMove
 			if (mPriorityMove == SKILLTYPE::UNDEFINED)
 				SkeletonDeterminePriority();
+			
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		};
 		case 1:
@@ -116,7 +118,6 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 		};
 	}
 	
-	finished = FindBestMove(playerTeam, enemyTeam);
 	
 	return finished;
 }
@@ -303,6 +304,9 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
 
+	if (mPrevMove.skill->IsAOE())
+		return;
+
 	if (skill->GetTypeId() == mPriorityMove)
 		attackAOEScore += 100.0f;
 	
@@ -341,6 +345,9 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	float buffScore = 0.0f;
 	Character* target = nullptr;
 
+	if (mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+		buffScore += 50.0f;
+
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
 		if (t)
@@ -374,6 +381,9 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 {
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
+
+	if (mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+		buffAOEScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
