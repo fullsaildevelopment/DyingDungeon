@@ -562,3 +562,13 @@ void Character::UpdateManaBar()
 
 	pManaBar->setFill(fill);
 }
+
+void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
+{
+	mBloodParticleEffect = newBloodEffect;
+}
+
+Odyssey::ParticleSystem* Character::GetPSBlood()
+{
+	return mBloodParticleEffect;
+}

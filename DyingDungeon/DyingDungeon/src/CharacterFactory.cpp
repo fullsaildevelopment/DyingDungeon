@@ -49,6 +49,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
 		newCharacter->setStatic(false);
 		HeroComponent* tempHero = newCharacter->getComponent<HeroComponent>();
+		tempHero->SetPSBlood(setUpFireStorm()->getComponent<Odyssey::ParticleSystem>());
 		break;
 	}
 	case Mage:
@@ -63,6 +64,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<HeroComponent>(HEROID::Mage);
 		newCharacter->setStatic(false);
 		HeroComponent* tempHero = newCharacter->getComponent<HeroComponent>();
+		tempHero->SetPSBlood(setUpFireStorm()->getComponent<Odyssey::ParticleSystem>());
 		tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter());
 		tempHero->GetSkills()[0]->SetParticleFiringTime(0.23f);
 		tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
@@ -84,6 +86,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
+		EnemyComponent* tempEnemy = newCharacter->getComponent<EnemyComponent>();
+		tempEnemy->SetPSBlood(setUpFireStorm()->getComponent<Odyssey::ParticleSystem>());
 		break;
 	}
 	case Ganfaul:
@@ -95,6 +99,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit.dxanim");
 		newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack.dxanim"); 
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
+		EnemyComponent* tempEnemy = newCharacter->getComponent<EnemyComponent>();
+		tempEnemy->SetPSBlood(setUpFireStorm()->getComponent<Odyssey::ParticleSystem>());
 		break;
 	}
 	default:
@@ -175,15 +181,15 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::setUpFireStorm()
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Guy.png");
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.5f, 2.5f);
-	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setParticleCount(50);
-	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(25);
-	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setParticleCount(50.0f);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(0.0f);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0f);
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setSpeed(2.5f, 5.0f);
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
 	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 100.0f, 180.0f, 180.0f));
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 10.0f, 180.0f, 180.0f));
 	gFireStorm->addComponent<ParticleMover>();
-	gFireStorm->getComponent<ParticleMover>()->SetLifeTime(0.0f);
+	gFireStorm->getComponent<ParticleMover>()->SetLifeTime(10.0f);
 	gFireStorm->getComponent<ParticleMover>()->SetSpeed(1.0f);
 	gFireStorm->setActive(false);
 	mGameScene->addEntity(gFireStorm);

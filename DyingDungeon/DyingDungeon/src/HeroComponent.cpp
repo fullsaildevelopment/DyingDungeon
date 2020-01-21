@@ -312,7 +312,43 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
+			if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
+			{
+				DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
+				DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
+				if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+				{
+					for (std::shared_ptr<Odyssey::Entity> c : enemies)
+					{
+						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
+						aoeSpawn.x += tempTransform.x;
+						aoeSpawn.y += tempTransform.y;
+						aoeSpawn.z += tempTransform.z;
+					}
+					aoeSpawn.x /= static_cast<float>(enemies.size());
+					aoeSpawn.y /= static_cast<float>(enemies.size());
+					aoeSpawn.z /= static_cast<float>(enemies.size());
+				}
+				else
+				{
+					for (std::shared_ptr<Odyssey::Entity> c : heros)
+					{
+						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
+						aoeSpawn.x += tempTransform.x;
+						aoeSpawn.y += tempTransform.y;
+						aoeSpawn.z += tempTransform.z;
+					}
+					aoeSpawn.x /= static_cast<float>(heros.size());
+					aoeSpawn.y /= static_cast<float>(heros.size());
+					aoeSpawn.z /= static_cast<float>(heros.size());
+				}
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
+				// Turn particle effect on
+				mCurrentSkill->GetParticleSystem()->setActive(true);
+				mCurrentSkill->GetParticleSystem()->setVisible(true);
+			}
+			else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 			{
 				// Set position to start in desired postion
 				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
@@ -359,12 +395,24 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : enemies)
 					{
-						if(c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
-							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
+						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
+						{
+							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit"); 
+							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
+							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
+							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->setVisible(true);
+							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->setActive(true);
+						}
 					}
 				}
-				else if(mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
+				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
+				{
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
+					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+					mCurrentTarget->GetPSBlood()->getEntity()->setVisible(true);
+					mCurrentTarget->GetPSBlood()->getEntity()->setActive(true);
+				}
 			}
 			else
 			{
