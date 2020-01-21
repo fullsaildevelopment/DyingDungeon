@@ -82,6 +82,7 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 void setupLighting();
 void setupCamera();
 void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene>& _sceneObject, std::shared_ptr<Odyssey::Entity>& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
+void setupMainMenu(Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
 void setupAudio();
@@ -136,7 +137,7 @@ int playGame()
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
 
 	// Set up the main menu
-	setupMenu(gRenderDevice, application.get(), gMainMenu, gMenu, L"assets/images/MainMenu.png", "MainMenu", MenuComponent::eMainMenu);
+	setupMainMenu(application.get());
 
 	// Set up the tower selection screen
 	setupMenu(gRenderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
@@ -369,8 +370,8 @@ void setupCamera()
 {
 	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.0f, 8.13f, 10.82f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(24.81f, -180.0f, 0.0f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.608f, 17.315f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(32.759f, -180.0f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
@@ -413,6 +414,41 @@ void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* applic
 
 	// Add the scene to the application
 	application->addScene(_menuName, _sceneObject);
+}
+
+void setupMainMenu(Odyssey::Application* application)
+{
+	// Create Menu
+	setupMenu(gRenderDevice, application, gMainMenu, gMenu, L"", "MainMenu", MenuComponent::eMainMenu);
+
+	// Set up a directional light
+	std::shared_ptr<Odyssey::Light> dirLight = std::make_shared<Odyssey::Light>();
+	dirLight->setLightType(Odyssey::LightType::Directional);
+	dirLight->setPosition(0, 0, 0);
+	dirLight->setDirection(0.75f, -0.45f, -0.055f);
+	dirLight->setColor(0.4f, 0.5f, 0.7f);
+	dirLight->setIntensity(1.0f);
+	dirLight->setRange(0.0f);
+	dirLight->setSpotAngle(0.0f);
+	gMainMenu->addLight(dirLight);
+
+	// Set up an ambient light
+	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
+	ambientLight->setLightType(Odyssey::LightType::Point);
+	ambientLight->setPosition(0.0, 10.0f, 0.0f);
+	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
+	ambientLight->setColor(0.5f, 0.5f, 0.5f);
+	ambientLight->setIntensity(3.0f);
+	ambientLight->setRange(30.0f);
+	ambientLight->setSpotAngle(0.0f);
+	gMainMenu->addLight(ambientLight);
+
+	// Create a paladin and add him to the main menu scene
+	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
 }
 
 void setupArena()

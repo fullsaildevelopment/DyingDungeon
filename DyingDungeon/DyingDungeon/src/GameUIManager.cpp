@@ -30,24 +30,35 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	UINT width = screenWidth;
 	UINT height = screenHeight;
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
+	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	// Set up text properties
 	Odyssey::TextProperties properties;
-	properties.bold = false;
+	properties.bold = true;
 	properties.italic = false;
 	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
 
+	// Create title text
+	height = 100;
+	mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"The Dying Dungeon", properties);
+
 	// Create new game text 
+	properties.bold = false;
+	properties.fontSize = 40.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 	position.x += 200.0f;
-	position.y += 200.0f;
+	position.y += 250.0f;
 	width = 200;
-	height = 60;
-	mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	height = 40;
+	mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
+
+	// Setup team logo
+	mTeamLogo = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudiosLogo.png", screenWidth, screenHeight);
 
 	// Add the pause menu to the main scene
 	_sceneToAddTo->addEntity(mMainMenu);

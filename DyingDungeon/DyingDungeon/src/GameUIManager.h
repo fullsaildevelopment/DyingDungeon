@@ -39,6 +39,8 @@ public: // Functions
 	//Getters
 	// Get the main menu
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
+	Odyssey::Sprite2D* GetTeamLogo() { return mTeamLogo; }
+	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
 
 	// Get the tower select menu
 	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
@@ -70,6 +72,7 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
 
 	// Main Menu Items
+	Odyssey::Sprite2D* mTeamLogo;
 	Odyssey::Text2D* mNewGameText;
 
 	// Tower Menu Items
