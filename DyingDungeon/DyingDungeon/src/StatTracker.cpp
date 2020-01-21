@@ -31,6 +31,27 @@ StatTracker& StatTracker::Instance()
 	return instance_stat_tracker_manager;
 }
 
+StatTracker::Level& StatTracker::GetLevel(unsigned int index)
+{
+	return m_levels[index];
+}
+
+unsigned int& StatTracker::GetLevelCount()
+{
+	return m_currentLevel;
+}
+
+void StatTracker::SetLevels(unsigned int numLevels)
+{
+	m_currentLevel = numLevels;
+	m_levels.resize(numLevels);
+}
+
+void StatTracker::ClearLevels()
+{
+	m_levels.clear();
+}
+
 //void StatTracker::StartNextTurn()
 //{
 //	Turn newTurn;
@@ -123,6 +144,11 @@ bool StatTracker::SaveStats(std::string saveName)
 			}
 		}
 		file.close();
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 
 }
@@ -199,9 +225,12 @@ bool StatTracker::LoadStats(std::string loadFileName)
 				file.read((char*)&m_levels[i].turns[j].actionName[0], size_a);
 			}
 		}
+		file.close();
+		return true;
 	}
-
-	file.close();
+	else {
+		return false;
+	}
 }
 
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
