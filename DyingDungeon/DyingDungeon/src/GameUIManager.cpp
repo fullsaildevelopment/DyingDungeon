@@ -399,8 +399,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		if (owner)
 		{
 			// Create and assign the health bar
-			color = { 0.0f, 180.0f, 0.0f, 1.0f };
-			owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
+			owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
 			owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 			// Create the text for the health numbers of the character
 			color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -411,8 +410,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 			// Create and assign the mana bar
 			position.x -= 5.0f;
 			position.y += barHeight;
-			color = { 0.0f, 180.0f, 180.0f, 1.0f };
-			owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
+			owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
 			owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 			// Create the text for the mana numbers of the character
 			color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -434,9 +432,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		properties.fontSize = 14.0f;
 		// Assign the character's turn order text
 		if (owner)
-			owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
-		else
-			canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+			owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
 	// Create the Enemy UI if the character is NOT a hero
 	else
@@ -459,7 +455,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		UINT imageHeight = 142;
 		UINT barWidth = 233;
 		UINT barHeight = 23;
-		DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
+		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
 		// Add in the enemy hud template
 		canvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyHUDTemplate.jpg", imageWidth, imageHeight);
@@ -471,14 +467,12 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 
 		// Add in the enemy's health bar
 		position.x += imageWidth;
-		color = { 0.0f, 180.0f, 0.0f, 1.0f };
-		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
+		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
 		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 
 		// Add in the enemy's mana bar
 		position.y += 23.0f;
-		color = { 0.0f, 180.0f, 180.0f, 1.0f };
-		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
+		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
 		owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 
 		// Position where the turn number will be located
@@ -486,7 +480,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		position.x += 5.0f;
 		properties.fontSize = 14.0f;
 		// Assign the character's turn order text
-		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
+		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
 }
 
