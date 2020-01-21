@@ -26,6 +26,18 @@ public:
 	}
 };
 
+class AudioLoopEvent : public Odyssey::Event
+{
+public:
+	std::string alias;
+	AudioLoopEvent(std::string audio_alias)
+	{
+		alias = audio_alias;
+		priority = Odyssey::EventPriority::Deferred;
+	}
+
+};
+
 class RedAudioManager
 {
 	public:
@@ -59,6 +71,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		void Loop(const char* alias);
+		void LoopEvent(AudioLoopEvent* alEvent);
 		/// <summary>
 		/// 
 		/// </summary>
@@ -71,8 +84,8 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		/// <param name="volume"></param>
-		bool SetVolume(const char* alias, unsigned int volume);
-		bool SetVolume(unsigned int volume);
+		bool SetMasterVolume(const char* alias, unsigned int volume);
+		bool SetMasterVolume(unsigned int volume);
 		void SetVolumeEvent(AudioVolumeEvent* avEvent);
 
 		unsigned int GetVolume();

@@ -25,6 +25,7 @@ RedAudioManager::RedAudioManager()
 	//default_audio = nullptr;
 	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::StopEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::SetVolumeEvent);
+	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::LoopEvent);
 	m_volume = 500;
 	m_default_audio = new RedAudio("assets/audio/wheres_the_lamb_sauce.mp3", "DEFAULT");
 	m_default_audio->Open();
@@ -71,7 +72,12 @@ void RedAudioManager::PlaySFX(const char* alias)
 
 void RedAudioManager::Loop(const char* alias)
 {
-	FindAudio(alias)->PlayLoop();
+	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(alias));
+}
+
+void RedAudioManager::LoopEvent(AudioLoopEvent* alEvent)
+{
+	FindAudio(alEvent->alias.c_str())->PlayLoop();
 }
 
 void RedAudioManager::Segment(const char* alias, unsigned int start, unsigned int end)
@@ -79,7 +85,7 @@ void RedAudioManager::Segment(const char* alias, unsigned int start, unsigned in
 	FindAudio(alias)->PlaySegment(start, end);
 }
 
-bool RedAudioManager::SetVolume(const char* alias, unsigned int volume)
+bool RedAudioManager::SetMasterVolume(const char* alias, unsigned int volume)
 {
 	if (volume > 1000)
 	{
@@ -92,12 +98,13 @@ bool RedAudioManager::SetVolume(const char* alias, unsigned int volume)
 	}
 }
 
-bool RedAudioManager::SetVolume(unsigned int volume)
+bool RedAudioManager::SetMasterVolume(unsigned int volume)
 {
 	if (volume > 1000) 
 	{
 		return false;
 	}
+	m_volume = volume;
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(volume));
 	return true;
 }
@@ -105,9 +112,11 @@ bool RedAudioManager::SetVolume(unsigned int volume)
 void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 {
 	m_volume = avEvent->volumeLevel;
+	//mciSendString(L"setaudio BackgroundBattle volume 0", NULL, 0, NULL);
 	for (int i = 0; i < m_audioFiles.size(); i++)
 	{
 		m_audioFiles[i].SetVolume(m_volume);
+		//unsigned int test = m_audioFiles[i].GetVolume();
 	}
 }
 
@@ -129,13 +138,13 @@ void RedAudioManager::Update()
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
-	m_audioFiles.push_back(RedAudio(path, alias));
+	m_audioFiles.emplace_back(RedAudio(path, alias));
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
 void RedAudioManager::AddAudio(RedAudio in_audio)
 {
-	m_audioFiles.push_back(in_audio);
+	m_audioFiles.emplace_back(in_audio);
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 

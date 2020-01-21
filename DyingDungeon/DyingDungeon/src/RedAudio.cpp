@@ -349,6 +349,7 @@ void RedAudio::SeekEnd()
 
 void RedAudio::SetVolume(unsigned int volume)
 {
+	//Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 
 	std::string cmd = "setaudio ";
