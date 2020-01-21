@@ -74,6 +74,7 @@ namespace
 	Odyssey::TextProperties gDefaultText;
 	// Particle systems
 	std::shared_ptr<Odyssey::Entity> gFireBall;
+	std::shared_ptr<Odyssey::Entity> gFireStorm;
 }
 
 // Forward declarations
@@ -94,6 +95,7 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 // BUILD 2 STUFF
 void setupFire();
 void setUpFireButBetter();
+void setUpFireStorm();
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -157,7 +159,7 @@ int playGame()
 
 	// Particle Systems
 	setUpFireButBetter();
-
+	setUpFireStorm();
 	// Set up the game user interface
 	setupGameInterface();
 
@@ -678,6 +680,28 @@ void setUpFireButBetter()
 	gGameScene->addEntity(gFireBall);
 }
 
+void setUpFireStorm()
+{
+	gFireStorm = std::make_shared<Odyssey::Entity>();
+	gFireStorm->addComponent<Odyssey::Transform>();
+	gFireStorm->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Guy.png");
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.5f, 2.5f);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setParticleCount(50);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(25);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setSpeed(2.5f, 5.0f);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	gFireStorm->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f,0.0f,0.0f, 100.0f, 180.0f, 180.0f));
+	gFireStorm->addComponent<ParticleMover>();
+	gFireStorm->getComponent<ParticleMover>()->SetLifeTime(0.0f);
+	gFireStorm->getComponent<ParticleMover>()->SetSpeed(1.0f);
+	gFireStorm->setActive(false);
+	gGameScene->addEntity(gFireStorm);
+}
+
 void setUpTowerManager()
 {
 	// Create the current tower entity
@@ -723,9 +747,9 @@ void setUpTowerManager()
 	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
 	temp->GetSkills()[0]->SetParticleFiringTime(0.23f);
 	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
-	temp->GetSkills()[3]->SetParticleSystem(gFireBall);
-	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[2]->SetParticleSystem(gFireStorm);
+	temp->GetSkills()[2]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup

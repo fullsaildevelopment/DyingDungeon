@@ -165,6 +165,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			testing.x += mCurrentSkill->GetPosOffset().x;
 			testing.y += mCurrentSkill->GetPosOffset().y;
 			testing.z += mCurrentSkill->GetPosOffset().z;
+			std::shared_ptr<Odyssey::Entity> testMePls = mCurrentSkill->GetParticleSystem();
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(testing);
 			mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(1000.0f);
 			mCurrentSkill->GetParticleSystem()->setActive(true);
@@ -251,7 +252,43 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
 			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mCurrentSkill->GetParticleSystem() != nullptr)
+			if (mCurrentSkill->IsAOE())
+			{
+				DirectX::XMFLOAT3 aoeSpawn(0.0f,0.0f,0.0f);
+				DirectX::XMFLOAT3 tempTransform(0.0f,0.0f,0.0f);
+				if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+				{
+					for (std::shared_ptr<Odyssey::Entity> c : enemies)
+					{
+						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
+						aoeSpawn.x += tempTransform.x;
+						aoeSpawn.y += tempTransform.y;
+						aoeSpawn.z += tempTransform.z;
+					}
+					aoeSpawn.x /= static_cast<float>(enemies.size());
+					aoeSpawn.y /= static_cast<float>(enemies.size());
+					aoeSpawn.z /= static_cast<float>(enemies.size());
+				}
+				else
+				{
+					for (std::shared_ptr<Odyssey::Entity> c : heros)
+					{
+						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
+						aoeSpawn.x += tempTransform.x;
+						aoeSpawn.y += tempTransform.y;
+						aoeSpawn.z += tempTransform.z;
+					}
+					aoeSpawn.x /= static_cast<float>(heros.size());
+					aoeSpawn.y /= static_cast<float>(heros.size());
+					aoeSpawn.z /= static_cast<float>(heros.size());
+				}
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+				mCurrentSkill->GetParticleSystem()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
+				// Turn particle effect on
+				mCurrentSkill->GetParticleSystem()->setActive(true);
+				mCurrentSkill->GetParticleSystem()->setVisible(true);
+			}
+			else if (mCurrentSkill->GetParticleSystem() != nullptr)
 			{
 				// Set position to start in desired postion
 				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());

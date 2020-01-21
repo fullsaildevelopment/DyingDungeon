@@ -263,7 +263,7 @@ namespace Odyssey
 		particle.color = colorLerp(mStartColor, mEndColor, 0.0f);
 		particle.position = DirectX::XMFLOAT3(xPosition(generator), yPosition(generator), zPosition(generator));
 		particle.velocity = DirectX::XMFLOAT3(xDirection(generator), yDirection(generator), zDirection(generator));
-		DirectX::XMStoreFloat3(&particle.velocity, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&particle.velocity)));
+		//DirectX::XMStoreFloat3(&particle.velocity, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&particle.velocity)));
 		particle.velocity = DirectX::XMFLOAT3(particle.velocity.x * speed, particle.velocity.y * speed, particle.velocity.z * speed);
 		particle.size = size(generator);
 		particle.active = true;
