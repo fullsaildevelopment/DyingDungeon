@@ -712,6 +712,7 @@ void setUpTowerManager()
 	
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 
 	// Get Canvas
@@ -743,13 +744,13 @@ void setUpTowerManager()
 	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
-	Character* temp = characterToAdd->getComponent<Character>();
+	/*Character* temp = characterToAdd->getComponent<Character>();
 	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
 	temp->GetSkills()[0]->SetParticleFiringTime(0.23f);
 	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
 	temp->GetSkills()[2]->SetParticleSystem(gFireStorm);
 	temp->GetSkills()[2]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));*/
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup

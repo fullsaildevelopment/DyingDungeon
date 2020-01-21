@@ -1,5 +1,6 @@
 #pragma once
-#include "Entity.h"
+#include "OdysseyEngine.h"
+#include "RenderDevice.h"
 #include "Scene.h"
 
 
@@ -7,7 +8,7 @@ class CharacterFactory
 {
 public: // Constructors
 	CharacterFactory() = default;
-
+	Odyssey::RenderDevice* mRenderRefrence;
 	enum CharacterOptions
 	{
 		Paladin,
@@ -44,5 +45,7 @@ private: // Varibales
 
 private: // Functions
 	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
+	std::shared_ptr<Odyssey::Entity> setUpFireButBetter();
+	std::shared_ptr<Odyssey::Entity> setUpFireStorm();
 };
 
