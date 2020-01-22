@@ -31,6 +31,27 @@ StatTracker& StatTracker::Instance()
 	return instance_stat_tracker_manager;
 }
 
+StatTracker::Level& StatTracker::GetLevel(unsigned int index)
+{
+	return m_levels[index];
+}
+
+unsigned int& StatTracker::GetLevelCount()
+{
+	return m_currentLevel;
+}
+
+void StatTracker::SetLevels(unsigned int numLevels)
+{
+	m_currentLevel = numLevels;
+	m_levels.resize(numLevels);
+}
+
+void StatTracker::ClearLevels()
+{
+	m_levels.clear();
+}
+
 //void StatTracker::StartNextTurn()
 //{
 //	Turn newTurn;
@@ -70,35 +91,35 @@ bool StatTracker::SaveStats(std::string saveName)
 	std::fstream file(saveName, std::ios::out | std::ios::binary | std::ios::trunc);
 
 	if (file.is_open()) {
-		file.write((const char*)& m_currentLevel, sizeof(uint32_t));
+		file.write((const char*)&m_currentLevel, sizeof(uint32_t));
 
-		for (unsigned int i = 0; i < m_currentLevel; i++)
+		for (unsigned int i = 0; i < m_currentLevel; i++) 
 		{
-			file.write((const char*)& m_levels[i].levelNumber, sizeof(uint32_t));
+			file.write((const char*)&m_levels[i].levelNumber, sizeof(uint32_t));
 
 			uint32_t size_r = static_cast<uint32_t>(m_levels[i].turns.size());
-			file.write((const char*)& size_r, sizeof(uint32_t));
+			file.write((const char*)&size_r, sizeof(uint32_t));
 
 			for (unsigned int j = 0; j < size_r; j++) {
 				uint32_t size_c = static_cast<uint32_t>(m_levels[i].turns[j].characterName.size());
-				file.write((const char*)& size_c, sizeof(uint32_t));
+				file.write((const char*)&size_c, sizeof(uint32_t));
 				file.write(m_levels[i].turns[j].characterName.c_str(), size_c);
 
 				uint32_t size_t = static_cast<uint32_t>(m_levels[i].turns[j].targets.size());
-				file.write((const char*)& size_t, sizeof(uint32_t));
+				file.write((const char*)&size_t, sizeof(uint32_t));
 
 				for (unsigned int k = 0; k < size_t; k++) {
 					uint32_t sizeName = static_cast<uint32_t>(m_levels[i].turns[j].targets[k].first.size());
-					file.write((const char*)& sizeName, sizeof(uint32_t));
+					file.write((const char*)&sizeName, sizeof(uint32_t));
 					file.write(m_levels[i].turns[j].targets[k].first.c_str(), sizeName);
-					file.write((const char*)& m_levels[i].turns[j].targets[k].second, sizeof(float));
+					file.write((const char*)&m_levels[i].turns[j].targets[k].second, sizeof(float));
 				}
 
-				file.write((const char*)& m_levels[i].turns[j].round, sizeof(uint32_t));
+				file.write((const char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
 
-				file.write((const char*)& m_levels[i].turns[j].value, sizeof(float));
+				file.write((const char*)&m_levels[i].turns[j].value, sizeof(float));
 
-				file.write((const char*)& m_levels[i].turns[j].attackModifier, sizeof(float));
+				file.write((const char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
 
 				/*uint32_t size_b = static_cast<uint32_t>(m_levels[i].turns[j].blockValues.size());
 				file.write((const char*)&size_b, sizeof(uint32_t));
@@ -107,17 +128,17 @@ bool StatTracker::SaveStats(std::string saveName)
 				}*/
 
 				uint32_t effect = (uint32_t)m_levels[i].turns[j].effect;
-				file.write((const char*)& effect, sizeof(uint32_t));
+				file.write((const char*)&effect, sizeof(uint32_t));
 
 				uint32_t action = (uint32_t)m_levels[i].turns[j].actionType;
-				file.write((const char*)& action, sizeof(uint32_t));
+				file.write((const char*)&action, sizeof(uint32_t));
 
 				//file.write((const char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
 
-				file.write((const char*)& m_levels[i].turns[j].isPlayer, sizeof(bool));
+				file.write((const char*)&m_levels[i].turns[j].isPlayer, sizeof(bool));
 
 				uint32_t size_a = static_cast<uint32_t>(m_levels[i].turns[j].actionName.size());
-				file.write((const char*)& size_a, sizeof(uint32_t));
+				file.write((const char*)&size_a, sizeof(uint32_t));
 				file.write(m_levels[i].turns[j].actionName.c_str(), size_a);
 
 			}
@@ -126,7 +147,9 @@ bool StatTracker::SaveStats(std::string saveName)
 		return true;
 	}
 	else
+	{
 		return false;
+	}
 
 }
 
@@ -137,45 +160,45 @@ bool StatTracker::LoadStats(std::string loadFileName)
 
 	std::fstream file(loadFileName, std::ios::in | std::ios::binary);
 
-	if (file.is_open())
+	if (file.is_open()) 
 	{
 		uint32_t numLevels = 0;
-		file.read((char*)& numLevels, sizeof(uint32_t));
+		file.read((char*)&numLevels, sizeof(uint32_t));
 
 		m_levels.resize(numLevels);
 
 		for (unsigned int i = 0; i < numLevels; i++)
 		{
 
-			file.read((char*)& m_levels[i].levelNumber, sizeof(uint32_t));
+			file.read((char*)&m_levels[i].levelNumber, sizeof(uint32_t));
 			uint32_t size_r = 0;
-			file.read((char*)& size_r, sizeof(uint32_t));
+			file.read((char*)&size_r, sizeof(uint32_t));
 			m_levels[i].turns.resize(size_r);
 			m_levels[i].turnCount = size_r;
 
-			for (unsigned int j = 0; j < size_r; j++)
+			for (unsigned int j = 0; j < size_r; j++) 
 			{
 				uint32_t size_c = 0;
-				file.read((char*)& size_c, sizeof(uint32_t));
-				file.read((char*)& m_levels[i].turns[j].characterName[0], size_c);
+				file.read((char*)&size_c, sizeof(uint32_t));
+				file.read((char*)&m_levels[i].turns[j].characterName[0], size_c);
 
 				uint32_t size_t = 0;
-				file.read((char*)& size_t, sizeof(uint32_t));
+				file.read((char*)&size_t, sizeof(uint32_t));
 				m_levels[i].turns[j].targets.resize(size_t);
 
 				for (unsigned int k = 0; k < size_t; k++) {
 					uint32_t sizeName = 0;
-					file.read((char*)& sizeName, sizeof(uint32_t));
+					file.read((char*)&sizeName, sizeof(uint32_t));
 					m_levels[i].turns[j].targets[k].first.resize(sizeName);
-					file.read((char*)& m_levels[i].turns[j].targets[k].first[0], sizeName);
-					file.read((char*)& m_levels[i].turns[j].targets[k].second, sizeof(float));
+					file.read((char*)&m_levels[i].turns[j].targets[k].first[0], sizeName);
+					file.read((char*)&m_levels[i].turns[j].targets[k].second, sizeof(float));
 				}
 
-				file.read((char*)& m_levels[i].turns[j].round, sizeof(uint32_t));
+				file.read((char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
 
-				file.read((char*)& m_levels[i].turns[j].value, sizeof(float));
+				file.read((char*)&m_levels[i].turns[j].value, sizeof(float));
 
-				file.read((char*)& m_levels[i].turns[j].attackModifier, sizeof(float));
+				file.read((char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
 
 				/*uint32_t size_b = 0;
 				file.read((char*)&size_b, sizeof(uint32_t));
@@ -185,28 +208,29 @@ bool StatTracker::LoadStats(std::string loadFileName)
 				}*/
 
 				uint32_t effect = 0;
-				file.read((char*)& effect, sizeof(uint32_t));
+				file.read((char*)&effect, sizeof(uint32_t));
 				m_levels[i].turns[j].effect = (EFFECTTYPE)effect;
 
 				uint32_t action = 0;
-				file.read((char*)& action, sizeof(uint32_t));
+				file.read((char*)&action, sizeof(uint32_t));
 				m_levels[i].turns[j].actionType = (Action)action;
 
 				//file.read((char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
 
-				file.read((char*)& m_levels[i].turns[j].isPlayer, sizeof(bool));
+				file.read((char*)&m_levels[i].turns[j].isPlayer, sizeof(bool));
 
 				uint32_t size_a = 0;
-				file.read((char*)& size_a, sizeof(uint32_t));
+				file.read((char*)&size_a, sizeof(uint32_t));
 				m_levels[i].turns[j].actionName.resize(size_a);
-				file.read((char*)& m_levels[i].turns[j].actionName[0], size_a);
+				file.read((char*)&m_levels[i].turns[j].actionName[0], size_a);
 			}
 		}
 		file.close();
 		return true;
 	}
-	else
+	else {
 		return false;
+	}
 }
 
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)

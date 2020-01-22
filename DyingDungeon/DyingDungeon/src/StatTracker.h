@@ -12,11 +12,8 @@
 #include "Rectangle2D.h"
 class StatTracker
 {
-
-private:
-	enum class Action { None = -1, Attack, Defend, Aid};
 public:
-
+	enum class Action { None = -1, Attack, Defend, Aid };
 	struct Turn
 	{
 		std::string characterName = "";
@@ -53,6 +50,14 @@ public:
 
 	//void StartNextTurn();
 	//void StartNextLevel();
+
+	StatTracker::Level& GetLevel(unsigned int index);
+
+	unsigned int& GetLevelCount();
+
+	void SetLevels(unsigned int numLevels);
+
+	void ClearLevels();
 
 	void SetRewardsScreen(Odyssey::UICanvas* rewardScreen);
 
