@@ -89,9 +89,16 @@ public:
 
 	std::wstring FormatToPercentageW(float number);
 
+	// Blood particle effect functions
+	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+	Odyssey::ParticleSystem* GetPSBlood();
+	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
+	Odyssey::Text2D* mBigHpText;
+	Odyssey::Text2D* mHpText;
+	Odyssey::Text2D* mMpText;
 
 	// TODO: FOR BUILD ONLY FIX LATER
 	Odyssey::Text2D* pDmgText;
@@ -121,6 +128,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	Odyssey::ParticleSystem* mBloodParticleEffect;
 	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
