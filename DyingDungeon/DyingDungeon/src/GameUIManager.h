@@ -68,12 +68,21 @@ public: // Functions
 	void SetOptionsMenu(std::shared_ptr<Odyssey::Entity> _optionsMenu) { mOptionsMenu = _optionsMenu; }
 
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
+
+	/*
+	 * Set the new battle text
+	 * @param[in] wstring newText to be added and bool concat wether or not to concat.
+	 * @return void
+	*/
+	void SetBattleLogText(std::wstring text, bool concat);
 	
 private: // Varibales
 
 	// Battle Log Object
 	std::shared_ptr<Odyssey::Entity> mBattleLog;
+	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	Odyssey::Text2D* mBattleLogText;
+
 
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
@@ -123,6 +132,10 @@ private: // Varibales
 	// Ints
 	UINT screenWidth = 0;
 	UINT screenHeight = 0;
+	UINT battleTextWidth = 0;
+	UINT battleTextHeight = 0;
+
+
 	// Floats
 
 	// Bools

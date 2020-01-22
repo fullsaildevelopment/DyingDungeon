@@ -37,6 +37,12 @@ namespace Odyssey
 		void setText(std::wstring text);
 
 		/**
+		 *  Returns the text of the element
+		 *	@return wstring
+		 */
+		std::wstring getText();
+
+		/**
 		 *	Set the text's text alignment.
 		 *	@param[in] alignment The text alignment.
 		 *	@return void
