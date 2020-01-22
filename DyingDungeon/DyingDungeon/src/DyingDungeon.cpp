@@ -505,9 +505,9 @@ void setupGameInterface()
 	rewardsTextProperties.fontSize = 30.0f;
 	rewardsTextProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 30.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.3333f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 30.0f), L"assets/images/PaladinPortrait.jpg", rewardsImageHeight /4, rewardsImageHeight /4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.3333f)), L"assets/images/PaladinPortrait.jpg", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (30.0f + rewardsImageHeight * 0.6667f)), L"assets/images/PaladinPortrait.jpg", rewardsImageHeight / 4, rewardsImageHeight / 4);
 
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f + (rewardsImageHeight / 4), rewardsImageY + 30.0f ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 6, L"P1 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f + (rewardsImageHeight / 4), rewardsImageY + (30.0f + rewardsImageHeight *0.3333f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), width, height / 6, L"P2 - Attack: NN.NN% Defence: NN.NN% Aid: NN.NN%", rewardsTextProperties);
