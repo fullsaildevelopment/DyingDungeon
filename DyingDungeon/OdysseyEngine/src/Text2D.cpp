@@ -51,6 +51,11 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
+	std::wstring Text2D::getText()
+	{
+		return mText;
+	}
+
 	void Text2D::setTextAlignment(TextAlignment alignment)
 	{
 		// Set the text alignment and re-create the text format

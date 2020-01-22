@@ -53,14 +53,14 @@ namespace Odyssey
 		~UIElement() = default;
 
 	public:
-		typedef void (UIElement::*MemberFunction)(void);
+		typedef void (UIElement::* MemberFunction)(void);
 	public: // Events
 		/**
 		 *	Event callback to resize the UI element.
 		 *	@param[in] evnt The event parameters.
 		 *	@return void
 		 */
-		void onElementResize(UIElementResizeEvent* evnt);
+		virtual void onElementResize(UIElementResizeEvent* evnt);
 
 		/**
 		 *	Event callback to process a mouse click.
@@ -69,8 +69,14 @@ namespace Odyssey
 		 */
 		void onMouseClick(MouseClickEvent* evnt);
 
+		void onMouseMove(MouseMoveEvent* evnt);
+
+		void onMouseEnter();
+
+		void onMouseExit();
+
 		template<class T>
-		void registerCallback(std::string function, T* instance, void(T::*memberFunction)())
+		void registerCallback(std::string function, T* instance, void(T::* memberFunction)())
 		{
 			mLock.lock(LockState::Write);
 			mCallbackMap[function] = std::make_shared<CallbackHandler<T>>(instance, memberFunction);
@@ -241,7 +247,13 @@ namespace Odyssey
 		 */
 		void createShape();
 
+		virtual void createResource();
+
 		void resetBrush();
+
+	private:
+		bool mTrackMouseEnter;
+		bool mTrackMouseExit;
 
 	protected: // Members
 		Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> mBrush;

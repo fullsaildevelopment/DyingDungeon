@@ -21,6 +21,8 @@ void TowerSelectController::initialize()
 
 	// Make the door switch to the team selection scene when clicked
 	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorSize);
+	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorSize);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -41,4 +43,19 @@ void TowerSelectController::GoToTeamSelection()
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::ChangeDoorSize()
+{
+	if (mDoorIsSmall)
+	{
+		GameUIManager::getInstance().GetDoorButton()->setScale(1.5f, 1.5f);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetDoorButton()->setScale(1.0f, 1.0f);
+	}
+
+	// Flip the bool for next time
+	mDoorIsSmall = !mDoorIsSmall;
 }

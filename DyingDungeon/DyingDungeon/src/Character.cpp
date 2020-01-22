@@ -67,6 +67,22 @@ void Character::Die()
 
 }
 
+std::wstring Character::FormatToPercentageW(float number)
+{
+	if (number >= 100.0f)
+	{
+		return std::to_wstring(number).substr(0, 6);
+	}
+	else if (number >= 10.0f)
+	{
+		return std::to_wstring(number).substr(0, 5);
+	}
+	else
+	{
+		return std::to_wstring(number).substr(0, 4);
+	}
+}
+
 /*
  * Function:  TakeDamage(float dmg)
  * --------------------
@@ -100,13 +116,17 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
-	// TODO: FOR BUILD ONLY FIX LATER
 	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
+	//BattleLogText
 	std::cout << dmg << " damage!" << std::endl;
+	std::wstring dmgText = std::wstring(FormatToPercentageW(dmg));
+	dmgText.append(L" damage!");
+	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
+
 	if (mCurrentHP <= 0.0f)
 		Die();
 }
@@ -536,6 +556,8 @@ void Character::ClearStatusEffects()
 */
 void Character::UpdateHealthBar()
 {
+	mHpText->setText(std::to_wstring((int)mCurrentHP));
+	mBigHpText->setText(std::to_wstring((int)mCurrentHP));
 	float fill = GetHP() / GetMaxHP();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -554,6 +576,7 @@ void Character::UpdateHealthBar()
 */
 void Character::UpdateManaBar()
 {
+	mMpText->setText(std::to_wstring((int)mCurrentMana));
 	float fill = GetMana() / GetMaxMana();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -561,4 +584,14 @@ void Character::UpdateManaBar()
 		fill = 1.0f;
 
 	pManaBar->setFill(fill);
+}
+
+void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
+{
+	mBloodParticleEffect = newBloodEffect;
+}
+
+Odyssey::ParticleSystem* Character::GetPSBlood()
+{
+	return mBloodParticleEffect;
 }

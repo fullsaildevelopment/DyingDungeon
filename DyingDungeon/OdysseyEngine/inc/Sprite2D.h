@@ -30,7 +30,8 @@ namespace Odyssey
 		void setSprite(LPCWSTR filename, UINT width = 0, UINT height = 0);
 
 	protected:
-		virtual void onElementClick();
+		virtual void onElementResize(UIElementResizeEvent* evnt);
+		virtual void createResource();
 
 	private: // Helpers
 		/**
@@ -42,9 +43,12 @@ namespace Odyssey
 		 */
 		void createBitmapFromFile(LPCWSTR filename, UINT width, UINT height);
 
+		void reloadBitmapFromFile(LPCWSTR filename, UINT width, UINT height);
+
 	private: // Members
 		IWICImagingFactory* factory;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> mBitmap;
 		IWICFormatConverter* mBitmapConverter;
+		LPCWSTR mFilename;
 	};
 }

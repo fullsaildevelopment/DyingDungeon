@@ -6,6 +6,28 @@
 
 namespace Odyssey
 {
+	class MouseInputEvent : public Event
+	{
+	public:
+		int mouseX, mouseY;
+
+		MouseInputEvent(int xPos, int yPos) : mouseX(xPos), mouseY(yPos)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class MouseMoveEvent : public Event
+	{
+	public:
+		int mouseX, mouseY;
+
+		MouseMoveEvent(int xPos, int yPos) : mouseX(xPos), mouseY(yPos)
+		{
+			priority = EventPriority::Deferred;
+		}
+	};
+
 	class KeypressEvent : public Event
 	{
 	public:

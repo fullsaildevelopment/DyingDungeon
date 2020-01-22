@@ -74,6 +74,7 @@ namespace
 	Odyssey::TextProperties gDefaultText;
 	// Particle systems
 	std::shared_ptr<Odyssey::Entity> gFireBall;
+	std::shared_ptr<Odyssey::Entity> gFireStorm;
 }
 
 // Forward declarations
@@ -94,7 +95,6 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 
 // BUILD 2 STUFF
 void setupFire();
-void setUpFireButBetter();
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -158,9 +158,6 @@ int playGame()
 
 	// BUILD 2
 	setupFire();
-
-	// Particle Systems
-	setUpFireButBetter();
 
 	// Set up the game user interface
 	setupGameInterface();
@@ -448,10 +445,13 @@ void setupMainMenu(Odyssey::Application* application)
 
 	// Create a paladin and add him to the main menu scene
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	// Set the render device for the particles
+	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
+	gMainMenu->addEntity(characterToAdd);
 }
 
 void setupArena()
@@ -620,13 +620,13 @@ void setupFire()
 	fire1->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
+	fire1->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire2 = std::make_shared<Odyssey::Entity>();
 	fire2->addComponent<Odyssey::Transform>();
@@ -635,13 +635,13 @@ void setupFire()
 	fire2->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
+	fire2->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire3 = std::make_shared<Odyssey::Entity>();
 	fire3->addComponent<Odyssey::Transform>();
@@ -650,13 +650,13 @@ void setupFire()
 	fire3->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
+	fire3->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire4 = std::make_shared<Odyssey::Entity>();
 	fire4->addComponent<Odyssey::Transform>();
@@ -665,13 +665,13 @@ void setupFire()
 	fire4->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
+	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
 	std::shared_ptr<Odyssey::Entity> fire5 = std::make_shared<Odyssey::Entity>();
 	fire5->addComponent<Odyssey::Transform>();
@@ -680,41 +680,19 @@ void setupFire()
 	fire5->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fire5->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire5->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.35f, 35.0f, 35.0f));
+	fire5->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
 	gGameScene->addEntity(fire1);
 	gGameScene->addEntity(fire2);
 	gGameScene->addEntity(fire3);
 	gGameScene->addEntity(fire4);
 	gGameScene->addEntity(fire5);
-}
-
-void setUpFireButBetter()
-{
-	gFireBall = std::make_shared<Odyssey::Entity>();
-	gFireBall->addComponent<Odyssey::Transform>();
-	gFireBall->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLifetime(0.75f, 1.0f);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setParticleCount(100);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(125);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.5f);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setSize(1.0f, 1.5f);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	gFireBall->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::SpherePS(0.0f,0.0f,0.0f,1.5f));
-	gFireBall->addComponent<ParticleMover>();
-	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);
-	gFireBall->getComponent<ParticleMover>()->SetSpeed(1.0f);
-	gFireBall->setActive(false);
-	gGameScene->addEntity(gFireBall);
 }
 
 void setUpTowerManager()
@@ -727,6 +705,7 @@ void setUpTowerManager()
 	
 	// Create Character Factory
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 
 	// Get Canvas
@@ -734,93 +713,107 @@ void setUpTowerManager()
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
+	float heroUIYPosition = static_cast<float>(height) - 156.0f;
 
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
-
+	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 198.5f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 170.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
-	Character* temp = characterToAdd->getComponent<Character>();
+	/*Character* temp = characterToAdd->getComponent<Character>();
 	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
-	temp->GetSkills()[0]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
-	temp->GetSkills()[3]->SetParticleSystem(gFireBall);
-	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	temp->GetSkills()[0]->SetParticleFiringTime(0.23f);
+	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
+	temp->GetSkills()[2]->SetParticleSystem(gFireStorm);
+	temp->GetSkills()[2]->SetParticleFiringTime(0.25f);
+	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));*/
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 350.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
+	float enemyUIXPosition = 10.0f;
+	float enemyUIYPosition = 10.0f;
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
 	//createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(0.0f, 0.0f, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
-
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(575.0f, (height/2) - 200, canvas, characterToAdd->getComponent<Character>());
-
+	enemyUIXPosition = static_cast<float>(width) / 2.0f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
+	gGameScene->addEntity(characterToAdd);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower
 	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
 	
-
 	// Create the turn indicator circle
 	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
 	turnIndicatorModel->addComponent<Odyssey::Transform>();

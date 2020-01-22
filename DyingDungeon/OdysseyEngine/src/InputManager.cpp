@@ -10,6 +10,12 @@ namespace Odyssey
 
 		// Subscribe to the key up event
 		EventManager::getInstance().subscribe(this, &InputManager::onKeyUp);
+
+		EventManager::getInstance().subscribe(this, &InputManager::onMouseMove);
+
+		EventManager::getInstance().subscribe(this, &InputManager::onMouseHover);
+
+		sendMouseHover = true;
 	}
 
 	InputManager& InputManager::getInstance()
@@ -44,6 +50,23 @@ namespace Odyssey
 
 		// Set the key up state to true
 		mKeyUpMap[codeID] = true;
+	}
+
+	void InputManager::onMouseMove(MouseInputEvent* evnt)
+	{
+		mouseX = evnt->mouseX;
+		mouseY = evnt->mouseY;
+
+		if (sendMouseHover)
+		{
+			EventManager::getInstance().publish(new MouseMoveEvent(mouseX, mouseY));
+			sendMouseHover = false;
+		}
+	}
+
+	void InputManager::onMouseHover(MouseMoveEvent* evnt)
+	{
+		sendMouseHover = true;
 	}
 
 	bool InputManager::getKeyPress(KeyCode key)

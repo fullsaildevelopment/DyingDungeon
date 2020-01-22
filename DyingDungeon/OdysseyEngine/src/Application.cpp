@@ -131,7 +131,14 @@ namespace Odyssey
 				EventManager::getInstance().publish(new KeypressEvent((KeyCode)wParam));
 				break;
 			}
-			break;
+			case WM_MOUSEMOVE:
+			{
+				int xPos = GET_X_LPARAM(lParam);
+				int yPos = GET_Y_LPARAM(lParam);
+				EventManager::getInstance().publish(new MouseInputEvent(xPos, yPos));
+				
+				break;
+			}
 			case WM_KEYUP:
 			{
 				// Register the input as key up with the input manager

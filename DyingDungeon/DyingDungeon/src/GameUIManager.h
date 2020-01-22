@@ -37,7 +37,7 @@ public: // Functions
 	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 	 
 	// Create The UI portraits for the characters
-	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::UICanvas* canvas, Character* owner);
+	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner);
 
 	//Getters
 	// Get battle log text
@@ -68,12 +68,21 @@ public: // Functions
 	void SetOptionsMenu(std::shared_ptr<Odyssey::Entity> _optionsMenu) { mOptionsMenu = _optionsMenu; }
 
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
+
+	/*
+	 * Set the new battle text
+	 * @param[in] wstring newText to be added and bool concat wether or not to concat.
+	 * @return void
+	*/
+	void SetBattleLogText(std::wstring text, bool concat);
 	
 private: // Varibales
 
 	// Battle Log Object
 	std::shared_ptr<Odyssey::Entity> mBattleLog;
+	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	Odyssey::Text2D* mBattleLogText;
+
 
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
@@ -108,6 +117,12 @@ private: // Varibales
 	Odyssey::Sprite2D* mMinusImage;
 	Odyssey::Text2D* mBackButtonText;
 
+	// Colors
+	DirectX::XMFLOAT4 mHealthBarColor = { 0.0f, 180.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 mBigHealthTextColor = { 180.0f, 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 mManaBarColor = { 0.0f, 180.0f, 180.0f, 1.0f };
+	DirectX::XMFLOAT4 mTurnOrderColor = { 255.0f, 210.0f, 0.0f, 1.0f };
+
 	// Vectors
 
 	// Queues
@@ -117,6 +132,10 @@ private: // Varibales
 	// Ints
 	UINT screenWidth = 0;
 	UINT screenHeight = 0;
+	UINT battleTextWidth = 0;
+	UINT battleTextHeight = 0;
+
+
 	// Floats
 
 	// Bools

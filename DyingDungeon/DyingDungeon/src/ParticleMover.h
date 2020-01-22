@@ -12,6 +12,7 @@ private:
 	Odyssey::Transform* mFuckYouMax;
 	float mSpeed;
 	float mLifeTime;
+	double mTempTime;
 
 public:
 	ParticleMover() = default;
