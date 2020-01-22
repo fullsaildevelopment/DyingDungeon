@@ -16,7 +16,11 @@ public:
 private:
 	Odyssey::Application* mApplication;
 
+	// Bools
+	bool mDoorIsSmall = true;
+
 private: //Functions
 	void GoToTeamSelection();
+	void ChangeDoorSize();
 };
 
