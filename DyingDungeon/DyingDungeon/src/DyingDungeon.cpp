@@ -734,13 +734,14 @@ void setUpTowerManager()
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
+	float heroUIYPosition = static_cast<float>(height) - 156.0f;
 
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
@@ -750,7 +751,7 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 198.5f, static_cast<float>(height) - 175.0f, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 170.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
@@ -766,17 +767,19 @@ void setUpTowerManager()
 	temp->GetSkills()[3]->SetParticleFiringTime(0.25f);
 	temp->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 10.0f) - 397.0f, static_cast<float>(height) - 175.0f, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 350.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
+	float enemyUIXPosition = 10.0f;
+	float enemyUIYPosition = 10.0f;
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
 	//createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(0.0f, 0.0f, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
@@ -785,8 +788,10 @@ void setUpTowerManager()
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
@@ -794,8 +799,10 @@ void setUpTowerManager()
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
@@ -803,8 +810,10 @@ void setUpTowerManager()
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
-	createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
-
+	//createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
+	// Create the character's portrait
+	enemyUIXPosition += 329.7f;
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", canvas, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
 	gEnemyUnit.push_back(characterToAdd);
