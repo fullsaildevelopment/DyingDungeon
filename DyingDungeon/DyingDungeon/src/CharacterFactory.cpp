@@ -70,7 +70,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		tempHero->GetSkills()[0]->SetParticleFiringTime(0.23f);
 		tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
 		tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
-		tempHero->GetSkills()[2]->SetParticleFiringTime(0.25f);
+		tempHero->GetSkills()[2]->SetParticleFiringTime(0.57f);
 		tempHero->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 		
 		break;
@@ -187,6 +187,7 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	fireStorm->setLooping(true);
 	fireStorm->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.1f, 180.0f, 180.0f));
 	fireStorm->stop();
+	//This isnt needed fix code for your AOE's dumbass
 	gFireStorm->addComponent<ParticleMover>();
 	gFireStorm->getComponent<ParticleMover>()->SetLifeTime(10.0f);
 	gFireStorm->getComponent<ParticleMover>()->SetSpeed(1.0f);
