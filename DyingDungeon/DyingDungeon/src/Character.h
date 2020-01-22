@@ -85,6 +85,10 @@ public:
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
+	// Blood particle effect functions
+	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+	Odyssey::ParticleSystem* GetPSBlood();
+	
 
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
@@ -118,6 +122,7 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	Odyssey::ParticleSystem* mBloodParticleEffect;
 	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
