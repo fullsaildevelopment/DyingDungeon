@@ -39,7 +39,7 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	// Create the battle log text
 	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"I am battle log, I will show you what is going on the the game", properties);
 	mBattleLogVec.push_back(mBattleLogText);
-	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2{ 0.0f, (static_cast<float>(screenHeight) / 3.0f) - 5.0f }, color, width, height, L"I am blank");
+	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2{ 0.0f, (static_cast<float>(screenHeight) / 3.0f) - 50.0f }, color, width, height, L"I am blank", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 
 
@@ -58,7 +58,7 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 	}
 
 
-	for (int i = mBattleLogVec.size(); i > 0; i--)
+	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
 			mBattleLogVec[i]->setText(mBattleLogVec[i-1]->getText());
