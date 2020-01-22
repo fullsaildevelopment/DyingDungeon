@@ -536,6 +536,8 @@ void Character::ClearStatusEffects()
 */
 void Character::UpdateHealthBar()
 {
+	mHpText->setText(std::to_wstring((int)mCurrentHP));
+	mBigHpText->setText(std::to_wstring((int)mCurrentHP));
 	float fill = GetHP() / GetMaxHP();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -554,6 +556,7 @@ void Character::UpdateHealthBar()
 */
 void Character::UpdateManaBar()
 {
+	mMpText->setText(std::to_wstring((int)mCurrentMana));
 	float fill = GetMana() / GetMaxMana();
 	if (fill < 0.0f)
 		fill = 0.0f;
