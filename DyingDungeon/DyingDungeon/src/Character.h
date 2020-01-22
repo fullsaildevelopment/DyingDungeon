@@ -89,10 +89,12 @@ public:
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 	Odyssey::ParticleSystem* GetPSBlood();
 	
-
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
+	Odyssey::Text2D* mBigHpText;
+	Odyssey::Text2D* mHpText;
+	Odyssey::Text2D* mMpText;
 
 	// TODO: FOR BUILD ONLY FIX LATER
 	Odyssey::Text2D* pDmgText;
