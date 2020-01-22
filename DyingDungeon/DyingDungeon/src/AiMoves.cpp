@@ -110,6 +110,7 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 		case 1:
 		{
 			BossDeterminePriority();
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		}
 		default:
@@ -345,7 +346,7 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	float buffScore = 0.0f;
 	Character* target = nullptr;
 
-	if (mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
 		buffScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
@@ -382,7 +383,7 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
 
-	if (mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
 		buffAOEScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
