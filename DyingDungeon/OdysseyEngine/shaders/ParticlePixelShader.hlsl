@@ -2,17 +2,21 @@
 
 struct GSOutput
 {
-	float3 origin : ORIGIN;
+	float4 color : COLOR;
 	float4 position : SV_Position;
-	float3 velocity : VELOCITY;
-    float3 color : COLOR;
-    float2 tex : TEXCOORD;
-	float lifeTime : LIFETIME;
+	float2 tex : TEXCOORD;
+	bool active : ACTIVE;
 };
 
 float4 main(GSOutput input) : SV_TARGET
 {
-    float4 color = txDiffuse.Sample(samLinear, input.tex);
-    color.rgb *= input.color;
-    return color;
+	if (input.active == false)
+	{
+		return float4(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+
+	clip(input.color.a - 0.05f);
+	float4 color = txDiffuse.Sample(samLinear, input.tex);
+	color.rgb *= input.color;
+	return saturate(color);
 }

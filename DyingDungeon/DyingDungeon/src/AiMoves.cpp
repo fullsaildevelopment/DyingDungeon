@@ -69,18 +69,18 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		{
 			// Basic Attack, good dps, stun
 			debuff = std::make_shared<Stun>(1,nullptr);
-			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "Ganfaul_Attack", 0.25f, -15.0f, 25.0f, debuff));
+			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "Attack", 0.25f, -15.0f, 25.0f, debuff));
 			//  good dps, spd down ,aoe
 			debuff = std::make_shared<StatDown>(0.25f, 4, STATS::Spd, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>("AOE Slow", "Ganfaul_Attack", 0.25f, 20.0f, 15.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Attack>("AOE Slow", "Attack", 0.25f, 20.0f, 15.0f, debuff, true));
 			//  Big smack
-			mSkillList.push_back(std::make_shared<Attack>("Big Smack", "Ganfaul_Attack", 0.25f, 50.0f, 45.0f));
+			mSkillList.push_back(std::make_shared<Attack>("Big Smack", "Attack", 0.25f, 50.0f, 45.0f));
 			// Attack buff
 			debuff = std::make_shared<StatUp>(0.30f,3,STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>("Attack Up", "Ganfaul_Attack", 0.25f, 20.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Buffs>("Attack Up", "Attack", 0.25f, 20.0f, debuff, true));
 			// Regen
 			debuff = std::make_shared<Regens>(0.15f, 5, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>("Regen", "Ganfaul_Attack",0.15f, 10.0f, debuff,true));
+			mSkillList.push_back(std::make_shared<Buffs>("Regen", "Attack",0.15f, 10.0f, debuff,true));
 			break;
 		}
 		default:

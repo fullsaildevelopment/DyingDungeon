@@ -6,9 +6,7 @@
 #include "Skills.h"
 #include <vector>
 
-#define TOTALSKILLS 7
-
-enum class HEROID { Paladin = 0 };
+enum class HEROID { Paladin = 0, Mage };
 enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
@@ -56,9 +54,6 @@ public:
 	float GetBaseSpeed();
 	void IncreaseSpd(float statIncrease);
 	void DecreaseSpd(float statDecrease);
-	// Dead Status Functions
-	bool IsDead();
-	void SetDead(bool deadStatus);
 	// EXP Functions
 	void AddExp(float exp);
 	float GetExp();
@@ -90,10 +85,16 @@ public:
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
-
+	// Blood particle effect functions
+	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+	Odyssey::ParticleSystem* GetPSBlood();
+	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
+	Odyssey::Text2D* mBigHpText;
+	Odyssey::Text2D* mHpText;
+	Odyssey::Text2D* mMpText;
 
 	// TODO: FOR BUILD ONLY FIX LATER
 	Odyssey::Text2D* pDmgText;
@@ -102,7 +103,6 @@ public:
 protected:
 	//Stats
 	bool mHero;
-	bool mDead;
 	float mCurrentHP;
 	float mCurrentMana;
 	float mBaseMaxHP;
@@ -124,6 +124,8 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	Odyssey::ParticleSystem* mBloodParticleEffect;
+	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;

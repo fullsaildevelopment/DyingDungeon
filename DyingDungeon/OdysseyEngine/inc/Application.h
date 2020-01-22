@@ -116,6 +116,7 @@ namespace Odyssey
 		std::vector<std::shared_ptr<RenderWindow>> mWindows;
 		std::shared_ptr<RenderWindowDX11> mActiveWindow;
 		HINSTANCE mHandleInstance;
+		int mouseX, mouseY;
 		// Scene Management
 		std::map<std::string, std::shared_ptr<SceneDX11>> mSceneMap;
 		std::shared_ptr<SceneDX11> mActiveScene;

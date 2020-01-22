@@ -74,7 +74,7 @@ namespace Odyssey
 		// Iterate through each component of the entity
 		for (auto* component : mComponentList)
 		{
-			if (component->isActive())
+			if (component->isActive() && component->getEntity()->isActive())
 			{
 				// Update the component
 				component->update(mDeltaTime);

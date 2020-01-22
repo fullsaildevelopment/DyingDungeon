@@ -9,7 +9,6 @@ CLASS_DEFINITION(Component, Character)
 Character::Character()
 {
 	mHero = false;
-	mDead = false;
 	mDisplaying = false;
 	mShielding = false;
 	mAttack = 0.0f;
@@ -293,38 +292,6 @@ void Character::SetShielding(float shield)
 	mShielding = shield;
 }
 
-/*
- * Function:  IsDead()
- * --------------------
- * Check to see if the character is dead
- *
- * returns: bool
- */
-bool Character::IsDead()
-{
-	return mDead;
-}
-
-/*
- * Function:  SetMana(float Mana)
- * --------------------
- * Set the dead staus of the character
- *
- * returns: void
- */
-void Character::SetDead(bool deadStatus)
-{
-	mDead = deadStatus;
-	if (deadStatus == true)
-	{
-		mCurrentState = STATE::DEAD;
-	}
-	else
-	{
-		mCurrentState = STATE::NONE;
-	}
-}
-
 // Adds Exp to the charater
 void Character::AddExp(float exp)
 {
@@ -569,6 +536,8 @@ void Character::ClearStatusEffects()
 */
 void Character::UpdateHealthBar()
 {
+	mHpText->setText(std::to_wstring((int)mCurrentHP));
+	mBigHpText->setText(std::to_wstring((int)mCurrentHP));
 	float fill = GetHP() / GetMaxHP();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -587,6 +556,7 @@ void Character::UpdateHealthBar()
 */
 void Character::UpdateManaBar()
 {
+	mMpText->setText(std::to_wstring((int)mCurrentMana));
 	float fill = GetMana() / GetMaxMana();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -594,4 +564,14 @@ void Character::UpdateManaBar()
 		fill = 1.0f;
 
 	pManaBar->setFill(fill);
+}
+
+void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
+{
+	mBloodParticleEffect = newBloodEffect;
+}
+
+Odyssey::ParticleSystem* Character::GetPSBlood()
+{
+	return mBloodParticleEffect;
 }

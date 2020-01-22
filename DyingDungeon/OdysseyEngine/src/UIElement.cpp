@@ -22,6 +22,10 @@ namespace Odyssey
 
 		mIsVisible = true;
 
+		// Set mouse tracking bools
+		mTrackMouseEnter = true;
+		mTrackMouseExit = false;
+
 		// Create the rectangle
 		createShape();
 
@@ -31,20 +35,24 @@ namespace Odyssey
 
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
+
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
 	{
 		mLock.lock(LockState::Write);
+
 		// Scale the position and dimensions of the UI element to match the change in window size
 		mPosition.x *= evnt->xScale;
 		mPosition.y *= evnt->yScale;
 		mDimensions.x *= evnt->xScale;
 		mDimensions.y *= evnt->yScale;
-		mLock.unlock(LockState::Write);
 
+		mLock.unlock(LockState::Write);
 		// Recreate the shape to match the new position and dimensions
 		createShape();
+		createResource();
+
 	}
 
 	void UIElement::onMouseClick(MouseClickEvent* evnt)
@@ -66,9 +74,62 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
+	void UIElement::onMouseMove(MouseMoveEvent* evnt)
+	{
+		int xPosition = evnt->mouseX;
+		int yPosition = evnt->mouseY;
+
+		mLock.lock(LockState::Read);
+
+		bool active = mCanvas->isActive();
+
+		bool collision = xPosition >= mShape.left && xPosition <= mShape.right && yPosition >= mShape.top && yPosition <= mShape.bottom;
+
+		mLock.unlock(LockState::Read);
+
+		if (active)
+		{
+			if (collision)
+			{
+				if (mTrackMouseEnter)
+				{
+					onMouseEnter();
+				}
+			}
+			else if (mTrackMouseExit)
+			{
+				onMouseExit();
+			}
+		}
+
+	}
+
+	void UIElement::onMouseEnter()
+	{
+		mTrackMouseExit = true;
+		mTrackMouseEnter = false;
+
+		if (mCallbackMap.count(__func__) > 0)
+		{
+			mCallbackMap[__func__]->execute();
+		}
+	}
+
+	void UIElement::onMouseExit()
+	{
+		mTrackMouseExit = false;
+		mTrackMouseEnter = true;
+
+		if (mCallbackMap.count(__func__) > 0)
+		{
+			mCallbackMap[__func__]->execute();
+		}
+	}
+
 	void UIElement::initialize()
 	{
 		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
+		EventManager::getInstance().subscribe(this, &UIElement::onMouseMove);
 	}
 
 	void UIElement::setCanvas(UICanvas* canvas)
@@ -123,6 +184,7 @@ namespace Odyssey
 
 		// Recreate the element's shape
 		createShape();
+		createResource();
 	}
 
 	void UIElement::setScale(float x, float y)
@@ -135,6 +197,7 @@ namespace Odyssey
 
 		// Recreate the element's shape
 		createShape();
+		createResource();
 	}
 
 	DirectX::XMFLOAT2 UIElement::getScale()
@@ -153,6 +216,7 @@ namespace Odyssey
 
 		// Recreate the element's shape
 		createShape();
+		createResource();
 	}
 
 	DirectX::XMFLOAT2 UIElement::getDimensions()
@@ -294,6 +358,10 @@ namespace Odyssey
 		mLock.lock(LockState::Write);
 		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mDimensions.x * mScale.x), mPosition.y + (mDimensions.y * mScale.y));
 		mLock.unlock(LockState::Write);
+	}
+
+	void UIElement::createResource()
+	{
 	}
 
 	void UIElement::resetBrush()

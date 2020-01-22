@@ -61,3 +61,33 @@ void Skills::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 {
 	mStatusEffect = se;
 }
+
+Odyssey::ParticleSystem* Skills::GetParticleSystem()
+{
+	return mPS.mPixelEntity;
+}
+
+DirectX::XMFLOAT3 Skills::GetPosOffset()
+{
+	return mPS.mStartingPosOffest;
+}
+
+float Skills::GetPSFiringTime()
+{
+	return mPS.mFiringTime;
+}
+
+void Skills::SetParticleSystem(Odyssey::ParticleSystem* newParticleSystem)
+{
+	mPS.mPixelEntity = newParticleSystem;
+}
+
+void Skills::SetParticleOffset(DirectX::XMFLOAT3 newOffset)
+{
+	mPS.mStartingPosOffest = newOffset;
+}
+
+void Skills::SetParticleFiringTime(float newFiringTime)
+{
+	mPS.mFiringTime = newFiringTime;
+}

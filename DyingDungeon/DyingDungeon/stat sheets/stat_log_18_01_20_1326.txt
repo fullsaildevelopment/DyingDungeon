@@ -1,0 +1,74 @@
+----------------------------------------------------------
+                        Game Info
+----------------------------------------------------------
+
+                  Attack     Defend      Aid
+               | 100.00% | | 00.00% | | 00.00% |
+
+         Attack   Damage Dealt   Damage Success
+Attack: |  04  | |    800.00   | |    100.00%    |
+
+         Defend   Damage Taken   Damage Mitigated   Health Gained
+Defend: |  00  | |    00.00   | |     00.00      | |    00.00    |
+
+          Aid     Heal    Deffence Buff
+   Aid: | 00 | | 00.00 | |    00.00    |
+
+----------------------------------------------------------
+                         Level 1
+----------------------------------------------------------
+
+Round 1
+
+	Turn 1: Paladin Uno
+
+	Action: Judgement
+
+	Target: Skeleton Un
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Un
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+
+	Turn 2: Paladin Dos
+
+	Action: Judgement
+
+	Target: Skeleton Deux
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Deux
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+
+	Turn 3: Paladin Tres
+
+	Action: Judgement
+
+	Target: Skeleton Trois
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Trois
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+
+	Turn 4: Paladin Cuatro
+
+	Action: Judgement
+
+	Target: Skeleton Quatre
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Quatre
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+

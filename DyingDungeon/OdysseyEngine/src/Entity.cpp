@@ -14,6 +14,7 @@ namespace Odyssey
 
 	void Entity::addChild(std::shared_ptr<Entity> child)
 	{
+		child->setParent(this);
 		mChildren.push_back(child);
 	}
 
