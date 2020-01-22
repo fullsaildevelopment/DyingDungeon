@@ -416,8 +416,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		properties.fontSize = 49.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Center;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		//owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);
-		characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);
 
 		// TODO: Add the text elements for Attack, Defense, and Speed;
 		position = originalPosition;
@@ -451,8 +450,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 			color = { 255.0f, 255.0f, 255.0f, 1.0f };
 			properties.fontSize = 10.5f;
 			position.x += 5.0f;
-			//owner->mHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
-			characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
+			owner->mHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
 			// Create and assign the mana bar
 			position.x -= 5.0f;
 			position.y += barHeight;
@@ -461,8 +459,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 			// Create the text for the mana numbers of the character
 			color = { 255.0f, 255.0f, 255.0f, 1.0f };
 			position.x += 5.0f;
-			//owner->mManaText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
-			characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
+			owner->mMpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
 		}
 		else
 		{
@@ -520,13 +517,17 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		properties.fontSize = 25.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Center;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		//owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
-		characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
+		// Create but don't show the mini hp text
+		owner->mHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mHpText->setVisible(false);
 
 		// Add in the enemy's mana bar
 		owner->pManaBar = characterHudCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
 		owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 		owner->pManaBar->setVisible(false);
+		owner->mMpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mMpText->setVisible(false);
 
 		// Position where the turn number will be located
 		position = originalPosition;

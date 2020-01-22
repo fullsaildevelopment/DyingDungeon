@@ -313,10 +313,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : enemies)
 					{
-						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
-						aoeSpawn.x += tempTransform.x;
-						aoeSpawn.y += tempTransform.y;
-						aoeSpawn.z += tempTransform.z;
+						if (c)
+						{
+							tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
+							aoeSpawn.x += tempTransform.x;
+							aoeSpawn.y += tempTransform.y;
+							aoeSpawn.z += tempTransform.z;
+						}
 					}
 					aoeSpawn.x /= static_cast<float>(enemies.size());
 					aoeSpawn.y /= static_cast<float>(enemies.size());
