@@ -304,7 +304,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
 
-	if (mPrevMove.skill->IsAOE())
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->IsAOE())
 		return;
 
 	if (skill->GetTypeId() == mPriorityMove)
