@@ -493,7 +493,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 void GameUIManager::DecreaseVolume()
 {
 	// Decrease volume with Red's audio manager
-	RedAudioManager::Instance().SetVolume(RedAudioManager::Instance().GetVolume() - 50);
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume() - 50);
 
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
@@ -503,7 +503,7 @@ void GameUIManager::DecreaseVolume()
 void GameUIManager::IncreaseVolume()
 {
 	// Increase volume with Red's audio manager
-	RedAudioManager::Instance().SetVolume(RedAudioManager::Instance().GetVolume() + 50);
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume() + 50);
 
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
