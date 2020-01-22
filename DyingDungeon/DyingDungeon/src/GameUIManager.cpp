@@ -120,9 +120,9 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
 
 	// Create door to click on
-	width = 782.0f / 3.0f;
-	height = 927.0f / 3.0f;
-	position = { 100.0f, screenHeight - (height - 50.0f) };
+	width = 195;
+	height = 231;
+	position = { 100.0f, (static_cast<float>(screenHeight) / 2.0f) - (height / 2.0f) };
 	mDoorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/MedievalDoor.png", width, height);
 
 	// Add the pause menu to the game scene most likely

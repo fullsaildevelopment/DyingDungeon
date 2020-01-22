@@ -60,7 +60,7 @@ namespace Odyssey
 		 *	@param[in] evnt The event parameters.
 		 *	@return void
 		 */
-		void onElementResize(UIElementResizeEvent* evnt);
+		virtual void onElementResize(UIElementResizeEvent* evnt);
 
 		/**
 		 *	Event callback to process a mouse click.
@@ -246,6 +246,8 @@ namespace Odyssey
 		 *	@return void
 		 */
 		void createShape();
+
+		virtual void createResource();
 
 		void resetBrush();
 
