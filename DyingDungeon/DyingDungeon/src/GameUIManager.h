@@ -108,6 +108,12 @@ private: // Varibales
 	Odyssey::Sprite2D* mMinusImage;
 	Odyssey::Text2D* mBackButtonText;
 
+	// Colors
+	DirectX::XMFLOAT4 mHealthBarColor = { 0.0f, 180.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 mBigHealthTextColor = { 180.0f, 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 mManaBarColor = { 0.0f, 180.0f, 180.0f, 1.0f };
+	DirectX::XMFLOAT4 mTurnOrderColor = { 255.0f, 210.0f, 0.0f, 1.0f };
+
 	// Vectors
 
 	// Queues
