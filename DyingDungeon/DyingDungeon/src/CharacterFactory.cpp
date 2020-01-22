@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "HeroComponent.h"
 #include "EnemyComponent.h"
+#include "GameUIManager.h"
 
 std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene)
 {
@@ -101,9 +102,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 	// Create the impact indicator for each character
 	CreateCharacterImpactIndicator(newCharacter);
-
-	// Add the Character and Impact Indicator to the Game Scene
-	mGameScene->addEntity(newCharacter);
 
 	return newCharacter;
 }
