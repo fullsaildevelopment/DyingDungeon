@@ -75,6 +75,13 @@ void Attack::Use(Character& caster, Character& target)
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
 	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
+	//UI battle log
+	std::wstring battleText = std::wstring(caster.GetName().begin(), caster.GetName().end());
+	std::wstring skillName = std::wstring(mName.begin(), mName.end());
+	std::wstring targetName = std::wstring(target.GetName().begin(), target.GetName().end());
+	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
+	GameUIManager::getInstance().SetBattleLogText(battleText, false);
+
 	target.TakeDamage(totalDps);
 	if (mStatusEffect != nullptr)
 	{

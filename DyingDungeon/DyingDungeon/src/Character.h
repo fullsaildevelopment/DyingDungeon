@@ -4,6 +4,7 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"
+#include "GameUIManager.h"
 #include <vector>
 
 enum class HEROID { Paladin = 0, Mage };
@@ -62,8 +63,8 @@ public:
 	void SetHero(bool heroStat);
 	// Name Functions
 	std::string GetName();
-	// Skills Functions
 	void SetName(std::string newName);
+	// Skills Functions
 	std::vector<std::shared_ptr<Skills>> GetSkills();
 	// mProvoked Functions
 	Character* GetProvoked();
@@ -85,6 +86,8 @@ public:
 	void UpdateHealthBar();
 	//Update ManaBar UI
 	void UpdateManaBar();
+
+	std::wstring FormatToPercentageW(float number);
 
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
