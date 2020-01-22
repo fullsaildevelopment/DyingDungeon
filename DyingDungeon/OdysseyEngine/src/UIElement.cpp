@@ -362,6 +362,7 @@ namespace Odyssey
 
 	void UIElement::createResource()
 	{
+		int debug = 0;
 	}
 
 	void UIElement::resetBrush()

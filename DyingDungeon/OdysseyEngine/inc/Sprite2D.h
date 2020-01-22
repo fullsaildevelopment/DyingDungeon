@@ -30,7 +30,6 @@ namespace Odyssey
 		void setSprite(LPCWSTR filename, UINT width = 0, UINT height = 0);
 
 	protected:
-		virtual void onElementResize(UIElementResizeEvent* evnt);
 		virtual void createResource();
 
 	private: // Helpers

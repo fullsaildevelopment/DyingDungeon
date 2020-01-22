@@ -5,7 +5,7 @@ namespace Odyssey
 {
 	ELEMENT_DEFINITION(UIElement, Sprite2D)
 
-	Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width, UINT height)
+		Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width, UINT height)
 		: UIElement(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)
 	{
 		// Create the WIC factory
@@ -43,22 +43,14 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
-	void Sprite2D::onElementResize(UIElementResizeEvent* evnt)
-	{
-		mLock.lock(LockState::Write);
-		mBitmap.Reset();
-		delete mBitmapConverter;
-		mBitmapConverter = nullptr;
-		createBitmapFromFile(mFilename, evnt->xScale * mDimensions.x, evnt->yScale*mDimensions.y);
-		mLock.unlock(LockState::Write);
-	}
-
 	void Sprite2D::createResource()
 	{
 		mLock.lock(LockState::Write);
 		mBitmap.Reset();
-		delete mBitmapConverter;
-		mBitmapConverter = nullptr;
+		if (mBitmapConverter)
+		{
+			mBitmapConverter = nullptr;
+		}
 		reloadBitmapFromFile(mFilename, mDimensions.x * mScale.x, mDimensions.y * mScale.y);
 		mLock.unlock(LockState::Write);
 	}
