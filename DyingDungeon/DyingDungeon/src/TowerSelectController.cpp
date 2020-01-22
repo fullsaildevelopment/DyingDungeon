@@ -23,6 +23,10 @@ void TowerSelectController::initialize()
 	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
 	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorSize);
 	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorSize);
+
+	// Reset the door size and the bool
+	GameUIManager::getInstance().GetDoorButton()->setScale(1.0f, 1.0f);
+	mDoorIsSmall = true;
 }
 
 void TowerSelectController::update(double deltaTime)

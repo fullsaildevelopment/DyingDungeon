@@ -130,6 +130,10 @@ namespace Odyssey
 	{
 		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
 		EventManager::getInstance().subscribe(this, &UIElement::onMouseMove);
+
+		// Set mouse tracking bools
+		mTrackMouseEnter = true;
+		mTrackMouseExit = false;
 	}
 
 	void UIElement::setCanvas(UICanvas* canvas)
