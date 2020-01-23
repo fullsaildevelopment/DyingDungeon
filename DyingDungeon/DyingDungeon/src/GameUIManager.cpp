@@ -366,23 +366,26 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 340;
-		UINT imageHeight = 146;
-		UINT barWidth = 246;
-		UINT barHeight = 23;
+		UINT imageWidth = 359;
+		UINT imageHeight = 109;
+		UINT barWidth = 252.5f;
+		UINT barHeight = 21;
 		DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
 
 		// Create the base ui template
-		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout2.0.png", imageWidth, imageHeight);
+		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout4.0.png", imageWidth, imageHeight);
 
 		// Create the character's image
-		imageWidth = 64;
-		imageHeight = 64;
+		imageWidth = 71;
+		imageHeight = 68;
+		position.x += 2;
+		position.y += 1;
 		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
 		// Create the xp/name bar
 		//TODO::Create XP Bars In The Character Class To Assign
-		position.x += imageWidth;
+		position.x += imageWidth + 2.0f;
+
 		if (owner)
 			characterHudCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
 		else
@@ -411,36 +414,37 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"99", properties);
 
 		// Create the big HP text
-		position.x -= barWidth + 7.5f;
+		/*position.x -= barWidth + 7.5f;
 		position.y += barHeight;
 		properties.fontSize = 49.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Center;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);*/
 
 		// TODO: Add the text elements for Attack, Defense, and Speed;
 		position = originalPosition;
-		position.x += 30.0f;
-		position.y += 62.5f;
-		properties.fontSize = 14.0f;
+		position.x += 100.0f;
+		position.y += 22.0f;
+		properties.fontSize = 12.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Left;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		// Attack number
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk() * 100.0f)), properties);
 		// Defense number
-		position.y += 17.5f;
+		position.y += 16.5f;
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetDef() * 100.0f)), properties);
 		// Speed number
-		position.y += 17.5f;
+		position.y += 16.5f;
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring((int)owner->GetSpeed()), properties);
 
 		// Health and Mana bars
 		// Set the position to the origanal top left position
 		position = originalPosition;
-		barHeight = 14;
-		barWidth = 340;
-		position.y += imageHeight + 53.5f;
+		barHeight = 17;
+		barWidth = 356;
+		position.x += 2.0f;
+		position.y += imageHeight + 3.5f;
 		if (owner)
 		{
 			// Create and assign the health bar
@@ -453,7 +457,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 			owner->mHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
 			// Create and assign the mana bar
 			position.x -= 5.0f;
-			position.y += barHeight;
+			position.y += barHeight + 1.5;
 			owner->pManaBar = characterHudCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
 			owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 			// Create the text for the mana numbers of the character
