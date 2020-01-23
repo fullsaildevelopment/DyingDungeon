@@ -24,7 +24,7 @@ namespace Odyssey
 
 		MouseMoveEvent(int xPos, int yPos) : mouseX(xPos), mouseY(yPos)
 		{
-			priority = EventPriority::Deferred;
+			priority = EventPriority::Immediate;
 		}
 	};
 

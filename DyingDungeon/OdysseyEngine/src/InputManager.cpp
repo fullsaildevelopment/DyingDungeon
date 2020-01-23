@@ -13,8 +13,6 @@ namespace Odyssey
 
 		EventManager::getInstance().subscribe(this, &InputManager::onMouseMove);
 
-		EventManager::getInstance().subscribe(this, &InputManager::onMouseHover);
-
 		sendMouseHover = true;
 	}
 
@@ -56,17 +54,6 @@ namespace Odyssey
 	{
 		mouseX = evnt->mouseX;
 		mouseY = evnt->mouseY;
-
-		if (sendMouseHover)
-		{
-			EventManager::getInstance().publish(new MouseMoveEvent(mouseX, mouseY));
-			sendMouseHover = false;
-		}
-	}
-
-	void InputManager::onMouseHover(MouseMoveEvent* evnt)
-	{
-		sendMouseHover = true;
 	}
 
 	bool InputManager::getKeyPress(KeyCode key)
@@ -110,5 +97,9 @@ namespace Odyssey
 
 		// The key was not found in the map, no key up
 		return mKeyUpMap[codeID];
+	}
+	void InputManager::sendMouseMove()
+	{
+		EventManager::getInstance().publish(new MouseMoveEvent(mouseX, mouseY));
 	}
 }

@@ -154,8 +154,6 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mTowerSelectMenu);
-	// Turn off the canvas when creating it
-	ToggleCanvas(mTowerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
 void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)

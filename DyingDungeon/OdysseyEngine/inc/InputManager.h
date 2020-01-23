@@ -37,8 +37,6 @@ namespace Odyssey
 
 		void onMouseMove(MouseInputEvent* evnt);
 
-		void onMouseHover(MouseMoveEvent* evnt);
-
 	public: // Interface
 		/**
 		 *	Get the state of a key being pressed.
@@ -60,6 +58,8 @@ namespace Odyssey
 		 *	@return bool The state of the input key up.
 		 */
 		bool getKeyUp(KeyCode key);
+
+		void sendMouseMove();
 
 	private: // Members
 		std::bitset<256> mKeyPressMap;
