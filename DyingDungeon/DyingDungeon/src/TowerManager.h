@@ -63,6 +63,7 @@ private: // Varibales
 	EntityList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
 	EntityList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	EntityList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
+	EntityList mSkeletonTeam; // skeletonTeam will hold the gameObjects of skeltons // THIS IS TEMPORARY
 
 	// Queues
 

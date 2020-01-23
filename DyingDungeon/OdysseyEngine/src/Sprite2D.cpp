@@ -37,7 +37,7 @@ namespace Odyssey
 		mLock.lock(LockState::Write);
 		mFilename = filename;
 		mBitmap.Reset();
-		delete mBitmapConverter;
+		//delete mBitmapConverter;
 		mBitmapConverter = nullptr;
 		createBitmapFromFile(filename, width, height);
 		mLock.unlock(LockState::Write);
