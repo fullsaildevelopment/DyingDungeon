@@ -139,7 +139,6 @@ int playGame()
 
 	// Set up the main menu
 	setupMainMenu(application.get());
-	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
 
 	// Set up the tower selection screen
 	setupMenu(gRenderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
@@ -451,6 +450,9 @@ void setupMainMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
 	gMainMenu->addEntity(characterToAdd);
+
+	// Create the UI
+	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
 }
 
 void setupTeamSelectMenu(Odyssey::Application* application)
@@ -472,23 +474,34 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Set up an ambient light
 	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
 	ambientLight->setLightType(Odyssey::LightType::Point);
-	ambientLight->setPosition(0.0, 10.0f, 0.0f);
+	ambientLight->setPosition(0.0, 0.0f, 2.0f);
 	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
 	ambientLight->setColor(0.5f, 0.5f, 0.5f);
-	ambientLight->setIntensity(10.0f);
+	ambientLight->setIntensity(5.0f);
 	ambientLight->setRange(30.0f);
 	ambientLight->setSpotAngle(0.0f);
 	gTeamSelectScene->addLight(ambientLight);
 
-	// Create a paladin and add him to the main menu scene
+	// Create a paladin and add him to the team select scene
 	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
 	// Set the render device for the particles
 	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-1.0f, -2.0f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Team Select Paladin", charPosition, charRotation, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
 	gTeamSelectScene->addEntity(characterToAdd);
+
+	// Create a mage and add him to the team select scene
+	charPosition = DirectX::XMVectorSet(3.0f, -2.0f, 6.0f, 1.0f);
+	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Team Select Mage", charPosition, charRotation, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
+	gTeamSelectScene->addEntity(characterToAdd);
+
+	// Create the UI
+	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
 }
 
 void setupArena()

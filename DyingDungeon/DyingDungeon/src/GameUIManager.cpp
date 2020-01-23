@@ -34,7 +34,7 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	properties.fontSize = 20.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Create the battle log text
 	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"I am battle log, I will show you what is going on the the game", properties);
@@ -95,7 +95,7 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Create title text
 	height = 100;
@@ -132,7 +132,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 
 	// Initialize variables
 	UINT width = screenWidth; // Width
-	UINT height = 100; // Height
+	UINT height = 50; // Height
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
@@ -140,10 +140,10 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Create tower select title
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 100.0f;
+	properties.fontSize = 50.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
 
 	// Create door to click on
@@ -165,6 +165,53 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	mTeamSelectMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the pause menu
 	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
+
+	// Initialize variables
+	UINT width = screenWidth; // Width
+	UINT height = 50; // Height
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	Odyssey::TextProperties properties;
+
+	// Create team select title
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 50.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Tw Cen MT Condensed";
+	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
+
+	// Create the 3 boxes where the character's images will go when you click on a certain hero
+	position.x = 50.0f;
+	width = 200;
+	height = 200;
+	
+	// First team member
+	position.y += 30.0f;
+	firstTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Second team member
+	position.y += static_cast<float>(height) + 30.0f;
+	secondTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Third team member
+	position.y += static_cast<float>(height) + 30.0f;
+	thirdTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Make the clickable clear rectangle for the character's when selecting the team members
+	width = 256;
+	height = 400;
+	position.x = 400.0f;
+	position.y = 250.0f;
+	paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+
+	position.x = 825.0f;
+	position.y = 250.0f;
+	mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+
+	// Add the mTeamSelectMenu object to the team selection scene
+	_sceneToAddTo->addEntity(mTeamSelectMenu);
 }
 
 // This is where I will design and add all elements into the pause menu canvas
@@ -202,7 +249,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
 
 	// Resume Button
@@ -283,7 +330,7 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mOptionsTitle = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, 60, L"Options", properties);
 
 	// Adjust volume text

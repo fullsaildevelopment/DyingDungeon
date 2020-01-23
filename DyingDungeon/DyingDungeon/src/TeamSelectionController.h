@@ -15,4 +15,17 @@ public:
 	Odyssey::Rectangle2D* mRect;
 private:
 	Odyssey::Application* mApplication;
+
+	// Set the number of members on your team currently
+	int teamCount = 0;
+	// This will let us know when the user has a full team
+	bool teamIsFull = true;
+
+	// Only allow to change scene once
+	bool changedTheScene = false;
+
+private: // Functions
+	void AddPaladinImage();
+	void AddMageImage();
+
 };

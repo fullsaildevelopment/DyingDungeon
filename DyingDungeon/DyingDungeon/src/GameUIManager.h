@@ -8,6 +8,13 @@
 
 class GameUIManager
 {
+public:
+
+	enum class CharacterType
+	{
+		Paladin, Mage
+	};
+
 public: // Singleton pattern
 		/**
 		 *	Get the singleton instance of the game ui manager.
@@ -56,6 +63,28 @@ public: // Functions
 	// Get the sprite buttons from the tower select menu
 	Odyssey::Sprite2D* GetDoorButton() { return mDoorImage; }
 
+	// Get the team select menu
+	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
+	// Get the team member slot 1, 2, or 3
+	Odyssey::Sprite2D* GetTeamMemberSlot(int _teamMemberSlot) 
+	{
+		switch (_teamMemberSlot)
+		{
+			case 1: return firstTeamMemberSlot; break;
+			case 2: return secondTeamMemberSlot; break;
+			case 3: return thirdTeamMemberSlot; break;
+		}
+	}
+	// Get the sprite of which character you selected
+	Odyssey::Sprite2D* GetCharacterSelectImage(CharacterType _type)
+	{
+		switch (_type)
+		{
+		case CharacterType::Paladin: return paladinSelectionImage; break;
+		case CharacterType::Mage: return mageSelectionImage; break;
+		}
+	}
+
 	// Get the pause menu
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
 	// Get the options menu
@@ -103,6 +132,13 @@ private: // Varibales
 	Odyssey::Sprite2D* mDoorImage;
 
 	// Team Menu Items
+	// Team member slots
+	Odyssey::Sprite2D* firstTeamMemberSlot;
+	Odyssey::Sprite2D* secondTeamMemberSlot;
+	Odyssey::Sprite2D* thirdTeamMemberSlot;
+	// Rectangles around the characters
+	Odyssey::Sprite2D* paladinSelectionImage;
+	Odyssey::Sprite2D* mageSelectionImage;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
