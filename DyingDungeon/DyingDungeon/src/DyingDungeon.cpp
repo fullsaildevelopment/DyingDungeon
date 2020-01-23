@@ -797,7 +797,7 @@ void setUpTowerManager()
 	temp->GetSkills()[2]->SetParticleFiringTime(0.25f);
 	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));*/
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 350.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 370.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);

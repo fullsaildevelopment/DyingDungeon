@@ -557,7 +557,8 @@ void Character::ClearStatusEffects()
 void Character::UpdateHealthBar()
 {
 	mHpText->setText(std::to_wstring((int)mCurrentHP));
-	mBigHpText->setText(std::to_wstring((int)mCurrentHP));
+	if (!mHero)
+		mBigHpText->setText(std::to_wstring((int)mCurrentHP));
 	float fill = GetHP() / GetMaxHP();
 	if (fill < 0.0f)
 		fill = 0.0f;
