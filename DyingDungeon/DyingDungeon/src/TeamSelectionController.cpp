@@ -15,6 +15,14 @@ void TeamSelectionController::initialize()
 {
 	//RedAudioManager::Instance().Loop("BackgroundMenu");
 	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+
+	// Get the deminsion of the original black square
+	DirectX::XMFLOAT2 deminsion = GameUIManager::getInstance().GetTeamMemberSlot(1)->getDimensions();
+	//Set the images black to the default black square
+	GameUIManager::getInstance().GetTeamMemberSlot(1)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
+	GameUIManager::getInstance().GetTeamMemberSlot(2)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
+	GameUIManager::getInstance().GetTeamMemberSlot(3)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
+
 	changedTheScene = false;
 
 	teamCount = 0;
@@ -31,6 +39,11 @@ void TeamSelectionController::update(double deltaTime)
 		changedTheScene = true;
 		RedAudioManager::Instance().Stop("BackgroundMenu");
 		RedAudioManager::Instance().Loop("BackgroundBattle");
+
+		// Unregister the select images
+		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseClick");
+
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
 }
