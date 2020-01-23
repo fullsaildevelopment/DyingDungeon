@@ -34,13 +34,6 @@ void MainMenuController::update(double deltaTime)
 			GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
 			madeItPassedLogo = true;	
 		}
-
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
-		{
-			//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
-			//RedAudioManager::Instance().Play("BackgroundBattle");
-			Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
-		}
 	}
 }
 

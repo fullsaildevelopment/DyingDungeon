@@ -158,6 +158,15 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	ToggleCanvas(mTowerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 }
 
+void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	// Create the tower select menu pointer
+	mTeamSelectMenu = std::make_shared<Odyssey::Entity>();
+	mTeamSelectMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the pause menu
+	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
+}
+
 // This is where I will design and add all elements into the pause menu canvas
 void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {

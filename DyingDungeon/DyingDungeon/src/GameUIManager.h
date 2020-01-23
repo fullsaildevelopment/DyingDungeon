@@ -33,6 +33,9 @@ public: // Functions
 	// Creation of the tower select menu
 	void CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
+	// Creation of the team select menu
+	void CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
 	// Creation of the pause menu
 	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 	 
@@ -87,6 +90,7 @@ private: // Varibales
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
+	std::shared_ptr<Odyssey::Entity> mTeamSelectMenu;
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
 
@@ -97,6 +101,8 @@ private: // Varibales
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
 	Odyssey::Sprite2D* mDoorImage;
+
+	// Team Menu Items
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
