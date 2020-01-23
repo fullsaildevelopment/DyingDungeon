@@ -856,7 +856,7 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
 	enemyUIXPosition = static_cast<float>(width) / 2.0f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/GanfaulIcon.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
