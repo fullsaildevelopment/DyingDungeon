@@ -14,6 +14,11 @@ public:
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 	//Death Functions
 	virtual void Die();
+	void BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets);
+
+	// Skills functions
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
 	// Extra Mechanics for enemys 
 	void (EnemyComponent::*mMechPtr)() = nullptr;
 	void GanfaulPhaseMechanic();

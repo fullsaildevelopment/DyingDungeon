@@ -25,6 +25,9 @@ public:
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 	virtual void Die();
 
+	//Skills
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
 	void TakeDamage(float dmg);
 	void ReceiveHealing(float healing);
 	void DepleteMana(float manaCost);
@@ -64,8 +67,6 @@ public:
 	// Name Functions
 	std::string GetName();
 	void SetName(std::string newName);
-	// Skills Functions
-	std::vector<std::shared_ptr<Skills>> GetSkills();
 	// mProvoked Functions
 	Character* GetProvoked();
 	void SetProvoked(Character* provoker);

@@ -16,6 +16,10 @@ public:
 
 	//Death Check
 	virtual void Die();
+
+	// Skills functions
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
 	/////Get and Set Functions/////
 	/////End of Get and Set Functions/////
 private:

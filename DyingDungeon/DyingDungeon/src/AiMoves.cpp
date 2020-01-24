@@ -553,6 +553,11 @@ std::shared_ptr<AIMoves::Move> AIMoves::GetMove()
 	return mBestMove;
 }
 
+std::vector<std::shared_ptr<Skills>> AIMoves::GetSkillList()
+{
+	return mSkillList;
+}
+
 ///////SET FUNCTIONS///////
 
 void AIMoves::ResetMove()

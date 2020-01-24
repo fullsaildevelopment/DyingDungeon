@@ -221,12 +221,22 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
-						if(c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
+						if (c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
+						{
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
+							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+							c.get()->getComponent<Character>()->GetPSBlood()->play();
+						}
 					}
 				}
 				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD && mCurrentTarget != this)
+				{
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+					mCurrentTarget->GetPSBlood()->play();
+				}
 			}
 			// Set trigger to true to avoid looping the recipents animation
 			animeTrigger = true;
@@ -309,6 +319,11 @@ void HeroComponent::Die()
 	ClearStatusEffects();
 	mAnimator->playClip("Dead");
 	pTurnNumber->setText(L"X");
+}
+
+std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
+{
+	return mSkillList;
 }
 
 void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
@@ -443,8 +458,6 @@ void HeroComponent::BeginAttack(EntityList targets)
 			aoeSpawn.z /= static_cast<float>(targets.size());
 		}
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
-		//mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-		//mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
 	}
 	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 	{
