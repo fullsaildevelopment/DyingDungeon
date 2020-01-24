@@ -63,6 +63,7 @@ class AIMoves
 	public:
 		std::shared_ptr <AIMoves::Move> GetMove();
 		AIMoves::Move mPrevMove;
+		std::vector<std::shared_ptr<Skills>> GetSkillList();
 
 		//////////////////////////SET FUNCTIONS//////////////////////////////////
 	public:

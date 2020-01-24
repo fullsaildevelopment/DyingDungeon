@@ -74,6 +74,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
+	case HEROID::Bard:
+	{
+		mName = "TheBestClassToEverExist";
+		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxMana = mCurrentMana = 125.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.15f;
+		mBaseSpeed = mSpeed = 20.0f;
+	}
 	default:
 		break;
 	}
@@ -134,235 +143,43 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// If the player character's selection is not Aoe or currently provoked they will then select thier target
 	case STATE::SELECTTARGET:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
+		static int tempIndex = -1;
+		if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
 		{
-			SelectTarget(heros,enemies,0);
+			if (tempIndex == -1)
+			{
+				for (int i = 0; i < enemies.size(); ++i)
+				{
+					if (enemies[i] != nullptr && enemies[i]->getComponent<Character>()->GetState() != STATE::DEAD)
+					{
+						tempIndex = i;
+						break;
+					}
+				}
+			}
+			if(SelectTarget(enemies, tempIndex))
+				tempIndex = -1;
 		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
+		else
 		{
-			SelectTarget(heros, enemies, 1);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
-		{
-			SelectTarget(heros, enemies, 2);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
-		{
-			SelectTarget(heros, enemies, 3);
+			if (tempIndex == -1)
+			{
+				for (int i = 0; i < heros.size(); ++i)
+				{
+					if (heros[i] != nullptr && heros[i]->getComponent<Character>()->GetState() != STATE::DEAD)
+					{
+						tempIndex = i;
+						break;
+					}
+				}
+			}
+			if (SelectTarget(heros, tempIndex))
+				tempIndex = -1;
 		}
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
 			ResetToSelection(heros, enemies);
-		}
-		break;
-	}
-	// Player will confirm that this is thier desired move
-	case STATE::CONFIRM:
-	{
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad0))
-		{
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(1000.0f);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad8))
-		{
-			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad3))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.x += 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad5))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.y += 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad9))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.z += 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad1))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.x -= 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad2))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.y -= 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad7))
-		{
-			DirectX::XMFLOAT3 temp(mCurrentSkill->GetPosOffset());
-			temp.z -= 0.1f;
-			mCurrentSkill->SetParticleOffset(temp);
-			DirectX::XMFLOAT3 testing((mEntity->getComponent<Odyssey::Transform>()->getPosition()));
-			testing.x += mCurrentSkill->GetPosOffset().x;
-			testing.y += mCurrentSkill->GetPosOffset().y;
-			testing.z += mCurrentSkill->GetPosOffset().z;
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(testing);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad4))
-		{
-			mCurrentSkill->SetParticleFiringTime(mCurrentSkill->GetPSFiringTime() + 0.1f);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::NumPad6))
-		{
-			mCurrentSkill->SetParticleFiringTime(mCurrentSkill->GetPSFiringTime() - 0.1f);
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
-		{
-			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mCurrentSkill->IsAOE())
-			{
-				DirectX::XMFLOAT3 aoeSpawn(0.0f,0.0f,0.0f);
-				DirectX::XMFLOAT3 tempTransform(0.0f,0.0f,0.0f);
-				if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
-				{
-					for (std::shared_ptr<Odyssey::Entity> c : enemies)
-					{
-						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
-						aoeSpawn.x += tempTransform.x;
-						aoeSpawn.y += tempTransform.y;
-						aoeSpawn.z += tempTransform.z;
-					}
-					aoeSpawn.x /= static_cast<float>(enemies.size());
-					aoeSpawn.y /= static_cast<float>(enemies.size());
-					aoeSpawn.z /= static_cast<float>(enemies.size());
-				}
-				else
-				{
-					for (std::shared_ptr<Odyssey::Entity> c : heros)
-					{
-						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
-						aoeSpawn.x += tempTransform.x;
-						aoeSpawn.y += tempTransform.y;
-						aoeSpawn.z += tempTransform.z;
-					}
-					aoeSpawn.x /= static_cast<float>(heros.size());
-					aoeSpawn.y /= static_cast<float>(heros.size());
-					aoeSpawn.z /= static_cast<float>(heros.size());
-				}
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
-			}
-			else if (mCurrentSkill->GetParticleSystem() != nullptr)
-			{
-				// Set position to start in desired postion
-				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-				temp.x += mCurrentSkill->GetPosOffset().x;
-				temp.y += mCurrentSkill->GetPosOffset().y;
-				temp.z += mCurrentSkill->GetPosOffset().z;
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-				// Set target position
-				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-				temp2.y += 3.0f;
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-				// Use velocity to calc lifetime
-				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
-				// Turn particle effect on
-				mCurrentSkill->GetParticleSystem()->play();
-			}
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
-		{
-			mAnimator->playClip(mCurrentSkill->GetAnimationId());
-			if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
-			{
-				DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
-				DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-				if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
-				{
-					for (std::shared_ptr<Odyssey::Entity> c : enemies)
-					{
-						if (c)
-						{
-							tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
-							aoeSpawn.x += tempTransform.x;
-							aoeSpawn.y += tempTransform.y;
-							aoeSpawn.z += tempTransform.z;
-						}
-					}
-					aoeSpawn.x /= static_cast<float>(enemies.size());
-					aoeSpawn.y /= static_cast<float>(enemies.size());
-					aoeSpawn.z /= static_cast<float>(enemies.size());
-				}
-				else
-				{
-					for (std::shared_ptr<Odyssey::Entity> c : heros)
-					{
-						tempTransform = c->getComponent<Odyssey::Transform>()->getPosition();
-						aoeSpawn.x += tempTransform.x;
-						aoeSpawn.y += tempTransform.y;
-						aoeSpawn.z += tempTransform.z;
-					}
-					aoeSpawn.x /= static_cast<float>(heros.size());
-					aoeSpawn.y /= static_cast<float>(heros.size());
-					aoeSpawn.z /= static_cast<float>(heros.size());
-				}
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
-			}
-			else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
-			{
-				// Set position to start in desired postion
-				DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-				temp.x += mCurrentSkill->GetPosOffset().x;
-				temp.y += mCurrentSkill->GetPosOffset().y;
-				temp.z += mCurrentSkill->GetPosOffset().z;
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-				// Set target position
-				DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-				temp2.y += 3.0f;
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-				// Use velocity to calc lifetime
-				DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-				float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
-			}
-			mCurrentState = STATE::INPROGRESS;
-		}
-		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
-		{
-			ResetToSelection(heros, enemies);
+			tempIndex = -1;
 		}
 		break;
 	}
@@ -376,7 +193,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			// Turn particle effect on
 			mCurrentSkill->GetParticleSystem()->play();
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			if(!mCurrentSkill->IsAOE())
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
 			particleTrigger = true;
 		}
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
@@ -412,12 +230,22 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
-						if(c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
+						if (c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
+						{
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
+							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+							c.get()->getComponent<Character>()->GetPSBlood()->play();
+						}
 					}
 				}
 				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD && mCurrentTarget != this)
+				{
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+					mCurrentTarget->GetPSBlood()->play();
+				}
 			}
 			// Set trigger to true to avoid looping the recipents animation
 			animeTrigger = true;
@@ -502,73 +330,99 @@ void HeroComponent::Die()
 	pTurnNumber->setText(L"X");
 }
 
+std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
+{
+	return mSkillList;
+}
+
 void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
 	{
 		mCurrentSkill = mSkillList[moveIndex].get();
-		std::cout << mCurrentSkill->GetName() << " Selected" << std::endl;
-		if (mCurrentSkill->IsAOE())
-		{
-			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
-			{
-				std::cout << "This will hit the entire enemy party. Press 1 to confirm, escape to go back." << std::endl;
-				for (std::shared_ptr<Odyssey::Entity> e : enemies)
-				{
-					if(e != nullptr && e->getComponent<Character>()->GetState() != STATE::DEAD)
-						e->getComponent<Character>()->mImpactIndicator->setActive(true);
-				}
-			}
-			else
-			{
-				std::cout << "This will affect your entire party. Press 1 to confirm, escape to go back." << std::endl;
-				for (std::shared_ptr<Odyssey::Entity> h : heros)
-				{
-					if (h != nullptr && h->getComponent<Character>()->GetState() != STATE::DEAD)
-						h->getComponent<Character>()->mImpactIndicator->setActive(true);
-				}
-			}
-			mCurrentState = STATE::CONFIRM;
-		}
-		else if (mProvoked == nullptr)
-		{
-			mCurrentState = STATE::SELECTTARGET;
-		}
-		else
-		{
-			mCurrentTarget = mProvoked;
-			mCurrentState = STATE::CONFIRM;
-			std::cout << "This will hit " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
-		}
+		mCurrentState = STATE::SELECTTARGET;
 	}
-	else
-		std::cout << "You dont have enough mana for that move." << std::endl;
 }
 
-void HeroComponent::SelectTarget(EntityList heros, EntityList enemies, int targetIndex)
+bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 {
-	if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+	// Static refrence to old character
+	static Character* prevChar = nullptr;
+	//If its a single target move set the indicator over the first applicable party memeber 
+	if (!mCurrentSkill->IsAOE())
 	{
-		Character* possiableTarget = nullptr;
-		possiableTarget = enemies[targetIndex]->getComponent<Character>();
-		if (possiableTarget->GetHP() > 0.0f)
-			mCurrentTarget = possiableTarget;
-		else
-			return;
-		std::cout << "This will hit " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
+		// If left then go up the party list
+		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::Left))
+		{
+			targetIndex--;
+			if (targetIndex < 0)
+				targetIndex = (targets.size() - 1);
+			while (targets[targetIndex] == nullptr)
+			{
+				targetIndex--;
+				if (targetIndex < 0)
+					targetIndex = (targets.size() - 1);
+			}
+			while(targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
+			{
+				targetIndex--;	
+				if (targetIndex < 0)
+					targetIndex = (targets.size() - 1);
+			}
+		}
+		// If right go down the party list
+		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::Right))
+		{
+			targetIndex++;
+			if (targetIndex >= targets.size())
+				targetIndex = 0;
+			while (targets[targetIndex] == nullptr)
+			{
+				targetIndex++;
+				if (targetIndex >= targets.size())
+					targetIndex = 0;
+			}
+			while (targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
+			{
+				targetIndex++;
+				if (targetIndex >= targets.size())
+					targetIndex = 0;
+			}
+
+		}
+		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
+		mCurrentTarget->mImpactIndicator->setActive(true);
+		if (prevChar != mCurrentTarget)
+		{
+			if (prevChar != nullptr)
+				prevChar->mImpactIndicator->setActive(false);
+			prevChar = mCurrentTarget;
+		}
 	}
-	else
+	else if (mCurrentTarget == nullptr)
 	{
-		Character* possiableTarget = nullptr;
-		possiableTarget = heros[targetIndex]->getComponent<Character>();
-		if (possiableTarget->GetHP() > 0.0f)
-			mCurrentTarget = possiableTarget;
-		else
-			return;
-		std::cout << "This will affect " << mCurrentTarget->GetName() << ". Press 1 to confirm, escape to go back." << std::endl;
+		// If its an aoe skill then turn all applicable partys indicators on
+		for (std::shared_ptr<Odyssey::Entity> t : targets)
+		{
+			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+				t->getComponent<Character>()->mImpactIndicator->setActive(true);
+		}
+		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 	}
-	mCurrentTarget->mImpactIndicator->setActive(true);
-	mCurrentState = STATE::CONFIRM;
+	// If enter is hit set state to in progress and begin playing animations for caster
+	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
+	{
+		mCurrentState = STATE::INPROGRESS;
+		prevChar = nullptr;
+		for (std::shared_ptr<Odyssey::Entity> t : targets)
+		{
+			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+				t->getComponent<Character>()->mImpactIndicator->setActive(false);
+		}
+		BeginAttack(targets);
+		return true;
+	}
+	return false;
 }
 
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
@@ -587,4 +441,49 @@ void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 	mCurrentTarget = nullptr;
 	mCurrentState = STATE::SELECTMOVE;
 	std::cout << "Reselect A Skill..." << std::endl;
+}
+
+void HeroComponent::BeginAttack(EntityList targets)
+{
+	mAnimator->playClip(mCurrentSkill->GetAnimationId());
+	if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
+	{
+		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
+		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
+		if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+		{
+			for (std::shared_ptr<Odyssey::Entity> t : targets)
+			{
+				if (t)
+				{
+					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
+					aoeSpawn.x += tempTransform.x;
+					aoeSpawn.y += tempTransform.y;
+					aoeSpawn.z += tempTransform.z;
+				}
+			}
+			aoeSpawn.x /= static_cast<float>(targets.size());
+			aoeSpawn.y /= static_cast<float>(targets.size());
+			aoeSpawn.z /= static_cast<float>(targets.size());
+		}
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
+	}
+	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
+	{
+		// Set position to start in desired postion
+		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
+		temp.x += mCurrentSkill->GetPosOffset().x;
+		temp.y += mCurrentSkill->GetPosOffset().y;
+		temp.z += mCurrentSkill->GetPosOffset().z;
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
+		// Set target position
+		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+		temp2.y += 3.0f;
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
+		// Use velocity to calc lifetime
+		DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
+		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+	}
+	mCurrentState = STATE::INPROGRESS;
 }

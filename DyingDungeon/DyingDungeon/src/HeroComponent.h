@@ -16,6 +16,10 @@ public:
 
 	//Death Check
 	virtual void Die();
+
+	// Skills functions
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
 	/////Get and Set Functions/////
 	/////End of Get and Set Functions/////
 private:
@@ -23,7 +27,8 @@ private:
 	Character* mCurrentTarget;
 	// State functions
 	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
-	void SelectTarget(EntityList heros, EntityList enemies, int targetIndex);
+	bool SelectTarget(EntityList targets, int& targetIndex);
 	void ResetToSelection(EntityList heros, EntityList enemies);
+	void BeginAttack(EntityList targets);
 };
 

@@ -7,7 +7,7 @@
 #include "GameUIManager.h"
 #include <vector>
 
-enum class HEROID { Paladin = 0, Mage };
+enum class HEROID { Paladin = 0, Mage, Bard };
 enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
@@ -24,6 +24,9 @@ public:
 	//Attack Functions
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 	virtual void Die();
+
+	//Skills
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
 
 	void TakeDamage(float dmg);
 	void ReceiveHealing(float healing);
@@ -64,8 +67,6 @@ public:
 	// Name Functions
 	std::string GetName();
 	void SetName(std::string newName);
-	// Skills Functions
-	std::vector<std::shared_ptr<Skills>> GetSkills();
 	// mProvoked Functions
 	Character* GetProvoked();
 	void SetProvoked(Character* provoker);
