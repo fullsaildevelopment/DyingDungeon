@@ -74,6 +74,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
+	case HEROID::Bard:
+	{
+		mName = "TheBestClassToEverExist";
+		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxMana = mCurrentMana = 125.0f;
+		mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.15f;
+		mBaseSpeed = mSpeed = 20.0f;
+	}
 	default:
 		break;
 	}

@@ -13,6 +13,7 @@ public: // Constructors
 	{
 		Paladin,
 		Mage,
+		Bard,
 		Skeleton,
 		Ganfaul
 	};

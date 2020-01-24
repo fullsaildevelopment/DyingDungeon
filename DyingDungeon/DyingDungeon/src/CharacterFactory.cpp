@@ -84,6 +84,21 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		
 		break;
 	}
+	case Bard:
+	{
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+
+		//Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Bard.dxm", true);
+
+		newCharacter->addComponent<HeroComponent>(HEROID::Bard);
+
+		newCharacter->setStatic(false);
+
+		HeroComponent* tempHero = newCharacter->getComponent<HeroComponent>();
+		tempHero->SetPSBlood(setupBlood());
+
+		break;
+	}
 	case Skeleton:
 	{
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);

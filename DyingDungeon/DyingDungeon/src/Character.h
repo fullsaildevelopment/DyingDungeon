@@ -7,7 +7,7 @@
 #include "GameUIManager.h"
 #include <vector>
 
-enum class HEROID { Paladin = 0, Mage };
+enum class HEROID { Paladin = 0, Mage, Bard };
 enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
