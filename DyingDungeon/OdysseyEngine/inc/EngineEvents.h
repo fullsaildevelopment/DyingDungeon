@@ -32,14 +32,21 @@ namespace Odyssey
 	{
 	public:
 		KeyCode keyCode;
-		KeypressEvent(KeyCode code) : keyCode(code) { }
+
+		KeypressEvent(KeyCode code) : keyCode(code)
+		{
+			priority = EventPriority::Immediate;
+		}
 	};
 
 	class KeyUpEvent : public Event
 	{
 	public:
 		KeyCode keyCode;
-		KeyUpEvent(KeyCode code) : keyCode(code) { }
+		KeyUpEvent(KeyCode code) : keyCode(code)
+		{
+			priority = EventPriority::Immediate;
+		}
 	};
 
 	class CommandReceiveEvent : public Event
@@ -75,6 +82,7 @@ namespace Odyssey
 			right = winRight;
 			width = right - left;
 			height = bottom - top;
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -96,7 +104,7 @@ namespace Odyssey
 
 		UIElementResizeEvent(float xScaleFactor, float yScaleFactor) : xScale(xScaleFactor), yScale(yScaleFactor)
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -105,7 +113,7 @@ namespace Odyssey
 	public:
 		EngineShutdownEvent()
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -117,7 +125,7 @@ namespace Odyssey
 
 		MouseClickEvent(int xPos, int yPos) : xPosition(xPos), yPosition(yPos)
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -129,7 +137,7 @@ namespace Odyssey
 
 		DebugEngine(std::shared_ptr<UICanvas> debugCanvas) : canvas(debugCanvas)
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -141,7 +149,7 @@ namespace Odyssey
 
 		ComponentAddEvent(Component* componentAdded) : component(componentAdded)
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 
@@ -152,7 +160,7 @@ namespace Odyssey
 
 		ComponentRemoveEvent(Component* componentRemoved) : component(componentRemoved)
 		{
-
+			priority = EventPriority::Immediate;
 		}
 	};
 }

@@ -311,6 +311,13 @@ namespace Odyssey
 				ThreadManager::getInstance().executeSceneThread(mActiveScene);
 			}
 		}
+		else
+		{
+			if (mActiveScene)
+			{
+				mActiveScene->initialize();
+			}
+		}
 
 		//ThreadManager::getInstance().executeRenderThread(mRenderPipeline, mActiveScene);
 
