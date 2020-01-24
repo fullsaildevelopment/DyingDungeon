@@ -188,9 +188,9 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	fireStorm->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.1f, 180.0f, 180.0f));
 	fireStorm->stop();
 	//This isnt needed fix code for your AOE's dumbass
-	gFireStorm->addComponent<ParticleMover>();
+	/*gFireStorm->addComponent<ParticleMover>();
 	gFireStorm->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-	gFireStorm->getComponent<ParticleMover>()->SetSpeed(1.0f);
+	gFireStorm->getComponent<ParticleMover>()->SetSpeed(1.0f);*/
 	mGameScene->addEntity(gFireStorm);
 
 	return fireStorm;

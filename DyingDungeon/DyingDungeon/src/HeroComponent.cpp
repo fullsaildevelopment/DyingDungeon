@@ -184,7 +184,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			// Turn particle effect on
 			mCurrentSkill->GetParticleSystem()->play();
-			mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			if(!mCurrentSkill->IsAOE())
+				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
 			particleTrigger = true;
 		}
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
@@ -441,8 +442,9 @@ void HeroComponent::BeginAttack(EntityList targets)
 			aoeSpawn.y /= static_cast<float>(targets.size());
 			aoeSpawn.z /= static_cast<float>(targets.size());
 		}
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
+		//mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(10.0f);
+		//mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(aoeSpawn);
 	}
 	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 	{
