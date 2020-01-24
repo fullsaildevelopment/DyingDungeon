@@ -379,17 +379,29 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.fontSize = 60.0f;
 	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Damage", properties);
 
+	position.y = graphPosition.y + (graphHeight / 2.0f) + 20.0f;
+	properties.fontSize = 30.0f;
+
+	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
+	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
+
 	_sceneToAddTo->addEntity(mStatsMenu);
 
 	ToggleCanvas(mStatsMenu->getComponent<Odyssey::UICanvas>(), false);
 
 }
 
-void GameUIManager::DisplayStatsMenu()
+void GameUIManager::ToggleStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
-	UpdateGraph();
+	//UpdateGraph();
+}
+
+void GameUIManager::HideStatsMenu()
+{
+	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 }
 
 void GameUIManager::UpdateGraph()

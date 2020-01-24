@@ -32,7 +32,7 @@ void MainMenuController::update(double deltaTime)
 			GameUIManager::getInstance().GetTeamLogo()->setVisible(false);
 			// Register callback for new game text
 			GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
-			GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::DisplayStatsMenu);
+			GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ToggleStatsMenu);
 			madeItPassedLogo = true;	
 		}
 	}

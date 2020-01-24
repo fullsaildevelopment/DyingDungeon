@@ -51,7 +51,9 @@ public: // Functions
 	// Creation of the stats menu
 	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
-	void DisplayStatsMenu();
+	void ToggleStatsMenu();
+
+	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
 	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner);
@@ -143,6 +145,7 @@ private: // Varibales
 	Odyssey::Sprite2D* mTeamLogo;
 	Odyssey::Text2D* mNewGameText;
 	Odyssey::Text2D* mStatsText;
+	Odyssey::Text2D* mStatsBackButtonText;
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
