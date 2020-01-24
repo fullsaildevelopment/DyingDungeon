@@ -20,7 +20,7 @@ void CameraController::initialize()
 
 void CameraController::update(double deltaTime)
 {
-	if (mMainCamera)
+	if (mMainCamera && false)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::F2))
 		{
