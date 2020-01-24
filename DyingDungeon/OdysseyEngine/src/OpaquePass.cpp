@@ -91,6 +91,7 @@ namespace Odyssey
 		// Iterate over each object in the render list
 		if (Camera* camera = args.camera->getComponent<Camera>())
 		{
+			Frustum* frustum = camera->getFrustum();
 			for (MeshRenderer* meshRenderer : args.renderList)
 			{
 				if (meshRenderer->isActive() && meshRenderer->getEntity()->isActive() && meshRenderer->getEntity()->isVisible())
@@ -100,7 +101,7 @@ namespace Odyssey
 						Entity* renderObject = meshRenderer->getEntity();
 
 						AABB* aabb = renderObject->getComponent<AABB>();
-						bool inFrustum = camera->getFrustum()->checkFrustumView(*(aabb));
+						bool inFrustum = frustum->checkFrustumView(*(aabb));
 						if (renderObject->getStatic() == false || inFrustum)
 						{
 							// Depth sorting

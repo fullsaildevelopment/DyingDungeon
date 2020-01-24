@@ -145,4 +145,7 @@ private: // Functions
 	void OptionsBackButton();
 	void DecreaseVolume();
 	void IncreaseVolume();
+
+	// TODO: REFACTOR THIS LATER
+	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
 };

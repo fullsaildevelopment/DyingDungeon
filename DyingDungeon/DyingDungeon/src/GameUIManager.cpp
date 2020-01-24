@@ -2,6 +2,9 @@
 #include "RedAudioManager.h"
 #include "UICanvas.h"
 
+// TODO: REFACTOR LATER
+#include "SkillHoverComponent.h"
+
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -476,6 +479,26 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		// Assign the character's turn order text
 		if (owner)
 			owner->pTurnNumber = characterHudCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
+
+		// STUFF
+		//Paladin_Skill_1.png
+		position = originalPosition;
+		position.x += 134.0f;
+		position.y += 24.0f;
+		Odyssey::Sprite2D* s1 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		position.x += 56.5f;
+		Odyssey::Sprite2D* s2 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		position.x += 56.5f;
+		Odyssey::Sprite2D* s3 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		position.x += 56.5f;
+		Odyssey::Sprite2D* s4 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+
+		// TODO: REFACTOR LATER
+		characterHudCanvas->getEntity()->addComponent<SkillHoverComponent>();
+		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s1, CreatePopup(characterHudCanvas->getEntity()));
+		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s2, CreatePopup(characterHudCanvas->getEntity()));
+		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s3, CreatePopup(characterHudCanvas->getEntity()));
+		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s4, CreatePopup(characterHudCanvas->getEntity()));
 	}
 	// Create the Enemy UI if the character is NOT a hero
 	else
@@ -558,4 +581,61 @@ void GameUIManager::IncreaseVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
 	mVolumeBar->setFill(volumeRatio);
+}
+
+Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
+{
+	UINT windowWidth = 1280;
+	UINT windowHeight = 720;
+	float x = 910;
+	float y = 350;
+	UINT width = 360;
+	UINT height = 200;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 30.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 16.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::UICanvas* canvas = entity->addComponent<Odyssey::UICanvas>();
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 50), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 10);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 100), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 10);
+
+	// Title Text and Icons
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 50, y), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), width - 100, 50, L"Basic Attack", title);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), L"assets/images/Paladin_Skill_1.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 50, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 50, 50);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 50, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 50, 50, L"25", title);
+
+	// Skill Info
+	properties.italic = true;
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Attack", properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 100 + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 125 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Targets: 1", properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 225 + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 250 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Damage: 15", properties);
+
+	// Description
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 115), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, L"Description: Strikes a single enemy with 100 % chance to apply provoke.", properties);
+	canvas->setActive(false);
+
+	return canvas;
 }
