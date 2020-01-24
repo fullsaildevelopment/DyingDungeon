@@ -44,7 +44,7 @@ void TowerSelectController::update(double deltaTime)
 		totalTime += deltaTime;
 
 		// Only chnage the door image every 0.25 seconds
-		if (totalTime >= 0.25f)
+		if (totalTime >= 0.1f)
 		{
 			// Set the door image index to be the next door image
 			if (mDoOpenDoorAnimation)
@@ -91,10 +91,12 @@ void TowerSelectController::ChangeDoorState()
 {
 	if (mDoorIsClosed)
 	{
+		mDoCloseDoorAnimation = false;
 		mDoOpenDoorAnimation = true;
 	}
 	else
 	{
+		mDoOpenDoorAnimation = false;
 		mDoCloseDoorAnimation = true;
 	}
 
