@@ -5,6 +5,8 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Sprite2D.h"
+#include "StatTracker.h"
+#include "UIElement.h"
 
 class GameUIManager
 {
@@ -35,9 +37,17 @@ public: // Functions
 
 	// Creation of the pause menu
 	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
+	// Creation of the stats menu
+	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+
+	void DisplayStatsMenu();
 	 
 	// Create The UI portraits for the characters
 	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner);
+
+	//Updates
+	void UpdateGraph();
 
 	//Getters
 	// Get battle log text
@@ -47,6 +57,7 @@ public: // Functions
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
 	Odyssey::Sprite2D* GetTeamLogo() { return mTeamLogo; }
 	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
+	Odyssey::Text2D* GetStatsText() { return mStatsText; }
 
 	// Get the tower select menu
 	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
@@ -57,6 +68,8 @@ public: // Functions
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
 	// Get the options menu
 	std::shared_ptr<Odyssey::Entity> GetOptionsMenu() { return mOptionsMenu; }
+	// Get the stats menu
+	std::shared_ptr<Odyssey::Entity> GetStatsMenu() { return mStatsMenu; }
 	// Get the rectangle buttons from the pause menu
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
@@ -66,6 +79,8 @@ public: // Functions
 	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
 
 	void SetOptionsMenu(std::shared_ptr<Odyssey::Entity> _optionsMenu) { mOptionsMenu = _optionsMenu; }
+
+	void SetStatsMenu(std::shared_ptr<Odyssey::Entity> _statsMenu) { mStatsMenu = _statsMenu; }
 
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
 
@@ -89,10 +104,12 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
+	std::shared_ptr<Odyssey::Entity> mStatsMenu;
 
 	// Main Menu Items
 	Odyssey::Sprite2D* mTeamLogo;
 	Odyssey::Text2D* mNewGameText;
+	Odyssey::Text2D* mStatsText;
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;

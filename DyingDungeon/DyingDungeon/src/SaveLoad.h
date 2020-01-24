@@ -2,6 +2,11 @@
 #include <iostream>
 #include "StatTracker.h"
 #include "Character.h"
+#include <iterator>
+#include <direct.h>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
 class SaveLoad
 {
 public:
@@ -26,6 +31,10 @@ public:
 	bool SaveLoadOut();
 	bool LoadLoadOut();
 	bool LoadLoadOut(std::string loadoutName);
+
+	unsigned int dir_file_count(std::string path);
+	unsigned int dir_file_count(std::experimental::filesystem::v1::path dir);
+
 	void SetSaveProfile(std::string saveProfile);
 	std::string GetSaveProfile();
 private:

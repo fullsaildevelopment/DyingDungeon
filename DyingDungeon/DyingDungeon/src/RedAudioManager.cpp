@@ -112,11 +112,10 @@ bool RedAudioManager::SetMasterVolume(unsigned int volume)
 void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 {
 	m_volume = avEvent->volumeLevel;
-	//mciSendString(L"setaudio BackgroundBattle volume 0", NULL, 0, NULL);
+	
 	for (int i = 0; i < m_audioFiles.size(); i++)
 	{
 		m_audioFiles[i].SetVolume(m_volume);
-		//unsigned int test = m_audioFiles[i].GetVolume();
 	}
 }
 
