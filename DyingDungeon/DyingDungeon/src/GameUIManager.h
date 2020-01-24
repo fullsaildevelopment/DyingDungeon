@@ -73,6 +73,8 @@ public: // Functions
 	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
 	// Get the sprite buttons from the tower select menu
 	std::vector<Odyssey::Sprite2D*> GetDoorSprites() { return mDoorImages; }
+	// Get the tower info canvas
+	Odyssey::UICanvas* GetTowerInfoCanvas() { return mTowerInfoCanvas; }
 
 	// Get the team select menu
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
@@ -147,6 +149,7 @@ private: // Varibales
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
+	Odyssey::UICanvas* mTowerInfoCanvas;
 
 	// Team Menu Items
 	// Team member slots
