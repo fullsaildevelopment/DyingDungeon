@@ -79,8 +79,13 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter());
 		tempHero->GetSkills()[0]->SetParticleFiringTime(0.23f);
 		tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
+		tempHero->GetSkills()[1]->SetParticleSystem(setUpFireStorm());
+		tempHero->GetSkills()[1]->SetParticleFiringTime(0.57f);
 		tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
 		tempHero->GetSkills()[2]->SetParticleFiringTime(0.57f);
+		tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter());
+		tempHero->GetSkills()[3]->SetParticleFiringTime(0.23f);
+		tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
 		
 		break;
 	}
@@ -189,14 +194,14 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 	Odyssey::ParticleSystem* fireButBetter = gFireBall->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
 	fireButBetter->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
 	fireButBetter->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fireButBetter->setLifetime(0.75f, 1.0f);
-	fireButBetter->setParticleCount(50, 100);
+	fireButBetter->setLifetime(0.5f, 1.0f);
+	fireButBetter->setParticleCount(100, 150);
 	fireButBetter->setRateOverTime(125);
-	fireButBetter->setDuration(5.0);
+	fireButBetter->setDuration(7.0);
 	fireButBetter->setSpeed(1.0f, 1.5f);
 	fireButBetter->setSize(1.0f, 1.5f);
 	fireButBetter->setLooping(false);
-	fireButBetter->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.15f));
+	fireButBetter->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.05f));
 	fireButBetter->stop();
 	gFireBall->addComponent<ParticleMover>();
 	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);

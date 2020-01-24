@@ -235,7 +235,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
 							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-							c.get()->getComponent<Character>()->GetPSBlood()->play();
+							// Add particle effect for reciveing buffs you dingus
+							//c.get()->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
@@ -244,7 +245,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
 					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-					mCurrentTarget->GetPSBlood()->play();
+					//mCurrentTarget->GetPSBlood()->play();
 				}
 			}
 			// Set trigger to true to avoid looping the recipents animation
@@ -483,7 +484,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 		// Use velocity to calc lifetime
 		DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
 		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime);
+		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
 	}
 	mCurrentState = STATE::INPROGRESS;
 }

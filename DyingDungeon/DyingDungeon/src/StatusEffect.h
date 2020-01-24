@@ -16,6 +16,8 @@ protected:
 	int mDuration;
 	// Who will be affected by the status effect
 	Character* mRecipient;
+	// What stat will be affected
+	STATS mAffectedStatId;
 private:
 	// public and private functions
 public:
@@ -28,6 +30,8 @@ public:
 	virtual void Use() = 0;
 	// TypeId functions
 	EFFECTTYPE GetTypeId();
+	// mAffectedStatFunc
+	STATS GetAffectedStatId();
 	//  mDuration functions
 	int GetDuration();
 	void SetDuration(int newDuration);
