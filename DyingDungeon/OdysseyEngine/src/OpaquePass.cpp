@@ -129,14 +129,16 @@ namespace Odyssey
 
 				updateLightingBuffer(renderObject, args);
 
-				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>();
+
+				if (rootAnimator)
 				{
 					rootAnimator->bind(mDeviceContext);
 				}
 				updateLightingBuffer(renderObject, args);
 				renderSceneObject(renderObject, args);
 
-				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				if (rootAnimator)
 				{
 					rootAnimator->unbind(mDeviceContext);
 				}

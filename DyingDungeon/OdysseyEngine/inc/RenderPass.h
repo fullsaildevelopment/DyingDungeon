@@ -18,6 +18,7 @@ namespace Odyssey
 	struct RenderArgs
 	{
 		Entity* camera;
+		DirectX::XMFLOAT3 camPos;
 		PerFrameBuffer perFrame;
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;

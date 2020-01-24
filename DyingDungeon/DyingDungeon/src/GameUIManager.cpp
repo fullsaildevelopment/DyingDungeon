@@ -113,7 +113,8 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	position.y += 250.0f;
 	width = 200;
 	height = 40;
-	mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
+	// TODO: MAYBE COMMENT THIS IN? LOOKS DUMB
+	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
 
@@ -205,11 +206,13 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	height = 400;
 	position.x = 400.0f;
 	position.y = 250.0f;
-	paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	//paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
 
 	position.x = 825.0f;
 	position.y = 250.0f;
-	mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	//mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
 
 	// Add the mTeamSelectMenu object to the team selection scene
 	_sceneToAddTo->addEntity(mTeamSelectMenu);
@@ -468,7 +471,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		position.x += barWidth;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"99", properties);
+		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties);
 
 		// Create the big HP text
 		/*position.x -= barWidth + 7.5f;
@@ -540,23 +543,23 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 
 		// STUFF
 		//Paladin_Skill_1.png
-		position = originalPosition;
-		position.x += 134.0f;
-		position.y += 24.0f;
-		Odyssey::Sprite2D* s1 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		position.x += 56.5f;
-		Odyssey::Sprite2D* s2 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		position.x += 56.5f;
-		Odyssey::Sprite2D* s3 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		position.x += 56.5f;
-		Odyssey::Sprite2D* s4 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-
+		//position = originalPosition;
+		//position.x += 134.0f;
+		//position.y += 24.0f;
+		//Odyssey::Sprite2D* s1 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s2 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s3 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s4 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		
 		// TODO: REFACTOR LATER
-		characterHudCanvas->getEntity()->addComponent<SkillHoverComponent>();
-		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s1, CreatePopup(characterHudCanvas->getEntity()));
-		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s2, CreatePopup(characterHudCanvas->getEntity()));
-		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s3, CreatePopup(characterHudCanvas->getEntity()));
-		characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s4, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->addComponent<SkillHoverComponent>();
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s1, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s2, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s3, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s4, CreatePopup(characterHudCanvas->getEntity()));
 	}
 	// Create the Enemy UI if the character is NOT a hero
 	else

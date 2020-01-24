@@ -11,11 +11,14 @@ public:
 	TeamSelectionController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
+	// TODO: REFACTOR THIS LATER
+	void setupHovers();
 public:
 	Odyssey::Rectangle2D* mRect;
 private:
 	Odyssey::Application* mApplication;
-
+	Odyssey::UICanvas* mPaladin;
+	Odyssey::UICanvas* mMage;
 	// Set the number of members on your team currently
 	int teamCount = 0;
 	// This will let us know when the user has a full team
@@ -27,5 +30,10 @@ private:
 private: // Functions
 	void AddPaladinImage();
 	void AddMageImage();
-
+	// TODO: REFACTOR THIS LATER
+	void onPaladinEnter();
+	void onPaladinExit();
+	void onMageEnter();
+	void onMageExit();
+	void setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character);
 };

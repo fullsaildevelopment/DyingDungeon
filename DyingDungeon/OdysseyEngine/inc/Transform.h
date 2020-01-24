@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "Component.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -143,5 +144,6 @@ namespace Odyssey
 		DirectX::XMFLOAT3 mRotation;
 		DirectX::XMFLOAT3 mScale;
 		DirectX::XMFLOAT4X4 mWorldMatrix;
+		ReadWriteLock mLock;
 	};
 }
