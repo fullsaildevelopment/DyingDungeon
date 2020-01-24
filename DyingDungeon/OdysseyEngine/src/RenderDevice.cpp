@@ -59,7 +59,7 @@ namespace Odyssey
 			FileManager::getInstance().initialize(shared_from_this());
 			init = true;
 		}
-		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>();
+		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>(shared_from_this());
 		return scene;
 	}
 
@@ -198,15 +198,15 @@ namespace Odyssey
 		return renderPass;
 	}
 
-	std::shared_ptr<SkyboxPass> RenderDevice::createSkyboxPass(const char* textureFilename, std::shared_ptr<RenderWindow> renderWindow)
+	std::shared_ptr<SkyboxPass> RenderDevice::createSkyboxPass(std::shared_ptr<RenderWindow> renderWindow)
 	{
-		std::shared_ptr<SkyboxPass> renderPass = std::make_shared<SkyboxPass>(shared_from_this(), mDeviceContext, textureFilename, renderWindow);
+		std::shared_ptr<SkyboxPass> renderPass = std::make_shared<SkyboxPass>(shared_from_this(), mDeviceContext, renderWindow);
 		return renderPass;
 	}
 
-	std::shared_ptr<ShadowPass> RenderDevice::createShadowPass(std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
+	std::shared_ptr<ShadowPass> RenderDevice::createShadowPass(int texWidth, int texHeight)
 	{
-		std::shared_ptr<ShadowPass> renderPass = std::make_shared<ShadowPass>(shared_from_this(), mDeviceContext, shadowLight, texWidth, texHeight);
+		std::shared_ptr<ShadowPass> renderPass = std::make_shared<ShadowPass>(shared_from_this(), mDeviceContext, texWidth, texHeight);
 		return renderPass;
 	}
 

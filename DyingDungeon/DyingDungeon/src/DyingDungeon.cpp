@@ -55,6 +55,7 @@ namespace
 	// Scene resources
 	std::shared_ptr<Odyssey::Scene> gGameScene;
 	std::shared_ptr<Odyssey::Scene> gMainMenu;
+	std::shared_ptr<Odyssey::Scene> gScene2;
 	std::shared_ptr<Odyssey::Scene> gTowerSelectScene;
 	std::shared_ptr<Odyssey::Scene> gTeamSelectScene;
 	std::shared_ptr<Odyssey::Entity> gMainCamera;
@@ -72,6 +73,7 @@ namespace
 	// Light resources
 	std::shared_ptr<Odyssey::Light> gDirLight;
 	std::shared_ptr<Odyssey::Light> gLights[15];
+	std::shared_ptr<Odyssey::Light> gLights2[15];
 	Odyssey::TextProperties gDefaultText;
 	// Particle systems
 	std::shared_ptr<Odyssey::Entity> gFireBall;
@@ -100,6 +102,9 @@ void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wst
 void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
 void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
 
+// BUILD 3 STUFF
+void setupScene2();
+
 //Tristen's Stuff
 void setUpTowerManager();
 
@@ -127,9 +132,24 @@ int playGame()
 
 	// Create the main scene
 	gGameScene = gRenderDevice->createScene();
+	gGameScene->setSkybox("Skybox.dds");
 
 	// Set up the scene lighting
 	setupLighting();
+
+	// Set the shadow pass stats
+	gGameScene->setShadowStats(gDirLight, { 0.0f, 0.0f, 0.0f }, 50.0f);
+
+	// Create scene 2
+	gScene2 = gRenderDevice->createScene();
+	gScene2->setSkybox("Dusk.dds");
+	setupScene2();
+	
+	// Set the shadow pass stats
+	gScene2->setShadowStats(gLights2[9], { 0.0f, 0.0f, 50.0f }, 100.0f);
+	
+	application->addScene("Scene2", gScene2);
+
 
 	// Set up the default rendering pipeline
 	setupPipeline(gRenderDevice, application);
@@ -192,11 +212,12 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 	application->addRenderPass(rtvPass);
 
 	// Create a skybox pass and add it to the render pipeline 
-	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass("Skybox.dds", gMainWindow);
+	std::shared_ptr<Odyssey::SkyboxPass> skyboxPass = renderDevice->createSkyboxPass(gMainWindow);
 	application->addRenderPass(skyboxPass);
 
 	// Create a shadow pass and add it to the render pipeline
-	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gDirLight, 4096, 4096);
+	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(4096, 4096);
+	//std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gLights2[9], 4096, 4096);
 	application->addRenderPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
@@ -762,11 +783,107 @@ void setupFire()
 	fire5->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
 
+	std::shared_ptr<Odyssey::Entity> fire6 = std::make_shared<Odyssey::Entity>();
+	fire6->addComponent<Odyssey::Transform>();
+	fire6->getComponent<Odyssey::Transform>()->setPosition(5.59f, 4.67f, 7.59f);
+	fire6->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire6->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire6->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
+	std::shared_ptr<Odyssey::Entity> fire7 = std::make_shared<Odyssey::Entity>();
+	fire7->addComponent<Odyssey::Transform>();
+	fire7->getComponent<Odyssey::Transform>()->setPosition(5.59f, 4.67f, 14.62f);
+	fire7->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire7->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire7->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
+	std::shared_ptr<Odyssey::Entity> fire8 = std::make_shared<Odyssey::Entity>();
+	fire8->addComponent<Odyssey::Transform>();
+	fire8->getComponent<Odyssey::Transform>()->setPosition(-5.74f, 4.67f, 7.53f);
+	fire8->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire8->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire8->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
+	std::shared_ptr<Odyssey::Entity> fire9 = std::make_shared<Odyssey::Entity>();
+	fire9->addComponent<Odyssey::Transform>();
+	fire9->getComponent<Odyssey::Transform>()->setPosition(-5.78f, 4.67f, 14.62f);
+	fire9->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire9->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire9->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
+	std::shared_ptr<Odyssey::Entity> fire10 = std::make_shared<Odyssey::Entity>();
+	fire10->addComponent<Odyssey::Transform>();
+	fire10->getComponent<Odyssey::Transform>()->setPosition(12.66f, 4.7f, 4.12f);
+	fire10->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire10->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire10->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
+	std::shared_ptr<Odyssey::Entity> fire11 = std::make_shared<Odyssey::Entity>();
+	fire11->addComponent<Odyssey::Transform>();
+	fire11->getComponent<Odyssey::Transform>()->setPosition(-12.66f, 4.25f, 1.53f);
+	fire11->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire11->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire11->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+
 	gGameScene->addEntity(fire1);
 	gGameScene->addEntity(fire2);
 	gGameScene->addEntity(fire3);
 	gGameScene->addEntity(fire4);
 	gGameScene->addEntity(fire5);
+	gGameScene->addEntity(fire6);
+	gGameScene->addEntity(fire7);
+	gGameScene->addEntity(fire8);
+	gGameScene->addEntity(fire9);
+	gGameScene->addEntity(fire10);
+	gGameScene->addEntity(fire11);
 }
 
 void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description)
@@ -956,6 +1073,288 @@ void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, 
 		L"Description: Channel a bolt of lightning dealing 60 damage to a single enemy with a 100% chance to stun. Costs 35 mana.");
 	// Lightning Bolt trigger
 	hover->registerSprite(skill4, canvas4);
+}
+
+void setupScene2()
+{
+	// Setup the camera
+	std::shared_ptr<Odyssey::Entity> gMainCamera = std::make_shared<Odyssey::Entity>();
+	gMainCamera->addComponent<Odyssey::Transform>();
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(-5.64f, 12.85f, 1.2f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(14.17f, 8.14f, 0.0f);
+	gMainCamera->addComponent<Odyssey::Camera>();
+	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	gMainCamera->addComponent<CameraController>();
+	gScene2->addEntity(gMainCamera);
+
+	// Import the scene
+	Odyssey::FileManager::getInstance().importScene(gScene2, "assets/models/SceneFinal.dxm");
+
+	// Set up a directional light
+
+	// Ambient Lighting
+	gLights2[0] = std::make_shared<Odyssey::Light>();
+	gLights2[0]->setLightType(Odyssey::LightType::Directional);
+	gLights2[0]->setPosition(0, 0, 0);
+	gLights2[0]->setDirection(-0.6f, -0.35f, -0.5f);
+	gLights2[0]->setColor(0.65f, 0.2f, 0.1f);
+	gLights2[0]->setIntensity(1.0f);
+	gLights2[0]->setRange(0.0f);
+	gLights2[0]->setSpotAngle(0.0f);
+
+	// Fire 1
+	gLights2[1] = std::make_shared<Odyssey::Light>();
+	gLights2[1]->setLightType(Odyssey::LightType::Point);
+	gLights2[1]->setPosition(-18.3f, 11.75f, 22.8f);
+	gLights2[1]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[1]->setColor(0.8f, 0.5f, 0.4f);
+	gLights2[1]->setIntensity(1.0f);
+	gLights2[1]->setRange(25.0f);
+	gLights2[1]->setSpotAngle(0.0f);
+
+	// Fire 2
+	gLights2[2] = std::make_shared<Odyssey::Light>();
+	gLights2[2]->setLightType(Odyssey::LightType::Point);
+	gLights2[2]->setPosition(-18.3f, 11.75f, 4.0f);
+	gLights2[2]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[2]->setColor(0.8f, 0.5f, 0.4f);
+	gLights2[2]->setIntensity(1.0f);
+	gLights2[2]->setRange(25.0f);
+	gLights2[2]->setSpotAngle(0.0f);
+
+	// Fire 3
+	gLights2[3] = std::make_shared<Odyssey::Light>();
+	gLights2[3]->setLightType(Odyssey::LightType::Point);
+	gLights2[3]->setPosition(-9.58f, 10.5f, 84.08f);
+	gLights2[3]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[3]->setColor(0.8f, 0.5f, 0.4f);
+	gLights2[3]->setIntensity(1.0f);
+	gLights2[3]->setRange(25.0f);
+	gLights2[3]->setSpotAngle(0.0f);
+
+	/*gLights[3] = std::make_shared<Odyssey::Light>();
+	gLights[3]->setLightType(Odyssey::LightType::Point);
+	gLights[3]->setPosition(-1.0f, 3.5f, 29.5f);
+	gLights[3]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights[3]->setColor(0.0f, 0.75f, 0.6f);
+	gLights[3]->setIntensity(2.0f);
+	gLights[3]->setRange(25.0f);
+	gLights[3]->setSpotAngle(0.0f);*/
+
+	// Fire 4
+	gLights2[4] = std::make_shared<Odyssey::Light>();
+	gLights2[4]->setLightType(Odyssey::LightType::Point);
+	gLights2[4]->setPosition(-23.1f, 10.50f, 84.08f);
+	gLights2[4]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[4]->setColor(0.8f, 0.5f, 0.4f);
+	gLights2[4]->setIntensity(1.0f);
+	gLights2[4]->setRange(25.0f);
+	gLights2[4]->setSpotAngle(0.0f);
+
+	// Candle Light
+	gLights2[5] = std::make_shared<Odyssey::Light>();
+	gLights2[5]->setLightType(Odyssey::LightType::Point);
+	gLights2[5]->setPosition(-19.06f, 10.17f, 56.03f);
+	gLights2[5]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[5]->setColor(0.8f, 0.5f, 0.4f);
+	gLights2[5]->setIntensity(0.25f);
+	gLights2[5]->setRange(25.0f);
+	gLights2[5]->setSpotAngle(0.0f);
+
+	// Spot light
+	gLights2[6] = std::make_shared<Odyssey::Light>();
+	gLights2[6]->setLightType(Odyssey::LightType::Spot);
+	gLights2[6]->setPosition(0.0f, 30.0f, 52.5f);
+	gLights2[6]->setDirection(0.0f, -1.0f, 0.0f);
+	gLights2[6]->setColor(0.25f, 0.25f, 0.25f);
+	gLights2[6]->setIntensity(1.0f);
+	gLights2[6]->setRange(70.0f);
+	gLights2[6]->setSpotAngle(0.35f);
+
+	// Hall Light
+	gLights2[7] = std::make_shared<Odyssey::Light>();
+	gLights2[7]->setLightType(Odyssey::LightType::Point);
+	gLights2[7]->setPosition(-10.0, 5.0f, 100.0f);
+	gLights2[7]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[7]->setColor(0.7f, 0.25f, 0.1f);
+	gLights2[7]->setIntensity(2.0f);
+	gLights2[7]->setRange(25.0f);
+	gLights2[7]->setSpotAngle(0.0f);
+
+	// Ambient Lighting
+	gLights2[8] = std::make_shared<Odyssey::Light>();
+	gLights2[8]->setLightType(Odyssey::LightType::Point);
+	gLights2[8]->setPosition(0.0f, 10.0f, 20.0f);
+	gLights2[8]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[8]->setColor(0.6f, 0.4f, 0.2f);
+	gLights2[8]->setIntensity(0.75f);
+	gLights2[8]->setRange(50.0f);
+	gLights2[8]->setSpotAngle(0.0f);
+
+	// Ambient Lighting
+	gLights2[9] = std::make_shared<Odyssey::Light>();
+	gLights2[9]->setLightType(Odyssey::LightType::Point);
+	gLights2[9]->setPosition(0.0f, 10.0f, 40.0f);
+	gLights2[9]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[9]->setColor(0.65f, 0.2f, 0.1f);
+	gLights2[9]->setIntensity(0.75f);
+	gLights2[9]->setRange(50.0f);
+	gLights2[9]->setSpotAngle(0.0f);
+
+	// Ambient Lighting
+	gLights2[10] = std::make_shared<Odyssey::Light>();
+	gLights2[10]->setLightType(Odyssey::LightType::Point);
+	gLights2[10]->setPosition(0.0f, 10.0f, 70.0f);
+	gLights2[10]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[10]->setColor(0.65f, 0.2f, 0.1f);
+	gLights2[10]->setIntensity(0.75f);
+	gLights2[10]->setRange(50.0f);
+	gLights2[10]->setSpotAngle(0.0f);
+
+	gLights2[11] = std::make_shared<Odyssey::Light>();
+	gLights2[11]->setLightType(Odyssey::LightType::Point);
+	gLights2[11]->setPosition(0.0f, 15.0f, 40.0f);
+	gLights2[11]->setDirection(0.0f, 0.0f, 0.0f);
+	gLights2[11]->setColor(0.35f, 0.35f, 0.35f);
+	gLights2[11]->setIntensity(0.5f);
+	gLights2[11]->setRange(100.0f);
+	gLights2[11]->setSpotAngle(0.0f);
+
+	gScene2->addLight(gLights2[0]);
+	gScene2->addLight(gLights2[1]);
+	gScene2->addLight(gLights2[2]);
+	gScene2->addLight(gLights2[3]);
+	gScene2->addLight(gLights2[4]);
+	gScene2->addLight(gLights2[5]);
+	gScene2->addLight(gLights2[6]);
+	gScene2->addLight(gLights2[7]);
+	gScene2->addLight(gLights2[8]);
+	gScene2->addLight(gLights2[9]);
+	gScene2->addLight(gLights2[10]);
+	gScene2->addLight(gLights2[11]);
+
+	// Setup VFX
+	std::shared_ptr<Odyssey::Entity> fire1 = std::make_shared<Odyssey::Entity>();
+	fire1->addComponent<Odyssey::Transform>();
+	fire1->getComponent<Odyssey::Transform>()->setPosition(-18.4f, 11.75f, 22.8f);
+	fire1->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.55f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.25f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.75f, 1.0f);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.2f, 30.0f, 30.0f));
+	gScene2->addEntity(fire1);
+
+	std::shared_ptr<Odyssey::Entity> fire2 = std::make_shared<Odyssey::Entity>();
+	fire2->addComponent<Odyssey::Transform>();
+	fire2->getComponent<Odyssey::Transform>()->setPosition(-18.4f, 11.75f, 4.0f);
+	fire2->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.5f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.25f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.75f, 1.0f);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.2f, 30.0f, 30.0f));
+	gScene2->addEntity(fire2);
+
+	std::shared_ptr<Odyssey::Entity> fire3 = std::make_shared<Odyssey::Entity>();
+	fire3->addComponent<Odyssey::Transform>();
+	fire3->getComponent<Odyssey::Transform>()->setPosition(-9.58f, 10.50f, 84.08f);
+	fire3->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.5f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.25f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.75f, 1.0f);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.2f, 30.0f, 30.0f));
+	gScene2->addEntity(fire3);
+
+	std::shared_ptr<Odyssey::Entity> fire4 = std::make_shared<Odyssey::Entity>();
+	fire4->addComponent<Odyssey::Transform>();
+	fire4->getComponent<Odyssey::Transform>()->setPosition(-23.1f, 10.50f, 84.08f);
+	fire4->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.5f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.25f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.75f, 1.0f);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.2f, 30.0f, 30.0f));
+	gScene2->addEntity(fire4);
+
+	std::shared_ptr<Odyssey::Entity> fog = std::make_shared<Odyssey::Entity>();
+	fog->addComponent<Odyssey::Transform>();
+	fog->getComponent<Odyssey::Transform>()->setPosition(0, 0, 0);
+	fog->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
+	fog->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Smoke.jpg");
+	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.1f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
+	fog->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(60);
+	fog->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fog->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.25f, 1.5f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setSize(20.0f, 20.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setGravity(3.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fog->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::BoxPS(-10.0f, -5.5f, 30.0f, 55.0f, 1.0f, 95.0f));
+	gScene2->addEntity(fog);
+
+	// Set up the characters
+	std::shared_ptr<Odyssey::Entity> gMage = std::make_shared<Odyssey::Entity>();
+	gMage->addComponent<Odyssey::Transform>();
+	gMage->getComponent<Odyssey::Transform>()->setScale(0.055f, 0.055f, 0.055f);
+	gMage->getComponent<Odyssey::Transform>()->setPosition(-10.0f, 0.0f, 25.0f);
+	gMage->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(gMage, "assets/models/Mage.dxm", true);
+	gMage->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Mage/Mage_Idle.dxanim");
+	gMage->setStatic(false);
+	gScene2->addEntity(gMage);
+
+	std::shared_ptr<Odyssey::Entity> paladin = std::make_shared<Odyssey::Entity>();
+	paladin->addComponent<Odyssey::Transform>();
+	paladin->getComponent<Odyssey::Transform>()->setScale(0.055f, 0.055f, 0.055f);
+	paladin->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 25.0f);
+	paladin->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(paladin, "assets/models/Paladin.dxm", true);
+	paladin->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
+	paladin->setStatic(false);
+	gScene2->addEntity(paladin);
+
+	std::shared_ptr<Odyssey::Entity> paladin2 = std::make_shared<Odyssey::Entity>();
+	paladin2->addComponent<Odyssey::Transform>();
+	paladin2->getComponent<Odyssey::Transform>()->setScale(0.055f, 0.055f, 0.055f);
+	paladin2->getComponent<Odyssey::Transform>()->setPosition(10.0f, 0.0f, 25.0f);
+	paladin2->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(paladin2, "assets/models/Paladin.dxm", true);
+	paladin2->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
+	paladin2->setStatic(false);
+	gScene2->addEntity(paladin2);
+
+	std::shared_ptr<Odyssey::Entity> ganfaul = std::make_shared<Odyssey::Entity>();
+	ganfaul->addComponent<Odyssey::Transform>();
+	ganfaul->getComponent<Odyssey::Transform>()->setScale(0.055f, 0.055f, 0.055f);
+	ganfaul->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 45.0f);
+	ganfaul->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(ganfaul, "assets/models/Ganfaul.dxm", false);
+	ganfaul->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Ganfaul/Ganfaul_Idle.dxanim");
+	ganfaul->setStatic(false);
+	gScene2->addEntity(ganfaul);
 }
 
 void setUpTowerManager()

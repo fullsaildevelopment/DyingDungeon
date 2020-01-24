@@ -12,11 +12,12 @@ namespace Odyssey
 	class UICanvas;
 	class MeshRenderer;
 	class Light;
+	class RenderDevice;
 
 	class SceneDX11 : public Scene
 	{
 	public:
-		SceneDX11();
+		SceneDX11(std::shared_ptr<RenderDevice> renderDevice);
 		~SceneDX11() = default;
 
 		void onComponentAdd(ComponentAddEvent* evnt);
@@ -80,6 +81,13 @@ namespace Odyssey
 
 		std::vector<ParticleSystem*> getSystemList();
 
+		Entity* getSkybox();
+
+		std::shared_ptr<Light> getShadowLight();
+
+		DirectX::XMFLOAT3 getSceneCenter();
+
+		float getSceneRadius();
 	private:
 		ReadWriteLock mLock;
 	};

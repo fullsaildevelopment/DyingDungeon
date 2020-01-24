@@ -70,5 +70,9 @@ namespace Odyssey
 		args.elementList = scene->getElementList();
 		args.renderList = scene->getRenderList();
 		args.systemList = scene->getSystemList();
+		args.skybox = scene->getSkybox();
+		args.shadowLight = scene->getShadowLight();
+		args.sceneCenter = scene->getSceneCenter();
+		args.sceneRadius = scene->getSceneRadius();
 	}
 }

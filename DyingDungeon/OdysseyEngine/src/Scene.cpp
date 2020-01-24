@@ -5,6 +5,8 @@
 #include "Scene.h"
 #include "MeshRenderer.h"
 #include "ParticleSystem.h"
+#include "Transform.h"
+#include "RenderDevice.h"
 
 namespace Odyssey
 {
@@ -82,8 +84,28 @@ namespace Odyssey
 		// Return the entity registered with the main camera
 		return mMainCamera.get();
 	}
+
 	void Scene::setActive(bool active)
 	{
 		mActive = active;
+	}
+
+	void Scene::setShadowStats(std::shared_ptr<Light> shadowLight, DirectX::XMFLOAT3 sceneCenter, float sceneRadius)
+	{
+		mShadowLight = shadowLight;
+		mSceneCenter = sceneCenter;
+		mSceneRadius = sceneRadius;
+	}
+
+	void Scene::setSkybox(const char* filename)
+	{
+		std::shared_ptr<Texture> texture = mRenderDevice->createTexture(TextureType::Skybox, filename);
+		std::shared_ptr<Mesh> mesh = mRenderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+		std::shared_ptr<Material> material = mRenderDevice->createMaterial(TextureType::Skybox, texture);
+
+		mSkybox = std::make_shared<Entity>();
+		mSkybox->addComponent<MeshRenderer>(mesh, material);
+		mSkybox->addComponent<Transform>();
+		mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
 	}
 }

@@ -23,6 +23,10 @@ namespace Odyssey
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;
 		Buffer* perObjectBuffer;
+		DirectX::XMFLOAT3 sceneCenter;
+		float sceneRadius;
+		std::shared_ptr<Light> shadowLight;
+		Entity* skybox;
 		std::vector<std::shared_ptr<Entity>> entityList;
 		std::vector<std::shared_ptr<Entity>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;

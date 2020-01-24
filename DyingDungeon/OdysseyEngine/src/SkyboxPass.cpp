@@ -17,20 +17,11 @@
 
 namespace Odyssey
 {
-	SkyboxPass::SkyboxPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, const char* skyboxTexture, std::shared_ptr<RenderWindow> renderWindow)
+	SkyboxPass::SkyboxPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
 	{
 		mDeviceContext = context;
 		mRenderDevice = renderDevice;
 		mDevice = renderDevice->getDevice();
-
-		std::shared_ptr<Texture> texture = renderDevice->createTexture(TextureType::Skybox, skyboxTexture);
-		std::shared_ptr<Mesh> mesh = renderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-		std::shared_ptr<Material> material = renderDevice->createMaterial(TextureType::Skybox, texture);
-
-		mSkyBox = std::make_shared<Entity>();
-		mSkyBox->addComponent<MeshRenderer>(mesh, material);
-		mSkyBox->addComponent<Transform>();
-		mSkyBox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
 
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
@@ -62,18 +53,18 @@ namespace Odyssey
 	void SkyboxPass::render(RenderArgs& args)
 	{
 		// Set the skybox to the camera's position
-		mSkyBox->getComponent<Transform>()->setPosition(args.camPos.x, args.camPos.y, args.camPos.z);
+		args.skybox->getComponent<Transform>()->setPosition(args.camPos.x, args.camPos.y, args.camPos.z);
 
 		// Get the object's global transform and set the MVP acoordingly
-		args.perObject.world = mSkyBox->getComponent<Transform>()->getLocalTransform();
+		args.perObject.world = args.skybox->getComponent<Transform>()->getLocalTransform();
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Draw the skybox
-		if (mSkyBox->getComponent<MeshRenderer>())
+		if (args.skybox->getComponent<MeshRenderer>())
 		{
-			mSkyBox->getComponent<MeshRenderer>()->bind(mDeviceContext);
-			mDeviceContext->DrawIndexed(mSkyBox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+			args.skybox->getComponent<MeshRenderer>()->bind(mDeviceContext);
+			mDeviceContext->DrawIndexed(args.skybox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 		}
 
 		// Clear the depth of the render targets

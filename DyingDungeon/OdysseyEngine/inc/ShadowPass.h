@@ -16,7 +16,7 @@ namespace Odyssey
 	class ShadowPass : public RenderPass
 	{
 	public: // Constructors
-		ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight);
+		ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int texWidth, int texHeight);
 	public: // Inherited overrides
 		virtual void preRender(RenderArgs& args);
 		virtual void render(RenderArgs& args);
@@ -29,7 +29,6 @@ namespace Odyssey
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
-		std::shared_ptr<Light> mShadowLight;
 		std::shared_ptr<RenderTarget> mDynamicTarget;
 		std::shared_ptr<RenderTarget> mStaticTarget;
 		std::shared_ptr<RenderState> mRenderState;
@@ -38,6 +37,7 @@ namespace Odyssey
 		std::shared_ptr<Shader> mPixelShader;
 		bool renderDynamic;
 		bool renderStatic;
+		int mTexWidth, mTexHeight;
 		std::string dynamicMapName;
 	};
 }

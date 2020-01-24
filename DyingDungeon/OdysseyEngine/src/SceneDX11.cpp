@@ -4,13 +4,20 @@
 #include "MeshRenderer.h"
 #include "UIElement.h"
 #include "EventManager.h"
+#include "RenderDevice.h"
+#include "Texture.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
-	SceneDX11::SceneDX11()
+	SceneDX11::SceneDX11(std::shared_ptr<RenderDevice> renderDevice)
 	{
 		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentAdd);
 		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentRemove);
+
+		mRenderDevice = renderDevice;
+		mSkybox = nullptr;
+		mShadowLight = nullptr;
 	}
 
 	void SceneDX11::onComponentAdd(ComponentAddEvent* evnt)
@@ -114,5 +121,36 @@ namespace Odyssey
 	std::vector<ParticleSystem*> SceneDX11::getSystemList()
 	{
 		return mSystemList;
+	}
+
+	Entity* SceneDX11::getSkybox()
+	{
+		if (mSkybox == nullptr)
+		{
+			std::shared_ptr<Texture> texture = mRenderDevice->createTexture(TextureType::Skybox, "Skybox.dds");
+			std::shared_ptr<Mesh> mesh = mRenderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+			std::shared_ptr<Material> material = mRenderDevice->createMaterial(TextureType::Skybox, texture);
+
+			mSkybox = std::make_shared<Entity>();
+			mSkybox->addComponent<MeshRenderer>(mesh, material);
+			mSkybox->addComponent<Transform>();
+			mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
+		}
+		return mSkybox.get();
+	}
+
+	std::shared_ptr<Light> SceneDX11::getShadowLight()
+	{
+		return mShadowLight;
+	}
+
+	DirectX::XMFLOAT3 SceneDX11::getSceneCenter()
+	{
+		return mSceneCenter;
+	}
+
+	float SceneDX11::getSceneRadius()
+	{
+		return mSceneRadius;
 	}
 }
