@@ -5,7 +5,7 @@ namespace Odyssey
 {
 	ELEMENT_DEFINITION(UIElement, Sprite2D)
 
-		Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width, UINT height)
+		Sprite2D::Sprite2D(DirectX::XMFLOAT2 position, std::wstring filename, UINT width, UINT height)
 		: UIElement(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)
 	{
 		// Create the WIC factory
@@ -31,13 +31,12 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
-	void Sprite2D::setSprite(LPCWSTR filename, UINT width, UINT height)
+	void Sprite2D::setSprite(std::wstring filename, UINT width, UINT height)
 	{
 		// TODO: Find a better way to swap sprites. Probably create a 2nd instance of a bitmap and only swap when ready.
 		mLock.lock(LockState::Write);
 		mFilename = filename;
 		mBitmap.Reset();
-		delete mBitmapConverter;
 		mBitmapConverter = nullptr;
 		createBitmapFromFile(filename, width, height);
 		mLock.unlock(LockState::Write);
@@ -47,19 +46,16 @@ namespace Odyssey
 	{
 		mLock.lock(LockState::Write);
 		mBitmap.Reset();
-		if (mBitmapConverter)
-		{
-			mBitmapConverter = nullptr;
-		}
+		mBitmapConverter = nullptr;
 		reloadBitmapFromFile(mFilename, mDimensions.x * mScale.x, mDimensions.y * mScale.y);
 		mLock.unlock(LockState::Write);
 	}
 
-	void Sprite2D::createBitmapFromFile(LPCWSTR filename, UINT width, UINT height)
+	void Sprite2D::createBitmapFromFile(std::wstring filename, UINT width, UINT height)
 	{
 		// Create the bimap decoder
 		Microsoft::WRL::ComPtr<IWICBitmapDecoder> decoder;
-		HRESULT hr = factory->CreateDecoderFromFilename(filename, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, decoder.GetAddressOf());
+		HRESULT hr = factory->CreateDecoderFromFilename(filename.c_str(), NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, decoder.GetAddressOf());
 		assert(!FAILED(hr));
 
 		// Create the bitmap frame
@@ -120,11 +116,11 @@ namespace Odyssey
 		}
 	}
 
-	void Sprite2D::reloadBitmapFromFile(LPCWSTR filename, UINT width, UINT height)
+	void Sprite2D::reloadBitmapFromFile(std::wstring filename, UINT width, UINT height)
 	{
 		// Create the bimap decoder
 		Microsoft::WRL::ComPtr<IWICBitmapDecoder> decoder;
-		HRESULT hr = factory->CreateDecoderFromFilename(filename, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, decoder.GetAddressOf());
+		HRESULT hr = factory->CreateDecoderFromFilename(filename.c_str(), NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, decoder.GetAddressOf());
 		assert(!FAILED(hr));
 
 		// Create the bitmap frame

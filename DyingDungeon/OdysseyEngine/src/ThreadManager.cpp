@@ -19,6 +19,9 @@ namespace Odyssey
 	ThreadManager::ThreadManager()
 	{
 		mShuttingDown = false;
+		mSceneChanged = false;
+		mTimer.Restart();
+		mTickInterval = 0.0;
 		EventManager::getInstance().subscribe(this, &ThreadManager::onShutdown);
 	}
 
@@ -52,15 +55,28 @@ namespace Odyssey
 		mShuttingDown = true;
 	}
 
+	void ThreadManager::setFrameLimit(double time)
+	{
+		mTickInterval = time;
+		mTimer.Restart();
+	}
+
 	void ThreadManager::updateScene(std::shared_ptr<SceneDX11> activeScene)
 	{
 		while (mSceneChanged == false)
 		{
 			if (mShuttingDown == false)
 			{
-				EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
+				mTimer.Signal();
 
-				activeScene->update();
+				if (mTimer.TotalTime() > mTickInterval)
+				{
+					mTimer.Restart();
+
+					EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
+
+					activeScene->update();
+				}
 			}
 		}
 	}

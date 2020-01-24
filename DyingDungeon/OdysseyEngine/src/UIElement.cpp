@@ -35,7 +35,7 @@ namespace Odyssey
 
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
-
+		mIsRegistered = false;
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
@@ -128,8 +128,16 @@ namespace Odyssey
 
 	void UIElement::initialize()
 	{
-		EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
-		EventManager::getInstance().subscribe(this, &UIElement::onMouseMove);
+		if (mIsRegistered == false)
+		{
+			EventManager::getInstance().subscribe(this, &UIElement::onMouseClick);
+			EventManager::getInstance().subscribe(this, &UIElement::onMouseMove);
+			mIsRegistered = true;
+		}
+		
+		// Set mouse tracking bools
+		mTrackMouseEnter = true;
+		mTrackMouseExit = false;
 	}
 
 	void UIElement::setCanvas(UICanvas* canvas)

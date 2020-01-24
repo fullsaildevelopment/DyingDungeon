@@ -30,6 +30,7 @@ namespace Odyssey
 		mSkyBox = std::make_shared<Entity>();
 		mSkyBox->addComponent<MeshRenderer>(mesh, material);
 		mSkyBox->addComponent<Transform>();
+		mSkyBox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
 
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
@@ -60,16 +61,11 @@ namespace Odyssey
 
 	void SkyboxPass::render(RenderArgs& args)
 	{
-		// Get the camera's position
-		DirectX::XMFLOAT3 camPos;
-		camPos = args.camera->getComponent<Transform>()->getPosition();
-
 		// Set the skybox to the camera's position
-		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
+		mSkyBox->getComponent<Transform>()->setPosition(args.camPos.x, args.camPos.y, args.camPos.z);
 
 		// Get the object's global transform and set the MVP acoordingly
 		args.perObject.world = mSkyBox->getComponent<Transform>()->getLocalTransform();
-
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 

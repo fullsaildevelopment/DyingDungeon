@@ -3,6 +3,7 @@
 #include "EngineEvents.h"
 #include <thread>
 #include <atomic>
+#include "XTime.h"
 
 namespace Odyssey
 {
@@ -26,11 +27,14 @@ namespace Odyssey
 		void executeSceneThread(std::shared_ptr<SceneDX11> activeScene);
 		void changeActiveScene(std::shared_ptr<SceneDX11> activeScene);
 		void onShutdown(EngineShutdownEvent* evnt);
+		void setFrameLimit(double time);
 	private:
 		std::thread sceneThread;
 		bool sceneThreadActive;
 		std::atomic<bool> mSceneChanged;
 		std::atomic<bool> mShuttingDown;
+		double mTickInterval;
+		XTime mTimer;
 	private:
 		void updateScene(std::shared_ptr<SceneDX11> activeScene);
 	

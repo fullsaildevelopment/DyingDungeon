@@ -53,7 +53,10 @@ namespace Odyssey
 
 	std::wstring Text2D::getText()
 	{
-		return mText;
+		mLock.lock(LockState::Read);
+		std::wstring text = mText;
+		mLock.unlock(LockState::Read);
+		return text;
 	}
 
 	void Text2D::setTextAlignment(TextAlignment alignment)

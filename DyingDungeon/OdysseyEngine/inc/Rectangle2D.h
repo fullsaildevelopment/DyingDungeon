@@ -10,7 +10,7 @@ namespace Odyssey
 	ELEMENT_DECLARATION(Rectangle2D)
 
 	public: // Rule of 3
-		Rectangle2D(DirectX::XMFLOAT2 centerPosition, DirectX::XMFLOAT4 color, UINT width, UINT height);
+		Rectangle2D(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height);
 
 	public: // Interface
 		/**

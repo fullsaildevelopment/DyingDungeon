@@ -2,6 +2,9 @@
 #include "RedAudioManager.h"
 #include "UICanvas.h"
 
+// TODO: REFACTOR LATER
+#include "SkillHoverComponent.h"
+
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -20,26 +23,26 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
 
 	// Setup init values
-	UINT width = battleTextWidth = screenWidth / 4;
-	UINT height = battleTextHeight = screenHeight / 2;
-	
+	UINT width = battleTextWidth = (screenWidth / 4) + 50;
+	UINT height = battleTextHeight = (screenHeight / 16);
 
-	DirectX::XMFLOAT2 position = { 0.0f, static_cast<float>(screenHeight) / 3.0f }; // Position
+	DirectX::XMFLOAT2 position = { 10.0f, (static_cast<float>(screenHeight) / 3.0f) + 280.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 
 	// Setup text properties
 	Odyssey::TextProperties properties;
 	properties.bold = false;
 	properties.italic = false;
-	properties.fontSize = 20.0f;
+	properties.fontSize = 14.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Create the battle log text
-	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"I am battle log, I will show you what is going on the the game", properties);
+	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
-	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2{ 0.0f, (static_cast<float>(screenHeight) / 3.0f) - 50.0f }, color, width, height, L"I am blank", properties);
+	position.y -= 50.0f;
+	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 
 
@@ -95,7 +98,7 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Create title text
 	height = 100;
@@ -110,7 +113,8 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	position.y += 250.0f;
 	width = 200;
 	height = 40;
-	mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
+	// TODO: MAYBE COMMENT THIS IN? LOOKS DUMB
+	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
 	position.y += 70.0f;
@@ -134,7 +138,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 
 	// Initialize variables
 	UINT width = screenWidth; // Width
-	UINT height = 100; // Height
+	UINT height = 50; // Height
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
@@ -142,22 +146,99 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Create tower select title
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 100.0f;
+	properties.fontSize = 50.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
 
 	// Create door to click on
 	width = 195;
 	height = 231;
-	position = { 100.0f, (static_cast<float>(screenHeight) / 2.0f) - (height / 2.0f) };
-	mDoorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/MedievalDoor.png", width, height);
+	position = { 50.83f, (static_cast<float>(screenHeight) - static_cast<float>(height))};
+	Odyssey::Sprite2D* doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x +=  width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mTowerSelectMenu);
-	// Turn off the canvas when creating it
-	ToggleCanvas(mTowerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+}
+
+void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	// Create the tower select menu pointer
+	mTeamSelectMenu = std::make_shared<Odyssey::Entity>();
+	mTeamSelectMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the pause menu
+	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
+
+	// Initialize variables
+	UINT width = screenWidth; // Width
+	UINT height = 50; // Height
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	Odyssey::TextProperties properties;
+
+	// Create team select title
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 50.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Tw Cen MT Condensed";
+	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
+
+	// Create the 3 boxes where the character's images will go when you click on a certain hero
+	position.x = 50.0f;
+	width = 200;
+	height = 200;
+	
+	// First team member
+	position.y += 30.0f;
+	firstTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Second team member
+	position.y += static_cast<float>(height) + 30.0f;
+	secondTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Third team member
+	position.y += static_cast<float>(height) + 30.0f;
+	thirdTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Make the clickable clear rectangle for the character's when selecting the team members
+	width = 256;
+	height = 400;
+	position.x = 400.0f;
+	position.y = 250.0f;
+	//paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
+
+	position.x = 825.0f;
+	position.y = 250.0f;
+	//mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
+	mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
+
+	// Add the mTeamSelectMenu object to the team selection scene
+	_sceneToAddTo->addEntity(mTeamSelectMenu);
 }
 
 // This is where I will design and add all elements into the pause menu canvas
@@ -195,7 +276,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
 
 	// Resume Button
@@ -395,7 +476,7 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	properties.fontSize = 60.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
+	properties.fontName = L"Tw Cen MT Condensed";
 	mOptionsTitle = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, 60, L"Options", properties);
 
 	// Adjust volume text
@@ -487,23 +568,26 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 340;
-		UINT imageHeight = 146;
-		UINT barWidth = 246;
-		UINT barHeight = 23;
+		UINT imageWidth = 359;
+		UINT imageHeight = 109;
+		UINT barWidth = 252.5f;
+		UINT barHeight = 21;
 		DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
 
 		// Create the base ui template
-		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout2.0.png", imageWidth, imageHeight);
+		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout4.0.png", imageWidth, imageHeight);
 
 		// Create the character's image
-		imageWidth = 64;
-		imageHeight = 64;
+		imageWidth = 71;
+		imageHeight = 68;
+		position.x += 2;
+		position.y += 1;
 		characterHudCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
 		// Create the xp/name bar
 		//TODO::Create XP Bars In The Character Class To Assign
-		position.x += imageWidth;
+		position.x += imageWidth + 2.0f;
+
 		if (owner)
 			characterHudCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
 		else
@@ -529,39 +613,40 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		position.x += barWidth;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"99", properties);
+		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties);
 
 		// Create the big HP text
-		position.x -= barWidth + 7.5f;
+		/*position.x -= barWidth + 7.5f;
 		position.y += barHeight;
 		properties.fontSize = 49.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Center;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);
+		owner->mBigHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, mBigHealthTextColor, 80, 95, std::to_wstring((int)owner->GetHP()), properties);*/
 
 		// TODO: Add the text elements for Attack, Defense, and Speed;
 		position = originalPosition;
-		position.x += 30.0f;
-		position.y += 62.5f;
-		properties.fontSize = 14.0f;
+		position.x += 100.0f;
+		position.y += 22.0f;
+		properties.fontSize = 12.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Left;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		// Attack number
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk() * 100.0f)), properties);
 		// Defense number
-		position.y += 17.5f;
+		position.y += 16.5f;
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetDef() * 100.0f)), properties);
 		// Speed number
-		position.y += 17.5f;
+		position.y += 16.5f;
 		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring((int)owner->GetSpeed()), properties);
 
 		// Health and Mana bars
 		// Set the position to the origanal top left position
 		position = originalPosition;
-		barHeight = 14;
-		barWidth = 340;
-		position.y += imageHeight + 53.5f;
+		barHeight = 17;
+		barWidth = 356;
+		position.x += 2.0f;
+		position.y += imageHeight + 3.5f;
 		if (owner)
 		{
 			// Create and assign the health bar
@@ -574,7 +659,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 			owner->mHpText = characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
 			// Create and assign the mana bar
 			position.x -= 5.0f;
-			position.y += barHeight;
+			position.y += barHeight + 1.5;
 			owner->pManaBar = characterHudCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
 			owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 			// Create the text for the mana numbers of the character
@@ -597,6 +682,26 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		// Assign the character's turn order text
 		if (owner)
 			owner->pTurnNumber = characterHudCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
+
+		// STUFF
+		//Paladin_Skill_1.png
+		//position = originalPosition;
+		//position.x += 134.0f;
+		//position.y += 24.0f;
+		//Odyssey::Sprite2D* s1 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s2 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s3 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		//position.x += 56.5f;
+		//Odyssey::Sprite2D* s4 = characterHudCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
+		
+		// TODO: REFACTOR LATER
+		//characterHudCanvas->getEntity()->addComponent<SkillHoverComponent>();
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s1, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s2, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s3, CreatePopup(characterHudCanvas->getEntity()));
+		//characterHudCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s4, CreatePopup(characterHudCanvas->getEntity()));
 	}
 	// Create the Enemy UI if the character is NOT a hero
 	else
@@ -679,4 +784,61 @@ void GameUIManager::IncreaseVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
 	mVolumeBar->setFill(volumeRatio);
+}
+
+Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
+{
+	UINT windowWidth = 1280;
+	UINT windowHeight = 720;
+	float x = 910;
+	float y = 350;
+	UINT width = 360;
+	UINT height = 200;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 30.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 16.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::UICanvas* canvas = entity->addComponent<Odyssey::UICanvas>();
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 50), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 10);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 100), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 10);
+
+	// Title Text and Icons
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 50, y), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), width - 100, 50, L"Basic Attack", title);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), L"assets/images/Paladin_Skill_1.png", 50, 50);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 50, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 50, 50);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 50, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 50, 50, L"25", title);
+
+	// Skill Info
+	properties.italic = true;
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Attack", properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 100 + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 125 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Targets: 1", properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 225 + pad, y + 60 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 250 + pad, y + 70), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 150, 50, L"Damage: 15", properties);
+
+	// Description
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 115), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, L"Description: Strikes a single enemy with 100 % chance to apply provoke.", properties);
+	canvas->setActive(false);
+
+	return canvas;
 }

@@ -24,10 +24,39 @@ namespace Odyssey
 	struct ParticleSystemShape
 	{
 		DirectX::XMFLOAT3 center;
-		float radius;
+		DirectX::XMFLOAT3 radius;
 		float minXDirection, maxXDirection;
 		float minYDirection, maxYDirection;
 		float minZDirection, maxZDirection;
+	};
+
+	struct BoxPS : public ParticleSystemShape
+	{
+		BoxPS()
+		{
+			center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+			radius = { 1.0f, 1.0f, 1.0f };
+
+			minXDirection = -0.25f;
+			maxXDirection = 0.25f;
+			minYDirection = 1.0f;
+			maxYDirection = 1.0f;
+			minZDirection = -0.25f;
+			maxZDirection = 0.25f;
+		}
+
+		BoxPS(float posX, float posY, float posZ, float width, float height, float depth)
+		{
+			center = DirectX::XMFLOAT3(posX, posY, posZ);
+			radius = { width / 2.0f, height / 2.0f, depth / 2.0f };
+
+			minXDirection = -0.1f;
+			maxXDirection = 0.1f;
+			minYDirection = 0.5f;
+			maxYDirection = 1.0f;
+			minZDirection = -0.1f;
+			maxZDirection = 0.1f;
+		}
 	};
 
 	struct ConePS : public ParticleSystemShape
@@ -35,7 +64,7 @@ namespace Odyssey
 		ConePS()
 		{
 			center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-			radius = 1.0f;
+			radius = { 1.0f, 1.0f, 1.0f };
 
 			minXDirection = -0.25f;
 			maxXDirection = 0.25f;
@@ -48,7 +77,7 @@ namespace Odyssey
 		ConePS(float posX, float posY, float posZ, float rad, float xAxisAngle, float zAxisAngle)
 		{
 			center = DirectX::XMFLOAT3(posX, posY, posZ);
-			radius = rad;
+			radius = { rad, rad, rad };
 
 			minXDirection = -xAxisAngle / 180.0f;
 			maxXDirection = xAxisAngle / 180.0f;
@@ -64,7 +93,7 @@ namespace Odyssey
 		SpherePS()
 		{
 			center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-			radius = 1.0f;
+			radius = { 1.0f, 1.0f, 1.0f };
 
 			minXDirection = -1.0f;
 			maxXDirection = 1.0f;
@@ -77,7 +106,7 @@ namespace Odyssey
 		SpherePS(float x, float y, float z, float rad)
 		{
 			center = DirectX::XMFLOAT3(x, y, z);
-			radius = rad;
+			radius = { rad, rad, rad };
 
 			minXDirection = -1.0f;
 			maxXDirection = 1.0f;
@@ -139,6 +168,10 @@ namespace Odyssey
 		double mDuration;
 		double mCurrentTime;
 		bool mGravityEnabled;
+		double time;
+		int numSpawn;
+		double totalTime;
+		int mCurrentEmission;
 	private: // Rendering
 		std::shared_ptr<Shader> mVertexShader;
 		std::shared_ptr<Shader> mGeometryShader;

@@ -20,6 +20,7 @@
 #include "TeamSelectionController.h"
 #include "StatTracker.h"
 #include "ParticleMover.h"
+#include "SkillHoverComponent.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -84,17 +85,20 @@ void setupLighting();
 void setupCamera();
 void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene>& _sceneObject, std::shared_ptr<Odyssey::Entity>& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
+void setupTeamSelectMenu(Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
-void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner);
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
 // BUILD 2 STUFF
 void setupFire();
+void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
+void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
+void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
 
 //Tristen's Stuff
 void setUpTowerManager();
@@ -141,14 +145,11 @@ int playGame()
 
 	// Set up the tower selection screen
 	setupMenu(gRenderDevice, application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
-
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
 	// Set up the team selection screen
-	setupMenu(gRenderDevice, application.get(), gTeamSelectScene, gTeamSelectMenu, L"assets/images/TeamSelection.png", "TeamSelection", MenuComponent::eTeamSelector);
-
-	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
+	setupTeamSelectMenu(application.get());
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
 
@@ -406,8 +407,12 @@ void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* applic
 		_entityToAdd->addComponent<TowerSelectController>(application);
 		break;
 	case eTeamSelector:
+	{
 		_entityToAdd->addComponent<TeamSelectionController>(application);
+		// TODO: REFACTOR THIS LATER
+		_entityToAdd->getComponent<TeamSelectionController>()->setupHovers();
 		break;
+	}
 	default:
 		break;
 	}
@@ -454,6 +459,58 @@ void setupMainMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
 	gMainMenu->addEntity(characterToAdd);
+
+	// Create the UI
+	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
+}
+
+void setupTeamSelectMenu(Odyssey::Application* application)
+{
+	// Set up the team selection screen
+	setupMenu(gRenderDevice, application, gTeamSelectScene, gTeamSelectMenu, L"", "TeamSelection", MenuComponent::eTeamSelector);
+
+	// Set up a directional light
+	std::shared_ptr<Odyssey::Light> dirLight = std::make_shared<Odyssey::Light>();
+	dirLight->setLightType(Odyssey::LightType::Directional);
+	dirLight->setPosition(0, 0, 0);
+	dirLight->setDirection(0.75f, -0.45f, -0.055f);
+	dirLight->setColor(0.4f, 0.5f, 0.7f);
+	dirLight->setIntensity(1.0f);
+	dirLight->setRange(0.0f);
+	dirLight->setSpotAngle(0.0f);
+	gTeamSelectScene->addLight(dirLight);
+
+	// Set up an ambient light
+	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
+	ambientLight->setLightType(Odyssey::LightType::Point);
+	ambientLight->setPosition(0.0, 0.0f, 2.0f);
+	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
+	ambientLight->setColor(0.5f, 0.5f, 0.5f);
+	ambientLight->setIntensity(5.0f);
+	ambientLight->setRange(30.0f);
+	ambientLight->setSpotAngle(0.0f);
+	gTeamSelectScene->addLight(ambientLight);
+
+	// Create a paladin and add him to the team select scene
+	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
+	// Set the render device for the particles
+	charFactory->mRenderRefrence = gRenderDevice;
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-1.0f, -2.0f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Team Select Paladin", charPosition, charRotation, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
+	gTeamSelectScene->addEntity(characterToAdd);
+
+	// Create a mage and add him to the team select scene
+	charPosition = DirectX::XMVectorSet(3.0f, -2.0f, 6.0f, 1.0f);
+	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Team Select Mage", charPosition, charRotation, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
+	gTeamSelectScene->addEntity(characterToAdd);
+
+	// Create the UI
+	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
 }
 
 void setupArena()
@@ -563,44 +620,6 @@ void setupGameInterface()
 	StatTracker::Instance().SetCanvas(canvas);
 }
 
-void createCharacterPortrait(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
-{
-	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = 14.0f;
-	properties.bold = true;
-
-	// Assign the character's turn order text
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	if (owner)
-	{
-		owner->pTurnNumber = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
-	}
-	else
-	{
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(anchorX - static_cast<int>(properties.fontSize), anchorY), DirectX::XMFLOAT4(255.0f, 210.0f, 0.0f, 1.0f), 32, 32, L"1", properties);
-	}
-
-	// Health and Mana bars
-	int manaBarHeight = 5;
-	int healthBarHeight = 10;
-	int barWidth = 100;
-	if (owner)
-	{
-		owner->pManaBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY), DirectX::XMFLOAT4(0.0f, 255.0f, 255.0f, 1.0f), barWidth, manaBarHeight);
-		owner->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		owner->pHealthBar = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + manaBarHeight), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), barWidth, healthBarHeight);
-		owner->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-	}
-	else
-	{
-		Odyssey::Rectangle2D* rect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 50), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 50, 10);
-		rect->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		rect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(anchorX, anchorY + 62), DirectX::XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 50, 10);
-		rect->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-	}
-}
-
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
 {
 	// Set properties
@@ -630,6 +649,13 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
 	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
 	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
+	// Tower select screen door sounds
+	RedAudioManager::Instance().AddAudio("assets/audio/Door_Open.mp3", "DoorOpen");
+	RedAudioManager::Instance().AddAudio("assets/audio/Door_Close.mp3", "DoorClose");
+	
+	//Background Sound
+	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_4.mp3", "NoManaCritical");
 	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_3.mp3", "NoManaBitch");
 	RedAudioManager::Instance().AddAudio("assets/audio/no_mana_clip_2.mp3", "NoManaMidium");
@@ -743,6 +769,195 @@ void setupFire()
 	gGameScene->addEntity(fire5);
 }
 
+void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description)
+{
+	// Append the number of targets
+	std::wstring targets = L"Targets: ";
+	std::wstring valueText;
+	targets = targets.append(numTargets.c_str());
+
+	DirectX::XMFLOAT4 themeColor;
+
+	if (character == L"Paladin")
+	{
+		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	}
+	else if (character == L"Mage")
+	{
+		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	}
+
+	if (skillType == L"Attack")
+	{
+		valueText = L"Damage: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+	else if (skillType == L"Support")
+	{
+		valueText = L"Value: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+	else if (skillType == L"Heal")
+	{
+		valueText = L"Heal: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+
+	UINT windowWidth = gMainWindow->getWidth();
+	UINT windowHeight = gMainWindow->getHeight();
+	float x = 950;
+	float y = 425;
+	UINT width = 300;
+	UINT height = 150;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 24.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 80), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+
+	// Title Text and Icons
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
+
+	// Skill Info
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 50), themeColor, 150, 50, skillType, properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 80 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 105 + pad, y + 50), themeColor, 150, 50, targets, properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 175 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 200 + pad, y + 50), themeColor, 150, 50, skillValue, properties);
+
+	// Description
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),
+		DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, description, properties);
+	canvas->setActive(false);
+}
+
+void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor)
+{
+	// TODO: REFACTOR THIS LATER
+	// Add skill icons to portrait
+	Odyssey::UICanvas* canvas1 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas2 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas3 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas4 = character->addComponent<Odyssey::UICanvas>();
+	SkillHoverComponent* hover = character->addComponent<SkillHoverComponent>();
+
+	// Basic Attack icon
+	Odyssey::Sprite2D* skill1 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_1.png", 52, 45);
+	// Basic Attack hover
+	setupSkillHover(canvas1, L"Paladin", L"Basic Attack", L"assets/images/Paladin_Skill_1.png", L"0", L"Attack", L"1", L"15 dmg",
+		L"Description: Strike an enemy with divine power dealing 15 damage with a 30% chance to apply provoke. Restores 5 mana.");
+	// Basic Attack trigger
+	hover->registerSprite(skill1, canvas1);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Wind Slash icon
+	Odyssey::Sprite2D* skill2 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_2.png", 52, 45);
+	// Wind Slash hover
+	setupSkillHover(canvas2, L"Paladin", L"Judgement", L"assets/images/Paladin_Skill_2.png", L"15", L"Attack", L"1", L"200 dmg",
+		L"Description: Smite the enemy with holy light dealing 200 damage and healing the paladin for 15 health. Costs 15 mana.");
+	// Wind Slash trigger
+	hover->registerSprite(skill2, canvas2);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Firestorm icon
+	Odyssey::Sprite2D* skill3 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_3.png", 52, 45);
+	// Firestorm hover
+	setupSkillHover(canvas3, L"Paladin", L"Shield of Light", L"assets/images/Paladin_Skill_3.png", L"20", L"Support", L"4", L"+25 shield",
+		L"Description: A shield of light slams down in front of all team members granting a 25 health shield for 3 turns. Costs 20 mana.");
+	// Firestorm trigger
+	hover->registerSprite(skill3, canvas3);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Lightning Bolt icon
+	Odyssey::Sprite2D* skill4 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_4.png", 52, 45);
+	// Lightning Bolt hover
+	setupSkillHover(canvas4, L"Paladin", L"Blessing of Light", L"assets/images/Paladin_Skill_4.png", L"15", L"Support", L"4", L"+50% def",
+		L"Description: Protects all allies from harm granting them 50% reduced damage for 3 turns. Costs 15 mana.");
+	// Lightning Bolt trigger
+	hover->registerSprite(skill4, canvas4);
+}
+
+void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor)
+{
+	// TODO: REFACTOR THIS LATER
+	// Add skill icons to portrait
+	Odyssey::UICanvas* canvas1 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas2 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas3 = character->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas4 = character->addComponent<Odyssey::UICanvas>();
+	SkillHoverComponent* hover = character->addComponent<SkillHoverComponent>();
+
+	// Basic Attack icon
+	Odyssey::Sprite2D* skill1 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_1.png", 52, 45);
+	// Basic Attack hover
+	setupSkillHover(canvas1, L"Mage", L"Basic Attack", L"assets/images/Mage_Skill_1.png", L"0", L"Attack", L"1", L"10 dmg",
+		L"Description: Send forth an orb of chaotic magic inflicting 10 damage with a 15% chance to stun. Refunds 10 mana.");
+	// Basic Attack trigger
+	hover->registerSprite(skill1, canvas1);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Wind Slash icon
+	Odyssey::Sprite2D* skill2 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_2.png", 52, 45);
+	// Wind Slash hover
+	setupSkillHover(canvas2, L"Mage", L"Wind Slash", L"assets/images/Mage_Skill_2.png", L"10", L"Attack", L"4", L"15 x 4 dmg",
+		L"Description: Slash all enemies with a burst of wind dealing 15 damage per hit with a 100% chance to inflict speed down. Costs 10 mana.");
+	// Wind Slash trigger
+	hover->registerSprite(skill2, canvas2);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Firestorm icon
+	Odyssey::Sprite2D* skill3 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_3.png", 52, 45);
+	// Firestorm hover
+	setupSkillHover(canvas3, L"Mage", L"Firestorm", L"assets/images/Mage_Skill_3.png", L"30", L"Attack", L"4", L"50 x 4 dmg",
+		L"Description: Conjure a hellstorm dealing 50 damage to all enemies and inflicting burn with a 100% chance. Costs 30 mana.");
+	// Firestorm trigger
+	hover->registerSprite(skill3, canvas3);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Lightning Bolt icon
+	Odyssey::Sprite2D* skill4 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_4.png", 52, 45);
+	// Lightning Bolt hover
+	setupSkillHover(canvas4, L"Mage", L"Lightning Bolt", L"assets/images/Mage_Skill_4.png", L"35", L"Attack", L"1", L"60 dmg",
+		L"Description: Channel a bolt of lightning dealing 60 damage to a single enemy with a 100% chance to stun. Costs 35 mana.");
+	// Lightning Bolt trigger
+	hover->registerSprite(skill4, canvas4);
+}
+
 void setUpTowerManager()
 {
 	// Create the current tower entity
@@ -761,7 +976,7 @@ void setUpTowerManager()
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
-	float heroUIYPosition = static_cast<float>(height) - 156.0f;
+	float heroUIYPosition = static_cast<float>(height) - 120.0f;
 
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
@@ -769,6 +984,11 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+
+	// TODO: REFACTOR THIS LATER
+	// Setup Paladin skills
+	setupPaladinSkills(characterToAdd, 144.0f, 624.0f);
+
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -779,6 +999,11 @@ void setUpTowerManager()
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
 	// Create the character's portrait
 	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 170.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	
+	// TODO: REFACTOR THIS LATER
+	// Setup Paladin skills
+	setupPaladinSkills(characterToAdd, 604.0f, 624.0f);
+
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -787,15 +1012,13 @@ void setUpTowerManager()
 	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
-	/*Character* temp = characterToAdd->getComponent<Character>();
-	temp->GetSkills()[0]->SetParticleSystem(gFireBall);
-	temp->GetSkills()[0]->SetParticleFiringTime(0.23f);
-	temp->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
-	temp->GetSkills()[2]->SetParticleSystem(gFireStorm);
-	temp->GetSkills()[2]->SetParticleFiringTime(0.25f);
-	temp->GetSkills()[2]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));*/
 	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 350.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 370.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	
+	// TODO: REFACTOR THIS LATER
+	// Setup Mage skills
+	setupMageSkills(characterToAdd, 1044.0f, 624.0f);
+
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -854,7 +1077,7 @@ void setUpTowerManager()
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
 	enemyUIXPosition = static_cast<float>(width) / 2.0f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/GanfaulIcon.jpg", gGameMenu, characterToAdd->getComponent<Character>());
 	// Added the Character's health popup
 	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
