@@ -7,6 +7,7 @@ Stun::Stun(int duration, Character* target)
 	mAmountOfEffect = 0.0f;
 	mDuration = duration;
 	mRecipient = target;
+	mAffectedStatId = STATS::None;
 }
 Stun::~Stun()
 {

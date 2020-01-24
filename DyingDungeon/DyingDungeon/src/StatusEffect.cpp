@@ -5,6 +5,11 @@ EFFECTTYPE StatusEffect::GetTypeId()
 	return mTypeId;
 }
 
+STATS StatusEffect::GetAffectedStatId()
+{
+	return mAffectedStatId;
+}
+
 int StatusEffect::GetDuration()
 {
 	return mDuration;

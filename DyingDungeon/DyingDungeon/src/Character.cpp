@@ -3,6 +3,10 @@
 #include "Transform.h"
 #include "RedAudioManager.h"
 #include "MeshRenderer.h"
+// Fix later
+#include "StatUp.h";
+#include "StatDown.h";
+#include "Stun.h";
 
 CLASS_DEFINITION(Component, Character)
 
@@ -405,48 +409,121 @@ std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 }
 
 // Adds a new status effect to the list of status effects
-void Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
+bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 {
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
+		for (it = mBleeds.begin(); it != mBleeds.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mBleeds.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Regen:
 	{
+		for (it = mRegens.begin(); it != mRegens.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mRegens.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::StatUp:
 	{
+		StatUp* temp = nullptr;
+		for (it = mBuffs.begin(); it != mBuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mBuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::StatDown:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Stun:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Shield:
 	{
+		for (it = mSheilds.begin(); it != mSheilds.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mSheilds.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Provoke:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId())
+			{
+				(*it)->Remove();
+				it = mDebuffs.erase(it);
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	default:
 		break;
 	}
+	return true;
 }
 
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)

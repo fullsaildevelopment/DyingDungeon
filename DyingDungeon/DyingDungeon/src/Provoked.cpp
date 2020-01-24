@@ -8,6 +8,7 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mProvoker = provoker;
+	mAffectedStatId = STATS::None;
 }
 
 Provoked::~Provoked()

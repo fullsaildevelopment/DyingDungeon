@@ -79,7 +79,7 @@ public:
 	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
-	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
+	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
 	bool ManageAllEffects();
 	void ClearStatusEffects();

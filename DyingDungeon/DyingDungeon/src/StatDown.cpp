@@ -7,6 +7,7 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 	mAmountOfEffect = ammountOfEffect;
 	mDuration = duration;
 	mRecipient = target;
+	mAffectedStatId = stat;
 	mStatId = stat;
 }
 
@@ -18,7 +19,8 @@ void StatDown::Apply(Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<StatDown>(mAmountOfEffect, mDuration, mStatId, &target);
-	target.AddStatusEffect(newStatusEffect);
+	if (!target.AddStatusEffect(newStatusEffect))
+		return;
 	std::string temp;
 	switch (mStatId)
 	{
