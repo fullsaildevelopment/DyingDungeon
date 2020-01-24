@@ -140,17 +140,6 @@ int playGame()
 	// Set the shadow pass stats
 	gGameScene->setShadowStats(gDirLight, { 0.0f, 0.0f, 0.0f }, 50.0f);
 
-	// Create scene 2
-	gScene2 = gRenderDevice->createScene();
-	gScene2->setSkybox("Dusk.dds");
-	setupScene2();
-	
-	// Set the shadow pass stats
-	gScene2->setShadowStats(gLights2[9], { 0.0f, 0.0f, 50.0f }, 100.0f);
-	
-	application->addScene("Scene2", gScene2);
-
-
 	// Set up the default rendering pipeline
 	setupPipeline(gRenderDevice, application);
 
@@ -193,6 +182,16 @@ int playGame()
 
 	// Create Pause Menu
 	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
+
+	// Create scene 2
+	gScene2 = gRenderDevice->createScene();
+	gScene2->setSkybox("Dusk.dds");
+	setupScene2();
+
+	// Set the shadow pass stats
+	gScene2->setShadowStats(gLights2[9], { 0.0f, 0.0f, 50.0f }, 100.0f);
+
+	application->addScene("Scene2", gScene2);
 
 	// Add the game scene to the application
 	application->addScene("Game", gGameScene);

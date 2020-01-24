@@ -140,7 +140,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
 
 		EnemyComponent* tempEnemy = newCharacter->getComponent<EnemyComponent>();
-		tempEnemy->SetPSBlood(setUpFireStorm());
+		tempEnemy->SetPSBlood(setupBlood());
 		break;
 	}
 	default:
