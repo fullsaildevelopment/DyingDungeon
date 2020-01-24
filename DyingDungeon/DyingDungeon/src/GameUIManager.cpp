@@ -149,8 +149,29 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Create door to click on
 	width = 195;
 	height = 231;
-	position = { 100.0f, (static_cast<float>(screenHeight) - static_cast<float>(height))};
-	mDoorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorIMages/MedievalDoor-1.png", width, height);
+	position = { 50.83f, (static_cast<float>(screenHeight) - static_cast<float>(height))};
+	Odyssey::Sprite2D* doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x +=  width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
+
+	// Create door to click on
+	position.x += width + 50.83f;
+	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
+	mDoorImages.push_back(doorImage);
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mTowerSelectMenu);

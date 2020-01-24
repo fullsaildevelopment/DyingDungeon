@@ -3,6 +3,7 @@
 #include "Rectangle2D.h"
 #include "Application.h"
 #include "Rectangle2D.h"
+#include "Sprite2D.h"
 
 class TowerSelectController : public Odyssey::Component
 {
@@ -31,6 +32,6 @@ private: //Functions
 	void GoToTeamSelection();
 	void ChangeDoorState();
 
-	void SetNextDoorImage();
+	void SetNextDoorImage(Odyssey::Sprite2D* _doorImageToChange);
 };
 

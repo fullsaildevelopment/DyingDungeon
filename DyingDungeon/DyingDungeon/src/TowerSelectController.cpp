@@ -20,9 +20,9 @@ void TowerSelectController::initialize()
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), true);
 
 	// Make the door switch to the team selection scene when clicked
-	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorState);
-	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorState);
+	GameUIManager::getInstance().GetDoorSprites()[0]->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	GameUIManager::getInstance().GetDoorSprites()[0]->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorState);
+	GameUIManager::getInstance().GetDoorSprites()[0]->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorState);
 
 	// Reset door animations components
 	// Reset bools
@@ -32,7 +32,7 @@ void TowerSelectController::initialize()
 	// Reset Index
 	mDoorImageIndex = 1;
 	// Reset the door image
-	SetNextDoorImage();
+	SetNextDoorImage(GameUIManager::getInstance().GetDoorSprites()[0]);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -69,7 +69,7 @@ void TowerSelectController::update(double deltaTime)
 			}
 
 			// Set the new door image
-			SetNextDoorImage();
+			SetNextDoorImage(GameUIManager::getInstance().GetDoorSprites()[0]);
 
 			// Reset the total time
 			totalTime = 0.0f;
@@ -93,37 +93,39 @@ void TowerSelectController::ChangeDoorState()
 	{
 		mDoCloseDoorAnimation = false;
 		mDoOpenDoorAnimation = true;
+		RedAudioManager::Instance().PlaySFX("DoorOpen");
 	}
 	else
 	{
 		mDoOpenDoorAnimation = false;
 		mDoCloseDoorAnimation = true;
+		RedAudioManager::Instance().PlaySFX("DoorClose");
 	}
 
 	// Flip the bool for next time
 	mDoorIsClosed = !mDoorIsClosed;
 }
 
-void TowerSelectController::SetNextDoorImage()
+void TowerSelectController::SetNextDoorImage(Odyssey::Sprite2D* _doorImageToChange)
 {
-	DirectX::XMFLOAT2 deminsions = GameUIManager::getInstance().GetDoorButton()->getDimensions();
+	DirectX::XMFLOAT2 deminsions = _doorImageToChange->getDimensions();
 
 	switch (mDoorImageIndex)
 	{
 		case 1:
-			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", deminsions.x, deminsions.y);
+			_doorImageToChange->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", deminsions.x, deminsions.y);
 			break;
 		case 2:
-			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", deminsions.x, deminsions.y);
+			_doorImageToChange->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", deminsions.x, deminsions.y);
 			break;
 		case 3:
-			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", deminsions.x, deminsions.y);
+			_doorImageToChange->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", deminsions.x, deminsions.y);
 			break;
 		case 4:
-			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", deminsions.x, deminsions.y);
+			_doorImageToChange->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", deminsions.x, deminsions.y);
 			break;
 		case 5:
-			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", deminsions.x, deminsions.y);
+			_doorImageToChange->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", deminsions.x, deminsions.y);
 			break;
 	}
 }
