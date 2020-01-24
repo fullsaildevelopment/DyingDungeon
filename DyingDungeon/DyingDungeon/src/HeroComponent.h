@@ -25,5 +25,6 @@ private:
 	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
 	bool SelectTarget(EntityList targets, int& targetIndex);
 	void ResetToSelection(EntityList heros, EntityList enemies);
+	void BeginAttack(EntityList targets);
 };
 
