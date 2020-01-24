@@ -23,7 +23,7 @@ private:
 	Character* mCurrentTarget;
 	// State functions
 	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
-	void SelectTarget(EntityList heros, EntityList enemies, int targetIndex);
+	bool SelectTarget(EntityList targets, int& targetIndex);
 	void ResetToSelection(EntityList heros, EntityList enemies);
 };
 
