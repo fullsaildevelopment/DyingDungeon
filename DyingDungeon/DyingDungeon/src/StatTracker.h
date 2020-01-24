@@ -33,6 +33,7 @@ public:
 	{
 		uint32_t levelNumber = 1;
 		uint32_t turnCount = 1;
+		uint32_t rounds = 1;
 		std::vector<StatTracker::Turn> turns;
 	};
 
@@ -43,7 +44,7 @@ private:
 	std::vector<std::string> characterNames;
 	//TowerManager* m_towerManager;
 	//RewardScreen
-	Odyssey::UICanvas* m_p_rewardsScreen;
+	Odyssey::UICanvas* m_p_canvas;
 public:
 	static StatTracker& Instance();
 	~StatTracker();
@@ -54,12 +55,13 @@ public:
 	StatTracker::Level& GetLevel(unsigned int index);
 
 	unsigned int& GetLevelCount();
+	unsigned int GetRoundCount(unsigned int level);
+
+	size_t GetLevelSize();
 
 	void SetLevels(unsigned int numLevels);
 
 	void ClearLevels();
-
-	void SetRewardsScreen(Odyssey::UICanvas* rewardScreen);
 
 	bool SaveStats(std::string saveName);
 	bool LoadStats(std::string loadFileName);
@@ -73,12 +75,14 @@ public:
 	void LevelStartReflex(LevelStartEvent* lsEvent);
 	void TurnStartReflex(TurnStartEvent* tsEvent);
 	void OutputStatSheet();
+	void SetCanvas(Odyssey::UICanvas* canvas);
+
 
 private:
 	StatTracker();
 	void UpdateRewardScreen(RewardsActiveEvnet* raEvent);
-
 	unsigned int GetStatCount(Action stat);
+	unsigned int GetStatCount(Action stat, unsigned int round);
 	unsigned int GetStatCount(std::string name, Action stat);
 	std::vector<std::string>& GetListPlayerCharacterNames();
 	std::vector<std::string> GetListPlayerCharacterNames(unsigned int levelNumber);
@@ -86,16 +90,22 @@ private:
 	float CalculateDamageDealt(std::string name);
 	float CalculateDamageDone();
 	float CalculateDamageDone(std::string name);
+	float CalculateDamageDone(std::string name, unsigned int level);
 	float CalculateDamageTaken();
 	float CalculateDamageTaken(std::string name);
+	float CalculateDamageTaken(std::string name, unsigned int level);
 	float CalculatePercentDamageSuccess();
 	float CalculateDamageMitigatated();
 	float CalculateHealthRecived();
 	float CalculateHealthRecived(std::string name);
+	float CalculateHealthRecived(std::string name, unsigned int level);
 	float CalculateShieldGiven();
 	float CalculateShieldGiven(std::string name);
 	float CalculatePercentageStat(Action stat);
+	float CalculatePercentageStat(Action stat, unsigned int round);
 	float CalculatePercentageStat(std::string name, Action stat);
+	float CalculatePercentageStat(std::string name, Action stat, unsigned int level);
+	float CalculatePercentageStat(std::string name, unsigned int round, Action stat);
 	std::string FormatToPercentage(float number);
 	std::wstring FormatToPercentageW(float number);
 	float roundf(float num, unsigned int decimal_places = 0);

@@ -117,7 +117,9 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
-
+	position.y += 70.0f;
+	width += 70;
+	mStatsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Game Statistics", properties);
 	// Setup team logo
 	mTeamLogo = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudiosLogo.png", screenWidth, screenHeight);
 
@@ -316,6 +318,125 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 	// Make options menu
 	CreateOptionsMenu(_sceneToAddTo);
+}
+
+void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	//Create the pause menu pointer
+	mStatsMenu = std::make_shared<Odyssey::Entity>();
+	mStatsMenu->addComponent<Odyssey::UICanvas>();
+	// Get canvas component of the main menu
+	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
+
+	// Setup init values
+	//UINT width = screenWidth;
+	//UINT height = screenHeight;
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT2 graphPosition = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT4 color = { 31.0f, 255.0f, 244.0f, 1.0f }; // Color
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Constantia";
+
+	UINT graphBackgroundWidth = 750;
+	UINT graphBackgroundHeight = 450;
+	graphPosition.x = position.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
+	graphPosition.y = position.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight);
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, color, graphBackgroundWidth, graphBackgroundHeight, L"NO STATS", properties);
+	statsMenuCanvas->getElement<Odyssey::Text2D>()->setVisible(false);
+
+	UINT graphWidth = graphBackgroundWidth + 20;
+	UINT graphHeight = graphBackgroundHeight + 20;
+
+	UINT barWidth = (graphWidth - 80) / 7;
+	float max_damage = 200.0f;
+	position.x += 50.0f;
+
+	for (int i = 0; i < 7; i++)
+	{
+		UINT barHeight = (graphHeight - 80) * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
+		position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
+		statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
+		position.x += barWidth;
+		properties.fontSize = 15.0f;
+		statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(i + 1), properties);
+	}
+	float intervals = max_damage / 10.0f;
+	for (int j = 0; j < 10; j++)
+	{
+		statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(graphPosition.x, graphPosition.y + ((graphBackgroundHeight - 60.0f) * 0.1f * j)), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 50, 50, std::to_wstring(max_damage - (j*intervals)).substr(0, 4), properties);
+	}
+
+	position.y = graphPosition.y - (graphHeight/2.0f) + 40.0f;
+	position.x = graphPosition.x;
+
+	properties.fontSize = 60.0f;
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Damage", properties);
+
+	_sceneToAddTo->addEntity(mStatsMenu);
+
+	ToggleCanvas(mStatsMenu->getComponent<Odyssey::UICanvas>(), false);
+
+}
+
+void GameUIManager::DisplayStatsMenu()
+{
+	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	UpdateGraph();
+}
+
+void GameUIManager::UpdateGraph()
+{
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
+	DirectX::XMFLOAT2 graphPosition = { 0.0f, 0.0f };
+	DirectX::XMFLOAT4 color = { 31.0f, 255.0f, 244.0f, 1.0f };
+
+
+	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
+	UINT graphBackgroundWidth = 750;
+	UINT graphBackgroundHeight = 450;
+	UINT graphWidth = graphBackgroundWidth + 20;
+	UINT graphHeight = graphBackgroundHeight + 20;
+
+	statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
+
+	graphPosition.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
+	graphPosition.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
+
+	UINT barWidth = (graphWidth - 40) / 7;
+	float max_damage = 200.0f;
+	position.x += 20.0f;
+	for (int i = 0; i < 7; i++) 
+	{
+		UINT barHeight = graphHeight * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
+		position.y = graphPosition.y + (graphHeight - barHeight) + 20.0f;
+		statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight)->setVisible(true);
+		position.x += barWidth;
+	}
+
+	/*if (StatTracker::Instance().GetLevelSize() > 0) {
+		UINT barWidth = graphWidth / StatTracker::Instance().GetRoundCount(1);
+		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
+		position.x += 20.0f;
+		position.y += 20.0f;
+		for (int i = 0; i < StatTracker::Instance().GetRoundCount(1); i++)
+		{
+			statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, graphHeight);
+		}
+	}
+	else
+	{
+		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(true);
+	}*/
+
+
 }
 
 // This is where I will design and add all elements into the options menu canvas
