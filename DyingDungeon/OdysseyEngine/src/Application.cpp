@@ -317,6 +317,8 @@ namespace Odyssey
 					mProcessCommands = false;
 				}
 
+				InputManager::getInstance().sendMouseMove();
+
 				if (timer.TotalTime() > 0.016 || true)
 				{
 					timer.Restart();

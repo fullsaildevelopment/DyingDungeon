@@ -83,7 +83,6 @@ namespace Odyssey
 			mLock.unlock(LockState::Write);
 		}
 
-		template<class T>
 		void unregisterCallback(std::string function)
 		{
 			mLock.lock(LockState::Write);
@@ -266,5 +265,6 @@ namespace Odyssey
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 		ReadWriteLock mLock;
 		bool mIsVisible;
+		bool mIsRegistered;
 	};
 }

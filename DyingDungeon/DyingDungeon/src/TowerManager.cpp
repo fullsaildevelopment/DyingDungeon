@@ -22,6 +22,23 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
+	// Don't show the boos character
+	mBossCharacter->setActive(false);
+
+	// Reset the enemy team to the skely bois
+	if (mSkeletonTeam.size() != 0)
+	{
+		// Clear enemy team
+		mEnemyTeam.clear();
+
+		// Set the enemy team to be the skeleton team on start
+		for (int i = 0; i < mSkeletonTeam.size(); i++)
+		{
+			mSkeletonTeam[i]->setActive(true);
+			mEnemyTeam.push_back(mSkeletonTeam[i]);
+		}
+	}
+
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	CreateBattleInstance();
 
@@ -106,6 +123,7 @@ void TowerManager::update(double deltaTime)
 						for (int i = 0; i < mEnemyTeam.size(); i++)
 						{
 							mEnemyTeam[i]->setActive(false);
+							mSkeletonTeam.push_back(mEnemyTeam[i]);
 						}
 						// Clear all enemies from the current enemy list
 						mEnemyTeam.clear();
@@ -164,6 +182,9 @@ void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTe
 	// Add all of the characters from the enemy's team to the allCharacters vector
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 		mAllCharacters.push_back(mEnemyTeam[i]);
+
+	// Add Boss to the mAllCharacters
+	mAllCharacters.push_back(mBossCharacter);
 
 	// Set the current level to 1
 	mCurrentLevel = 1;
