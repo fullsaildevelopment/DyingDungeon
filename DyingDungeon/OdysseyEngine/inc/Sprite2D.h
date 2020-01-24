@@ -10,7 +10,7 @@ namespace Odyssey
 		ELEMENT_DECLARATION(Sprite2D)
 
 	public: // Rule of 3
-		Sprite2D(DirectX::XMFLOAT2 position, LPCWSTR filename, UINT width = 0, UINT height = 0);
+		Sprite2D(DirectX::XMFLOAT2 position, std::wstring filename, UINT width = 0, UINT height = 0);
 
 	public: // Interface
 		/**
@@ -27,7 +27,7 @@ namespace Odyssey
 		 *	@param[in] height The height of the image. Default 0 uses the file height.
 		 *	@return void
 		 */
-		void setSprite(LPCWSTR filename, UINT width = 0, UINT height = 0);
+		void setSprite(std::wstring filename, UINT width = 0, UINT height = 0);
 
 	protected:
 		virtual void createResource();
@@ -40,14 +40,14 @@ namespace Odyssey
 		 *	@param[in] height The height of the image. Default 0 uses the file height.
 		 *	@return void
 		 */
-		void createBitmapFromFile(LPCWSTR filename, UINT width, UINT height);
+		void createBitmapFromFile(std::wstring filename, UINT width, UINT height);
 
-		void reloadBitmapFromFile(LPCWSTR filename, UINT width, UINT height);
+		void reloadBitmapFromFile(std::wstring filename, UINT width, UINT height);
 
 	private: // Members
 		IWICImagingFactory* factory;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> mBitmap;
 		IWICFormatConverter* mBitmapConverter;
-		LPCWSTR mFilename;
+		std::wstring mFilename;
 	};
 }

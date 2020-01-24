@@ -76,7 +76,7 @@ public: // Functions
 		}
 	}
 	// Get the sprite of which character you selected
-	Odyssey::Sprite2D* GetCharacterSelectImage(CharacterType _type)
+	Odyssey::Rectangle2D* GetCharacterSelectImage(CharacterType _type)
 	{
 		switch (_type)
 		{
@@ -137,8 +137,11 @@ private: // Varibales
 	Odyssey::Sprite2D* secondTeamMemberSlot;
 	Odyssey::Sprite2D* thirdTeamMemberSlot;
 	// Rectangles around the characters
-	Odyssey::Sprite2D* paladinSelectionImage;
-	Odyssey::Sprite2D* mageSelectionImage;
+	// TODO: REFACTOR THIS LATER
+	//Odyssey::Sprite2D* paladinSelectionImage;
+	Odyssey::Rectangle2D* paladinSelectionImage;
+	//Odyssey::Sprite2D* mageSelectionImage;
+	Odyssey::Rectangle2D* mageSelectionImage;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
@@ -187,4 +190,7 @@ private: // Functions
 	void OptionsBackButton();
 	void DecreaseVolume();
 	void IncreaseVolume();
+
+	// TODO: REFACTOR THIS LATER
+	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
 };

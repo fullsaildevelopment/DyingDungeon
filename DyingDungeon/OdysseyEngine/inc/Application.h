@@ -92,6 +92,8 @@ namespace Odyssey
 		 */
 		void setMultithreading(bool active);
 
+		void setFrameLimit(std::string threadName, unsigned int fps);
+
 		/**
 		 *	Run the application's main loop.
 		 *	@param[in] void
@@ -111,7 +113,8 @@ namespace Odyssey
 		bool mIsMultithreading;
 		EngineProfiler profiler;
 		bool mProcessCommands;
-		XTime timer;
+		XTime mTimer;
+		double mTickInterval;
 		// Window Management
 		std::vector<std::shared_ptr<RenderWindow>> mWindows;
 		std::shared_ptr<RenderWindowDX11> mActiveWindow;

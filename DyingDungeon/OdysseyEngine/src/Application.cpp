@@ -53,6 +53,8 @@ namespace Odyssey
 		// Enable muli-threading by default
 		mIsMultithreading = true;
 		mIsShutdown = false;
+		mTimer.Restart();
+		mTickInterval = 0.0;
 
 		// Subscribe to the scene change event
 		EventManager::getInstance().subscribe(this, &Application::onSceneChange);
@@ -265,6 +267,32 @@ namespace Odyssey
 		mIsMultithreading = active;
 	}
 
+	void Application::setFrameLimit(std::string threadName, unsigned int fps)
+	{
+		if (threadName == "Main")
+		{
+			mTimer.Restart();
+			if (fps == 0)
+			{
+				mTickInterval = 0.0;
+			}
+			else
+			{
+				mTickInterval = 1.0 / static_cast<double>(fps);
+			}
+		}
+		else if (threadName == "Render")
+		{
+			double interval = 0.0;
+			if (fps != 0)
+			{
+				interval = 1.0 / static_cast<double>(fps);
+			}
+
+			ThreadManager::getInstance().setFrameLimit(interval);
+		}
+	}
+
 	int Application::run()
 	{
 		// Set the running state
@@ -302,7 +330,7 @@ namespace Odyssey
 			}
 			// else
 			{
-				timer.Signal();
+				mTimer.Signal();
 
 				if (mIsShutdown)
 				{
@@ -319,9 +347,9 @@ namespace Odyssey
 
 				InputManager::getInstance().sendMouseMove();
 
-				if (timer.TotalTime() > 0.016 || true)
+				if (mTimer.TotalTime() > mTickInterval)
 				{
-					timer.Restart();
+					mTimer.Restart();
 					// Check if multithreading is disabled
 					if (mIsMultithreading == false)
 					{

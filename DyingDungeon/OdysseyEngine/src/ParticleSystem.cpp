@@ -11,7 +11,7 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, ParticleSystem)
 
-	ParticleSystem::ParticleSystem(RenderDevice& renderDevice) : mRenderDevice(renderDevice)
+		ParticleSystem::ParticleSystem(RenderDevice& renderDevice) : mRenderDevice(renderDevice)
 	{
 		// Transfer the direct3d device
 		// TODO: REFACTOR THIS LATER BY MAKING A CUSTOM DEPTH AND BLEND STATE CLASS
@@ -30,7 +30,7 @@ namespace Odyssey
 		createBlendState();
 
 		// Default to the fire texture
-		mTexture = renderDevice.createTexture(TextureType::Diffuse, "Flare.png");
+		mTexture = renderDevice.createTexture(TextureType::Diffuse, "Particle.png");
 
 		// Create the particle data buffer
 		mStartCount = 10;
@@ -47,6 +47,11 @@ namespace Odyssey
 		mMaxLife = 1.0f;
 		mGravity = 0.0f;
 		mGravityEnabled = false;
+		mIsPlaying = true;
+		time = 0.0;
+		totalTime = 1.0;
+		numSpawn = mEmissionRate;
+		mCurrentEmission = 0;
 	}
 
 	void ParticleSystem::run(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
@@ -80,9 +85,9 @@ namespace Odyssey
 
 		// Bind the particle texture
 		mTexture->bind(context);
-		
+
 		// Bind the blend state
-		float blendFactor[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+		float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xffffffff);
 
 		// Draw the particles
@@ -134,6 +139,7 @@ namespace Odyssey
 	void ParticleSystem::setRateOverTime(int emissionRate)
 	{
 		mEmissionRate = emissionRate;
+		numSpawn = mEmissionRate;
 	}
 
 	void ParticleSystem::setSpeed(float min, float max)
@@ -271,9 +277,9 @@ namespace Odyssey
 	void ParticleSystem::createParticle(Particle& particle)
 	{
 		std::mt19937 generator(rnd());
-		std::uniform_real_distribution<float> xPosition(-1.0f * mShape.radius + mShape.center.x, mShape.center.x + mShape.radius);
-		std::uniform_real_distribution<float> yPosition(-1.0f * mShape.radius + mShape.center.y, mShape.center.y + mShape.radius);
-		std::uniform_real_distribution<float> zPosition(-1.0f * mShape.radius + mShape.center.z, mShape.center.z + mShape.radius);
+		std::uniform_real_distribution<float> xPosition(-1.0f * mShape.radius.x + mShape.center.x, mShape.center.x + mShape.radius.x);
+		std::uniform_real_distribution<float> yPosition(-1.0f * mShape.radius.y + mShape.center.y, mShape.center.y + mShape.radius.y);
+		std::uniform_real_distribution<float> zPosition(-1.0f * mShape.radius.z + mShape.center.z, mShape.center.z + mShape.radius.z);
 		std::uniform_real_distribution<float> xDirection(mShape.minXDirection, mShape.maxXDirection);
 		std::uniform_real_distribution<float> yDirection(mShape.minYDirection, mShape.maxYDirection);
 		std::uniform_real_distribution<float> zDirection(mShape.minZDirection, mShape.maxZDirection);
@@ -295,11 +301,6 @@ namespace Odyssey
 
 	int ParticleSystem::runEmission(double deltaTime)
 	{
-		// Track the time between emissions, the number to spawn and time remaining
-		static double time = 0.0;
-		static int numSpawn = mEmissionRate;
-		static double totalTime = 1.0;
-
 		int spawn = 0;
 
 		double emissionInterval = totalTime / (double)numSpawn;
@@ -349,7 +350,7 @@ namespace Odyssey
 	{
 		mLock.lock(LockState::Write);
 
-		if (mCurrentTime >= mDuration && mIsPlaying)
+		if (mCurrentTime >= mDuration && mIsPlaying && !mIsLooping)
 		{
 			mCurrentGravity = 0.0f;
 			stop();
@@ -367,10 +368,7 @@ namespace Odyssey
 
 		bool allowEmit = (mIsLooping || mCurrentTime < mDuration);
 
-		int emission = runEmission(deltaTime);
-
-		if (!allowEmit)
-			int debug = 0;
+		mCurrentEmission = runEmission(deltaTime);
 
 		for (int i = 0; i < mParticleData.size(); i++)
 		{
@@ -388,17 +386,19 @@ namespace Odyssey
 				mParticleData[i].position.x += mParticleData[i].velocity.x * deltaTime;
 				mParticleData[i].position.y += mParticleData[i].velocity.y * deltaTime;
 				mParticleData[i].position.z += mParticleData[i].velocity.z * deltaTime;
-				
+
 				if (mGravityEnabled)
 					mParticleData[i].position.y -= mCurrentGravity * deltaTime;
 
-				mParticleData[i].color = colorLerp(mStartColor, mEndColor, 1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime);
+				float ratio = 1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime;
+
+				mParticleData[i].color = colorLerp(mStartColor, mEndColor, ratio);
 			}
 
-			if (mParticleData[i].active == false && emission != 0 && allowEmit)
+			if (mParticleData[i].active == false && mCurrentEmission != 0 && allowEmit)
 			{
 				createParticle(mParticleData[i]);
-				emission--;
+				mCurrentEmission--;
 			}
 		}
 
