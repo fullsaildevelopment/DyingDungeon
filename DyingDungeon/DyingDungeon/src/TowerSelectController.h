@@ -17,10 +17,20 @@ private:
 	Odyssey::Application* mApplication;
 
 	// Bools
-	bool mDoorIsSmall = true;
+	bool mDoorIsClosed = true;
+	bool mDoOpenDoorAnimation = false;
+	bool mDoCloseDoorAnimation = false;
+
+	// Ints
+	int mDoorImageIndex = 1;
+
+	// Double
+	double totalTime = 0.0f;
 
 private: //Functions
 	void GoToTeamSelection();
-	void ChangeDoorSize();
+	void ChangeDoorState();
+
+	void SetNextDoorImage();
 };
 

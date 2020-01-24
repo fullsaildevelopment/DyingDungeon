@@ -21,17 +21,60 @@ void TowerSelectController::initialize()
 
 	// Make the door switch to the team selection scene when clicked
 	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorSize);
-	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorSize);
+	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoorState);
+	GameUIManager::getInstance().GetDoorButton()->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoorState);
 
-	// Reset the door size and the bool
-	GameUIManager::getInstance().GetDoorButton()->setScale(1.0f, 1.0f);
-	mDoorIsSmall = true;
+	// Reset door animations components
+	// Reset bools
+	mDoorIsClosed = true;
+	mDoOpenDoorAnimation = false;
+	mDoCloseDoorAnimation = false;
+	// Reset Index
+	mDoorImageIndex = 1;
+	// Reset the door image
+	SetNextDoorImage();
 }
 
 void TowerSelectController::update(double deltaTime)
 {
+	// If I need to open the door
+	if (mDoOpenDoorAnimation || mDoCloseDoorAnimation)
+	{
+		//Increase the total time by aading the delta time
+		totalTime += deltaTime;
 
+		// Only chnage the door image every 0.25 seconds
+		if (totalTime >= 0.25f)
+		{
+			// Set the door image index to be the next door image
+			if (mDoOpenDoorAnimation)
+			{
+				mDoorImageIndex++;
+
+				// Stop doing the animation if we reached the final valid index value(5)
+				if (mDoorImageIndex == 5)
+				{
+					mDoOpenDoorAnimation = false;
+				}
+			}
+			else if (mDoCloseDoorAnimation)
+			{
+				mDoorImageIndex--;
+
+				// Stop doing the animation if we reached the final valid index value(5)
+				if (mDoorImageIndex == 1)
+				{
+					mDoCloseDoorAnimation = false;
+				}
+			}
+
+			// Set the new door image
+			SetNextDoorImage();
+
+			// Reset the total time
+			totalTime = 0.0f;
+		}
+	}
 }
 
 void TowerSelectController::GoToTeamSelection()
@@ -44,17 +87,41 @@ void TowerSelectController::GoToTeamSelection()
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
 }
 
-void TowerSelectController::ChangeDoorSize()
+void TowerSelectController::ChangeDoorState()
 {
-	if (mDoorIsSmall)
+	if (mDoorIsClosed)
 	{
-		GameUIManager::getInstance().GetDoorButton()->setScale(1.5f, 1.5f);
+		mDoOpenDoorAnimation = true;
 	}
 	else
 	{
-		GameUIManager::getInstance().GetDoorButton()->setScale(1.0f, 1.0f);
+		mDoCloseDoorAnimation = true;
 	}
 
 	// Flip the bool for next time
-	mDoorIsSmall = !mDoorIsSmall;
+	mDoorIsClosed = !mDoorIsClosed;
+}
+
+void TowerSelectController::SetNextDoorImage()
+{
+	DirectX::XMFLOAT2 deminsions = GameUIManager::getInstance().GetDoorButton()->getDimensions();
+
+	switch (mDoorImageIndex)
+	{
+		case 1:
+			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", deminsions.x, deminsions.y);
+			break;
+		case 2:
+			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", deminsions.x, deminsions.y);
+			break;
+		case 3:
+			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", deminsions.x, deminsions.y);
+			break;
+		case 4:
+			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", deminsions.x, deminsions.y);
+			break;
+		case 5:
+			GameUIManager::getInstance().GetDoorButton()->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", deminsions.x, deminsions.y);
+			break;
+	}
 }
