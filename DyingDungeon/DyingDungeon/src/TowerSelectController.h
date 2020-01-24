@@ -40,6 +40,7 @@ private:
 
 private: //Functions
 	void GoToTeamSelection();
+	void GoToScene2();
 
 	// Change the door states on mouse enter and exit events
 	void ChangeDoor1State();

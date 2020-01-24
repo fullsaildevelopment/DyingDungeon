@@ -133,6 +133,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Create the tower select menu pointer
 	mTowerSelectMenu = std::make_shared<Odyssey::Entity>();
 	mTowerSelectMenu->addComponent<Odyssey::UICanvas>();
+	mTowerInfoCanvas = mTowerSelectMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the pause menu
 	Odyssey::UICanvas* towerSelectMenuCanvas = mTowerSelectMenu->getComponent<Odyssey::UICanvas>();
 
@@ -178,6 +179,63 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	position.x += width + 50.83f;
 	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
 	mDoorImages.push_back(doorImage);
+
+	// Start creating the tower info popup
+	width = 500;
+	height = 250;
+	position.x = (static_cast<float>(screenWidth) / 2.0f) - (static_cast<float>(width) / 2.0f);
+	position.y = 100.0f;
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	Odyssey::Rectangle2D* rect = mTowerInfoCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	rect->setOpacity(BackgroundSmallOpacity);
+
+	// Add in tower level text
+	height = 25;
+	// Give a little padding
+	position.x += 5.0f;
+	position.y += 5.0f;
+	// Set text elements
+	properties.fontSize = 25.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: 1", properties);
+
+	// Add in enemies text and icons
+	position.y += static_cast<float>(height) + 10.0f;
+	float previousX = position.x;
+	width = 120;
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Enemies:", properties);
+	// Add in the icons
+	position.x += static_cast<float>(width);
+	width = 64;
+	height = 64;
+	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/skeletonIcon.png", width, height);
+	position.x += static_cast<float>(width) + 10.0f;
+	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/ganfaulIcon.jpg", width, height);
+
+	// Set up rewards text
+	position.x = previousX;
+	position.y += static_cast<float>(height) + 5.0f;
+	width = 300;
+	height = 25;
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Rewards: 900 XP", properties);
+
+	// Set up description
+	position.y += static_cast<float>(height) + 20.0f;
+	width = 300;
+	height = 15;
+	properties.fontSize = 15.0f;
+	properties.italic = true;
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Description:", properties);
+	position.y += static_cast<float>(height) + 5.0f;
+	width = 500;
+	height = 200;
+	properties.fontSize = 12.0f;
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, wornand ravished by time itself", properties);
+	// Disable the tower info canvas
+	mTowerInfoCanvas->setActive(false);
 
 	// Add the pause menu to the game scene most likely
 	_sceneToAddTo->addEntity(mTowerSelectMenu);

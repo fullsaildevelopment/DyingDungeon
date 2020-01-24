@@ -19,6 +19,8 @@ void TowerSelectController::initialize()
 	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), true);
 
+	// Don't show the tower info canvas
+	GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 
 	// Clear the door list
 	mDoorList.clear();
@@ -62,7 +64,8 @@ void TowerSelectController::initialize()
 		mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
 		mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
 		mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
-		mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+		// Have the fifth door take you to the Scene2
+		mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToScene2);
 		mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
 		mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 	}
@@ -93,6 +96,16 @@ void TowerSelectController::GoToTeamSelection()
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
 }
 
+void TowerSelectController::GoToScene2()
+{
+	// Turn off the tower select canvas
+	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene2"));
+}
+
 void TowerSelectController::ChangeDoor1State()
 {
 	if (mDoorList[0].mDoorIsClosed)
@@ -100,12 +113,18 @@ void TowerSelectController::ChangeDoor1State()
 		mDoorList[0].mDoCloseDoorAnimation = false;
 		mDoorList[0].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
+
+		// Show the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
 		mDoorList[0].mDoOpenDoorAnimation = false;
 		mDoorList[0].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
+
+		// Hide the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
@@ -119,12 +138,18 @@ void TowerSelectController::ChangeDoor2State()
 		mDoorList[1].mDoCloseDoorAnimation = false;
 		mDoorList[1].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
+
+		// Show the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
 		mDoorList[1].mDoOpenDoorAnimation = false;
 		mDoorList[1].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
+
+		// Hide the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
@@ -138,12 +163,18 @@ void TowerSelectController::ChangeDoor3State()
 		mDoorList[2].mDoCloseDoorAnimation = false;
 		mDoorList[2].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
+
+		// Show the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
 		mDoorList[2].mDoOpenDoorAnimation = false;
 		mDoorList[2].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
+
+		// Hide the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
@@ -157,12 +188,18 @@ void TowerSelectController::ChangeDoor4State()
 		mDoorList[3].mDoCloseDoorAnimation = false;
 		mDoorList[3].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
+
+		// Show the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
 		mDoorList[3].mDoOpenDoorAnimation = false;
 		mDoorList[3].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
+
+		// Hide the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
@@ -176,12 +213,18 @@ void TowerSelectController::ChangeDoor5State()
 		mDoorList[4].mDoCloseDoorAnimation = false;
 		mDoorList[4].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
+
+		// Show the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
 		mDoorList[4].mDoOpenDoorAnimation = false;
 		mDoorList[4].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
+
+		// False the tower info canvas
+		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
