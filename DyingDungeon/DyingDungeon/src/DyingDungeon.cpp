@@ -601,6 +601,10 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/sword_slash.mp3", "PaladinAttack");
 	RedAudioManager::Instance().AddAudio("assets/audio/armor_hit.mp3", "PaladinHit");
 	RedAudioManager::Instance().AddAudio("assets/audio/losing.mp3", "Loss");
+
+	// Tower select screen door sounds
+	RedAudioManager::Instance().AddAudio("assets/audio/Door_Open.mp3", "DoorOpen");
+	RedAudioManager::Instance().AddAudio("assets/audio/Door_Close.mp3", "DoorClose");
 	
 	//Background Sound
 	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
