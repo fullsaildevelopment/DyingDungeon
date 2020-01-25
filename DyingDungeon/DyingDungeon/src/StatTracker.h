@@ -88,6 +88,7 @@ private:
 	std::vector<std::string> GetListPlayerCharacterNames(unsigned int levelNumber);
 	float CalculateDamageDealt();
 	float CalculateDamageDealt(std::string name);
+	float CalculateDamageDealt(std::string name, unsigned int level);
 	float CalculateDamageDone();
 	float CalculateDamageDone(std::string name);
 	float CalculateDamageDone(std::string name, unsigned int level);
@@ -95,12 +96,15 @@ private:
 	float CalculateDamageTaken(std::string name);
 	float CalculateDamageTaken(std::string name, unsigned int level);
 	float CalculatePercentDamageSuccess();
+	float CalculatePercentDamageSuccess(std::string name, unsigned int level);
 	float CalculateDamageMitigatated();
+	float CalculateDamageMitigatated(std::string name, unsigned int level);
 	float CalculateHealthRecived();
 	float CalculateHealthRecived(std::string name);
 	float CalculateHealthRecived(std::string name, unsigned int level);
 	float CalculateShieldGiven();
 	float CalculateShieldGiven(std::string name);
+	float CalculateShieldGiven(std::string name, unsigned int level);
 	float CalculatePercentageStat(Action stat);
 	float CalculatePercentageStat(Action stat, unsigned int round);
 	float CalculatePercentageStat(std::string name, Action stat);

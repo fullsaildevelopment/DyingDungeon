@@ -80,8 +80,8 @@ void StatTracker::SetCanvas(Odyssey::UICanvas* canvas)
 
 void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
 {
-	/*std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
-	for (unsigned int i = 1; i <= temp_nameList.size(); i++) {
+	std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
+	/*for (unsigned int i = 1; i <= temp_nameList.size(); i++) {
 		std::wstring rewardsText;
 		rewardsText.append(   L" - Attack: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[i - 1], Action::Attack, raEvent->level)) + L"%"
 							+ L" - Defend: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[i - 1], Action::Defend, raEvent->level)) + L"%"
@@ -93,6 +93,35 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[i - 1]->setText(rewardsText);
 		m_p_canvas->getElements<Odyssey::Sprite2D>()[i - 1]->setSprite();
 	}*/
+	for (int txt = 3, i = 0; i < 3; i++) 
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			std::wstring rewardsText;
+			if (txt < 6)
+			{
+				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Attack, raEvent->level)) + L"%\n" +
+								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(temp_nameList[j], raEvent->level)) + L"\n" + 
+								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(temp_nameList[j], raEvent->level)) + L"%");
+			}
+			else if (txt < 9)
+			{
+				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Defend, raEvent->level)) + L"%\n" + 
+								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(temp_nameList[j], raEvent->level)) + L"\n" + 
+								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(temp_nameList[j], raEvent->level)) + L"%\n" + 
+								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(temp_nameList[j], raEvent->level)));
+			}
+			else if (txt < 12)
+			{
+				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Aid, raEvent->level)) + L"%\n" + 
+								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(temp_nameList[j], raEvent->level)) + L"\n" + 
+								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(temp_nameList[j], raEvent->level)));
+			}
+			m_p_canvas->getElements<Odyssey::Text2D>()[txt]->setText(rewardsText);
+			txt++;
+		}
+
+	}
 	//OutputStatSheet();
 }
 
@@ -299,7 +328,7 @@ void StatTracker::LogDebuffingEvent(CharacterDebuffsEvent* cdEvent)
 {
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionName = cdEvent->actionName;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].actionType = Action::Attack;
-	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cdEvent->debuffValue;
+	//m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].value = cdEvent->debuffValue;
 	//m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].isSheild = true;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].effect = cdEvent->debuffType;
 	m_levels[m_currentLevel - 1].turns[m_levels[m_currentLevel - 1].turnCount - 1].targets.push_back(std::make_pair(std::string("DEBUFF" + cdEvent->targetName), cdEvent->debuffValue));
@@ -510,6 +539,20 @@ float StatTracker::CalculateDamageDealt(std::string name)
 	return total;
 }
 
+float StatTracker::CalculateDamageDealt(std::string name, unsigned int level)
+{
+	float total = 0.0f;
+	unsigned int index = level - 1;
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if (name == m_levels[index].turns[j].characterName && m_levels[index].turns[j].actionType == Action::Attack)
+		{
+			total += m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier);
+		}
+	}
+	return total;
+}
+
 float StatTracker::CalculateDamageDone()
 {
 	float total = 0.0f;
@@ -578,7 +621,7 @@ float StatTracker::CalculateDamageTaken()
 				{
 					if (m_levels[i].turns[j].actionType == Action::Attack)
 					{
-						total += m_levels[i].turns[j].value - (m_levels[i].turns[j].targets[k].second * m_levels[i].turns[j].value);
+						total += (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)) - (m_levels[i].turns[j].targets[k].second * (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)));
 					}
 				}
 			}
@@ -599,7 +642,7 @@ float StatTracker::CalculateDamageTaken(std::string name)
 				{
 					if (name == m_levels[i].turns[j].targets[k].first)
 					{
-						total += m_levels[i].turns[j].value - (m_levels[i].turns[j].targets[k].second * m_levels[i].turns[j].value);
+						total += (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)) - (m_levels[i].turns[j].targets[k].second * (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)));
 					}
 				}
 			}
@@ -619,7 +662,7 @@ float StatTracker::CalculateDamageTaken(std::string name, unsigned int level)
 			{
 				if (name == m_levels[index].turns[j].targets[k].first)
 				{
-					total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+					total += (m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier)) - (m_levels[index].turns[j].targets[k].second * (m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier)));
 				}
 			}
 		}
@@ -652,6 +695,33 @@ float StatTracker::CalculatePercentDamageSuccess()
 	return (total/totalDmg)*100.0f;
 }
 
+float StatTracker::CalculatePercentDamageSuccess(std::string name, unsigned int level)
+{
+	float total = 0.0f;
+	float totalDmg = 0.0f;
+	unsigned int index = level - 1;
+	/*for (unsigned int i = 0; i < m_levels.size(); i++)
+	{*/
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if ( m_levels[index].turns[j].actionType == Action::Attack && m_levels[index].turns[j].characterName == name)
+		{
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++)
+			{
+				totalDmg += m_levels[index].turns[j].value;
+				total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+			}
+		}
+	
+	}
+	//}
+	if (totalDmg == 0.0f)
+	{
+		return 0.0f;
+	}
+	return (total / totalDmg) * 100.0f;
+}
+
 float StatTracker::CalculateDamageMitigatated() 
 {
 	float total = 0.0f;
@@ -670,6 +740,30 @@ float StatTracker::CalculateDamageMitigatated()
 			}
 		}
 	}
+	return total;
+
+}
+
+float StatTracker::CalculateDamageMitigatated(std::string name, unsigned int level)
+{
+	float total = 0.0f;
+	unsigned int index = level - 1;
+	/*for (unsigned int i = 0; i < m_levels.size(); i++)
+	{*/
+		for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+		{
+			if (!m_levels[index].turns[j].isPlayer) 
+			{
+				for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++)
+				{
+					if ((m_levels[index].turns[j].targets[k].first == name) && (m_levels[index].turns[j].actionType == Action::Attack))
+					{
+						total += m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value;
+					}
+				}
+			}
+		}
+	//}
 	return total;
 
 }
@@ -758,6 +852,26 @@ float StatTracker::CalculateShieldGiven(std::string name)
 			}
 		}
 	}
+	return total;
+}
+
+float StatTracker::CalculateShieldGiven(std::string name, unsigned int level)
+{
+	float total = 0.0f;
+	unsigned int index = level - 1;
+
+	/*for (unsigned int i = 0; i < m_levels.size(); i++)
+	{*/
+		for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+		{
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
+				if (m_levels[index].turns[j].actionType == Action::Aid && m_levels[index].turns[j].targets[k].first == name && m_levels[index].turns[j].effect == EFFECTTYPE::Shield)
+				{
+					total += m_levels[index].turns[j].value * m_levels[index].turns[j].targets.size();
+				}
+			}
+		}
+	//}
 	return total;
 }
 
