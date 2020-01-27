@@ -69,21 +69,21 @@ void Character::Die()
 }
 
 // Some dumbass thing made by read, used by dumbass bryce
-std::wstring Character::FormatToPercentageW(float number)
-{
-	if (number >= 100.0f)
-	{
-		return std::to_wstring(number).substr(0, 6);
-	}
-	else if (number >= 10.0f)
-	{
-		return std::to_wstring(number).substr(0, 5);
-	}
-	else
-	{
-		return std::to_wstring(number).substr(0, 4);
-	}
-}
+//std::wstring Character::FormatToPercentageW(float number)
+//{
+//	if (number >= 100.0f)
+//	{
+//		return std::to_wstring(number).substr(0, 6);
+//	}
+//	else if (number >= 10.0f)
+//	{
+//		return std::to_wstring(number).substr(0, 5);
+//	}
+//	else
+//	{
+//		return std::to_wstring(number).substr(0, 4);
+//	}
+//}
 
 // Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
@@ -122,7 +122,7 @@ void Character::TakeDamage(float dmg)
 
 	// BattleLogText shit that dumbass Bryce uses
 	std::cout << dmg << " damage!" << std::endl;
-	std::wstring dmgText = std::wstring(FormatToPercentageW(dmg));
+	std::wstring dmgText = L"";
 	dmgText.append(L" damage!");
 	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
 
@@ -657,4 +657,22 @@ std::wstring Character::GetDescription()
 void Character::SetDescription(std::wstring newDescription)
 {
 	mDescription = newDescription;
+}
+
+// Returns the Turn order number for this character
+Odyssey::Text2D* Character::GetTurnOrderNumber()
+{
+	return pTurnNumber;
+}
+
+// Set the characters Hud index
+void Character::SetHudIndex(unsigned int newIndex)
+{
+	mHudIndex = newIndex;
+}
+
+// Returns the character hud index
+unsigned int Character::GetHudIndex()
+{
+	return mHudIndex;
 }

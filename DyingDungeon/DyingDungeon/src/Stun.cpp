@@ -21,10 +21,7 @@ void Stun::Apply(Character& target)
 		newStatusEffect = std::make_shared<Stun>(mDuration, &target);
 		target.AddStatusEffect(newStatusEffect);
 		target.SetState(STATE::STUNNED);
-		std::cout << target.GetName() << " has been stunned!" << std::endl;
 	}
-	else
-		std::cout << target.GetName() << " is already stunned." << std::endl;
 	return;
 }
 void Stun::Use()
@@ -37,7 +34,6 @@ void Stun::Remove()
 	if (mRecipient->GetState() != STATE::DEAD)
 	{
 		mRecipient->SetState(STATE::NONE);
-		std::cout << mRecipient->GetName() << " is no longer stunned." << std::endl;
 	}
 	return;
 }

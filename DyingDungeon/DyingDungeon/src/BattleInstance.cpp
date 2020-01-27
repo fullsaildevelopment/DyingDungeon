@@ -74,9 +74,8 @@ int BattleInstance::UpdateBattle()
 	// Check to see if the current charcter is even alive before the character takes its turn
 	if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::DEAD)
 	{
-		std::cout << mCurrentCharacter->getComponent<Character>()->GetName() << " Died, R.I.P.\n" << std::endl;
 		//Update the character's turn number to an X - this will represent that he is dead
-		mCurrentCharacter->getComponent<Character>()->pTurnNumber->setText(L"X");
+		mCurrentCharacter->getComponent<Character>()->GetTurnOrderNumber()->setText(L"X");
 		// Take the current character out of the battle queue
 		mBattleQueue.pop();
 		// Update turn numbers
@@ -202,12 +201,12 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 		if (currChar->GetState() == STATE::DEAD)
 		{
-			currChar->pTurnNumber->setText(L"X");
+			currChar->GetTurnOrderNumber()->setText(L"X");
 			counter--;
 		}
 		else
 		{
-			currChar->pTurnNumber->setText(std::to_wstring(counter));
+			currChar->GetTurnOrderNumber()->setText(std::to_wstring(counter));
 		}
 		tempBattleQueue.pop();
 		counter++;
@@ -227,7 +226,7 @@ void BattleInstance::SetTurnIndicatorPosition()
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 
 	// Send out event letting the stat tracker know a new player is taking a turn
-	std::string characterName = mCurrentCharacter->getComponent<Character>()->GetName();
+	std::wstring characterName = mCurrentCharacter->getComponent<Character>()->GetName();
 	bool isHero = mCurrentCharacter->getComponent<Character>()->IsHero();
 	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mTurnCounter, mCurrentRound, isHero));
 }
