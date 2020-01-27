@@ -12,7 +12,6 @@
 #include "StatUp.h"
 #include "Stun.h"
 
-// Default Constructor
 AIMoves::AIMoves()
 {
 	mCurrMoveCheck = 0;
@@ -22,7 +21,6 @@ AIMoves::AIMoves()
 	mPriorityMove = SKILLTYPE::UNDEFINED;
 }
 
-// Constructor
 AIMoves::AIMoves(int _enemyID, Character* _caster)
 {
 	//Priority Set To None
@@ -39,9 +37,6 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	mPrevMove.target = nullptr;
 	mPrevMove.skill = nullptr;
 
-	// Initialize Deciding Moves
-	//ResetDecidingMoves();
-
 	//My ID and Who I am
 	mEnemyID = _enemyID;
 	caster = _caster;
@@ -50,47 +45,44 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	std::shared_ptr<StatusEffect> debuff;
 	switch (_enemyID)
 	{
-		//Skeleton
 		case 0:
 		{
 			////Setup Moves
 			// Debuff to slow speed
 			debuff = std::make_shared<StatDown>(10.0f,2,STATS::Spd,nullptr);
 			// Basic attack. mod dps, spd down
-			mAISkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "BasicAttackButBetter", 0.25f, -15.0f, 10.0f, debuff));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "BasicAttackButBetter", 0.25f, -15.0f, 10.0f, debuff));
 			//Bleed for dot
 			debuff = std::make_shared<Bleed>(0.15f,2,nullptr);
 			// Skelator slash for big dps, inflicts bleed
-			mAISkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "SpinKick", 0.25f, 10.0f, 25.0f, debuff));
+			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "SpinKick", 0.25f, 10.0f, 25.0f, debuff));
 			// Debuff to lower attack
 			debuff = std::make_shared<StatDown>(0.10f, 2, STATS::Atk, nullptr);
 			// Necrotic Infection big aoe dps, atk dwn
-			mAISkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "FwdKick", 0.25f, 40.0f, 20.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "FwdKick", 0.25f, 40.0f, 20.0f, debuff, true));
 			//Test Regen
 			//debuff = std::make_shared<Regens>(0.15f, 2, nullptr);
-			//mAISkillList.push_back(std::make_shared<Buffs>("Necrotic Infection", "FwdKick", 0.25f, 50.0f, 0.0f, debuff, true));
+			//mSkillList.push_back(std::make_shared<Buffs>("Necrotic Infection", "FwdKick", 0.25f, 50.0f, 0.0f, debuff, true));
 			break;
 		}
-		//Ganfaul
 		case 1:
 		{
 			// Basic Attack, good dps, stun
 			debuff = std::make_shared<Stun>(1,nullptr);
-			mAISkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Attack", 0.25f, -15.0f, 25.0f, debuff));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Attack", 0.25f, -15.0f, 25.0f, debuff));
 			//  good dps, spd down ,aoe
 			debuff = std::make_shared<StatDown>(0.25f, 4, STATS::Spd, nullptr);
-			mAISkillList.push_back(std::make_shared<Attack>(L"AOE Slow", "Attack", 0.25f, 20.0f, 15.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"AOE Slow", "Attack", 0.25f, 20.0f, 15.0f, debuff, true));
 			//  Big smack
-			mAISkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Attack", 0.25f, 50.0f, 45.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Attack", 0.25f, 50.0f, 45.0f));
 			// Attack buff
 			debuff = std::make_shared<StatUp>(0.30f,3,STATS::Atk, nullptr);
-			mAISkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Attack", 0.25f, 20.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Attack", 0.25f, 20.0f, debuff, true));
 			// Regen
 			debuff = std::make_shared<Regens>(0.15f, 5, nullptr);
-			mAISkillList.push_back(std::make_shared<Buffs>(L"Regen", "Attack",0.15f, 10.0f, debuff,true));
+			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Attack",0.15f, 10.0f, debuff,true));
 			break;
 		}
-		//You broke something
 		default:
 		{
 			break;
@@ -98,7 +90,6 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	}
 }
 
-//Find the best move depending on what enemy you are
 bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	mPriorityMove = priorityOverride;
@@ -107,48 +98,40 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 	//Determine Enemy Type
 	switch (mEnemyID)
 	{
-		//Uses enum ENEMYID.
-		//Skeleton
 		case 0:
 		{
 			//FindBestMove
 			if (mPriorityMove == SKILLTYPE::UNDEFINED)
 				SkeletonDeterminePriority();
 			
-			finished = SkillCheck(playerTeam, enemyTeam);
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		};
-		//Ganfauls
 		case 1:
 		{
-			GanfaulDeterminePriority();
-			finished = SkillCheck(playerTeam, enemyTeam);
+			BossDeterminePriority();
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		}
-		//You broke something
 		default:
 		{
 			break;
 		};
 	}
 	
-	// Return if we finished
+	
 	return finished;
 }
 
-// Iterrate through all skills
-bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool AIMoves::FindBestMove(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	bool finished = false;
 
-	//Loop through all the skills one at a time
-	for (; mCurrMoveCheck < mAISkillList.size();)
+	for (; mCurrMoveCheck < mSkillList.size();)
 	{
-		// Score the current skill
-		ScoreMove(mAISkillList[mCurrMoveCheck], playerTeam, enemyTeam);
+		float score = ScoreMove(mSkillList[mCurrMoveCheck], playerTeam, enemyTeam);
 
-		// Finished Condition. We have looped through and scored all the skills.
-		if (mCurrMoveCheck >= mAISkillList.size() - 1)
+		if (mCurrMoveCheck >= mSkillList.size() - 1)
 		{
 			mCurrMoveCheck = 0;
 			finished = true;
@@ -159,8 +142,6 @@ bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTea
 		break;
 	}
 
-	// If we have gone through all of our skills determine
-	// the best out of the deciding moves based upon our priority.
 	if (finished)
 	{
 		switch (mPriorityMove)
@@ -201,20 +182,17 @@ bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTea
 		}
 	}
 
-	// Return if we have finished or not
 	return finished;
 }
 
-// Generic score move function that determins which score 
-// move function to use in relation to the type of skill.
-void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
-{	
+float AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+{
+	float score = 0.0f;
+	
 	//Do we have enough mana to actually use the skill
 	if (skill->GetManaCost() > caster->GetMana())
-		return;
+		return -10000.0f;
 
-
-	// Determine how we will score the current skill
 	switch (skill->GetTypeId())
 	{
 		case SKILLTYPE::ATTACK:
@@ -239,24 +217,22 @@ void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_p
 		}
 		default:
 		{
-			//Yo stop breaking stuff
 			break;
 		}
 	}
+
+	return score;
 }
 
-// Generic score move single target attack
 void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam)
 {
 	float attackScore = 0.0f;
 	Character* target = nullptr;
 
-	//if the skill is an aoe move then swap how we score.
 	if (skill->IsAOE())
 		ScoreMoveAttackAOE(skill, playerTeam);
 	else
 	{
-		// If we are not provoked then continue
 		if (caster->GetProvoked() == nullptr)
 		for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
 		{
@@ -266,26 +242,26 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 				{
 					if (target->IsHero() == true && target->GetState() != STATE::DEAD)
 					{
-						// If this is our priority then increase the score
 						if (skill->GetTypeId() == mPriorityMove)
 							attackScore += 100.0f;
 
-						// Damage added to the score
 						Attack* tempATK = dynamic_cast<Attack*>(skill.get());
 						if (target->GetHP() - tempATK->GetDamage() <= 0.0f)
 							attackScore += 1000.0f;
 						else
 							attackScore += tempATK->GetDamage();
-						
-						// Add status effect score if a status exists to our score
+
 						attackScore += StatusEffectScore(skill, target);
 
-						// If we beat our previous score then set our current move to the attacks best move
+						//std::cout << skill->GetName() << " scored: " << attackScore << std::endl;
+
 						if (attackScore > mBestAttack.score)
 						{
 							mBestAttack.skill = skill;
 							mBestAttack.target = target;
 							mBestAttack.score = attackScore;
+
+							//std::cout << "BEST ATTACK CHANGED" << std::endl;
 						}
 
 						target = nullptr;
@@ -294,30 +270,22 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 				}
 			}
 		}
-		// If we are provoked then set the target to the provoker and continue scoring
 		else
 		{
-			// Is this our skilltype priority
 			if (skill->GetTypeId() == mPriorityMove)
 				attackScore += 100.0f;
 
-			// Set target to the provoker
 			target = caster->GetProvoked();
 
-			// Calculate damage
 			Attack* tempATK = dynamic_cast<Attack*>(skill.get());
 			if (target->GetHP() - tempATK->GetDamage() <= 0.0f)
 				attackScore += 1000.0f;
 			else
 				attackScore += tempATK->GetDamage();
 
-			// Score status effect
 			attackScore += StatusEffectScore(skill, target);
 
-			// TODO: TESTING PURPOSES (REMOVE WHEN NOT NEEDED)
-			std::cout << skill->GetName().c_str() << " scored: " << attackScore << std::endl;
 
-			// Does our attack score beat our previous score
 			if (attackScore >= mBestAttack.score)
 			{
 				mBestAttack.skill = skill;
@@ -325,53 +293,43 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 				mBestAttack.score = attackScore;
 			}
 
-			// Reset the score and target
 			attackScore = 0.0f;
 			target = nullptr;
 		}
 	}
-
-	// END
 }
 
-// Generic score move attack for aoe moves
 void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam)
 {
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
 
-	// If our previous skill is an aoe attack then return
 	if (mPrevMove.skill != nullptr && mPrevMove.skill->IsAOE())
 		return;
 
-	// Is the priority the same as our skill 
 	if (skill->GetTypeId() == mPriorityMove)
 		attackAOEScore += 100.0f;
 	
-	// Loop through all targets adding damage for each to the score
 	for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
 	{
 		if (t)
 		{
 			if (currTarget = t->getComponent<Character>())
 			{
-				// Make sure were hitting a hero and hes not dead
 				if (currTarget->IsHero() == true && currTarget->GetState() != STATE::DEAD)
 				{
-					// Calculate damage
 					Attack* tempATK = dynamic_cast<Attack*>(skill.get());
 					if (currTarget->GetHP() - tempATK->GetDamage() <= 0.0f)
 						attackAOEScore += 1000.0f;
 					else
 						attackAOEScore += tempATK->GetDamage();
-					// Add status effect score
+
 					attackAOEScore += StatusEffectScore(skill, currTarget);
 				}
 			}
 		}
 	}
 
-	// Do we beat our previous attackScore
 	if (attackAOEScore >= mBestAttack.score)
 	{
 		mBestAttack.skill = skill;
@@ -382,17 +340,14 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 	//std::cout << skill->GetName() << " aoe scored " << attackAOEScore << std::endl;
 }
 
-// Generic score move for single target buffs
 void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	float buffScore = 0.0f;
 	Character* target = nullptr;
 
-	// Make sure we didn't previously buff someone. 
 	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
 		buffScore += 50.0f;
 
-	// Loop through all friendlies
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
 		if (t)
@@ -401,14 +356,11 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 			{
 				if (target->IsHero() == false && target->GetState() != STATE::DEAD)
 				{
-					// Less score if targeting self since we have to wait till next turn
 					if (target != caster)
 						buffScore += 20.0f;
 
-					// Status effect scoring
 					buffScore += StatusEffectScore(skill, target);
 
-					// Does our score beat the best buff score
 					if (buffScore > mBestBuff.score)
 					{
 						mBestBuff.score = buffScore;
@@ -416,7 +368,6 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 						mBestBuff.target = target;
 					}
 
-					// Reset score and target
 					buffScore = 0.0f;
 					target = nullptr;
 				}
@@ -426,38 +377,31 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	
 }
 
-// Score move function for aoe buffs
 void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
 
-	// Make sure we didn't use an aoe buff before
 	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
 		buffAOEScore += 50.0f;
 
-	// Loop through all friendlies adding score for each.
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
 		if (t)
 		{
 			if (target = t->getComponent<Character>())
 			{
-				// Make sure were not buffing a hero
 				if (target->IsHero() == false && target->GetState() != STATE::DEAD)
 				{
-					// When were not targeting ourself add 20
 					if (target != caster)
 						buffAOEScore += 20.0f;
 
-					// Score the status effect
 					buffAOEScore += StatusEffectScore(skill, target);
 				}
 			}
 		}
 	}
 
-	// Do we beat our previous buff score
 	if (buffAOEScore > mBestBuff.score)
 	{
 		mBestBuff.score = buffAOEScore;
@@ -466,22 +410,15 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 	}
 }
 
-
-// Generic score move for status effects
 float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* target)
 {
 	float statScore = 0.0f;
 
-	// Don't continue if no status effect exists
 	if (skill->GetStatusEffect() != nullptr)
 	{
-		// Get the status effect
 		StatusEffect* statEffect = skill->GetStatusEffect();
-
-		// Determine what type of status effect it is
 		EFFECTTYPE type = skill->GetStatusEffect()->GetTypeId();
 
-		// Swap depending on effect type
 		switch (type)
 		{
 		case EFFECTTYPE::Bleed:
@@ -498,7 +435,6 @@ float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* targe
 		}
 		case EFFECTTYPE::StatUp:
 		{
-			// Down cast to a stat up
 			StatUp* temp = dynamic_cast<StatUp*>(statEffect);
 			switch (temp->GetStatId())
 			{
@@ -530,28 +466,27 @@ float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* targe
 		}
 		case EFFECTTYPE::StatDown:
 		{
-			// Downcast to a statdown
 			StatDown* temp = dynamic_cast<StatDown*>(statEffect);
 			switch (temp->GetStatId())
 			{
 			case STATS::Atk:
 			{
 				if (target->GetAtk() >= 0.0f)
-					statScore -= 20.0f;
+					statScore += 20.0f;
 				break;
 			}
 			case STATS::Def:
 			{
 				if (target->GetDef() >= target->GetBaseDef())
-					statScore -= 20.0f;
+					statScore += 20.0f;
 				break;
 			}
 			case STATS::Spd:
 			{
 				if (target->GetSpeed() >= target->GetBaseSpeed())
-					statScore -= 20.0f;
+					statScore += 20.0f;
 				if (target == caster)
-					statScore -= 10.0f;
+					statScore += 10.0f;
 
 				break;
 			}
@@ -586,54 +521,44 @@ float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* targe
 		}
 	}
 
-	// Return our score
 	return statScore;
 }
 
-// Determin what type of move the skeleton should prioritize
 void AIMoves::SkeletonDeterminePriority()
 {
-	// If I'm provoked then attack them
 	if (caster->GetProvoked() != nullptr)
 		mPriorityMove = SKILLTYPE::ATTACK;
 
-	// If a priority was not set then find a priority
 	if (mPriorityMove == SKILLTYPE::UNDEFINED)
 	{
 		mPriorityMove = SKILLTYPE::ATTACK;
 	}
 }
 
-// Always prioritize attacking over everything else
 void AIMoves::UngaAttackDeterminePriority()
 {
 	mPriorityMove = SKILLTYPE::ATTACK;
 }
 
-// Determins ganfauls move priority
-void AIMoves::GanfaulDeterminePriority()
+void AIMoves::BossDeterminePriority()
 {
 	mPriorityMove = SKILLTYPE::ATTACK;
 }
 
 ///////GET FUNCTIONS///////
 
-// Returns the best move for the AI
 std::shared_ptr<AIMoves::Move> AIMoves::GetMove()
 {
 	return mBestMove;
 }
 
-// Returns the skill list for the enemy
 std::vector<std::shared_ptr<Skills>> AIMoves::GetSkillList()
 {
-	return mAISkillList;
+	return mSkillList;
 }
 
 ///////SET FUNCTIONS///////
 
-
-// Resets every move 
 void AIMoves::ResetMove()
 {
 	SetPrevMove();
@@ -644,7 +569,6 @@ void AIMoves::ResetMove()
 	mBestMove->score = -10000;
 }
 
-// Sets the previous move to the current best move
 void AIMoves::SetPrevMove()
 {
 	mPrevMove.skill = mBestMove->skill;
@@ -652,7 +576,6 @@ void AIMoves::SetPrevMove()
 	mPrevMove.score = mBestMove->score;
 }
 
-// Resets the skill deciding moves
 void AIMoves::ResetDecidingMoves()
 {
 	mBestAttack.score = 0.0f;

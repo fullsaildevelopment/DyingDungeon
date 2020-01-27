@@ -151,7 +151,7 @@ public:
 	void UpdateManaBar();
 
 	// For bryces dumbasss, made by reds dumbass
-	std::wstring FormatToPercentageW(float number);
+	//std::wstring FormatToPercentageW(float number);
 
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
