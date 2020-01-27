@@ -4,12 +4,11 @@
 #include "Rectangle2D.h"
 #include "Text2D.h"
 #include "Skills.h"
+#include "GameUIManager.h"
 #include <vector>
 
-#define TOTALSKILLS 7
-
-enum class HEROID { Paladin = 0 };
-enum class ENEMYID { Skeleton = 0, Boss };
+enum class HEROID { Paladin = 0, Mage, Bard };
+enum class ENEMYID { Skeleton = 0, Ganfaul };
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
@@ -25,6 +24,9 @@ public:
 	//Attack Functions
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 	virtual void Die();
+
+	//Skills
+	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
 
 	void TakeDamage(float dmg);
 	void ReceiveHealing(float healing);
@@ -56,9 +58,6 @@ public:
 	float GetBaseSpeed();
 	void IncreaseSpd(float statIncrease);
 	void DecreaseSpd(float statDecrease);
-	// Dead Status Functions
-	bool IsDead();
-	void SetDead(bool deadStatus);
 	// EXP Functions
 	void AddExp(float exp);
 	float GetExp();
@@ -67,9 +66,7 @@ public:
 	void SetHero(bool heroStat);
 	// Name Functions
 	std::string GetName();
-	// Skills Functions
 	void SetName(std::string newName);
-	std::vector<std::shared_ptr<Skills>> GetSkills();
 	// mProvoked Functions
 	Character* GetProvoked();
 	void SetProvoked(Character* provoker);
@@ -82,7 +79,7 @@ public:
 	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
 	/////End of Get and Set Functions/////
 	// Status Effect Functions
-	void AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
+	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
 	bool ManageAllEffects();
 	void ClearStatusEffects();
@@ -91,9 +88,18 @@ public:
 	//Update ManaBar UI
 	void UpdateManaBar();
 
+	std::wstring FormatToPercentageW(float number);
+
+	// Blood particle effect functions
+	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+	Odyssey::ParticleSystem* GetPSBlood();
+	
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
+	Odyssey::Text2D* mBigHpText;
+	Odyssey::Text2D* mHpText;
+	Odyssey::Text2D* mMpText;
 
 	// TODO: FOR BUILD ONLY FIX LATER
 	Odyssey::Text2D* pDmgText;
@@ -102,7 +108,6 @@ public:
 protected:
 	//Stats
 	bool mHero;
-	bool mDead;
 	float mCurrentHP;
 	float mCurrentMana;
 	float mBaseMaxHP;
@@ -124,6 +129,8 @@ protected:
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
 	Odyssey::Animator* mAnimator;
 	STATE mCurrentState;
+	Odyssey::ParticleSystem* mBloodParticleEffect;
+	public:
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
 private:
 	float mPrevHealth;

@@ -1,3 +1,4 @@
+
 #include "InputManager.h"
 #include "EventManager.h"
 
@@ -10,6 +11,10 @@ namespace Odyssey
 
 		// Subscribe to the key up event
 		EventManager::getInstance().subscribe(this, &InputManager::onKeyUp);
+
+		EventManager::getInstance().subscribe(this, &InputManager::onMouseMove);
+
+		sendMouseHover = true;
 	}
 
 	InputManager& InputManager::getInstance()
@@ -44,6 +49,12 @@ namespace Odyssey
 
 		// Set the key up state to true
 		mKeyUpMap[codeID] = true;
+	}
+
+	void InputManager::onMouseMove(MouseInputEvent* evnt)
+	{
+		mouseX = evnt->mouseX;
+		mouseY = evnt->mouseY;
 	}
 
 	bool InputManager::getKeyPress(KeyCode key)
@@ -87,5 +98,9 @@ namespace Odyssey
 
 		// The key was not found in the map, no key up
 		return mKeyUpMap[codeID];
+	}
+	void InputManager::sendMouseMove()
+	{
+		EventManager::getInstance().publish(new MouseMoveEvent(mouseX, mouseY));
 	}
 }

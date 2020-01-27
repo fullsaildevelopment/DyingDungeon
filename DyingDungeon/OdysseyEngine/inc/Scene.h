@@ -2,6 +2,7 @@
 #include "XTime.h"
 #include <memory>
 #include <vector>
+#include "EngineIncludes.h"
 
 namespace Odyssey
 {
@@ -13,6 +14,7 @@ namespace Odyssey
 	class ParticleSystem;
 	class UICanvas;
 	class UIElement;
+	class RenderDevice;
 
 	class Scene
 	{
@@ -56,7 +58,14 @@ namespace Odyssey
 		 */
 		Entity* getMainCamera();
 
+		void setActive(bool active);
+
+		// TODO: REFACTOR THIS LATER
+		void setShadowStats(std::shared_ptr<Light> shadowLight, DirectX::XMFLOAT3 sceneCenter, float sceneRadius);
+
+		void setSkybox(const char* filename);
 	protected: // Members
+		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<Entity> mMainCamera;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
 		std::vector<std::shared_ptr<Light>> mSceneLights;
@@ -65,7 +74,12 @@ namespace Odyssey
 		std::vector<UIElement*> mElementList;
 		std::vector<Component*> mComponentList;
 		std::vector<ParticleSystem*> mSystemList;
+		std::shared_ptr<Entity> mSkybox;
+		std::shared_ptr<Light> mShadowLight;
+		DirectX::XMFLOAT3 mSceneCenter;
+		float mSceneRadius;
 		XTime mXTimer;
 		double mDeltaTime;
+		bool mActive;
 	};
 }

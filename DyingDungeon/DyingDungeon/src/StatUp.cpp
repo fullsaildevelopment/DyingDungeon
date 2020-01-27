@@ -7,6 +7,7 @@ StatUp::StatUp(float ammountOfEffect, int duration, STATS stat, Character* targe
 	mAmountOfEffect = ammountOfEffect;
 	mDuration = duration;
 	mRecipient = target;
+	mAffectedStatId = stat;
 	mStatId = stat;
 }
 
@@ -18,7 +19,8 @@ void StatUp::Apply(Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<StatUp>(mAmountOfEffect, mDuration,mStatId, &target);
-	target.AddStatusEffect(newStatusEffect);
+	if (!target.AddStatusEffect(newStatusEffect))
+		return;
 	std::string temp;
 	switch (mStatId)
 	{

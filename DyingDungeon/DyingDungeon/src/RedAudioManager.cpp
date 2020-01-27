@@ -11,7 +11,7 @@ RedAudio* RedAudioManager::FindAudio(const char* alias)
 			return &m_audioFiles[i];
 		}
 	}
-	return default_audio;
+	return m_default_audio;
 }
 
 RedAudioManager& RedAudioManager::Instance()
@@ -23,8 +23,12 @@ RedAudioManager& RedAudioManager::Instance()
 RedAudioManager::RedAudioManager()
 {
 	//default_audio = nullptr;
-	default_audio = new RedAudio("assets/audio/wheres_the_lamb_sauce.mp3", "DEFAULT");
-	default_audio->Open();
+	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::StopEvent);
+	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::SetVolumeEvent);
+	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::LoopEvent);
+	m_volume = 500;
+	m_default_audio = new RedAudio("assets/audio/wheres_the_lamb_sauce.mp3", "DEFAULT");
+	m_default_audio->Open();
 }
 
 //RedAudioManager::RedAudioManager(const char* defult_audio)
@@ -37,7 +41,7 @@ RedAudioManager::~RedAudioManager()
 {
 	//if (default_audio) {
 	//default_audio->Clear();
-	delete default_audio;
+	delete m_default_audio;
 	//}
 	/*for (int i = 0; i < m_audioFiles.size(); i++) {
 		m_audioFiles[i].Clear();
@@ -50,9 +54,15 @@ void RedAudioManager::Play(const char* alias)
 	FindAudio(alias)->Play();
 }
 
+void RedAudioManager::StopEvent(AudioStopEvent* asEvent)
+{
+	//Stop(asEvent->alias.c_str());
+	FindAudio(asEvent->alias.c_str())->Stop();
+}
+
 void RedAudioManager::Stop(const char* alias) 
 {
-	FindAudio(alias)->Stop();
+	Odyssey::EventManager::getInstance().publish(new AudioStopEvent(alias));
 }
 
 void RedAudioManager::PlaySFX(const char* alias)
@@ -62,7 +72,12 @@ void RedAudioManager::PlaySFX(const char* alias)
 
 void RedAudioManager::Loop(const char* alias)
 {
-	FindAudio(alias)->PlayLoop();
+	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(alias));
+}
+
+void RedAudioManager::LoopEvent(AudioLoopEvent* alEvent)
+{
+	FindAudio(alEvent->alias.c_str())->PlayLoop();
 }
 
 void RedAudioManager::Segment(const char* alias, unsigned int start, unsigned int end)
@@ -70,9 +85,43 @@ void RedAudioManager::Segment(const char* alias, unsigned int start, unsigned in
 	FindAudio(alias)->PlaySegment(start, end);
 }
 
-void RedAudioManager::SetVolume(const char* alias, unsigned int volume)
+bool RedAudioManager::SetMasterVolume(const char* alias, unsigned int volume)
 {
-	FindAudio(alias)->SetVolume(volume);
+	if (volume > 1000)
+	{
+		return false;
+	}
+	else 
+	{
+		FindAudio(alias)->SetVolume(volume);
+		return true;
+	}
+}
+
+bool RedAudioManager::SetMasterVolume(unsigned int volume)
+{
+	if (volume > 1000) 
+	{
+		return false;
+	}
+	m_volume = volume;
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(volume));
+	return true;
+}
+
+void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
+{
+	m_volume = avEvent->volumeLevel;
+	
+	for (int i = 0; i < m_audioFiles.size(); i++)
+	{
+		m_audioFiles[i].SetVolume(m_volume);
+	}
+}
+
+unsigned int RedAudioManager::GetVolume()
+{
+	return m_volume;
 }
 
 void RedAudioManager::Update()
@@ -88,13 +137,13 @@ void RedAudioManager::Update()
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
-	m_audioFiles.push_back(RedAudio(path, alias));
+	m_audioFiles.emplace_back(RedAudio(path, alias));
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
 void RedAudioManager::AddAudio(RedAudio in_audio)
 {
-	m_audioFiles.push_back(in_audio);
+	m_audioFiles.emplace_back(in_audio);
 	//m_audioFiles[m_audioFiles.size() - 1].Open();
 }
 
@@ -110,9 +159,9 @@ RedAudio* RedAudioManager::GetAudio(const char* alias)
 
 void RedAudioManager::SetDefult(const char* path)
 {
-	default_audio->SetPath(path);
-	default_audio->SetPath("DEFAULT");
-	default_audio->Open();
+	m_default_audio->SetPath(path);
+	m_default_audio->SetPath("DEFAULT");
+	m_default_audio->Open();
 }
 
 unsigned int RedAudioManager::AudioListSize()

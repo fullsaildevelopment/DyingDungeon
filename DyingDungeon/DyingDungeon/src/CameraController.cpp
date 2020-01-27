@@ -11,6 +11,7 @@ CameraController::CameraController()
 	mRotationSpeed = 100.0f;
 	mMovementSpeed = 10.0f;
 	mMainCamera = nullptr;
+	mLockCamera = true;
 }
 
 void CameraController::initialize()
@@ -20,14 +21,19 @@ void CameraController::initialize()
 
 void CameraController::update(double deltaTime)
 {
-	if (mMainCamera)
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::U))
+	{
+		mLockCamera = !mLockCamera;
+	}
+
+	if (mMainCamera && !mLockCamera)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::F2))
 		{
 			if (Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>())
 			{
-				transform->setPosition(0.0f, 8.13f, 10.82f);
-				transform->setRotation(24.81f, -180.0f, 0.0f);
+				transform->setPosition(3.432f, 7.053f, 14.602f);
+				transform->setRotation(25.189f, -160.439f, 0.0f);
 			}
 		}
 
@@ -42,6 +48,7 @@ void CameraController::updateMovement(double deltaTime)
 	DirectX::XMFLOAT3 velocity(0.0f, 0.0f, 0.0f);
 
 	Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>();
+
 	if (transform == nullptr)
 	{
 		return;

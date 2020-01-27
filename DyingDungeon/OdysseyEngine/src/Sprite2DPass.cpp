@@ -26,9 +26,10 @@ namespace Odyssey
 	{
 		for (UIElement* element : args.elementList)
 		{
-			if (element->getCanvas()->isActive())
+			if (element->getCanvas()->isActive() && element->getCanvas()->getEntity()->isActive() && element->getCanvas()->getEntity()->isVisible())
 			{
-				element->draw(mContext);
+				if (element->isVisible())
+					element->draw(mContext);
 			}
 		}
 

@@ -1,0 +1,251 @@
+----------------------------------------------------------
+                        Game Info
+----------------------------------------------------------
+
+                  Attack     Defend      Aid
+               | 80.00% | | 00.00% | | 10.00% |
+
+         Attack   Damage Dealt   Damage Success
+Attack: |  08  | |    400.10   | |    99.99%    |
+
+         Defend   Damage Taken   Damage Mitigated   Health Gained
+Defend: |  00  | |    01.23   | |     00.26      | |    00.00    |
+
+          Aid     Heal    Deffence Buff
+   Aid: | 01 | | 00.00 | |    75.00    |
+
+----------------------------------------------------------
+                         Level 1
+----------------------------------------------------------
+
+Round 1
+
+	Turn 1: Mage Uno
+
+	Action: FireStorm
+
+	        Skeleton Un
+	        Skeleton Deux
+	        Skeleton Trois
+	        Skeleton Quatre
+
+	         Damage: 0.10
+
+	Target 2: Skeleton Un
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.10
+
+	Target 4: Skeleton Deux
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.10
+
+	Target 6: Skeleton Trois
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.10
+
+	Target 8: Skeleton Quatre
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.10
+
+
+	Turn 2: Paladin Uno
+
+	Action: Judgement
+
+	Target: Skeleton Un
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Un
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+
+	Turn 3: Paladin Dos
+
+	Action: Judgement
+
+	Target: Skeleton Deux
+
+	         Damage: 200.00
+
+	Target 1: Skeleton Deux
+	Damage Mitigated: 0.00
+	    Danage Taken: 200.00
+
+
+	Turn 4: Skeleton Un
+
+	Action: 
+
+
+
+	Turn 5: Skeleton Deux
+
+	Action: 
+
+
+
+	Turn 6: Skeleton Trois
+
+	Action: Necrotic Infection
+
+	        Paladin Uno
+	        Paladin Dos
+	        Mage Uno
+
+	         Damage: 0.10
+
+	Target 2: Paladin Uno
+	Damage Mitigated: 0.31
+	    Danage Taken: 0.07
+
+	Target 4: Paladin Dos
+	Damage Mitigated: 0.31
+	    Danage Taken: 0.07
+
+	Target 6: Mage Uno
+	Damage Mitigated: 0.10
+	    Danage Taken: 0.09
+
+
+	Turn 7: Skeleton Quatre
+
+	Action: Necrotic Infection
+
+	        Paladin Uno
+	        Paladin Dos
+	        Mage Uno
+
+	         Damage: 0.10
+
+	Target 2: Paladin Uno
+	Damage Mitigated: 0.31
+	    Danage Taken: 0.07
+
+	Target 4: Paladin Dos
+	Damage Mitigated: 0.31
+	    Danage Taken: 0.07
+
+	Target 6: Mage Uno
+	Damage Mitigated: 0.10
+	    Danage Taken: 0.09
+
+
+	Turn 8: Mage Uno
+
+	Action: Basic Attack
+
+	        Skeleton Trois
+
+	         Damage: 0.00
+
+	Target 2: Skeleton Trois
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.00
+
+
+
+Round 2
+
+	Turn 9: Paladin Uno
+
+	Action: Basic Attack
+
+	        Skeleton Trois
+
+	         Damage: 0.00
+
+	Target 2: Skeleton Trois
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.00
+
+
+	Turn 10: Paladin Dos
+
+	Action: Basic Attack
+
+	        Skeleton Trois
+
+	         Damage: 0.00
+
+	Target 2: Skeleton Trois
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.00
+
+
+	Turn 11: Skeleton Trois
+
+	Action: 
+
+
+
+	Turn 12: Skeleton Quatre
+
+	Action: Skelator Slash
+
+	        Paladin Uno
+
+	         Damage: 0.15
+
+	Target 2: Paladin Uno
+	Damage Mitigated: 0.31
+	    Danage Taken: 0.10
+
+
+	Turn 13: Mage Uno
+
+	Action: Basic Attack
+
+	        Skeleton Quatre
+
+	         Damage: 0.00
+
+	Target 2: Skeleton Quatre
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.00
+
+
+
+Round 3
+
+	Turn 14: Paladin Uno
+
+	Action: Basic Attack
+
+	        Skeleton Quatre
+
+	         Damage: 0.00
+
+	Target 2: Skeleton Quatre
+	Damage Mitigated: 0.00
+	    Danage Taken: 0.00
+
+
+	Turn 15: Paladin Dos
+
+	Action: Shield of Light
+
+	Target: Paladin Uno
+	        Paladin Dos
+	        Mage Uno
+
+	Sheild: 25.00
+	Turn 16: Skeleton Trois
+
+	Action: 
+
+
+
+	Turn 17: Skeleton Quatre
+
+	Action: 
+
+
+
+	Turn 18: Mage Uno
+
+	Action: 
+
+
+

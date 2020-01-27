@@ -12,7 +12,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	m_start = 0;
 
 	Open();
-
+	SetVolume(500);
 	std::string cmd = "status ";
 	int curr_count = 8;
 
@@ -349,11 +349,12 @@ void RedAudio::SeekEnd()
 
 void RedAudio::SetVolume(unsigned int volume)
 {
+	//Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 
 	std::string cmd = "setaudio ";
 	cmd.append(m_alias);
-	cmd.append("volume to ");
+	cmd.append(" volume to ");
 	cmd.append(std::to_string(volume));
 	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
 	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
@@ -364,6 +365,30 @@ void RedAudio::SetVolume(unsigned int volume)
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	cmd.clear();
+	delete[] in_cmd;
+	delete[] out_string;
+}
+
+unsigned int RedAudio::GetVolume()
+{
+	LPTSTR out_string = LPTSTR(new char[60]);
+
+	std::string cmd = "status ";
+	cmd.append(m_alias);
+	cmd.append(" volume");
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
+	if (strcmp((const char*)out_string, "") != 0) {
+		unsigned long curr_pos = std::stoul(out_string);
+		return static_cast<unsigned int>(curr_pos);
+	}
+	else {
+		return static_cast<unsigned int>(1001);
+#ifdef DEBUG_AUDIO_CONSOLE_OUT
+		std::cout << "ERROR: RedAudio-Update()-No volume recived" << "-file:" << m_path << "\n";
+#endif
+	}
 	cmd.clear();
 	delete[] in_cmd;
 	delete[] out_string;

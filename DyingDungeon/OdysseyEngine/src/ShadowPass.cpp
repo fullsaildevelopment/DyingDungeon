@@ -13,37 +13,35 @@
 #include "AABB.h"
 #include "Camera.h"
 #include "AnimatorDX11.h"
-#include "ScreenGrab.h"
-#include "WICTextureLoader.h"
 #include <fstream>
 #include "EventManager.h"
 #include "Texture.h"
 
 namespace Odyssey
 {
-	ShadowPass::ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<Light> shadowLight, int texWidth, int texHeight)
+	ShadowPass::ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int texWidth, int texHeight)
 	{
 		// Get the device and context
 		mDeviceContext = context;
 		mRenderDevice = renderDevice;
 		mDevice = renderDevice->getDevice();
 
-		// Set the properties of the shadow pass
-		mShadowLight = shadowLight;
+		mTexWidth = texWidth;
+		mTexHeight = texHeight;
 
 		// Create the render state
 		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, true);
 
 		// Create a shadow buffer to tell the pixel shader a shadow map is bound
 		DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
-		shadowsEnabled.z = 1.0f / texWidth;
-		shadowsEnabled.w = 1.0f / texWidth;
+		shadowsEnabled.z = 1.0f / (float)texWidth;
+		shadowsEnabled.w = 1.0f / (float)texWidth;
 		mShadowBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(DirectX::XMFLOAT4)), &shadowsEnabled);
 		mShadowBuffer->bind(mDeviceContext, 2, ShaderType::PixelShader);
 
 		// Create the vertex shader
-		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] = 
+		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -86,11 +84,22 @@ namespace Odyssey
 
 	void ShadowPass::preRender(RenderArgs& args)
 	{
+		if (args.shadowLight == nullptr)
+		{
+			DirectX::XMFLOAT4 shadowsEnabled = { 0.0f, 0.0f, 0.0f, 0.0f };
+			mShadowBuffer->updateData(mDeviceContext, &shadowsEnabled);
+			return;
+		}
+		else
+		{
+			DirectX::XMFLOAT4 shadowsEnabled = { 1.0f, 1.0f, 1.0f, 1.0f };
+			shadowsEnabled.z = 1.0f / (float)mTexWidth;
+			shadowsEnabled.w = 1.0f / (float)mTexWidth;
+			mShadowBuffer->updateData(mDeviceContext, &shadowsEnabled);
+		}
+
 		// Recalculate the light's transform and set the shader matrix's lightViewProj
-		float sceneRadius = 50.0f;
-		DirectX::XMFLOAT3 sceneCenter = { 0.0f, 0.0f, 0.0f };
-		mShadowLight->buildLightTransform(sceneCenter, sceneRadius, args.perFrame.view);
-		mShadowLight->buildLightTransformProjection(sceneCenter, sceneRadius, args.perFrame.lightViewProj);
+		args.shadowLight->buildLightTransformProjection(args.sceneCenter, args.sceneRadius, args.perFrame.lightViewProj);
 
 		// Update the per frame buffer
 		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
@@ -129,6 +138,13 @@ namespace Odyssey
 
 	void ShadowPass::render(RenderArgs& args)
 	{
+		if (args.shadowLight == nullptr)
+		{
+			DirectX::XMFLOAT4 shadowsEnabled = { 0.0f, 0.0f, 0.0f, 0.0f };
+			mShadowBuffer->updateData(mDeviceContext, &shadowsEnabled);
+			return;
+		}
+
 		std::vector<std::shared_ptr<Entity>> dynamicObjects;
 		std::vector<std::shared_ptr<Entity>> staticObjects;
 

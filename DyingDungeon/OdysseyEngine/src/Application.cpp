@@ -53,6 +53,8 @@ namespace Odyssey
 		// Enable muli-threading by default
 		mIsMultithreading = true;
 		mIsShutdown = false;
+		mTimer.Restart();
+		mTickInterval = 0.0;
 
 		// Subscribe to the scene change event
 		EventManager::getInstance().subscribe(this, &Application::onSceneChange);
@@ -79,12 +81,16 @@ namespace Odyssey
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
 			// Change the active scene
+			if (mActiveScene)
+				mActiveScene->setActive(false);
+
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set
 			if (mActiveScene)
 			{
 				// Initialize the scene
+				mActiveScene->setActive(true);
 				mActiveScene->initialize();
 
 				// Notify the thread manager to restart the scene thread
@@ -127,7 +133,14 @@ namespace Odyssey
 				EventManager::getInstance().publish(new KeypressEvent((KeyCode)wParam));
 				break;
 			}
-			break;
+			case WM_MOUSEMOVE:
+			{
+				int xPos = GET_X_LPARAM(lParam);
+				int yPos = GET_Y_LPARAM(lParam);
+				EventManager::getInstance().publish(new MouseInputEvent(xPos, yPos));
+				
+				break;
+			}
 			case WM_KEYUP:
 			{
 				// Register the input as key up with the input manager
@@ -238,8 +251,6 @@ namespace Odyssey
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
 		{
-			// Fire the scene change event and set this as the new active scene
-			EventManager::getInstance().publish(new SceneChangeEvent(name));
 			mActiveScene = std::static_pointer_cast<SceneDX11>(scene);
 		}
 	}
@@ -256,6 +267,32 @@ namespace Odyssey
 		mIsMultithreading = active;
 	}
 
+	void Application::setFrameLimit(std::string threadName, unsigned int fps)
+	{
+		if (threadName == "Main")
+		{
+			mTimer.Restart();
+			if (fps == 0)
+			{
+				mTickInterval = 0.0;
+			}
+			else
+			{
+				mTickInterval = 1.0 / static_cast<double>(fps);
+			}
+		}
+		else if (threadName == "Render")
+		{
+			double interval = 0.0;
+			if (fps != 0)
+			{
+				interval = 1.0 / static_cast<double>(fps);
+			}
+
+			ThreadManager::getInstance().setFrameLimit(interval);
+		}
+	}
+
 	int Application::run()
 	{
 		// Set the running state
@@ -270,7 +307,15 @@ namespace Odyssey
 			if (mActiveScene)
 			{
 				// Execute the scene thread with the active scene
+				mActiveScene->initialize();
 				ThreadManager::getInstance().executeSceneThread(mActiveScene);
+			}
+		}
+		else
+		{
+			if (mActiveScene)
+			{
+				mActiveScene->initialize();
 			}
 		}
 
@@ -292,7 +337,7 @@ namespace Odyssey
 			}
 			// else
 			{
-				timer.Signal();
+				mTimer.Signal();
 
 				if (mIsShutdown)
 				{
@@ -307,9 +352,11 @@ namespace Odyssey
 					mProcessCommands = false;
 				}
 
-				if (timer.TotalTime() > 0.016 || true)
+				InputManager::getInstance().sendMouseMove();
+
+				if (mTimer.TotalTime() > mTickInterval)
 				{
-					timer.Restart();
+					mTimer.Restart();
 					// Check if multithreading is disabled
 					if (mIsMultithreading == false)
 					{

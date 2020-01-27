@@ -63,16 +63,8 @@ namespace Odyssey
 
 	void OpaquePass::preRender(RenderArgs& args)
 	{
-		// Set the view
-		if (Camera* camera = args.camera->getComponent<Camera>())
-		{
-			args.perFrame.view = camera->getInverseViewMatrix();
-			// Calculate and set view proj
-			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
-			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-			// Update the buffer
-			updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
-		}
+		// Update the buffer
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
 
 		// Bind the render target
 		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
@@ -99,16 +91,17 @@ namespace Odyssey
 		// Iterate over each object in the render list
 		if (Camera* camera = args.camera->getComponent<Camera>())
 		{
+			Frustum* frustum = camera->getFrustum();
 			for (MeshRenderer* meshRenderer : args.renderList)
 			{
-				if (meshRenderer->isActive())
+				if (meshRenderer->isActive() && meshRenderer->getEntity()->isActive() && meshRenderer->getEntity()->isVisible())
 				{
 					if (mFrustumCull == true)
 					{
 						Entity* renderObject = meshRenderer->getEntity();
 
 						AABB* aabb = renderObject->getComponent<AABB>();
-						bool inFrustum = camera->getFrustum()->checkFrustumView(*(aabb));
+						bool inFrustum = frustum->checkFrustumView(*(aabb));
 						if (renderObject->getStatic() == false || inFrustum)
 						{
 							// Depth sorting
@@ -136,14 +129,16 @@ namespace Odyssey
 
 				updateLightingBuffer(renderObject, args);
 
-				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>();
+
+				if (rootAnimator)
 				{
 					rootAnimator->bind(mDeviceContext);
 				}
 				updateLightingBuffer(renderObject, args);
 				renderSceneObject(renderObject, args);
 
-				if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+				if (rootAnimator)
 				{
 					rootAnimator->unbind(mDeviceContext);
 				}

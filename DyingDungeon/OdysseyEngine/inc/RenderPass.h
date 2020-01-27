@@ -18,10 +18,15 @@ namespace Odyssey
 	struct RenderArgs
 	{
 		Entity* camera;
+		DirectX::XMFLOAT3 camPos;
 		PerFrameBuffer perFrame;
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;
 		Buffer* perObjectBuffer;
+		DirectX::XMFLOAT3 sceneCenter;
+		float sceneRadius;
+		std::shared_ptr<Light> shadowLight;
+		Entity* skybox;
 		std::vector<std::shared_ptr<Entity>> entityList;
 		std::vector<std::shared_ptr<Entity>> transparentList;
 		std::vector<std::shared_ptr<Light>> lightList;

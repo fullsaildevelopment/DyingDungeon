@@ -28,97 +28,142 @@ namespace Odyssey
 	void Transform::addPosition(float x, float y, float z)
 	{
 		// Add to the x, y, z components of the position and calculate a new world matrix
+		mLock.lock(LockState::Write);
 		mPosition.x += x;
 		mPosition.y += y;
 		mPosition.z += z;
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Write);
 	}
 
 	void Transform::setPosition(float x, float y, float z)
 	{
 		// Set the new position and calculate a new world matrix
+		mLock.lock(LockState::Write);
 		mPosition = DirectX::XMFLOAT3(x, y, z);
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Write);
 	}
 
 	DirectX::XMFLOAT3 Transform::getPosition()
 	{
 		// Set the out parameter to the position
-		return mPosition;
+		mLock.lock(LockState::Read);
+		DirectX::XMFLOAT3 position = mPosition;
+		mLock.unlock(LockState::Read);
+		return position;
 	}
 
 	void Transform::addRotation(float x, float y, float z)
 	{
 		// Add to the x, y, z components of the rotation and calculate a new world matrix
+		mLock.lock(LockState::Write);
 		mRotation.x += x;
 		mRotation.y += y;
 		mRotation.z += z;
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Write);
 	}
 
 	void Transform::setRotation(float x, float y, float z)
 	{
-		// Set the new rotation and calculate a new world matrix
+		// Set the new Write and calculate a new world matrix
+		mLock.lock(LockState::Read);
 		mRotation = DirectX::XMFLOAT3(x, y, z);
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Read);
 	}
 
 	DirectX::XMFLOAT3 Transform::getEulerRotation()
 	{
 		// Return the rotation value
-		return mRotation;
+		mLock.lock(LockState::Read);
+		DirectX::XMFLOAT3 rotation = mRotation;
+		mLock.unlock(LockState::Read);
+		return rotation;
 	}
 
 	void Transform::addScale(float x, float y, float z)
 	{
 		// Add to the x, y, z components of the scale and calculate a new world matrix
+		mLock.lock(LockState::Write);
 		mScale.x += x;
 		mScale.y += y;
 		mScale.z += z;
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Write);
 	}
 
 	void Transform::setScale(float x, float y, float z)
 	{
 		// Set the new scale and calculate a new world matrix
+		mLock.lock(LockState::Write);
 		mScale = DirectX::XMFLOAT3(x, y, z);
 		recalculateWorldMatrix();
+		mLock.unlock(LockState::Write);
 	}
 
 	DirectX::XMFLOAT3 Transform::getScale()
 	{
 		// Return the scale value
-		return mScale;
+		mLock.lock(LockState::Read);
+		DirectX::XMFLOAT3 scale = mScale;
+		mLock.unlock(LockState::Read);
+		return scale;
 	}
 
 	DirectX::XMFLOAT3 Transform::getForward()
 	{
 		// Set the out parameter to the forward vector from the world matrix
-		return DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
+		mLock.lock(LockState::Read);
+		DirectX::XMVECTOR fwd = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2])));
+		mLock.unlock(LockState::Read);
+		DirectX::XMFLOAT3 f3Fwd;
+		DirectX::XMStoreFloat3(&f3Fwd, fwd);
+		return f3Fwd;
 	}
 
 	DirectX::XMFLOAT3 Transform::getRight()
 	{
 		// Set the out parameter to the right vector from the world matrix
-		return DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+		mLock.lock(LockState::Read);
+		DirectX::XMFLOAT3 right = DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+		mLock.unlock(LockState::Read);
+		return right;
 	}
 	
 	DirectX::XMFLOAT3 Transform::getUp()
 	{
 		// Set the out parameter to the up vector from the world matrix
-		return DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
+		mLock.lock(LockState::Read);
+		DirectX::XMFLOAT3 up = DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
+		mLock.unlock(LockState::Read);
+		return up;
 	}
 
-	DirectX::XMFLOAT4X4 Transform::getLocalTransform()
+	DirectX::XMFLOAT4X4 Transform::getLocalTransform(bool ignoreScale)
 	{
 		// Set the out parameter to the local-space world matrix
-		return mWorldMatrix;
+		if (ignoreScale)
+		{
+			DirectX::XMFLOAT3 tScale = mScale;
+			mScale = { 1.0f, 1.0f, 1.0f };
+			recalculateWorldMatrix();
+			DirectX::XMFLOAT4X4 nonScaled = mWorldMatrix;
+			mScale = tScale;
+			recalculateWorldMatrix();
+			return nonScaled;
+		}
+		DirectX::XMFLOAT4X4 world = mWorldMatrix;
+
+		return world;
 	}
 
-	DirectX::XMFLOAT4X4 Transform::getGlobalTransform()
+	DirectX::XMFLOAT4X4 Transform::getGlobalTransform(bool ignoreScale)
 	{
 		// Store the world matrix in an XMMatrix
-		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&mWorldMatrix);
+		mLock.lock(LockState::Read);
+		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&getLocalTransform(ignoreScale));
 
 		// Get the entity we are attached to's parent
 		Entity* parent = mEntity->getParent();
@@ -127,7 +172,7 @@ namespace Odyssey
 		while (parent != nullptr)
 		{
 			// Get the parent's local transform
-			DirectX::XMFLOAT4X4 localTransform = parent->getComponent<Transform>()->getLocalTransform();
+			DirectX::XMFLOAT4X4 localTransform = parent->getComponent<Transform>()->getLocalTransform(ignoreScale);
 
 			// Move our world matrix into the parent's local-space
 			transform = DirectX::XMMatrixMultiply(transform, DirectX::XMLoadFloat4x4(&localTransform));
@@ -135,6 +180,8 @@ namespace Odyssey
 			// Get the next parent
 			parent = parent->getParent();
 		}
+
+		mLock.unlock(LockState::Read);
 
 		// Set the out paramter to the global-space world matrix
 		DirectX::XMFLOAT4X4 retTransform;

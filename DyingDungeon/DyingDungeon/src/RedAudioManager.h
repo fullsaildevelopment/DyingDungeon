@@ -1,14 +1,54 @@
 #pragma once
 #include "RedAudio.h"
 #include <vector>
+#include "Event.h"
+#include "EventManager.h"
+
+class AudioStopEvent : public Odyssey::Event
+{
+public:
+	std::string alias;
+	AudioStopEvent(std::string audio_alias)
+	{
+		alias = audio_alias;
+		priority = Odyssey::EventPriority::Deferred;
+	}
+};
+
+class AudioVolumeEvent : public Odyssey::Event
+{
+public:
+	unsigned int volumeLevel;
+	AudioVolumeEvent(unsigned int volume)
+	{
+		volumeLevel = volume;
+		priority = Odyssey::EventPriority::Deferred;
+	}
+};
+
+class AudioLoopEvent : public Odyssey::Event
+{
+public:
+	std::string alias;
+	AudioLoopEvent(std::string audio_alias)
+	{
+		alias = audio_alias;
+		priority = Odyssey::EventPriority::Deferred;
+	}
+
+};
+
 class RedAudioManager
 {
+	public:
+		enum class AudioType { Background = 0, SFX };
 	private:
 		static std::vector<RedAudio> m_audioFiles;
-		RedAudio* default_audio;
-	public:
+		RedAudio* m_default_audio;
+		unsigned int m_volume;
 	private:
 		RedAudio* FindAudio(const char* alias);
+		void StopEvent(AudioStopEvent* asEvent);
 		//static RedAudioManager* m_p_Instance;
 		
 		RedAudioManager();
@@ -31,6 +71,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		void Loop(const char* alias);
+		void LoopEvent(AudioLoopEvent* alEvent);
 		/// <summary>
 		/// 
 		/// </summary>
@@ -43,7 +84,11 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias"></param>
 		/// <param name="volume"></param>
-		void SetVolume(const char* alias, unsigned int volume);
+		bool SetMasterVolume(const char* alias, unsigned int volume);
+		bool SetMasterVolume(unsigned int volume);
+		void SetVolumeEvent(AudioVolumeEvent* avEvent);
+
+		unsigned int GetVolume();
 		/// <summary>
 		/// 
 		/// </summary>

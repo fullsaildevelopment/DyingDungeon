@@ -17,19 +17,11 @@
 
 namespace Odyssey
 {
-	SkyboxPass::SkyboxPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, const char* skyboxTexture, std::shared_ptr<RenderWindow> renderWindow)
+	SkyboxPass::SkyboxPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
 	{
 		mDeviceContext = context;
 		mRenderDevice = renderDevice;
 		mDevice = renderDevice->getDevice();
-
-		std::shared_ptr<Texture> texture = renderDevice->createTexture(TextureType::Skybox, skyboxTexture);
-		std::shared_ptr<Mesh> mesh = renderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-		std::shared_ptr<Material> material = renderDevice->createMaterial(TextureType::Skybox, texture);
-
-		mSkyBox = std::make_shared<Entity>();
-		mSkyBox->addComponent<MeshRenderer>(mesh, material);
-		mSkyBox->addComponent<Transform>();
 
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
@@ -50,46 +42,29 @@ namespace Odyssey
 
 	void SkyboxPass::preRender(RenderArgs& args)
 	{
-		// Set the view
-		if (args.camera)
-		{
-			if (Camera* camera = args.camera->getComponent<Camera>())
-			{
-				args.perFrame.view = camera->getInverseViewMatrix();
-				// Calculate and set view proj
-				DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
-				DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-				// Update the buffer
-				updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
-			}
-
-			mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
-			mRenderState->bind(mDeviceContext);
-			mVertexShader->bind(mDeviceContext);
-			mPixelShader->bind(mDeviceContext);
-		}
+		// Update the buffer
+		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
+		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
+		mRenderState->bind(mDeviceContext);
+		mVertexShader->bind(mDeviceContext);
+		mPixelShader->bind(mDeviceContext);
 	}
 
 	void SkyboxPass::render(RenderArgs& args)
 	{
-		// Get the camera's position
-		DirectX::XMFLOAT3 camPos;
-		camPos = args.camera->getComponent<Transform>()->getPosition();
-
 		// Set the skybox to the camera's position
-		mSkyBox->getComponent<Transform>()->setPosition(camPos.x, camPos.y, camPos.z);
+		args.skybox->getComponent<Transform>()->setPosition(args.camPos.x, args.camPos.y, args.camPos.z);
 
 		// Get the object's global transform and set the MVP acoordingly
-		args.perObject.world = mSkyBox->getComponent<Transform>()->getLocalTransform();
-
+		args.perObject.world = args.skybox->getComponent<Transform>()->getLocalTransform();
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Draw the skybox
-		if (mSkyBox->getComponent<MeshRenderer>())
+		if (args.skybox->getComponent<MeshRenderer>())
 		{
-			mSkyBox->getComponent<MeshRenderer>()->bind(mDeviceContext);
-			mDeviceContext->DrawIndexed(mSkyBox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+			args.skybox->getComponent<MeshRenderer>()->bind(mDeviceContext);
+			mDeviceContext->DrawIndexed(args.skybox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
 		}
 
 		// Clear the depth of the render targets

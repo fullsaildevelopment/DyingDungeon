@@ -69,18 +69,18 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		{
 			// Basic Attack, good dps, stun
 			debuff = std::make_shared<Stun>(1,nullptr);
-			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "Ganfaul_Attack", 0.25f, -15.0f, 25.0f, debuff));
+			mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "Attack", 0.25f, -15.0f, 25.0f, debuff));
 			//  good dps, spd down ,aoe
 			debuff = std::make_shared<StatDown>(0.25f, 4, STATS::Spd, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>("AOE Slow", "Ganfaul_Attack", 0.25f, 20.0f, 15.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Attack>("AOE Slow", "Attack", 0.25f, 20.0f, 15.0f, debuff, true));
 			//  Big smack
-			mSkillList.push_back(std::make_shared<Attack>("Big Smack", "Ganfaul_Attack", 0.25f, 50.0f, 45.0f));
+			mSkillList.push_back(std::make_shared<Attack>("Big Smack", "Attack", 0.25f, 50.0f, 45.0f));
 			// Attack buff
 			debuff = std::make_shared<StatUp>(0.30f,3,STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>("Attack Up", "Ganfaul_Attack", 0.25f, 20.0f, debuff, true));
+			mSkillList.push_back(std::make_shared<Buffs>("Attack Up", "Attack", 0.25f, 20.0f, debuff, true));
 			// Regen
 			debuff = std::make_shared<Regens>(0.15f, 5, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>("Regen", "Ganfaul_Attack",0.15f, 10.0f, debuff,true));
+			mSkillList.push_back(std::make_shared<Buffs>("Regen", "Attack",0.15f, 10.0f, debuff,true));
 			break;
 		}
 		default:
@@ -103,11 +103,14 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 			//FindBestMove
 			if (mPriorityMove == SKILLTYPE::UNDEFINED)
 				SkeletonDeterminePriority();
+			
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		};
 		case 1:
 		{
 			BossDeterminePriority();
+			finished = FindBestMove(playerTeam, enemyTeam);
 			break;
 		}
 		default:
@@ -116,7 +119,6 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 		};
 	}
 	
-	finished = FindBestMove(playerTeam, enemyTeam);
 	
 	return finished;
 }
@@ -303,6 +305,9 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
 
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->IsAOE())
+		return;
+
 	if (skill->GetTypeId() == mPriorityMove)
 		attackAOEScore += 100.0f;
 	
@@ -341,6 +346,9 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	float buffScore = 0.0f;
 	Character* target = nullptr;
 
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+		buffScore += 50.0f;
+
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
 		if (t)
@@ -374,6 +382,9 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 {
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
+
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+		buffAOEScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
 	{
@@ -540,6 +551,11 @@ void AIMoves::BossDeterminePriority()
 std::shared_ptr<AIMoves::Move> AIMoves::GetMove()
 {
 	return mBestMove;
+}
+
+std::vector<std::shared_ptr<Skills>> AIMoves::GetSkillList()
+{
+	return mSkillList;
 }
 
 ///////SET FUNCTIONS///////

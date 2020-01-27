@@ -7,6 +7,7 @@ Regens::Regens(float ammountOfEffect, int duration, Character* target)
 	mAmountOfEffect = ammountOfEffect;
 	mDuration = duration;
 	mRecipient = target;
+	mAffectedStatId = STATS::None;
 }
 Regens::~Regens()
 {
@@ -16,7 +17,8 @@ void Regens::Apply(Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Regens>(mAmountOfEffect, mDuration, &target);
-	target.AddStatusEffect(newStatusEffect);
+	if (!target.AddStatusEffect(newStatusEffect))
+		return;
 	std::cout << target.GetName() << " has been received a regen." << std::endl;
 	return;
 }

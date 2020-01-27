@@ -14,21 +14,25 @@ namespace Odyssey
 
 	struct Particle
 	{
-		DirectX::XMFLOAT3 origin;
+		DirectX::XMFLOAT4 color;
+		// 12 bytes
 		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 velocity;
-		DirectX::XMFLOAT3 color;
 		float lifeTime;
+		// 12 bytes
+		DirectX::XMFLOAT3 velocity;
 		float startLifetime;
+		// 12 bytes
+		float size;
 		bool active;
 
 		Particle()
 		{
-			origin = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-			position = origin;
+			position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 			velocity = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-			color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+			color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 			lifeTime = 5.0f;
+			startLifetime = lifeTime;
+			size = 1.0f;
 			active = false;
 		}
 	};

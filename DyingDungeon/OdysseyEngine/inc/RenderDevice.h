@@ -57,8 +57,8 @@ namespace Odyssey
 		std::shared_ptr<Mesh> createCube(DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 center);
 	public: // Render Passes
 		std::shared_ptr<ClearRenderTargetPass> createClearRTVPass(std::shared_ptr<RenderWindow> renderWindow, bool clearDepth);
-		std::shared_ptr<SkyboxPass> createSkyboxPass(const char* textureFilename, std::shared_ptr<RenderWindow> renderWindow);
-		std::shared_ptr<ShadowPass> createShadowPass(std::shared_ptr<Light> shadowLight, int texWidth, int texHeight);
+		std::shared_ptr<SkyboxPass> createSkyboxPass(std::shared_ptr<RenderWindow> renderWindow);
+		std::shared_ptr<ShadowPass> createShadowPass(int texWidth, int texHeight);
 		std::shared_ptr<OpaquePass> createOpaquePass(std::shared_ptr<RenderWindow> renderWindow);
 		std::shared_ptr<TransparentPass> createTransparentPass(std::shared_ptr<RenderWindow> renderWindow);
 		std::shared_ptr<DebugPass> createDebugPass(std::shared_ptr<RenderWindow> renderWindow);

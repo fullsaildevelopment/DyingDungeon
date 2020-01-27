@@ -166,7 +166,7 @@ namespace Odyssey
 	void Material::setDefaultMaterialProperties()
 	{
 		mLock.lock(LockState::Write);
-		mProperties.mGlobalAmbient = DirectX::XMFLOAT4(0.025f, 0.025f, 0.025f, 1.0f);
+		mProperties.mGlobalAmbient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
 		mProperties.mHasDiffuseTexture = 0;
 		mProperties.mDiffuseColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		mProperties.mHasSpecularTexture = 0;
@@ -174,8 +174,8 @@ namespace Odyssey
 		mProperties.mHasEmissiveTexture = 0;
 		mProperties.mEmissiveColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		mProperties.mHasNormalTexture = 0;
-		mProperties.mSpecularPower = 512.0f;
-		mProperties.mReflectance = 0.01f;
+		mProperties.mSpecularPower = 256.0f;
+		mProperties.mReflectance = 0.1f;
 		mLock.unlock(LockState::Write);
 	}
 }

@@ -64,6 +64,34 @@ namespace Odyssey
 		bool getStatic();
 
 		/**
+		 *	Set the entity's active state.
+		 *	@param[in] active The entity's active state.
+		 *	@return void 
+		 */
+		void setActive(bool active);
+
+		/**
+		 *	Get the entity's active state.
+		 *	@param[in] void
+		 *	@return bool The entity's active state.
+		 */
+		bool isActive();
+
+		/**
+		 *	Set the entity's visible state.
+		 *	@param[in] active The entity's visible state.
+		 *	@return void
+		 */
+		void setVisible(bool active);
+
+		/**
+		 *	Get the entity's visible state.
+		 *	@param[in] void
+		 *	@return bool The entity's visible state.
+		 */
+		bool isVisible();
+
+		/**
 		 *	Set the entity's debug enabled state.
 		 *	@param[in] debug The entity's debug enabled state.
 		 *	@return void
@@ -83,6 +111,8 @@ namespace Odyssey
 		Entity* mParent;
 		bool mDebugEnabled;
 		bool mIsStatic;
+		bool mIsActive;
+		bool mIsVisible;
 		ReadWriteLock mLock;
 
 	public: // Templated interface
@@ -94,7 +124,6 @@ namespace Odyssey
 		template<class ComponentType, typename... Args>
 		ComponentType* addComponent(Args&&... params)
 		{
-			mLock.lock(LockState::Write);
 			// Create a new component type shared pointer and store it in the components vector
 			mComponents.emplace_back(std::make_shared<ComponentType>(std::forward<Args>(params)...));
 
@@ -103,7 +132,6 @@ namespace Odyssey
 
 			// Return a raw pointer to the created component
 			ComponentType* component = static_cast<ComponentType*>(mComponents[mComponents.size() - 1].get());
-			mLock.unlock(LockState::Write);
 			return component;
 		}
 
@@ -116,20 +144,17 @@ namespace Odyssey
 		ComponentType* getComponent()
 		{
 			// Iterate through the components vector
-			mLock.lock(LockState::Read);
 			for (auto&& component : mComponents)
 			{
 				// Check the type against the templated type
 				if (component->isClassType(ComponentType::Type))
 				{
 					ComponentType* foundComponent = static_cast<ComponentType*>(component.get());
-					mLock.unlock(LockState::Read);
 					return foundComponent;
 				}
 			}
 
 			// Nothing found, return nullptr
-			mLock.unlock(LockState::Read);
 			return std::shared_ptr<ComponentType>(nullptr).get();
 		}
 
@@ -144,7 +169,6 @@ namespace Odyssey
 			// Create a vector of component type raw pointers
 			std::vector<ComponentType*> componentsOfType;
 
-			mLock.lock(LockState::Read);
 			// Iterate through the components vector
 			for (auto&& component : mComponents)
 			{
@@ -154,11 +178,9 @@ namespace Odyssey
 					// Store the matching pointer
 					componentsOfType.emplace_back(static_cast<ComponentType*>(component.get()));
 				}
-
 			}
 
 			// Return the vector of component type raw pointers
-			mLock.unlock(LockState::Read);
 			return componentsOfType;
 		}
 
@@ -171,7 +193,6 @@ namespace Odyssey
 		ComponentType* getRootComponent()
 		{
 			// Check if the entity has a parent
-			mLock.lock(LockState::Read);
 			if (Entity* parent = mParent)
 			{
 				// Iterate up the list of parents until the rot is found
@@ -181,13 +202,11 @@ namespace Odyssey
 				}
 				// Return a get component on the root entity
 				ComponentType* root = parent->getComponent<ComponentType>();
-				mLock.unlock(LockState::Read);
 				return root;
 			}
 
 			// Return a get component on this entity
 			ComponentType* root = getComponent<ComponentType>();
-			mLock.unlock(LockState::Read);
 			return root;
 		}
 
@@ -200,7 +219,6 @@ namespace Odyssey
 		bool removeComponent()
 		{
 			// Can't remove from an empty vector
-			mLock.lock(LockState::Write);
 			if (mComponents.empty())
 				return false;
 
@@ -223,7 +241,6 @@ namespace Odyssey
 				mComponents.erase(index);
 			}
 
-			mLock.unlock(LockState::Write);
 			return success;
 		}
 
@@ -236,7 +253,6 @@ namespace Odyssey
 		bool removeComponent(ComponentType* searchTarget)
 		{
 			// Can't remove from an empty vector
-			mLock.lock(LockState::Write);
 			if (mComponents.empty())
 				return false;
 
@@ -249,11 +265,9 @@ namespace Odyssey
 					// Erase the component and return true
 					EventManager::getInstance().publish(new ComponentRemoveEvent((mComponents.begin() + i)->get()));
 					mComponents.erase(mComponents.begin() + i);
-					mLock.unlock(LockState::Write);
 					return true;
 				}
 			}
-			mLock.unlock(LockState::Write);
 			return false;
 		}
 
@@ -266,7 +280,6 @@ namespace Odyssey
 		int removeComponents()
 		{
 			// Can't remove from an empty vector
-			mLock.lock(LockState::Write);
 			if (mComponents.empty())
 				return 0;
 
@@ -282,13 +295,11 @@ namespace Odyssey
 					// Erase the component and increment the tracker
 					EventManager::getInstance().publish(new ComponentRemoveEvent((mComponents.begin() + i)->get()));
 					mComponents.erase(mComponents.begin() + i);
-					mLock.unlock(LockState::Write);
 					return numRemoved++;
 				}
 			}
 
 			// Return the number of components removed
-			mLock.unlock(LockState::Write);
 			return numRemoved;
 		}
 	};

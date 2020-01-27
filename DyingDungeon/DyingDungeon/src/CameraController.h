@@ -18,4 +18,5 @@ private:
 	Odyssey::Camera* mMainCamera;
 	float mMovementSpeed;
 	float mRotationSpeed;
+	bool mLockCamera;
 };

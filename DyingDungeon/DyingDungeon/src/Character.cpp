@@ -3,13 +3,16 @@
 #include "Transform.h"
 #include "RedAudioManager.h"
 #include "MeshRenderer.h"
+// Fix later
+#include "StatUp.h";
+#include "StatDown.h";
+#include "Stun.h";
 
 CLASS_DEFINITION(Component, Character)
 
 Character::Character()
 {
 	mHero = false;
-	mDead = false;
 	mDisplaying = false;
 	mShielding = false;
 	mAttack = 0.0f;
@@ -68,6 +71,22 @@ void Character::Die()
 
 }
 
+std::wstring Character::FormatToPercentageW(float number)
+{
+	if (number >= 100.0f)
+	{
+		return std::to_wstring(number).substr(0, 6);
+	}
+	else if (number >= 10.0f)
+	{
+		return std::to_wstring(number).substr(0, 5);
+	}
+	else
+	{
+		return std::to_wstring(number).substr(0, 4);
+	}
+}
+
 /*
  * Function:  TakeDamage(float dmg)
  * --------------------
@@ -101,13 +120,17 @@ void Character::TakeDamage(float dmg)
 	}
 	//Take Damage
 	SetHP(GetHP() - dmg);
-	// TODO: FOR BUILD ONLY FIX LATER
 	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);
 	mDisplaying = true;
 	/////////////////////////////////
+	//BattleLogText
 	std::cout << dmg << " damage!" << std::endl;
+	std::wstring dmgText = std::wstring(FormatToPercentageW(dmg));
+	dmgText.append(L" damage!");
+	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
+
 	if (mCurrentHP <= 0.0f)
 		Die();
 }
@@ -293,38 +316,6 @@ void Character::SetShielding(float shield)
 	mShielding = shield;
 }
 
-/*
- * Function:  IsDead()
- * --------------------
- * Check to see if the character is dead
- *
- * returns: bool
- */
-bool Character::IsDead()
-{
-	return mDead;
-}
-
-/*
- * Function:  SetMana(float Mana)
- * --------------------
- * Set the dead staus of the character
- *
- * returns: void
- */
-void Character::SetDead(bool deadStatus)
-{
-	mDead = deadStatus;
-	if (deadStatus == true)
-	{
-		mCurrentState = STATE::DEAD;
-	}
-	else
-	{
-		mCurrentState = STATE::NONE;
-	}
-}
-
 // Adds Exp to the charater
 void Character::AddExp(float exp)
 {
@@ -418,48 +409,121 @@ std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 }
 
 // Adds a new status effect to the list of status effects
-void Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
+bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 {
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
+		for (it = mBleeds.begin(); it != mBleeds.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mBleeds.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Regen:
 	{
+		for (it = mRegens.begin(); it != mRegens.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mRegens.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::StatUp:
 	{
+		StatUp* temp = nullptr;
+		for (it = mBuffs.begin(); it != mBuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mBuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::StatDown:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Stun:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Shield:
 	{
+		for (it = mSheilds.begin(); it != mSheilds.end();)
+		{
+			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+			{
+				(*it)->SetDuration(newEffect->GetDuration());
+				return false;
+			}
+			else
+				it++;
+		}
 		mSheilds.push_back(newEffect);
 		break;
 	}
 	case EFFECTTYPE::Provoke:
 	{
+		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		{
+			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId())
+			{
+				(*it)->Remove();
+				it = mDebuffs.erase(it);
+			}
+			else
+				it++;
+		}
 		mDebuffs.push_back(newEffect);
 		break;
 	}
 	default:
 		break;
 	}
+	return true;
 }
 
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
@@ -569,6 +633,9 @@ void Character::ClearStatusEffects()
 */
 void Character::UpdateHealthBar()
 {
+	mHpText->setText(std::to_wstring((int)mCurrentHP));
+	if (!mHero)
+		mBigHpText->setText(std::to_wstring((int)mCurrentHP));
 	float fill = GetHP() / GetMaxHP();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -587,6 +654,7 @@ void Character::UpdateHealthBar()
 */
 void Character::UpdateManaBar()
 {
+	mMpText->setText(std::to_wstring((int)mCurrentMana));
 	float fill = GetMana() / GetMaxMana();
 	if (fill < 0.0f)
 		fill = 0.0f;
@@ -594,4 +662,14 @@ void Character::UpdateManaBar()
 		fill = 1.0f;
 
 	pManaBar->setFill(fill);
+}
+
+void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
+{
+	mBloodParticleEffect = newBloodEffect;
+}
+
+Odyssey::ParticleSystem* Character::GetPSBlood()
+{
+	return mBloodParticleEffect;
 }
