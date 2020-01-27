@@ -63,7 +63,7 @@ public:
 	void SetCanvas(Odyssey::UICanvas* canvas);
 
 	//clears all the levels stored in the StatTrackers level container
-	void ClearLevels()
+	void ClearLevels();
 
 	//File IO functions
 	bool SaveStats(std::string saveName);
