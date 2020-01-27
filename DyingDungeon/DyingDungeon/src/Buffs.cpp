@@ -1,7 +1,7 @@
 #include "Buffs.h"
 #include "Character.h"
 
-Buffs::Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
+Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
 {
 	if (isBuff)
 		mTypeId = SKILLTYPE::BUFF;
@@ -14,7 +14,7 @@ Buffs::Buffs(std::string skillName, std::string animationId, float animationTimi
 	mStatusEffect = buff;
 	mIsAOE = false;
 }
-Buffs::Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
+Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
 {
 	if (isBuff)
 		mTypeId = SKILLTYPE::BUFF;
@@ -27,12 +27,16 @@ Buffs::Buffs(std::string skillName, std::string animationId, float animationTimi
 	mStatusEffect = buff;
 	mIsAOE = isAOE;
 }
+
+// Applies buff to target
 void Buffs::Use(Character& caster, Character& target)
 {
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(target);
-		std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << "." << std::endl;
+		std::cout << caster.GetName() << " used " << mName.c_str() << " on " << target.GetName() << "." << std::endl;
+		
+		//Alert Reds stuff for stat tracking?
 		switch (mStatusEffect->GetTypeId())
 		{
 		case EFFECTTYPE::None:

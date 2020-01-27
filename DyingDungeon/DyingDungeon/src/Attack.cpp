@@ -1,7 +1,7 @@
 #include "Attack.h"
 #include "Character.h"
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -14,7 +14,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -27,7 +27,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -40,7 +40,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -53,7 +53,7 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = AOE;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
 	mTypeId = SKILLTYPE::ATTACK;
 	mName = skillName;
@@ -74,7 +74,7 @@ void Attack::Use(Character& caster, Character& target)
 {
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
-	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
+	std::cout << caster.GetName() << " used " << mName.c_str() << " on " << target.GetName() << " for ";
 	//UI battle log
 	std::string casterName = caster.GetName();
 	std::string targetNameS = target.GetName();

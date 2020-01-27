@@ -4,9 +4,9 @@
 #include "RedAudioManager.h"
 #include "MeshRenderer.h"
 // Fix later
-#include "StatUp.h";
-#include "StatDown.h";
-#include "Stun.h";
+#include "StatUp.h"
+#include "StatDown.h"
+#include "Stun.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -14,7 +14,7 @@ Character::Character()
 {
 	mHero = false;
 	mDisplaying = false;
-	mShielding = false;
+	mShielding = 0.0f;
 	mAttack = 0.0f;
 	mDefense = 0.0f;
 	mBaseDefense = 0.0f;

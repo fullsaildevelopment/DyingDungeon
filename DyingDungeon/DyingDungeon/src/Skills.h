@@ -24,7 +24,7 @@ protected:
 	// Animation time for when effects such as hit animation or particle effects should go out
 	float mAnimationTime;
 	// Name of skill
-	std::string mName;
+	std::wstring mName;
 	// Animation ID
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
@@ -33,6 +33,9 @@ protected:
 	std::shared_ptr<StatusEffect> mStatusEffect;
 	// Particle effect if the skill has it 
 	ParticleInfomation mPS;
+	// Description of the skill
+	std::wstring mDescription;
+
 private:
 //public and private functions
 public:
@@ -43,7 +46,7 @@ public:
 	//get how much mana the skill cost
 	float GetManaCost();
 	// Get Skill name
-	std::string GetName();
+	std::wstring GetName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
 	// Gets the animation timing
@@ -69,6 +72,11 @@ public:
 	void SetParticleFiringTime(float newFiringTime);
 	// Use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
+	//Set Description
+	void SetDescription(std::wstring desc);
+	//Get Description Of The Skill
+	std::wstring GetDescription();
+
 private:
 
 };
