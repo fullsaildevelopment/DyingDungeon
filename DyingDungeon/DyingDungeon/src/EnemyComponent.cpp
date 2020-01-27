@@ -14,7 +14,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
-		mName = "Skeleton";
+		mName = L"Skeleton";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
@@ -26,7 +26,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	}
 	case ENEMYID::Ganfaul:
 	{
-		mName = "Ganfaul";
+		mName = L"Ganfaul";
 		mBaseMaxHP = mCurrentHP = 300.0f;
 		mBaseMaxMana = mCurrentMana = 300.0f;
 		mAttack = 0.0f;
