@@ -29,7 +29,6 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 void Heal::Use(Character& caster, Character& target)
 {
 	target.ReceiveHealing(mHealing);
-	std::cout << caster.GetName() << " has healed " << target.GetName() << " for " << mHealing << " HP." << std::endl;
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::None, mHealing));
 }
 

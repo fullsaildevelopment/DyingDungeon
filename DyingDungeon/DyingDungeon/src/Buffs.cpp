@@ -34,8 +34,6 @@ void Buffs::Use(Character& caster, Character& target)
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(target);
-		std::cout << caster.GetName() << " used " << mName.c_str() << " on " << target.GetName() << "." << std::endl;
-		
 		//Alert Reds stuff for stat tracking?
 		switch (mStatusEffect->GetTypeId())
 		{

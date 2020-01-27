@@ -45,7 +45,6 @@ void StatDown::Apply(Character& target)
 	default:
 		break;
 	}
-	std::cout << target.GetName() << " has received a " << mAmountOfEffect << "%" << temp << " down!" << std::endl;
 	return;
 }
 
@@ -75,7 +74,6 @@ void StatDown::Remove()
 	default:
 		break;
 	}
-	std::cout << mRecipient->GetName() << " has lost it's " << mAmountOfEffect << "%" << temp << " down!" << std::endl;
 	return;
 }
 

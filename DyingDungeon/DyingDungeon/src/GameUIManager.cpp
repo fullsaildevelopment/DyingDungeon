@@ -704,18 +704,10 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		// Create the text element of the character's name
 		color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		position.x += 7.5f;
-		// Convert name to wstring
-		size_t cSize = strlen(owner->GetName().c_str()) + 1;
-		size_t convertedChars = 0;
-		wchar_t* characterName = new wchar_t[cSize];
-		mbstowcs_s(&convertedChars, characterName, cSize, owner->GetName().c_str(), _TRUNCATE);
 		// Add the name to the canvas
 		properties.bold = true;
-		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, characterName, properties);
+		characterHudCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
 		properties.bold = false;
-		// Delete the newed pointer
-		delete characterName;
-		characterName = nullptr;
 
 		// Create the character's level number text next to the XP bar
 		position.x += barWidth;

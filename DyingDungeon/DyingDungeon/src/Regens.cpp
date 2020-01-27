@@ -17,9 +17,7 @@ void Regens::Apply(Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Regens>(mAmountOfEffect, mDuration, &target);
-	if (!target.AddStatusEffect(newStatusEffect))
-		return;
-	std::cout << target.GetName() << " has been received a regen." << std::endl;
+	target.AddStatusEffect(newStatusEffect);
 	return;
 }
 void Regens::Remove()
@@ -31,5 +29,4 @@ void Regens::Use()
 	float totalRegen = 0.0f;
 	totalRegen = mAmountOfEffect * mRecipient->GetMaxHP();
 	mRecipient->ReceiveHealing(mAmountOfEffect);
-	std::cout << mRecipient->GetName() << " has regened " << totalRegen << "HP." << std::endl;
 }
