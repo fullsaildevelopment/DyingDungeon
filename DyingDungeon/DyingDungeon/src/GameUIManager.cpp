@@ -211,9 +211,9 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	position.x += static_cast<float>(width);
 	width = 64;
 	height = 64;
-	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/skeletonIcon.png", width, height);
+	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/SkeletonPortrait.png", width, height);
 	position.x += static_cast<float>(width) + 10.0f;
-	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/ganfaulIcon.jpg", width, height);
+	mTowerInfoCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/GanfaulPortrait.jpg", width, height);
 
 	// Set up rewards text
 	position.x = previousX;
@@ -615,7 +615,7 @@ void GameUIManager::OptionsBackButton()
 }
 
 // Create the character's UI Portrait
-void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner)
+Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Character* owner)
 {
 	// Create the character's hud entity and add a canvas to it.
 	// Get the canvas that was added
@@ -666,6 +666,7 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		// Create the text element of the character's name
 		color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		position.x += 7.5f;
+		// TODO: DO NOT NEED TO DO THIS WHEN GETNAME() RETURNS WSTRING
 		// Convert name to wstring
 		size_t cSize = strlen(owner->GetName().c_str()) + 1;
 		size_t convertedChars = 0;
@@ -834,6 +835,11 @@ void GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWST
 		// Assign the character's turn order text
 		owner->pTurnNumber = characterHudCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
+
+	// Add the canvas to the mHudCharacterList
+	mCharacterHudList.push_back(characterHudCanvas);
+	// Return the canvas we just created 
+	return characterHudCanvas;
 }
 
 void GameUIManager::DecreaseVolume()

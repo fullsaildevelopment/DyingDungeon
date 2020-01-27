@@ -56,7 +56,7 @@ public: // Functions
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
-	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner);
+	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Character* owner);
 
 	//Updates
 	void UpdateGraph();
@@ -110,6 +110,9 @@ public: // Functions
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
+
+	// Get the list of all of the character hud canvases
+	std::vector<Odyssey::UICanvas*> GetCharacterHuds() { return mCharacterHudList; }
 
 	//Setters
 	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
@@ -192,6 +195,7 @@ private: // Varibales
 	DirectX::XMFLOAT4 mTurnOrderColor = { 255.0f, 210.0f, 0.0f, 1.0f };
 
 	// Vectors
+	std::vector<Odyssey::UICanvas*> mCharacterHudList;
 
 	// Queues
 
@@ -202,7 +206,6 @@ private: // Varibales
 	UINT screenHeight = 0;
 	UINT battleTextWidth = 0;
 	UINT battleTextHeight = 0;
-
 
 	// Floats
 

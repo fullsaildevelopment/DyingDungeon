@@ -148,6 +148,8 @@ int playGame()
 
 	// Assign the width and height for the UI Manager
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Set the Character Factory's render refrence
+	CharacterFactory::getInstance().mRenderRefrence = gRenderDevice;
 
 	// Set up the main menu
 	setupMainMenu(application.get());
@@ -471,13 +473,11 @@ void setupMainMenu(Odyssey::Application* application)
 	gMainMenu->addLight(ambientLight);
 
 	// Create a paladin and add him to the main menu scene
-	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
-	// Set the render device for the particles
-	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, gMainMenu);
+	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Main Menu Paladin", charPosition, charRotation, uiPosition, false, gMainMenu);
 	gMainMenu->addEntity(characterToAdd);
 
 	// Create the UI
@@ -512,24 +512,22 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	gTeamSelectScene->addLight(ambientLight);
 
 	// Create a paladin and add him to the team select scene
-	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
-	// Set the render device for the particles
-	charFactory->mRenderRefrence = gRenderDevice;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-1.0f, -2.0f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Team Select Paladin", charPosition, charRotation, gTeamSelectScene);
+	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Team Select Paladin", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
 	gTeamSelectScene->addEntity(characterToAdd);
 
 	// Create a mage and add him to the team select scene
 	charPosition = DirectX::XMVectorSet(3.0f, -2.0f, 6.0f, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Team Select Mage", charPosition, charRotation, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Team Select Mage", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
 	gTeamSelectScene->addEntity(characterToAdd);
 
-	// Create the UI
+	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
 }
 
@@ -1364,24 +1362,17 @@ void setUpTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	
-	// Create Character Factory
-	std::shared_ptr<CharacterFactory> charFactory = std::make_shared<CharacterFactory>();
-	charFactory->mRenderRefrence = gRenderDevice;
-	std::shared_ptr<Odyssey::Entity> characterToAdd;
-
 	// Get Canvas
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
-	float heroUIYPosition = static_cast<float>(height) - 120.0f;
 
 	// Paladin #1
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, gGameScene);
-	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(10.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	DirectX::XMFLOAT2 hudPosition = { 10.0f, static_cast<float>(height) - 120.0f };
+	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
 
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
@@ -1394,9 +1385,8 @@ void setUpTowerManager()
 
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, gGameScene);
-	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) / 2.0f) - 170.0f, heroUIYPosition, L"assets/images/PaladinPortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x = (static_cast<float>(width) / 2.0f) - 170.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, "Paladin Dos", charPosition, charRotation, hudPosition, true, gGameScene);
 	
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
@@ -1409,9 +1399,8 @@ void setUpTowerManager()
 
 	// Mage #1
 	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, gGameScene);
-	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait((static_cast<float>(width) - 370.0f), heroUIYPosition, L"assets/images/MagePortrait.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x = static_cast<float>(width) - 370.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, "Mage Uno", charPosition, charRotation, hudPosition, true, gGameScene);
 	
 	// TODO: REFACTOR THIS LATER
 	// Setup Mage skills
@@ -1423,13 +1412,9 @@ void setUpTowerManager()
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
-	float enemyUIXPosition = 10.0f;
-	float enemyUIYPosition = 10.0f;
 	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, gGameScene);
-	//createCharacterPortrait(275, 200, canvas, characterToAdd->getComponent<Character>());
-	// Create the character's portrait
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition = { 10.0f, 10.0f };
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Un", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -1437,11 +1422,8 @@ void setUpTowerManager()
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, gGameScene);
-	//createCharacterPortrait(475, 225, canvas, characterToAdd->getComponent<Character>());
-	// Create the character's portrait
-	enemyUIXPosition += 329.7f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x += 329.7;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Deux", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -1449,11 +1431,8 @@ void setUpTowerManager()
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, gGameScene);
-	//createCharacterPortrait(700, 225, canvas, characterToAdd->getComponent<Character>());
-	// Create the character's portrait
-	enemyUIXPosition += 329.7f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x += 329.7;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Trois", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -1461,11 +1440,8 @@ void setUpTowerManager()
 
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, gGameScene);
-	//createCharacterPortrait(875, 200, canvas, characterToAdd->getComponent<Character>());
-	// Create the character's portrait
-	enemyUIXPosition += 329.7f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/SkeletonIcon.png", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x += 329.7;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, "Skeleton Quatre", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
@@ -1473,9 +1449,8 @@ void setUpTowerManager()
 
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
-	characterToAdd = charFactory->CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, gGameScene);
-	enemyUIXPosition = static_cast<float>(width) / 2.0f;
-	GameUIManager::getInstance().CreateCharacterPortrait(enemyUIXPosition, enemyUIYPosition, L"assets/images/GanfaulIcon.jpg", gGameMenu, characterToAdd->getComponent<Character>());
+	hudPosition.x = static_cast<float>(width) / 2.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, "Ganfaul", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
 	gGameScene->addEntity(characterToAdd);
