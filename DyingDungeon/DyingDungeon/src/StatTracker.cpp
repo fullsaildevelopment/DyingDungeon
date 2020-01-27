@@ -125,153 +125,6 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 	//OutputStatSheet();
 }
 
-bool StatTracker::SaveStats(std::string saveName)
-{
-	std::fstream file(saveName, std::ios::out | std::ios::binary | std::ios::trunc);
-
-	if (file.is_open()) {
-		file.write((const char*)&m_currentLevel, sizeof(uint32_t));
-
-		for (unsigned int i = 0; i < m_currentLevel; i++) 
-		{
-			file.write((const char*)&m_levels[i].levelNumber, sizeof(uint32_t));
-
-			uint32_t size_r = static_cast<uint32_t>(m_levels[i].turns.size());
-			file.write((const char*)&size_r, sizeof(uint32_t));
-
-			for (unsigned int j = 0; j < size_r; j++) {
-				uint32_t size_c = static_cast<uint32_t>(m_levels[i].turns[j].characterName.size());
-				file.write((const char*)&size_c, sizeof(uint32_t));
-				file.write(m_levels[i].turns[j].characterName.c_str(), size_c);
-
-				uint32_t size_t = static_cast<uint32_t>(m_levels[i].turns[j].targets.size());
-				file.write((const char*)&size_t, sizeof(uint32_t));
-
-				for (unsigned int k = 0; k < size_t; k++) {
-					uint32_t sizeName = static_cast<uint32_t>(m_levels[i].turns[j].targets[k].first.size());
-					file.write((const char*)&sizeName, sizeof(uint32_t));
-					file.write(m_levels[i].turns[j].targets[k].first.c_str(), sizeName);
-					file.write((const char*)&m_levels[i].turns[j].targets[k].second, sizeof(float));
-				}
-
-				file.write((const char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
-
-				file.write((const char*)&m_levels[i].turns[j].value, sizeof(float));
-
-				file.write((const char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
-
-				/*uint32_t size_b = static_cast<uint32_t>(m_levels[i].turns[j].blockValues.size());
-				file.write((const char*)&size_b, sizeof(uint32_t));
-				for (unsigned int l = 0; l < size_b; l++) {
-					file.write((const char*)&m_levels[i].turns[j].blockValues[l], sizeof(float));
-				}*/
-
-				uint32_t effect = (uint32_t)m_levels[i].turns[j].effect;
-				file.write((const char*)&effect, sizeof(uint32_t));
-
-				uint32_t action = (uint32_t)m_levels[i].turns[j].actionType;
-				file.write((const char*)&action, sizeof(uint32_t));
-
-				//file.write((const char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
-
-				file.write((const char*)&m_levels[i].turns[j].isPlayer, sizeof(bool));
-
-				uint32_t size_a = static_cast<uint32_t>(m_levels[i].turns[j].actionName.size());
-				file.write((const char*)&size_a, sizeof(uint32_t));
-				file.write(m_levels[i].turns[j].actionName.c_str(), size_a);
-
-			}
-		}
-		file.close();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-}
-
-bool StatTracker::LoadStats(std::string loadFileName)
-{
-
-	m_levels.clear();
-
-	std::fstream file(loadFileName, std::ios::in | std::ios::binary);
-
-	if (file.is_open()) 
-	{
-		uint32_t numLevels = 0;
-		file.read((char*)&numLevels, sizeof(uint32_t));
-
-		m_levels.resize(numLevels);
-
-		for (unsigned int i = 0; i < numLevels; i++)
-		{
-
-			file.read((char*)&m_levels[i].levelNumber, sizeof(uint32_t));
-			uint32_t size_r = 0;
-			file.read((char*)&size_r, sizeof(uint32_t));
-			m_levels[i].turns.resize(size_r);
-			m_levels[i].turnCount = size_r;
-
-			for (unsigned int j = 0; j < size_r; j++) 
-			{
-				uint32_t size_c = 0;
-				file.read((char*)&size_c, sizeof(uint32_t));
-				file.read((char*)&m_levels[i].turns[j].characterName[0], size_c);
-
-				uint32_t size_t = 0;
-				file.read((char*)&size_t, sizeof(uint32_t));
-				m_levels[i].turns[j].targets.resize(size_t);
-
-				for (unsigned int k = 0; k < size_t; k++) {
-					uint32_t sizeName = 0;
-					file.read((char*)&sizeName, sizeof(uint32_t));
-					m_levels[i].turns[j].targets[k].first.resize(sizeName);
-					file.read((char*)&m_levels[i].turns[j].targets[k].first[0], sizeName);
-					file.read((char*)&m_levels[i].turns[j].targets[k].second, sizeof(float));
-				}
-
-				file.read((char*)&m_levels[i].turns[j].round, sizeof(uint32_t));
-
-				file.read((char*)&m_levels[i].turns[j].value, sizeof(float));
-
-				file.read((char*)&m_levels[i].turns[j].attackModifier, sizeof(float));
-
-				/*uint32_t size_b = 0;
-				file.read((char*)&size_b, sizeof(uint32_t));
-				m_levels[i].turns[j].blockValues.resize(size_b);
-				for (unsigned int l = 0; l < size_b; l++) {
-					file.read((char*)&m_levels[i].turns[j].blockValues[l], sizeof(uint32_t));
-				}*/
-
-				uint32_t effect = 0;
-				file.read((char*)&effect, sizeof(uint32_t));
-				m_levels[i].turns[j].effect = (EFFECTTYPE)effect;
-
-				uint32_t action = 0;
-				file.read((char*)&action, sizeof(uint32_t));
-				m_levels[i].turns[j].actionType = (Action)action;
-
-				//file.read((char*)&m_levels[i].turns[j].isSheild, sizeof(bool));
-
-				file.read((char*)&m_levels[i].turns[j].isPlayer, sizeof(bool));
-
-				uint32_t size_a = 0;
-				file.read((char*)&size_a, sizeof(uint32_t));
-				m_levels[i].turns[j].actionName.resize(size_a);
-				file.read((char*)&m_levels[i].turns[j].actionName[0], size_a);
-			}
-		}
-		file.close();
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 {
 	m_levels.back().turns.back().actionName = cddEvent->actionName;
@@ -1139,39 +992,34 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat)
 	return (totalStat / toatalTurns)*100.0f;
 }
 
-float StatTracker::CalculatePercentageStat(std::string name, unsigned int round, Action stat)
+float StatTracker::CalculatePercentageStat(std::string name, Action stat, unsigned int level, unsigned int round)
 {
 
 	float toatalTurns = 0.0f;
 	float totalStat = 0.0f;
 	unsigned int curr_round = 0;
+	unsigned int index = level - 1;
 
-	for (unsigned int i = 0; i < m_levels.size(); i++)
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
-		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
+		if (m_levels[index].turns[j].characterName == name)
 		{
-			if (m_levels[i].turns[j].characterName == name)
+			toatalTurns++;
+			if (curr_round != m_levels[index].turns[j].round)
 			{
-				toatalTurns++;
-				if (curr_round != m_levels[i].turns[j].round)
+				curr_round = m_levels[index].turns[j].round;
+				if (round < curr_round)
 				{
-					curr_round = m_levels[i].turns[j].round;
-					if (round < curr_round)
-					{
-						break;
-					}
-				}
-				if (m_levels[i].turns[j].actionType == stat && m_levels[i].turns[j].round)
-				{
-					totalStat++;
+					break;
 				}
 			}
-		}
-		if (round < curr_round)
-		{
-			break;
+			if (m_levels[index].turns[j].actionType == stat && curr_round == round)
+			{
+				totalStat++;
+			}
 		}
 	}
+
 	if (toatalTurns == 0.0f) {
 		return 0.00f;
 	}
@@ -1202,7 +1050,7 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat, unsign
 	return (totalStat / toatalTurns) * 100.0f;
 }
 
-std::string FormatToPercentage(float number, unsigned int decimal_places = 2)
+std::string StatTracker::FormatToPercentage(float number, unsigned int decimal_places)
 {
 	unsigned int count = 1 + decimal_places;
 	for (float i = number; i > 0; i--, count++)
@@ -1213,7 +1061,7 @@ std::string FormatToPercentage(float number, unsigned int decimal_places = 2)
 	return std::to_string(number).substr(0, count);
 }
 
-std::wstring FormatToPercentageW(float number, unsigned int decimal_places = 2)
+std::wstring StatTracker::FormatToPercentageW(float number, unsigned int decimal_places)
 {
 	unsigned int count = 1 + decimal_places;
 	for (float i = number; i > 0; i--, count++)
