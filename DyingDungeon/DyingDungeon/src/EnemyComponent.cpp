@@ -222,7 +222,7 @@ void EnemyComponent::Die()
 	mCurrentState = STATE::DEAD;
 	ClearStatusEffects();
 	mAnimator->playClip("Dead");
-	pTurnNumber->setText(L"X");
+	//pTurnNumber->setText(L"X");
 }
 
 void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)

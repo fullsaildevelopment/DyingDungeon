@@ -75,7 +75,7 @@ int BattleInstance::UpdateBattle()
 	if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::DEAD)
 	{
 		//Update the character's turn number to an X - this will represent that he is dead
-		mCurrentCharacter->getComponent<Character>()->GetTurnOrderNumber()->setText(L"X");
+		GameUIManager::getInstance().UpdateCharacterTurnNumber(mCurrentCharacter->getComponent<Character>(), 666);
 		// Take the current character out of the battle queue
 		mBattleQueue.pop();
 		// Update turn numbers
@@ -201,12 +201,13 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 		if (currChar->GetState() == STATE::DEAD)
 		{
-			currChar->GetTurnOrderNumber()->setText(L"X");
+			// Pass in 666 to represent that this character is dead
+			GameUIManager::getInstance().UpdateCharacterTurnNumber(currChar, 666);
 			counter--;
 		}
 		else
 		{
-			currChar->GetTurnOrderNumber()->setText(std::to_wstring(counter));
+			GameUIManager::getInstance().UpdateCharacterTurnNumber(currChar, counter);
 		}
 		tempBattleQueue.pop();
 		counter++;

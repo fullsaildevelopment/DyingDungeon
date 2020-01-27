@@ -274,6 +274,7 @@ protected:
 	// Pointer to the particle system used for "getting hit" effects
 	Odyssey::ParticleSystem* mBloodParticleEffect;
 
+	//DELETE THIS HERASY
 	// Odyssey Entitys needed for UI elements //
 	///////////////////////////////////////////
 	Odyssey::Rectangle2D* pHealthBar;

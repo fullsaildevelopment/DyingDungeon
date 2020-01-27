@@ -869,7 +869,11 @@ void GameUIManager::UpdateCharacterBars(Character* _currCharacter)
 
 void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber)
 {
-	mCharacterHudList[_currCharacter->GetHudIndex()]->pTurnNumber->setText(std::to_wstring(_turnNumber));
+	// If the turn number is 666, that means he is dead and the text needs to be set to X
+	if (_turnNumber == 666)
+		mCharacterHudList[_currCharacter->GetHudIndex()]->pTurnNumber->setText(L"X");
+	else
+		mCharacterHudList[_currCharacter->GetHudIndex()]->pTurnNumber->setText(std::to_wstring(_turnNumber));
 }
 
 void GameUIManager::DecreaseVolume()

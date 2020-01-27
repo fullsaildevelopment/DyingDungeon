@@ -23,6 +23,7 @@ Character::Character()
 	mSpeed = mBaseSpeed = 0.0f;
 	mEXP = 0.0f;
 	mCurrentLevel = 0;
+	mHudIndex = 0;
 	mProvoked = nullptr;
 	mAnimator = nullptr;
 	pDmgText = nullptr;
@@ -46,14 +47,14 @@ void Character::initialize()
 // Called per frame when object is in a scene
 void Character::update(double deltaTime)
 { 
-	if (mDisplaying)
+	/*if (mDisplaying)
 	{
 		pDmgText->addOpacity(static_cast<float>(-deltaTime) / 2.0f);
 		if (pDmgText->getOpacity() == 0.0f)
 		{
 			mDisplaying = false;
 		}
-	}
+	}*/
 }
 
 // Called by battle instance whenever its time for this character to take its turn
@@ -68,7 +69,7 @@ void Character::Die()
 	return;
 }
 
-// Some dumbass thing made by read, used by dumbass bryce
+// Some dumbass thing made by red, used by dumbass bryce
 //std::wstring Character::FormatToPercentageW(float number)
 //{
 //	if (number >= 100.0f)
@@ -116,9 +117,9 @@ void Character::TakeDamage(float dmg)
 	SetHP(GetHP() - dmg);
 
 	// Pop up battle text that appears over the character whenever something happens to them
-	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
+	/*pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);
+	pDmgText->setOpacity(1.0f);*/
 
 	// BattleLogText shit that dumbass Bryce uses
 	std::cout << dmg << " damage!" << std::endl;
@@ -138,9 +139,9 @@ void Character::ReceiveHealing(float healing)
 	SetHP(mCurrentHP + healing);
 	
 	// Pop up battle text that appears over the character whenever something happens to them
-	pDmgText->setText(std::to_wstring(healing).substr(0, 5));
+	/*pDmgText->setText(std::to_wstring(healing).substr(0, 5));
 	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);
+	pDmgText->setOpacity(1.0f);*/
 	
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
@@ -172,7 +173,7 @@ void Character::SetHP(float HP)
 		mCurrentHP = mBaseMaxHP;
 
 	// Update the UI
-	UpdateHealthBar();
+	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the max HP of the character
@@ -200,7 +201,8 @@ void Character::SetMana(float Mana)
 		mCurrentMana = mBaseMaxMana;
 
 	// Update the UI
-	UpdateManaBar();
+	// Update the UI
+	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the max MP of the character
@@ -583,6 +585,7 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
+//DELETE
 // Sets the fill of the health bar for the character
 void Character::UpdateHealthBar()
 {
@@ -595,9 +598,10 @@ void Character::UpdateHealthBar()
 	else if (fill > 1.0f)
 		fill = 1.0f;
 
-	pHealthBar->setFill(fill);
+	//pHealthBar->setFill(fill);
 }
 
+//DELETE
 // Sets the fill of the mana bar for the character
 void Character::UpdateManaBar()
 {
@@ -608,7 +612,7 @@ void Character::UpdateManaBar()
 	else if (fill > 1.0f)
 		fill = 1.0f;
 
-	pManaBar->setFill(fill);
+	//pManaBar->setFill(fill);
 }
 
 // Sets the Particle system pointer to a "Hit effect"
