@@ -4,11 +4,9 @@
 #include "EnemyComponent.h"
 #include "MeshRenderer.h"
 #include "ParticleSystem.h"
-/// Check if better way
 #include "Attack.h"
 #include "Buffs.h"
 #include "Heal.h"
-//////////////////
 #include "Bleed.h"
 #include "StatUp.h"
 #include "StatDown.h"
@@ -20,21 +18,38 @@
 
 CLASS_DEFINITION(Character, HeroComponent)
 
+// Constructor
 HeroComponent::HeroComponent(HEROID id)
 {
-	SetHero(true);
-	mEXP = 0;
-	mShielding = 0.0f;
+	// Setting default values for member variables //
+	////////////////////////////////////////////////
+	mCurrentState = STATE::NONE;
+	mHero = true;
+	mEXP = 0.0f;
+	mCurrentLevel = 0;
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
-	mCurrentState = STATE::NONE;
 	mProvoked = nullptr;
+	mDisplaying = true;
+	mBigHpText = nullptr;
+	mBloodParticleEffect = nullptr;
+	mHpText = nullptr;
+	mMpText = nullptr;
+	pDmgText = nullptr;
+	pHealthBar = nullptr;
+	pManaBar = nullptr;
+	pTurnNumber = nullptr;
+	////////////////////////////////////////////////
+
+	// Temp variable for creating status effects
 	std::shared_ptr<StatusEffect> temp;
+	
+	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (id)
 	{
 	case HEROID::Paladin:
 	{
-		mName = "Paladin";
+		mName = L"Paladin";
 		mBaseMaxHP = mCurrentHP = 150.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
@@ -55,7 +70,7 @@ HeroComponent::HeroComponent(HEROID id)
 	}
 	case HEROID::Mage:
 	{
-		mName = "Mage";
+		mName = L"Mage";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 150.0f;
 		mAttack = 0.0f;
@@ -76,7 +91,7 @@ HeroComponent::HeroComponent(HEROID id)
 	}
 	case HEROID::Bard:
 	{
-		mName = "TheBestClassToEverExist";
+		mName = L"TheBestClassToEverExist";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 125.0f;
 		mAttack = 0.0f;
@@ -87,10 +102,13 @@ HeroComponent::HeroComponent(HEROID id)
 		break;
 	}
 }
+
+// Destructor
 HeroComponent::~HeroComponent()
 {
 }
 
+// Function that allows the player to take thier turn, Character Controler
 bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 {
 	// State machine to navigate while its the players turn.
@@ -103,6 +121,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		ManageAllEffects();
 		return true;
 	}
+
 	// If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
 	// If the players character dies he will have his state set to dead, else he will start to select his move.
 	case STATE::NONE:
@@ -115,6 +134,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentState = STATE::SELECTMOVE;
 		break;
 	}
+
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
@@ -140,6 +160,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
+
 	// If the player character's selection is not Aoe or currently provoked they will then select thier target
 	case STATE::SELECTTARGET:
 	{
@@ -183,12 +204,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		}
 		break;
 	}
-	// The move animation has begun, this will run until the animation is over
+
+	// The move animation has begun, this will run until the animation is over,
 	case STATE::INPROGRESS:
 	{
-		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed 
+		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed, or particle effect 
 		static bool particleTrigger = false;
 		static bool animeTrigger = false;
+		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
 			// Turn particle effect on
@@ -197,6 +220,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
 			particleTrigger = true;
 		}
+		// Play animation when the timming is right
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
 			// If its ment for the enemies play the hit animation to time with the animation timing
@@ -245,6 +269,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
 					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+					// Add particle effect for reciveing buffs you dingus
 					//mCurrentTarget->GetPSBlood()->play();
 				}
 			}
@@ -323,19 +348,29 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	return false;
 }
 
+// Function that gets called to set the character state to dead, along with all other necessary variables
 void HeroComponent::Die()
 {
+	// Set state to dead
 	mCurrentState = STATE::DEAD;
+
+	// Clear all remaining status effects
 	ClearStatusEffects();
+	
+	// Play the death animation
 	mAnimator->playClip("Dead");
+
+	// Set turn text to be an X because tristan is a dumbass
 	pTurnNumber->setText(L"X");
 }
 
+// Returns the characters skill list
 std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 {
 	return mSkillList;
 }
 
+// Function that gets called to manage the state in which the player is selecting a skill to use
 void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
@@ -345,6 +380,7 @@ void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int move
 	}
 }
 
+// Function that gets called to manage the state in which the player is selecting a target to use its skill on
 bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 {
 	// Static refrence to old character
@@ -426,6 +462,7 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 	return false;
 }
 
+// Function that gets called to send the player back to the selection state
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
 	for (std::shared_ptr<Odyssey::Entity> e : enemies)
@@ -444,6 +481,7 @@ void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 	std::cout << "Reselect A Skill..." << std::endl;
 }
 
+// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
 void HeroComponent::BeginAttack(EntityList targets)
 {
 	mAnimator->playClip(mCurrentSkill->GetAnimationId());

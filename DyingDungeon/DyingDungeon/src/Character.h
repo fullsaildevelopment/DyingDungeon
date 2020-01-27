@@ -165,6 +165,18 @@ public:
 	// Returns the vector of strings containing the animation paths
 	std::vector<std::string> GetAnimationPaths();
 
+	// Returns the current level of the character
+	unsigned int GetLevel();
+
+	// Returns the sub-name of the character
+	std::wstring GetSubName();
+
+	// Returns the description of the character
+	std::wstring GetDescription();
+
+	// Sets the description of the character
+	void SetDescription(std::wstring newDescription);
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
@@ -208,11 +220,17 @@ protected:
 	// The name for the character
 	std::wstring mName;
 
+	// The sub-name for the character
+	std::wstring mSubName;
+
 	// Name of file path for character portrait
 	std::wstring mPortrait;
 
 	// Name of Model used for character
 	std::string mModel;
+
+	// Character Description
+	std::wstring mDescription;
 
 	// Vector of animation names used for character
 	std::vector<std::string> mAnimations;

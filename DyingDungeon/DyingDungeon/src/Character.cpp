@@ -3,7 +3,6 @@
 #include "Transform.h"
 #include "RedAudioManager.h"
 #include "MeshRenderer.h"
-// Fix later
 #include "StatUp.h"
 #include "StatDown.h"
 #include "Stun.h"
@@ -634,4 +633,28 @@ std::wstring Character::GetPortraitPath()
 std::vector<std::string> Character::GetAnimationPaths()
 {
 	return mAnimations;
+}
+
+// Returns the current level of the player
+unsigned int Character::GetLevel()
+{
+	return mCurrentLevel;
+}
+
+// Returns the sub-name of the character
+std::wstring Character::GetSubName()
+{
+	return mSubName;
+}
+
+// Returns the description of the character
+std::wstring Character::GetDescription()
+{
+	return mDescription;
+}
+
+// Sets the description of the character
+void Character::SetDescription(std::wstring newDescription)
+{
+	mDescription = newDescription;
 }
