@@ -30,7 +30,7 @@ class AIMoves
 		bool SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 		
 		// Calls correct score move functions depending on enemy type
-		float ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		void ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 		
 		// Score Move For Attacks
 		void ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
@@ -53,7 +53,7 @@ class AIMoves
 		void UngaAttackDeterminePriority();
 
 		// Determins ganfauls priority reguarding skill move type
-		void BossDeterminePriority();
+		void GanfaulDeterminePriority();
 		
 		// Enemy Skill List
 		std::vector<std::shared_ptr<Skills>> mSkillList;

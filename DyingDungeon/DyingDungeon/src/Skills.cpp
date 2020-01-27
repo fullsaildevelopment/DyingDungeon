@@ -36,6 +36,18 @@ std::wstring Skills::GetDescription()
     return mDescription;
 }
 
+// Return a wstring to the icon name
+std::wstring Skills::GetIconName()
+{
+    return mIconName;
+}
+
+// Set Icon name to passed in name
+void Skills::SetIconName(std::wstring icon)
+{
+    mIconName = icon;
+}
+
 // Get skill name 
 std::wstring Skills::GetName()
 {

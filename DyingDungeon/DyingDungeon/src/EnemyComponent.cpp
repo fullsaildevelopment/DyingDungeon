@@ -60,7 +60,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	{
 		if(mMechPtr)
 			(this->*mMechPtr)();
-		//TODO: Change to lanes new stuff... Lane was here :D
+		//Lane was here :D
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
