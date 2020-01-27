@@ -13,10 +13,10 @@ public:
 	float damageAmount;
 	float atkMod;
 	EFFECTTYPE actionEffect;
-	CharacterDealtDamageEvent(std::string attacker, std::string action, float damage, float attackMod, EFFECTTYPE effect)
+	CharacterDealtDamageEvent(std::wstring attacker, std::wstring action, float damage, float attackMod, EFFECTTYPE effect)
 	{
-		attackerName = attacker;
-		actionName = action;
+		attackerName = std::string(attacker.begin(), attacker.end());
+		actionName = std::string(action.begin(), action.end());
 		damageAmount = damage;
 		atkMod = attackMod;
 		actionEffect = effect;
@@ -30,10 +30,10 @@ public:
 	std::string actionName;
 	float mitigationAmount;
 	
-	CharacterTakeDamage(std::string target, std::string action, float mitigation)
+	CharacterTakeDamage(std::wstring target, std::wstring action, float mitigation)
 	{
-		targetName = target;
-		actionName = action;
+		targetName = std::string(target.begin(), target.end());
+		actionName = std::string(action.begin(), action.end());
 		mitigationAmount = mitigation;
 	}
 };
@@ -45,10 +45,10 @@ public:
 	std::string actionName;
 	EFFECTTYPE actionEffect;
 	float health;
-	CharacterHealsEvent(std::string healer, std::string action, EFFECTTYPE effect, float healthAmount) 
+	CharacterHealsEvent(std::wstring healer, std::wstring action, EFFECTTYPE effect, float healthAmount)
 	{
-		healerName = healer;
-		actionName = action;
+		healerName = std::string(healer.begin(), healer.end());
+		actionName = std::string(action.begin(), action.end());
 		actionEffect = effect;
 		health = healthAmount;
 	}
@@ -59,9 +59,9 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 public:
 	std::string targetName;
 	float healingAmount;
-	CharacterRecivesHealingEvent(std::string target, float healing)
+	CharacterRecivesHealingEvent(std::wstring target, float healing)
 	{
-		targetName = target;
+		targetName = std::string(target.begin(), target.end());
 		healingAmount = healing;
 	}
 };
@@ -74,11 +74,11 @@ public:
 	std::string targetName;
 	EFFECTTYPE buffType;
 	float buffValue;
-	CharacterBuffsEvent(std::string character, std::string target, std::string action, EFFECTTYPE buff, float buffAmount)
+	CharacterBuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE buff, float buffAmount)
 	{
-		chracterName = character;
-		targetName = target;
-		actionName = action;
+		chracterName = std::string(character.begin(), character.end());
+		targetName = std::string(target.begin(), target.end());
+		actionName = std::string(action.begin(), action.end());
 		buffType = buff;
 		buffValue = buffAmount;
 	}
@@ -92,11 +92,11 @@ public:
 	std::string targetName;
 	EFFECTTYPE debuffType;
 	float debuffValue;
-	CharacterDebuffsEvent(std::string character, std::string target, std::string action, EFFECTTYPE debuff, float debuff_Value)
+	CharacterDebuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
 	{
-		characterName = character;
-		actionName = action;
-		targetName = target;
+		characterName = std::string(character.begin(), character.end());
+		actionName = std::string(action.begin(), action.end());
+		targetName = std::string(target.begin(), target.end());
 		debuffType = debuff;
 		debuffValue = debuff_Value;
 	}
@@ -119,9 +119,9 @@ public:
 	unsigned int turn;
 	unsigned int round;
 	bool isPlayer;
-	TurnStartEvent(std::string character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
+	TurnStartEvent(std::wstring character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
-		characterName = character;
+		characterName = std::string(character.begin(), character.end());
 		turn = turnNumber;
 		round = roundNumber;
 		isPlayer = isAPlayer;

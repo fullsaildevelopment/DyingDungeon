@@ -1,10 +1,10 @@
 #include "Heal.h"
 #include "Character.h"
 // Constructor
-Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing)
+Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
-	mTypeId = SKILLTYPE::HEAL;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::HEAL;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -13,10 +13,10 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 	mIsAOE = false;
 }
 
-Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
+Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
 {
-	mTypeId = SKILLTYPE::HEAL;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::HEAL;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -29,9 +29,9 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 void Heal::Use(Character& caster, Character& target)
 {
 	target.ReceiveHealing(mHealing);
-	std::cout << caster.GetName() << " has healed " << target.GetName() << " for " << mHealing << " HP." << std::endl;
-	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::None, mHealing));
+	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
 }
+
 // Get the amount the heal is for
 float Heal::GetHealing()
 {

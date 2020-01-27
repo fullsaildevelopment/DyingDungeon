@@ -1,10 +1,10 @@
 #include "Attack.h"
 #include "Character.h"
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage)
 {
-	mTypeId = SKILLTYPE::ATTACK;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -14,10 +14,10 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
 {
-	mTypeId = SKILLTYPE::ATTACK;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -27,10 +27,10 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
 {
-	mTypeId = SKILLTYPE::ATTACK;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -40,10 +40,10 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = false;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
 {
-	mTypeId = SKILLTYPE::ATTACK;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -53,10 +53,10 @@ Attack::Attack(std::string skillName, std::string animationId, float animationTi
 	mIsAOE = AOE;
 }
 
-Attack::Attack(std::string skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
+Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
-	mTypeId = SKILLTYPE::ATTACK;
-	mName = skillName;
+	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -74,13 +74,10 @@ void Attack::Use(Character& caster, Character& target)
 {
 	float totalDps = 0.0f;
 	totalDps = mDamage + (mDamage * caster.GetAtk());
-	std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << " for ";
 	//UI battle log
-	std::string casterName = caster.GetName();
-	std::string targetNameS = target.GetName();
-	std::wstring battleText = std::wstring(casterName.begin(), casterName.end());
-	std::wstring skillName = std::wstring(mName.begin(), mName.end());
-	std::wstring targetName = std::wstring(targetNameS.begin(), targetNameS.end());
+	std::wstring battleText = caster.GetName();
+	std::wstring skillName = mSkillName;
+	std::wstring targetName = target.GetName();
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
 	GameUIManager::getInstance().SetBattleLogText(battleText, false);
 
@@ -88,7 +85,7 @@ void Attack::Use(Character& caster, Character& target)
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(target);
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, caster.GetAtk(), mStatusEffect->GetTypeId()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), mStatusEffect->GetTypeId()));
 		//Switch stament for reds evvents
 		switch (mStatusEffect->GetTypeId())
 		{
@@ -98,22 +95,22 @@ void Attack::Use(Character& caster, Character& target)
 		}
 		case EFFECTTYPE::Bleed:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::StatDown:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Stun:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Provoke:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		default:
@@ -121,8 +118,8 @@ void Attack::Use(Character& caster, Character& target)
 		}
 	}
 	else
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
-	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mName, target.GetDef()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
+	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mSkillName, target.GetDef()));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }

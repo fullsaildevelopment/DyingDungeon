@@ -1,38 +1,40 @@
 #include "Buffs.h"
 #include "Character.h"
 
-Buffs::Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
+Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
 {
 	if (isBuff)
-		mTypeId = SKILLTYPE::BUFF;
+		mSkillTypeId = SKILLTYPE::BUFF;
 	else
-		mTypeId = SKILLTYPE::DEBUFF;
-	mName = skillName;
+		mSkillTypeId = SKILLTYPE::DEBUFF;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mStatusEffect = buff;
 	mIsAOE = false;
 }
-Buffs::Buffs(std::string skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
+Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
 {
 	if (isBuff)
-		mTypeId = SKILLTYPE::BUFF;
+		mSkillTypeId = SKILLTYPE::BUFF;
 	else
-		mTypeId = SKILLTYPE::DEBUFF;
-	mName = skillName;
+		mSkillTypeId = SKILLTYPE::DEBUFF;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mStatusEffect = buff;
 	mIsAOE = isAOE;
 }
+
+// Applies buff to target
 void Buffs::Use(Character& caster, Character& target)
 {
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(target);
-		std::cout << caster.GetName() << " used " << mName << " on " << target.GetName() << "." << std::endl;
+		//Alert Reds stuff for stat tracking?
 		switch (mStatusEffect->GetTypeId())
 		{
 		case EFFECTTYPE::None:
@@ -41,37 +43,37 @@ void Buffs::Use(Character& caster, Character& target)
 		}
 		case EFFECTTYPE::Bleed:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Regen:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
+			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
 			break;
 		}
 		case EFFECTTYPE::StatUp:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::StatDown:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Stun:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Shield:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Provoke:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		default:

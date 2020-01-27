@@ -7,8 +7,13 @@
 #include "GameUIManager.h"
 #include <vector>
 
+// Hero identification enum
 enum class HEROID { Paladin = 0, Mage, Bard };
+
+// Enemy identification enum
 enum class ENEMYID { Skeleton = 0, Ganfaul };
+
+// Character State identification enum
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 class Character : public Odyssey::Component
@@ -18,122 +23,272 @@ class Character : public Odyssey::Component
 public:
 	Character();
 public:
+	//Virtual functions from Component base class
 	virtual void initialize();
 	virtual void update(double deltaTime);
 
-	//Attack Functions
+	// Function that gets called by battle instance to allow the character to take their turn
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+
+	// Function that gets called to set the character state to dead, along with all other necessary variables
 	virtual void Die();
 
-	//Skills
+	// Returns the vector of shared pointer to the characters skills
 	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
 
+	// Reduces the characters current health
 	void TakeDamage(float dmg);
+
+	// Increase the characters current health
 	void ReceiveHealing(float healing);
+
+	// Depletes the characters current mana
 	void DepleteMana(float manaCost);
 
-	/////Get and Set Functions/////
-	// HP Functions
+	// Returns the characters current heath
 	float GetHP();
+
+	// Sets the characters current heath
 	void SetHP(float m_HP);
+
+	// Returns the characters max heath
 	float GetMaxHP();
-	// Mana Functions
+
+	// Returns the characters current mana
 	float GetMana();
-	float GetMaxMana();
+
+	// Sets the characters current mana
 	void SetMana(float Mana);
-	// Shield Functions
-	float GetShielding();
-	void SetShielding(float shield);
-	// Attack Functions
+
+	// Returns the characters max mana
+	float GetMaxMana();
+
+	// Returns the characters current Attack stat
 	float GetAtk();
+
+	// Increase the characters current Attack stat
 	void IncreaseAtk(float statIncrease);
+
+	// Decrease the characters current Attack stat
 	void DecreaseAtk(float statDecrease);
-	// Defense Functions
+
+	// Returns the characters current Defense stat
 	float GetDef();
+
+	// Returns the characters base Defense stat
 	float GetBaseDef();
+
+	// Increase the characters current Defense stat
 	void IncreaseDef(float statIncrease);
+
+	// Decrease the characters current Defense stat
 	void DecreaseDef(float statDecrease);
-	// Speed Functions
+
+	// Return the characters current speed stat
 	float GetSpeed();
+
+	// Return the characters base speed stat
 	float GetBaseSpeed();
+
+	// Increase the characters current speed stat
 	void IncreaseSpd(float statIncrease);
+
+	// Decrease the characters current speed stat
 	void DecreaseSpd(float statDecrease);
-	// EXP Functions
-	void AddExp(float exp);
+
+	// Returns the characters current exp
 	float GetExp();
-	// IsHero Functions
+
+	// Increases the characters current exp
+	void AddExp(float exp);
+
+	// returns true if the character is a hero, false if its a enemy
 	bool IsHero();
+
+	// Set if the character is a hero or not
 	void SetHero(bool heroStat);
-	// Name Functions
-	std::string GetName();
-	void SetName(std::string newName);
-	// mProvoked Functions
+
+	// Returns the characters name
+	std::wstring GetName();
+
+	// Sets the characters name 
+	void SetName(std::wstring newName);
+
+	// Returns the pointer to the character that has provoked this character 
 	Character* GetProvoked();
+
+	// Sets the pointer to a character who has provoked this character
 	void SetProvoked(Character* provoker);
-	// State functions
+
+	// Returns the current state of the character
 	STATE GetState();
+
+	// Sets the current state of the character
 	void SetState(STATE newState);
-	// Impact Indicator Setter
+
+	// Sets the impact indicator entity used for targeting 
 	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
-	// Impact Indicator Getter
+
+	// Gets the impact indicator entity used for targeting
 	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
-	/////End of Get and Set Functions/////
-	// Status Effect Functions
+
+	// Adds a status effect to the character and sorts it putting it in the correct vector
 	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
+
+	// Manages the passed in status effect, appling effects and removing expired ones
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
+
+	// Manages all status effects, appling effects and removing expired ones
 	bool ManageAllEffects();
+
+	// Removes all status effects from characters
 	void ClearStatusEffects();
-	//Update HealthBar UI
+
+	//Update HealthBar UI related to this character
 	void UpdateHealthBar();
-	//Update ManaBar UI
+
+	//Update ManaBar UI related to this character
 	void UpdateManaBar();
 
-	std::wstring FormatToPercentageW(float number);
+	// For bryces dumbasss, made by reds dumbass
+	//std::wstring FormatToPercentageW(float number);
 
-	// Blood particle effect functions
+	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+
+	// Returns the Particle system pointer to a "Hit effect"
 	Odyssey::ParticleSystem* GetPSBlood();
+
+	// Returns the character portrait file path
+	std::wstring GetPortraitPath();
+
+	// Returns the vector of strings containing the animation paths
+	std::vector<std::string> GetAnimationPaths();
+
+	// Returns the current level of the character
+	unsigned int GetLevel();
+
+	// Returns the sub-name of the character
+	std::wstring GetSubName();
+
+	// Returns the description of the character
+	std::wstring GetDescription();
+
+	// Sets the description of the character
+	void SetDescription(std::wstring newDescription);
+
+	// Returns the Turn order number for this character
+	Odyssey::Text2D* GetTurnOrderNumber();
+
+	// Set the characters Hud index
+	void SetHudIndex(unsigned int newIndex);
+
+	// Returns the character hud index
+	unsigned int GetHudIndex();
+
+protected:
+	// Bool to tell if character is a hero or enemy
+	bool mHero;
+
+	// Character hud index
+	unsigned int mHudIndex;
+
+	// Characters current level
+	unsigned int mCurrentLevel;
+
+	// Float for the current HP of the character
+	float mCurrentHP;
+
+	// Float for the current MP of the character
+	float mCurrentMana;
+
+	// Float for the Max HP of the character
+	float mBaseMaxHP;
+
+	// Float for the Max MP of the character
+	float mBaseMaxMana;
+
+	// Float for the base Defense of the character
+	float mBaseDefense;
+
+	// Float for the base Speed of the character
+	float mBaseSpeed;
+
+	// Float for the current Attack of the character
+	float mAttack;
+
+	// Float for the current Defense of the character
+	float mDefense;
+
+	// Float for the current Speed of the character
+	float mSpeed;
+
+	// Float for the current exp of the character
+	float mEXP;
+
+	// A pointer to a character that get sets whenever the character is provoked  
+	Character* mProvoked;
+
+	// The name for the character
+	std::wstring mName;
+
+	// The sub-name for the character
+	std::wstring mSubName;
+
+	// Name of file path for character portrait
+	std::wstring mPortrait;
+
+	// Name of Model used for character
+	std::string mModel;
+
+	// Character Description
+	std::wstring mDescription;
+
+	// Vector of animation names used for character
+	std::vector<std::string> mAnimations;
 	
+	// Vector of shared pointers that point to the skills the character has
+	std::vector<std::shared_ptr<Skills>> mSkillList;
+
+	// Vector of shared pointers that point to the Debuffs the character has
+	std::vector<std::shared_ptr<StatusEffect>> mDebuffs;
+
+	// Vector of shared pointers that point to the Buffs the character has
+	std::vector<std::shared_ptr<StatusEffect>> mBuffs;
+
+	// Vector of shared pointers that point to the Bleeds the character has
+	std::vector<std::shared_ptr<StatusEffect>> mBleeds;
+
+	// Vector of shared pointers that point to the Regens the character has
+	std::vector<std::shared_ptr<StatusEffect>> mRegens;
+
+	// Vector of shared pointers that point to the Sheilds the character has
+	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
+
+	// Pointer to the animator the character uses
+	Odyssey::Animator* mAnimator;
+
+	// The current state of the character used in the hero/enemy components state machine 
+	STATE mCurrentState;
+
+	// Pointer to the particle system used for "getting hit" effects
+	Odyssey::ParticleSystem* mBloodParticleEffect;
+
+	//DELETE THIS HERASY
+	// Odyssey Entitys needed for UI elements //
+	///////////////////////////////////////////
 	Odyssey::Rectangle2D* pHealthBar;
 	Odyssey::Rectangle2D* pManaBar;
 	Odyssey::Text2D* pTurnNumber;
 	Odyssey::Text2D* mBigHpText;
 	Odyssey::Text2D* mHpText;
 	Odyssey::Text2D* mMpText;
-
-	// TODO: FOR BUILD ONLY FIX LATER
 	Odyssey::Text2D* pDmgText;
 	bool mDisplaying;
+	///////////////////////////////////////////
 
-protected:
-	//Stats
-	bool mHero;
-	float mCurrentHP;
-	float mCurrentMana;
-	float mBaseMaxHP;
-	float mBaseMaxMana;
-	float mBaseDefense;
-	float mBaseSpeed;
-	float mShielding;
-	float mAttack;
-	float mDefense;
-	float mSpeed;
-	float mEXP;
-	Character* mProvoked;
-	std::string mName;
-	std::vector<std::shared_ptr<Skills>> mSkillList;
-	std::vector<std::shared_ptr<StatusEffect>> mDebuffs;
-	std::vector<std::shared_ptr<StatusEffect>> mBuffs;
-	std::vector<std::shared_ptr<StatusEffect>> mBleeds;
-	std::vector<std::shared_ptr<StatusEffect>> mRegens; 
-	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
-	Odyssey::Animator* mAnimator;
-	STATE mCurrentState;
-	Odyssey::ParticleSystem* mBloodParticleEffect;
 	public:
+	// shared pointer to the entity used for targeting 
 	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
-private:
-	float mPrevHealth;
-	float mPrevMana;
 };
 

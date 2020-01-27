@@ -45,7 +45,6 @@ void StatUp::Apply(Character& target)
 	default:
 		break;
 	}
-	std::cout << target.GetName() << " has received a " << mAmountOfEffect << "%" << temp << " up!"<< std::endl;
 	return;
 }
 
@@ -75,7 +74,6 @@ void StatUp::Remove()
 	default:
 		break;
 	}
-	std::cout << mRecipient->GetName() << " has lost it's " << mAmountOfEffect << "%" << temp << " up!" << std::endl;
 	return;
 }
 

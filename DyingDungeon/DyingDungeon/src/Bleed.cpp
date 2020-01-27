@@ -18,9 +18,7 @@ void Bleed::Apply(Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect;
 	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
-	if (!target.AddStatusEffect(newStatusEffect))
-		return;
-	std::cout << target.GetName() << " has been inflicted with bleed!" << std::endl;
+	target.AddStatusEffect(newStatusEffect);
 	return;
 }
 
@@ -34,7 +32,5 @@ void Bleed::Use()
 	float totalBleed = 0;
 	totalBleed = mAmountOfEffect * mRecipient->GetMaxHP();
 	float totalBleedButBetter = totalBleed -  totalBleed * mRecipient->GetDef();
-	std::string tempName = mRecipient->GetName();
 	mRecipient->TakeDamage(totalBleed);
-	std::cout << tempName << " has bleed for " << totalBleedButBetter << "HP!" <<std::endl;
 }

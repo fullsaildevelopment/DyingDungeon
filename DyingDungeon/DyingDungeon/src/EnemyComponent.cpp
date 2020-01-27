@@ -14,7 +14,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	{
 	case ENEMYID::Skeleton:
 	{
-		mName = "Skeleton";
+		mName = L"Skeleton";
 		mBaseMaxHP = mCurrentHP = 100.0f;
 		mBaseMaxMana = mCurrentMana = 100.0f;
 		mAttack = 0.0f;
@@ -26,7 +26,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	}
 	case ENEMYID::Ganfaul:
 	{
-		mName = "Ganfaul";
+		mName = L"Ganfaul";
 		mBaseMaxHP = mCurrentHP = 300.0f;
 		mBaseMaxMana = mCurrentMana = 300.0f;
 		mAttack = 0.0f;
@@ -60,7 +60,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	{
 		if(mMechPtr)
 			(this->*mMechPtr)();
-		//TODO: Change to lanes new stuff... Lane was here :D
+		//Lane was here :D
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
@@ -71,10 +71,10 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
+		if (mMoves.FindMove(int(mMoveOverride), playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
 		{
 			mCurrentState = STATE::INPROGRESS;
-			if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 				BeginAttack(playerTeam);
 			else
 				BeginAttack(enemyTeam);
@@ -100,7 +100,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 			if (!trigger && mAnimator->getProgress() > mMoves.GetMove()->skill->GetAnimationTiming())
 			{
 				// If its ment for the enemies play the hit animation to time with the animation timing
-				if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+				if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 				{
 					if (mMoves.GetMove()->skill->IsAOE())
 					{
@@ -154,7 +154,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
-			if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
@@ -222,7 +222,7 @@ void EnemyComponent::Die()
 	mCurrentState = STATE::DEAD;
 	ClearStatusEffects();
 	mAnimator->playClip("Dead");
-	pTurnNumber->setText(L"X");
+	//pTurnNumber->setText(L"X");
 }
 
 void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
@@ -232,7 +232,7 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 	{
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-		if (mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetTypeId() == SKILLTYPE::DEBUFF)
+		if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 		{
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{

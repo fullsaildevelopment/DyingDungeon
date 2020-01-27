@@ -3,105 +3,99 @@
 #include "Transform.h"
 #include "RedAudioManager.h"
 #include "MeshRenderer.h"
-// Fix later
-#include "StatUp.h";
-#include "StatDown.h";
-#include "Stun.h";
+#include "StatUp.h"
+#include "StatDown.h"
+#include "Stun.h"
 
 CLASS_DEFINITION(Component, Character)
 
+// Constructor
 Character::Character()
 {
+	// Setting default values for member variables //
+	////////////////////////////////////////////////
+	mCurrentState = STATE::NONE;
 	mHero = false;
-	mDisplaying = false;
-	mShielding = false;
+	mBaseMaxHP = mCurrentHP = 100.0f;
+	mBaseMaxMana = mCurrentMana = 100.0f;
 	mAttack = 0.0f;
-	mDefense = 0.0f;
-	mBaseDefense = 0.0f;
-	mSpeed = 0.15f;
-	mBaseSpeed = 0.0f;
-	mBaseMaxHP = 100.0f;
-	mBaseMaxMana = 100.0f;
-	mCurrentHP = 100.0f;
-	mCurrentMana = 100.0f;
-	mPrevHealth = 100.0f;
-	mPrevMana = 100.0f;
+	mDefense = mBaseDefense = 0.0f;
+	mSpeed = mBaseSpeed = 0.0f;
 	mEXP = 0.0f;
+	mCurrentLevel = 0;
+	mHudIndex = 0;
 	mProvoked = nullptr;
 	mAnimator = nullptr;
 	pDmgText = nullptr;
 	pHealthBar = nullptr;
 	pManaBar = nullptr;
 	pTurnNumber = nullptr;
-	mCurrentState = STATE::NONE;
+	mDisplaying = false;
+	mBigHpText = nullptr;
+	mBloodParticleEffect = nullptr;
+	mHpText = nullptr;
+	mMpText = nullptr;
+	////////////////////////////////////////////////
 }
 
+// Init for setting things up whenever the scene is initialized
 void Character::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 }
 
+// Called per frame when object is in a scene
 void Character::update(double deltaTime)
-{
-	if (mDisplaying)
+{ 
+	/*if (mDisplaying)
 	{
 		pDmgText->addOpacity(static_cast<float>(-deltaTime) / 2.0f);
 		if (pDmgText->getOpacity() == 0.0f)
 		{
 			mDisplaying = false;
 		}
-	}
+	}*/
 }
 
+// Called by battle instance whenever its time for this character to take its turn
 bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	return false;
 }
 
-/*
- * Function:  Die()
- * --------------------
- * Sets dead boolean to true
- * Sets animation to death animation
- *
- * returns: void
- */
+// Called whenever a charater needs to die setting the state to dead, and all other variables
 void Character::Die()
 {
-
+	return;
 }
 
-std::wstring Character::FormatToPercentageW(float number)
-{
-	if (number >= 100.0f)
-	{
-		return std::to_wstring(number).substr(0, 6);
-	}
-	else if (number >= 10.0f)
-	{
-		return std::to_wstring(number).substr(0, 5);
-	}
-	else
-	{
-		return std::to_wstring(number).substr(0, 4);
-	}
-}
+// Some dumbass thing made by red, used by dumbass bryce
+//std::wstring Character::FormatToPercentageW(float number)
+//{
+//	if (number >= 100.0f)
+//	{
+//		return std::to_wstring(number).substr(0, 6);
+//	}
+//	else if (number >= 10.0f)
+//	{
+//		return std::to_wstring(number).substr(0, 5);
+//	}
+//	else
+//	{
+//		return std::to_wstring(number).substr(0, 4);
+//	}
+//}
 
-/*
- * Function:  TakeDamage(float dmg)
- * --------------------
- * Pass in a float to deal damage to the character
- * Calculates any damage reduction (TODO)
- *
- * returns: void
- */
+// Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
 {
+	// Play sound effect for getting hit
 	RedAudioManager::Instance().PlaySFX("PaladinHit");
 
-	//TODO calculate damage reduction here
+	// Calculate damage reduction based on character drffense
 	dmg = dmg - (dmg * mDefense);
-	// Shielding algorithim
+
+	// loop through shield vector and reduce the incoming damage by amount of temp health this character has
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
@@ -118,19 +112,22 @@ void Character::TakeDamage(float dmg)
 			it = mSheilds.erase(it);
 		}
 	}
-	//Take Damage
+
+	// Reduce health by the amount of damage that made it through
 	SetHP(GetHP() - dmg);
-	pDmgText->setText(std::to_wstring(dmg).substr(0,5));
+
+	// Pop up battle text that appears over the character whenever something happens to them
+	/*pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);
-	mDisplaying = true;
-	/////////////////////////////////
-	//BattleLogText
+	pDmgText->setOpacity(1.0f);*/
+
+	// BattleLogText shit that dumbass Bryce uses
 	std::cout << dmg << " damage!" << std::endl;
-	std::wstring dmgText = std::wstring(FormatToPercentageW(dmg));
+	std::wstring dmgText = L"";
 	dmgText.append(L" damage!");
 	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
 
+	// If they run out of Health kill the character
 	if (mCurrentHP <= 0.0f)
 		Die();
 }
@@ -138,284 +135,234 @@ void Character::TakeDamage(float dmg)
 // Gives the character health back 
 void Character::ReceiveHealing(float healing)
 {
-	// TODO: FOR BUILD ONLY FIX LATER
-	pDmgText->setText(std::to_wstring(healing).substr(0, 5));
-	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);
-	mDisplaying = true;
-	/////////////////////////////////
+	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
+	
+	// Pop up battle text that appears over the character whenever something happens to them
+	/*pDmgText->setText(std::to_wstring(healing).substr(0, 5));
+	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
+	pDmgText->setOpacity(1.0f);*/
+	
+	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 }
 
-/*
- * Function:  DepleteMana()
- * --------------------
- * Reduces the current mana by the mana cost
- *
- * returns: void
- */
+// Called whenever this character needs to reduce its current mana
 void Character::DepleteMana(float manaCost)
 {
-	//Special Conditions here
-
-	//Reduce current mana
+	// Reduce current mana
 	SetMana(GetMana() - manaCost);
 }
 
-/*
- * Function:  GetMana()
- * --------------------
- * Gets the HP of the character
- *
- * returns: A float representing current HP
- */
+// Returns the characters current health
 float Character::GetHP()
 {
 	return mCurrentHP;
 }
 
-/*
- * Function:  SetHP(float HP)
- * --------------------
- * Sets the HP of the character to the passed in float
- *
- * returns: nothing
- */
+// Sets the current HP of the character
 void Character::SetHP(float HP)
 {
-	mPrevHealth = mCurrentHP;
+	// Set the hp to the passed in amount
 	mCurrentHP = HP;
-	if (mCurrentHP < 0)
-		mCurrentHP = 0;
+
+	// if health is lower that 0.0f set it to 0.0f, if its over the max set it to the max
+	if (mCurrentHP < 0.0)
+		mCurrentHP = 0.0;
 	else if (mCurrentHP > mBaseMaxHP)
 		mCurrentHP = mBaseMaxHP;
 
-	UpdateHealthBar();
+	// Update the UI
+	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
+// Returns the max HP of the character
 float Character::GetMaxHP()
 {
 	return mBaseMaxHP;
 }
 
-/*
- * Function:  GetMana()
- * --------------------
- * Gets the mana of the character
- *
- * returns: A float representing mana
- */
+// Returns the current mana of a character
 float Character::GetMana()
 {
 	return mCurrentMana;
 }
 
-/*
- * Function:  SetMana(float Mana)
- * --------------------
- * Sets the Mana of the character to the passed in float
- *
- * returns: void
- */
+// Sets the current mana of the character
 void Character::SetMana(float Mana)
 {
-	mPrevMana = mCurrentMana;
+	// Set the mp to the passed in amount
 	mCurrentMana = Mana;
-	if (mCurrentMana < 0)
-		mCurrentMana = 0;
+
+	// if mana is lower that 0.0f set it to 0.0f, if its over the max set it to the max
+	if (mCurrentMana < 0.0f)
+		mCurrentMana = 0.0f;
 	else if (mCurrentMana > mBaseMaxMana)
 		mCurrentMana = mBaseMaxMana;
 
-	UpdateManaBar();
+	// Update the UI
+	// Update the UI
+	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
+// Returns the max MP of the character
 float Character::GetMaxMana()
 {
 	return mBaseMaxMana;
 }
 
-// Returns the Attack mod
+// Returns the Attack stat of the character
 float Character::GetAtk()
 {
 	return mAttack;
 }
 
-// Increases the Attack stat
+// Increases the Attack stat of the character
 void Character::IncreaseAtk(float statIncrease)
 {
 	mAttack += statIncrease;
 }
 
-// Decreases the Attack stat
+// Decreases the Attack stat of the character
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= statDecrease;
+
+	// If attack stat is lower than -1.0f set it to -1.0f
 	if (mAttack <= -1.0f)
 		mAttack = -1.0f;
 }
 
-// Returns the Defense mod
+// Returns the Defense stat of the character
 float Character::GetDef()
 {
 	return mDefense;
 }
 
+// Returns the base Defense stat of the character
 float Character::GetBaseDef()
 {
 	return mBaseDefense;
 }
 
-// Increases the Defense stat
+// Increases the current Defense stat of the character
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
+
+	// If defense stat is greater than 1.0f set it to 1.0f
 	if (mDefense > 1.0f)
 		mDefense = 1.0f;
 }
 
-// Decreases the Defense stat
+// Decreases the current Defense stat of the character
 void Character::DecreaseDef(float statDecrease)
 {
 	mDefense -= (mBaseDefense * statDecrease);
 }
 
-// Returns the Speed stat
+// Returns the current Speed stat of the character
 float Character::GetSpeed()
 {
 	return mSpeed;
 }
 
+// Returns the base speed stat of the character
 float Character::GetBaseSpeed()
 {
 	return mBaseSpeed;
 }
 
-// Increases the Speed stat
+// Increases the current Speed stat of the character
 void Character::IncreaseSpd(float statIncrease)
 {
 	mSpeed += (mBaseSpeed * statIncrease);
 }
 
-// Decreases the Speed stat
+// Decreases the current Speed stat of the character
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
-
-// Gets the shields
-float Character::GetShielding()
-{
-	return mShielding;
-}
-
-// Add to the shield
-void Character::SetShielding(float shield)
-{
-	mShielding = shield;
-}
-
-// Adds Exp to the charater
+// Adds Exp to the character
 void Character::AddExp(float exp)
 {
 	mEXP += exp;
 }
 
-//Get the exp of the character
+// Returns the exp of the character
 float Character::GetExp()
 {
 	return mEXP;
 }
 
+// Returns the pointer that points to the character that provoked this character
 Character* Character::GetProvoked()
 {
 	return mProvoked;
 }
 
+// Sets the characters provoked pointer to the character passed in
 void Character::SetProvoked(Character* provoker)
 {
 	mProvoked = provoker;
 }
 
+// Returns the characters currennt state
 STATE Character::GetState()
 {
 	return mCurrentState;
 }
 
+// Sets the characters current state
 void Character::SetState(STATE newState)
 {
 	mCurrentState = newState;
 }
 
-/*
- * Function:  IsHero()
- * --------------------
- * Gets the Hero staus of the character
- *
- * returns: bool
- */
+// Gets the Hero staus of the character
 bool Character::IsHero()
 {
 	return mHero;
 }
 
-/*
- * Function:  SetHero(bool heroStat)
- * --------------------
- * Set the Hero staus of the character
- *
- * returns: void
- */
+// Sets the Hero staus of the character
 void Character::SetHero(bool heroStat)
 {
 	mHero = heroStat;
 }
 
-/*
- * Function:  GetName()
- * --------------------
- * Gets the characters name
- *
- * returns: string
- */
-std::string Character::GetName()
+// Returns the characters name
+std::wstring Character::GetName()
 {
 	return mName;
 }
 
-/*
- * Function:  SetName(string newName)
- * --------------------
- * Set the character's name
- *
- * returns: void
- */
-void Character::SetName(std::string newName)
+// Sets the character's name
+void Character::SetName(std::wstring newName)
 {
 	mName = newName;
 }
 
-/*
-*Function:  GetSkills()
-* --------------------
-* Gets the characters skill list.
-*
-*returns : Skills*
-*/
+// Returns the characters skill list
 std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 {
 	return mSkillList;
 }
 
-// Adds a new status effect to the list of status effects
+// Adds a status effect to the character and sorts it putting it in the correct vector
 bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 {
+	// Make an iterator to check the characters list to see if it already has the passed in effect
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	// Switch statment for detirming what vector the effect needs to go into
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
+		// Loop through if i find the effect return false, else add to the vector of efffect
 		for (it = mBleeds.begin(); it != mBleeds.end();)
 		{
 			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
@@ -526,9 +473,12 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	return true;
 }
 
+// Manages status effects of passed in vector of effects, appling effects and removing expired ones
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires.
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
 	for (it = effectList.begin(); it != effectList.end();)
 	{
 		(*it)->Use();
@@ -545,9 +495,13 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	}
 }
 
+// Manages all status effects, appling effects and removing expired ones
 bool Character::ManageAllEffects()
 {
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	//Regens
 	for (it = mRegens.begin(); it != mRegens.end();)
 	{
 		(*it)->Use();
@@ -560,6 +514,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Bleeds
 	for (it = mBleeds.begin(); it != mBleeds.end();)
 	{
 		(*it)->Use();
@@ -574,6 +530,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Buffs
 	for (it = mBuffs.begin(); it != mBuffs.end();)
 	{
 		(*it)->Use();
@@ -586,6 +544,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Debuffs
 	for (it = mDebuffs.begin(); it != mDebuffs.end();)
 	{
 		(*it)->Use();
@@ -598,6 +558,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+	 
+	// Shields
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
 		(*it)->Use();
@@ -623,14 +585,8 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
-
-/*
-*Function:  UpdateHealthBar()
-* --------------------
-* Sets the fill of the health bar for the character
-*
-*returns : void
-*/
+//DELETE
+// Sets the fill of the health bar for the character
 void Character::UpdateHealthBar()
 {
 	mHpText->setText(std::to_wstring((int)mCurrentHP));
@@ -642,16 +598,11 @@ void Character::UpdateHealthBar()
 	else if (fill > 1.0f)
 		fill = 1.0f;
 
-	pHealthBar->setFill(fill);
+	//pHealthBar->setFill(fill);
 }
 
-/*
-*Function:  UpdateManaBar()
-* --------------------
-* Sets the fill of the mana bar for the character
-*
-*returns : void
-*/
+//DELETE
+// Sets the fill of the mana bar for the character
 void Character::UpdateManaBar()
 {
 	mMpText->setText(std::to_wstring((int)mCurrentMana));
@@ -661,15 +612,71 @@ void Character::UpdateManaBar()
 	else if (fill > 1.0f)
 		fill = 1.0f;
 
-	pManaBar->setFill(fill);
+	//pManaBar->setFill(fill);
 }
 
+// Sets the Particle system pointer to a "Hit effect"
 void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
 {
 	mBloodParticleEffect = newBloodEffect;
 }
 
+// Returns the Particle system pointer to a "Hit effect"
 Odyssey::ParticleSystem* Character::GetPSBlood()
 {
 	return mBloodParticleEffect;
+}
+
+// Returns the character portrait file path
+std::wstring Character::GetPortraitPath()
+{
+	return mPortrait;
+}
+
+// Returns the vector of strings containing the animation paths
+std::vector<std::string> Character::GetAnimationPaths()
+{
+	return mAnimations;
+}
+
+// Returns the current level of the player
+unsigned int Character::GetLevel()
+{
+	return mCurrentLevel;
+}
+
+// Returns the sub-name of the character
+std::wstring Character::GetSubName()
+{
+	return mSubName;
+}
+
+// Returns the description of the character
+std::wstring Character::GetDescription()
+{
+	return mDescription;
+}
+
+// Sets the description of the character
+void Character::SetDescription(std::wstring newDescription)
+{
+	mDescription = newDescription;
+}
+
+// Returns the Turn order number for this character
+Odyssey::Text2D* Character::GetTurnOrderNumber()
+{
+	return pTurnNumber;
+}
+
+// Set the characters Hud index
+void Character::SetHudIndex(unsigned int newIndex)
+{
+	mHudIndex = newIndex;
+}
+
+// Returns the character hud index
+unsigned int Character::GetHudIndex()
+{
+	return mHudIndex;
 }
