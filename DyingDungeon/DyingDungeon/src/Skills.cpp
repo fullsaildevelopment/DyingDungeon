@@ -25,33 +25,33 @@ void Skills::Use(Character& caster,Character& target)
 }
 
 // Set the description of the skill
-void Skills::SetDescription(std::wstring desc)
+void Skills::SetSkillDescription(std::wstring desc)
 {
-    mDescription = desc;
+    mSkillDescription = desc;
 }
 
 // Get description of the skill
-std::wstring Skills::GetDescription()
+std::wstring Skills::GetSkillDescription()
 {
-    return mDescription;
+    return mSkillDescription;
 }
 
 // Return a wstring to the icon name
-std::wstring Skills::GetIconName()
+std::wstring Skills::GetSkillIconName()
 {
-    return mIconName;
+    return mSkillIconName;
 }
 
 // Set Icon name to passed in name
-void Skills::SetIconName(std::wstring icon)
+void Skills::SetSkillIconName(std::wstring icon)
 {
-    mIconName = icon;
+    mSkillIconName = icon;
 }
 
 // Get skill name 
-std::wstring Skills::GetName()
+std::wstring Skills::GetSkillName()
 {
-	return mName;
+	return mSkillName;
 }
 
 // Returns the skills animation id
@@ -67,9 +67,9 @@ float Skills::GetAnimationTiming()
 }
 
 // Returns Type Id
-SKILLTYPE Skills::GetTypeId()
+SKILLTYPE Skills::GetSkillTypeId()
 {
-	return mTypeId;
+	return mSkillTypeId;
 }
 
 // Returns if the skill is an aoe move

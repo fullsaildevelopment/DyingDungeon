@@ -2,8 +2,8 @@
 //#include "Skills.h"
 #include "Entity.h"
 
-class Character;
 class Skills;
+class Character;
 
 class AIMoves
 {
@@ -64,9 +64,6 @@ class AIMoves
 		
 		// Move Priority
 		int mPriorityMove;
-
-		// Who this is attatched too
-		Character* mCaster;
 
 		// Current skill index for finding best move
 		int mCurrMoveCheck;

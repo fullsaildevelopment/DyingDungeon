@@ -21,13 +21,13 @@ public:
 protected:
 
 	// Skill type
-	SKILLTYPE mTypeId;
+	SKILLTYPE mSkillTypeId;
 	// How much mana it will cost the caster
 	float mMpCost;
 	// Animation time for when effects such as hit animation or particle effects should go out
 	float mAnimationTime;
 	// Name of skill
-	std::wstring mName;
+	std::wstring mSkillName;
 	// Animation ID
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
@@ -37,9 +37,9 @@ protected:
 	// Particle effect if the skill has it 
 	ParticleInfomation mPS;
 	// Description of the skill
-	std::wstring mDescription;
+	std::wstring mSkillDescription;
 	// The Icon sprite for the skill
-	std::wstring mIconName;
+	std::wstring mSkillIconName;
 
 
 private:
@@ -52,13 +52,13 @@ public:
 	// Get how much mana the skill cost
 	float GetManaCost();
 	// Get Skill name
-	std::wstring GetName();
+	std::wstring GetSkillName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
 	// Gets the animation timing
 	float GetAnimationTiming();
 	// Get TypeID
-	SKILLTYPE GetTypeId();
+	SKILLTYPE GetSkillTypeId();
 	// Get isAOE
 	bool IsAOE();
 	StatusEffect* GetStatusEffect();
@@ -79,13 +79,13 @@ public:
 	// Use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
 	// Set Description
-	void SetDescription(std::wstring desc);
+	void SetSkillDescription(std::wstring desc);
 	// Get Description Of The Skill
-	std::wstring GetDescription();
+	std::wstring GetSkillDescription();
 	// Get Icon Name
-	std::wstring GetIconName();
+	std::wstring GetSkillIconName();
 	// Set Icon Name	
-	void SetIconName(std::wstring icon);
+	void SetSkillIconName(std::wstring icon);
 
 
 private:

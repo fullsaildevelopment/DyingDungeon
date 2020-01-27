@@ -165,7 +165,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	case STATE::SELECTTARGET:
 	{
 		static int tempIndex = -1;
-		if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 		{
 			if (tempIndex == -1)
 			{
@@ -224,7 +224,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
 			// If its ment for the enemies play the hit animation to time with the animation timing
-			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
 				{
@@ -280,7 +280,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			DepleteMana(mCurrentSkill->GetManaCost());
-			if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
 				{
@@ -489,7 +489,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 	{
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-		if (mCurrentSkill->GetTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 		{
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{

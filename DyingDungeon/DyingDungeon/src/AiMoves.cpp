@@ -195,7 +195,7 @@ float AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_
 		return -10000.0f;
 
 	// Determine how we will score the current skill
-	int type = int(skill->GetTypeId());
+	int type = int(skill->GetSkillTypeId());
 	switch (type)
 	{
 		case 0:
@@ -246,7 +246,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 					if (target->IsHero() == true && target->GetState() != STATE::DEAD)
 					{
 						// If this is our priority then increase the score
-						if (int(skill->GetTypeId()) == mPriorityMove)
+						if (int(skill->GetSkillTypeId()) == mPriorityMove)
 							attackScore += 100.0f;
 
 						Attack* tempATK = dynamic_cast<Attack*>(skill.get());
@@ -277,7 +277,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 		else
 		{
 			// Is this our skilltype priority
-			if (int(skill->GetTypeId()) == mPriorityMove)
+			if (int(skill->GetSkillTypeId()) == mPriorityMove)
 				attackScore += 100.0f;
 
 			target = caster->GetProvoked();
@@ -313,7 +313,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 		return;
 
 	// Is the priority the same as our skill 
-	if (int(skill->GetTypeId()) == mPriorityMove)
+	if (int(skill->GetSkillTypeId()) == mPriorityMove)
 		attackAOEScore += 100.0f;
 	
 	for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
@@ -351,7 +351,7 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	float buffScore = 0.0f;
 	Character* target = nullptr;
 
-	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != SKILLTYPE::BUFF)
 		buffScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
@@ -388,7 +388,7 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
 
-	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetTypeId() != SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != SKILLTYPE::BUFF)
 		buffAOEScore += 50.0f;
 
 	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
