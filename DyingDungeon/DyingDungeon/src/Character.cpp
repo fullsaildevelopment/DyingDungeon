@@ -664,3 +664,15 @@ Odyssey::Text2D* Character::GetTurnOrderNumber()
 {
 	return pTurnNumber;
 }
+
+// Set the characters Hud index
+void Character::SetHudIndex(unsigned int newIndex)
+{
+	mHudIndex = newIndex;
+}
+
+// Returns the character hud index
+unsigned int Character::GetHudIndex()
+{
+	return mHudIndex;
+}

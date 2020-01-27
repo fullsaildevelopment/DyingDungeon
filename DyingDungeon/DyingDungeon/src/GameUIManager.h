@@ -79,7 +79,7 @@ public: // Functions
 	// Update health bar
 	void UpdateCharacterBars(Character* _currCharacter);
 	// UPdate turn number
-	void UpdateCharacterTurnNumber(Character* _currCharacter);
+	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
 	//Updates
 	void UpdateGraph();

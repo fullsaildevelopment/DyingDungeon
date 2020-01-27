@@ -137,8 +137,8 @@ private:
 	float CalculatePercentageStat(std::string name, unsigned int round, Action stat);
 
 	//Formats a float to a string with two decimal places
-	std::string FormatToPercentage(float number, unsigned int decimal_places = 2);
-	std::wstring FormatToPercentageW(float number);
+	std::string FormatToPercentage(float number, unsigned int decimal_places);
+	std::wstring FormatToPercentageW(float number, unsigned int decimal_places);
 
 	//functions to round decimal alues to a certain decimal place
 	float roundf(float num, unsigned int decimal_places = 0);

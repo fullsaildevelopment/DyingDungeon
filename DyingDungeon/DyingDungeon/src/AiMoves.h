@@ -1,7 +1,8 @@
 #pragma once
-#include "Skills.h"
 #include "Entity.h"
+#include "Skills.h"
 
+//Foward Declarations
 class Character;
 
 class AIMoves
@@ -23,7 +24,7 @@ class AIMoves
 		~AIMoves() = default;
 
 		// Called outside to find the best move. Return true if finished.
-		bool FindMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		bool FindMove(SKILLTYPE override, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 
 	private:
 		// Iterrates through skills calling respective score move. Returns 
@@ -56,7 +57,7 @@ class AIMoves
 		void GanfaulDeterminePriority();
 		
 		// Enemy Skill List
-		std::vector<std::shared_ptr<Skills>> mSkillList;
+		std::vector<std::shared_ptr<Skills>> mAISkillList;
 
 		// Best Target
 		std::vector<Odyssey::Entity> mBestTarget;
@@ -77,13 +78,12 @@ class AIMoves
 		AIMoves::Move mBestHeal;
 
 		// Previous Best Move
-		AIMoves::Move mPrevMove;
 		
 		// Move Priority
 		SKILLTYPE mPriorityMove;
 
 		// Who this is attatched too
-		Character* mCaster;
+		Character* caster;
 
 		// Current skill index for finding best move
 		int mCurrMoveCheck;
@@ -95,6 +95,7 @@ class AIMoves
 	public:
 		// Get the best move
 		std::shared_ptr <AIMoves::Move> GetMove();
+		AIMoves::Move mPrevMove;
 		// Get the skill enemy skill list
 		std::vector<std::shared_ptr<Skills>> GetSkillList();
 

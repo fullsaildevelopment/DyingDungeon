@@ -180,9 +180,18 @@ public:
 	// Returns the Turn order number for this character
 	Odyssey::Text2D* GetTurnOrderNumber();
 
+	// Set the characters Hud index
+	void SetHudIndex(unsigned int newIndex);
+
+	// Returns the character hud index
+	unsigned int GetHudIndex();
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
+
+	// Character hud index
+	unsigned int mHudIndex;
 
 	// Characters current level
 	unsigned int mCurrentLevel;

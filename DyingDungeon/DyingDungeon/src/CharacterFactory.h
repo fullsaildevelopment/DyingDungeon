@@ -49,7 +49,7 @@ private: // Varibales
 	// Entitys
 
 	// Ints
-	int characterHudIndex = 0;
+	unsigned int characterHudIndex = 0;
 
 	// Floats
 
