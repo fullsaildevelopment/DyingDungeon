@@ -1,7 +1,7 @@
 #pragma once
 #include "AiMoves.h"
 #include "Character.h"
-//////
+///////
 #include "Attack.h"
 #include "Buffs.h"
 //////
@@ -19,14 +19,14 @@ AIMoves::AIMoves()
 	mBestMove = nullptr;
 	mCaster = nullptr;
 	mEnemyID = -1;
-	mPriorityMove = SKILLTYPE::UNDEFINED;
+	mPriorityMove = -1;
 }
 
 // Constructor
 AIMoves::AIMoves(int _enemyID, Character* _caster)
 {
 	//Priority Set To None
-	mPriorityMove = SKILLTYPE::UNDEFINED;
+	mPriorityMove = -1;
 	
 	//Best Move Initialization
 	mBestMove = std::make_shared<AIMoves::Move>();
@@ -99,7 +99,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 }
 
 //Find the best move depending on what enemy you are
-bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool AIMoves::FindMove(int priorityOverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
 {
 	mPriorityMove = priorityOverride;
 	bool finished = false;
@@ -112,7 +112,7 @@ bool AIMoves::FindMove(SKILLTYPE priorityOverride, std::vector<std::shared_ptr<O
 		case 0:
 		{
 			//FindBestMove
-			if (mPriorityMove == SKILLTYPE::UNDEFINED)
+			if (mPriorityMove == -1)
 				SkeletonDeterminePriority();
 			
 			finished = SkillCheck(playerTeam, enemyTeam);
@@ -165,28 +165,28 @@ bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTea
 	{
 		switch (mPriorityMove)
 		{
-			case SKILLTYPE::ATTACK:
+			case 0:
 			{
 				mBestMove->score = mBestAttack.score;
 				mBestMove->target = mBestAttack.target;
 				mBestMove->skill = mBestAttack.skill;
 				break;
 			}
-			case SKILLTYPE::BUFF:
+			case 1:
 			{
 				mBestMove->score = mBestBuff.score;
 				mBestMove->target = mBestBuff.target;
 				mBestMove->skill = mBestBuff.skill;
 				break;
 			}
-			case SKILLTYPE::HEAL:
+			case 2:
 			{
 				mBestMove->score = mBestHeal.score;
 				mBestMove->target = mBestHeal.target;
 				mBestMove->skill = mBestHeal.skill;
 				break;
 			}
-			case SKILLTYPE::DEBUFF:
+			case 3:
 			{
 				mBestMove->score = mBestDebuff.score;
 				mBestMove->target = mBestDebuff.target;
@@ -215,24 +215,25 @@ void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_p
 
 
 	// Determine how we will score the current skill
-	switch (skill->GetTypeId())
+	int type = int(skill->GetTypeId());
+	switch (type)
 	{
-		case SKILLTYPE::ATTACK:
+		case 0:
 		{
 			ScoreMoveAttack(skill, playerTeam);
 			break;
 		}
-		case SKILLTYPE::BUFF:
+		case 1:
 		{
 			ScoreMoveBuff(skill, enemyTeam);
 			break;
 		}
-		case SKILLTYPE::HEAL:
+		case 2:
 		{
 			
 			break;
 		}
-		case SKILLTYPE::DEBUFF:
+		case 3:
 		{
 			
 			break;
@@ -267,7 +268,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 					if (target->IsHero() == true && target->GetState() != STATE::DEAD)
 					{
 						// If this is our priority then increase the score
-						if (skill->GetTypeId() == mPriorityMove)
+						if (int(skill->GetTypeId()) == mPriorityMove)
 							attackScore += 100.0f;
 
 						// Damage added to the score
@@ -298,7 +299,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 		else
 		{
 			// Is this our skilltype priority
-			if (skill->GetTypeId() == mPriorityMove)
+			if (int(skill->GetTypeId()) == mPriorityMove)
 				attackScore += 100.0f;
 
 			// Set target to the provoker
@@ -345,7 +346,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 		return;
 
 	// Is the priority the same as our skill 
-	if (skill->GetTypeId() == mPriorityMove)
+	if (int(skill->GetTypeId()) == mPriorityMove)
 		attackAOEScore += 100.0f;
 	
 	// Loop through all targets adding damage for each to the score
@@ -595,25 +596,25 @@ void AIMoves::SkeletonDeterminePriority()
 {
 	// If I'm provoked then attack them
 	if (mCaster->GetProvoked() != nullptr)
-		mPriorityMove = SKILLTYPE::ATTACK;
+		mPriorityMove = 0;
 
 	// If a priority was not set then find a priority
-	if (mPriorityMove == SKILLTYPE::UNDEFINED)
+	if (mPriorityMove == -1)
 	{
-		mPriorityMove = SKILLTYPE::ATTACK;
+		mPriorityMove = 0;
 	}
 }
 
 // Always prioritize attacking over everything else
 void AIMoves::UngaAttackDeterminePriority()
 {
-	mPriorityMove = SKILLTYPE::ATTACK;
+	mPriorityMove = 0;
 }
 
 // Determins ganfauls move priority
 void AIMoves::GanfaulDeterminePriority()
 {
-	mPriorityMove = SKILLTYPE::ATTACK;
+	mPriorityMove = 0;
 }
 
 ///////GET FUNCTIONS///////

@@ -1,11 +1,14 @@
 #pragma once
-#include "Skills.h"
+//#include "Skills.h"
 #include "Entity.h"
 
 class Character;
+class Skills;
 
 class AIMoves
 {
+	//enum class SKILLTYPE { UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF };
+
 	//Move struct
 	struct Move
 	{
@@ -23,7 +26,7 @@ class AIMoves
 		~AIMoves() = default;
 
 		// Called outside to find the best move. Return true if finished.
-		bool FindMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		bool FindMove(int ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 
 	private:
 		// Iterrates through skills calling respective score move. Returns 
@@ -80,7 +83,7 @@ class AIMoves
 		AIMoves::Move mPrevMove;
 		
 		// Move Priority
-		SKILLTYPE mPriorityMove;
+		int mPriorityMove;
 
 		// Who this is attatched too
 		Character* mCaster;
