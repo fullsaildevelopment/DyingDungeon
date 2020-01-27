@@ -138,13 +138,13 @@ void RedAudioManager::Update()
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
 	m_audioFiles.emplace_back(RedAudio(path, alias));
-	//m_audioFiles[m_audioFiles.size() - 1].Open();
+	m_audioFiles[m_audioFiles.size() - 1].SetVolume(m_volume);
 }
 
 void RedAudioManager::AddAudio(RedAudio in_audio)
 {
 	m_audioFiles.emplace_back(in_audio);
-	//m_audioFiles[m_audioFiles.size() - 1].Open();
+	m_audioFiles[m_audioFiles.size() - 1].SetVolume(m_volume);
 }
 
 RedAudio* RedAudioManager::GetAudio(int i)
@@ -162,6 +162,7 @@ void RedAudioManager::SetDefult(const char* path)
 	m_default_audio->SetPath(path);
 	m_default_audio->SetPath("DEFAULT");
 	m_default_audio->Open();
+	m_default_audio->SetVolume(m_volume);
 }
 
 unsigned int RedAudioManager::AudioListSize()

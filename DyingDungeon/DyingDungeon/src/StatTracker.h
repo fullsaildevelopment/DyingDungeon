@@ -77,12 +77,14 @@ public:
 	void OutputStatSheet();
 	void SetCanvas(Odyssey::UICanvas* canvas);
 
+	float CalculateDamageDealt(unsigned int level, unsigned int round);
+
 
 private:
 	StatTracker();
 	void UpdateRewardScreen(RewardsActiveEvnet* raEvent);
 	unsigned int GetStatCount(Action stat);
-	unsigned int GetStatCount(Action stat, unsigned int round);
+	unsigned int GetStatCount(Action stat, unsigned int level, unsigned int round);
 	unsigned int GetStatCount(std::string name, Action stat);
 	std::vector<std::string>& GetListPlayerCharacterNames();
 	std::vector<std::string> GetListPlayerCharacterNames(unsigned int levelNumber);
@@ -106,7 +108,7 @@ private:
 	float CalculateShieldGiven(std::string name);
 	float CalculateShieldGiven(std::string name, unsigned int level);
 	float CalculatePercentageStat(Action stat);
-	float CalculatePercentageStat(Action stat, unsigned int round);
+	float CalculatePercentageStat(Action stat, unsigned int level, unsigned int round);
 	float CalculatePercentageStat(std::string name, Action stat);
 	float CalculatePercentageStat(std::string name, Action stat, unsigned int level);
 	float CalculatePercentageStat(std::string name, unsigned int round, Action stat);

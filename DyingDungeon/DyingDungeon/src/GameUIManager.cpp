@@ -354,24 +354,24 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	UINT graphWidth = graphBackgroundWidth + 20;
 	UINT graphHeight = graphBackgroundHeight + 20;
 
-	UINT barWidth = (graphWidth - 80) / 7;
-	float max_damage = 200.0f;
-	position.x += 50.0f;
+	//UINT barWidth = (graphWidth - 80) / 7;
+	//float max_damage = 200.0f;
+	//position.x += 50.0f;
 
-	for (int i = 0; i < 7; i++)
-	{
-		UINT barHeight = (graphHeight - 80) * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
-		position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
-		statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
-		position.x += barWidth;
-		properties.fontSize = 15.0f;
-		statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(i + 1), properties);
-	}
-	float intervals = max_damage / 10.0f;
-	for (int j = 0; j < 10; j++)
-	{
-		statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(graphPosition.x, graphPosition.y + ((graphBackgroundHeight - 60.0f) * 0.1f * j)), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 50, 50, std::to_wstring(max_damage - (j*intervals)).substr(0, 4), properties);
-	}
+	//for (int i = 0; i < 7; i++)
+	//{
+	//	UINT barHeight = (graphHeight - 80) * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
+	//	position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
+	//	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
+	//	position.x += barWidth;
+	//	properties.fontSize = 15.0f;
+	//	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(i + 1), properties);
+	//}
+	//float intervals = max_damage / 10.0f;
+	//for (int j = 0; j < 10; j++)
+	//{
+	//	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(graphPosition.x, graphPosition.y + ((graphBackgroundHeight - 60.0f) * 0.1f * j)), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 50, 50, std::to_wstring(max_damage - (j*intervals)).substr(0, 4), properties);
+	//}
 
 	position.y = graphPosition.y - (graphHeight/2.0f) + 40.0f;
 	position.x = graphPosition.x;
@@ -386,7 +386,7 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
 
 	_sceneToAddTo->addEntity(mStatsMenu);
-
+	
 	ToggleCanvas(mStatsMenu->getComponent<Odyssey::UICanvas>(), false);
 
 }
@@ -395,7 +395,7 @@ void GameUIManager::ToggleStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
-	//UpdateGraph();
+	UpdateGraph();
 }
 
 void GameUIManager::HideStatsMenu()
@@ -410,29 +410,67 @@ void GameUIManager::UpdateGraph()
 	DirectX::XMFLOAT2 graphPosition = { 0.0f, 0.0f };
 	DirectX::XMFLOAT4 color = { 31.0f, 255.0f, 244.0f, 1.0f };
 
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Constantia";
 
-	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
 	UINT graphBackgroundWidth = 750;
 	UINT graphBackgroundHeight = 450;
+	graphPosition.x = position.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
+	graphPosition.y = position.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
+
+	/*for (int i = 1; i < mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Rectangle2D>().size(); i++)
+	{
+		mStatsMenu->getComponent<Odyssey::UICanvas>()->removeElement(mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Rectangle2D>()[i]);
+	}
+	for (int j = 1; j < mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>().size(); j++)
+	{
+		mStatsMenu->getComponent<Odyssey::UICanvas>()->removeElement(mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>()[j]);
+	}*/
+
+	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
 	UINT graphWidth = graphBackgroundWidth + 20;
 	UINT graphHeight = graphBackgroundHeight + 20;
+	
+	if (StatTracker::Instance().GetLevelSize() > 0) {
 
-	statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
+		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
 
-	graphPosition.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
-	graphPosition.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
+		graphPosition.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
+		graphPosition.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
 
-	UINT barWidth = (graphWidth - 40) / 7;
-	float max_damage = 200.0f;
-	position.x += 20.0f;
-	for (int i = 0; i < 7; i++) 
-	{
-		UINT barHeight = graphHeight * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
-		position.y = graphPosition.y + (graphHeight - barHeight) + 20.0f;
-		statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight)->setVisible(true);
-		position.x += barWidth;
+		float max_damage = 0.0f;
+
+		for (int k = 0; k < StatTracker::Instance().GetRoundCount(1); k++)
+		{
+			float curr_dmg = StatTracker::Instance().CalculateDamageDealt(1, (k + 1));
+			if (max_damage < curr_dmg)
+			{
+				max_damage = curr_dmg;
+			}
+		}
+
+		UINT barWidth = (graphWidth - 80) / StatTracker::Instance().GetRoundCount(1);
+		position.x += 50.0f;
+
+		for (int l = 0; l < StatTracker::Instance().GetRoundCount(1); l++)
+		{
+			UINT barHeight = (graphHeight - 80) * (StatTracker::Instance().CalculateDamageDealt(1, (l + 1)) / max_damage);
+			position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
+			statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
+			position.x += barWidth;
+			properties.fontSize = 15.0f;
+			statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(l + 1), properties);
+		}
 	}
-
+	else
+	{
+		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(true);
+	}
 	/*if (StatTracker::Instance().GetLevelSize() > 0) {
 		UINT barWidth = graphWidth / StatTracker::Instance().GetRoundCount(1);
 		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
@@ -447,7 +485,7 @@ void GameUIManager::UpdateGraph()
 	{
 		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(true);
 	}*/
-
+	
 
 }
 

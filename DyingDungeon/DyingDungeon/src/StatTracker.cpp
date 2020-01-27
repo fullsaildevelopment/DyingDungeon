@@ -382,30 +382,27 @@ unsigned int StatTracker::GetStatCount(Action stat)
 	return count;
 }
 
-unsigned int StatTracker::GetStatCount(Action stat, unsigned int round)
+unsigned int StatTracker::GetStatCount(Action stat, unsigned int level, unsigned int round)
 {
 	unsigned int count = 0;
 	unsigned int curr_round = 0;
-	for (unsigned int i = 0; i < m_levels.size(); i++)
+	unsigned int index = level - 1;
+
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
-		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
+		if (curr_round != m_levels[index].turns[j].round)
 		{
-			if (curr_round != m_levels[i].turns[j].round)
+			curr_round = m_levels[index].turns[j].round;
+			if (round < curr_round)
 			{
-				curr_round = m_levels[i].turns[j].round;
-				if (round < curr_round)
-				{
-					break;
-				}
-			}
-			if (m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].actionType == stat && m_levels[i].turns[j].round == round)
-			{
-				count++;
+				break;
 			}
 		}
-		if (round < curr_round)
+		if (m_levels[index].turns[j].isPlayer && m_levels[index].turns[j].actionType == stat && m_levels[index].turns[j].round == round)
 		{
-			break;
+			if (curr_round == round) {
+				count++;
+			}
 		}
 	}
 
@@ -515,7 +512,11 @@ float StatTracker::CalculateDamageDealt()
 		{
 			if (m_levels[i].turns[j].actionType == Action::Attack && m_levels[i].turns[j].isPlayer)
 			{
-				total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
+				for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++) {
+					if ((m_levels[i].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") || (m_levels[i].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+						total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
+					}
+				}
 			}
 		}
 	}
@@ -531,7 +532,11 @@ float StatTracker::CalculateDamageDealt(std::string name)
 		{
 			if (name == m_levels[i].turns[j].characterName && m_levels[i].turns[j].actionType == Action::Attack) 
 			{
-				total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
+				for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++) {
+					if ((m_levels[i].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") || (m_levels[i].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+						total += m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier);
+					}
+				}
 
 			}
 		}
@@ -547,7 +552,43 @@ float StatTracker::CalculateDamageDealt(std::string name, unsigned int level)
 	{
 		if (name == m_levels[index].turns[j].characterName && m_levels[index].turns[j].actionType == Action::Attack)
 		{
-			total += m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier);
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
+				if ((m_levels[index].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[index].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+					total += m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier);
+				}
+			}
+		}
+	}
+	return total;
+}
+
+float StatTracker::CalculateDamageDealt(unsigned int level, unsigned int round)
+{
+	float total = 0.0f;
+	unsigned int index = level - 1;
+	unsigned int curr_round = 0;
+
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if (curr_round != m_levels[index].turns[j].round)
+		{
+			curr_round = m_levels[index].turns[j].round;
+			if (round < curr_round)
+			{ 
+				break;
+			}
+		}
+		if (m_levels[index].turns[j].isPlayer && m_levels[index].turns[j].actionType == Action::Attack)
+		{
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
+				if ((m_levels[index].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") 
+					&& (m_levels[index].turns[j].targets[k].first.substr(0, 4) != "HEAL" 
+					&& round == curr_round)) {
+
+					total += m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier);
+
+				}
+			}
 		}
 	}
 	return total;
@@ -564,7 +605,9 @@ float StatTracker::CalculateDamageDone()
 			{
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++)
 				{
-					total += m_levels[i].turns[j].value - (m_levels[i].turns[j].targets[k].second * m_levels[i].turns[j].value);
+					if ((m_levels[i].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[i].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+						total += (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)) - (m_levels[i].turns[j].targets[k].second * (m_levels[i].turns[j].value + (m_levels[i].turns[j].value * m_levels[i].turns[j].attackModifier)));
+					}
 				}
 			}
 		}
@@ -583,7 +626,9 @@ float StatTracker::CalculateDamageDone(std::string name)
 			{
 				for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++)
 				{
-					total += m_levels[i].turns[j].value - (m_levels[i].turns[j].targets[k].second * m_levels[i].turns[j].value);
+					if ((m_levels[i].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[i].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+						total += m_levels[i].turns[j].value - (m_levels[i].turns[j].targets[k].second * m_levels[i].turns[j].value);
+					}
 				}
 			}
 		}
@@ -601,7 +646,9 @@ float StatTracker::CalculateDamageDone(std::string name, unsigned int level)
 		{
 			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++)
 			{
-				total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+				if ((m_levels[index].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[index].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+					total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+				}
 			}
 		}
 	}
@@ -903,7 +950,7 @@ float StatTracker::CalculatePercentageStat(Action stat)
 	return (totalAttacks / toatalTurns)*100.0f;
 }
 
-float StatTracker::CalculatePercentageStat(Action stat, unsigned int round)
+float StatTracker::CalculatePercentageStat(Action stat, unsigned int level, unsigned int round)
 {
 	float toatalTurns = 0.0f;
 	float totalAttacks = 0.0f;
