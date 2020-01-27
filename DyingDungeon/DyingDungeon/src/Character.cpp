@@ -303,19 +303,6 @@ void Character::DecreaseSpd(float statDecrease)
 	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
-
-// Gets the shields
-float Character::GetShielding()
-{
-	return mShielding;
-}
-
-// Add to the shield
-void Character::SetShielding(float shield)
-{
-	mShielding = shield;
-}
-
 // Adds Exp to the charater
 void Character::AddExp(float exp)
 {
@@ -379,7 +366,7 @@ void Character::SetHero(bool heroStat)
  *
  * returns: string
  */
-std::string Character::GetName()
+std::wstring Character::GetName()
 {
 	return mName;
 }
@@ -391,7 +378,7 @@ std::string Character::GetName()
  *
  * returns: void
  */
-void Character::SetName(std::string newName)
+void Character::SetName(std::wstring newName)
 {
 	mName = newName;
 }
