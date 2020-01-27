@@ -26,7 +26,7 @@ void CameraController::update(double deltaTime)
 		mLockCamera = !mLockCamera;
 	}
 
-	if (mMainCamera && mLockCamera)
+	if (mMainCamera && !mLockCamera)
 	{
 		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::F2))
 		{
