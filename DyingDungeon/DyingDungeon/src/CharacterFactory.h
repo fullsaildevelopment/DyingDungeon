@@ -6,8 +6,19 @@
 
 class CharacterFactory
 {
-public: // Constructors
-	CharacterFactory() = default;
+public:
+	// Singleton pattern
+		/**
+		 *	Get the singleton instance of the game ui manager.
+		 *	@param[in] void
+		 *	@return InputManager& The singleton instance of the game ui manager.
+		 */
+	static CharacterFactory& getInstance();
+	~CharacterFactory() { }
+private: // Singleton pattern
+	CharacterFactory() { }
+
+public: 
 	Odyssey::RenderDevice* mRenderRefrence;
 	enum CharacterOptions
 	{
@@ -20,7 +31,7 @@ public: // Constructors
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, std::shared_ptr<Odyssey::Scene> _gameScene);
+	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _gameScene);
 
 	//Getters
 
@@ -29,7 +40,7 @@ public: // Functions
 private: // Varibales
 
 	// Scene
-	std::shared_ptr<Odyssey::Scene> mGameScene;
+	std::shared_ptr<Odyssey::Scene> mCurrentScene;
 
 	// Vectors
 
@@ -38,6 +49,7 @@ private: // Varibales
 	// Entitys
 
 	// Ints
+	int characterHudIndex = 0;
 
 	// Floats
 
