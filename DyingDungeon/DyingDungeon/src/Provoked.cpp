@@ -23,7 +23,6 @@ void Provoked::Apply(Character& target)
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Provoked>(mDuration, mProvoker, &target);
 	target.AddStatusEffect(newStatusEffect);
-	std::cout << mProvoker->GetName() << " has provoked " << target.GetName() << "!"<< std::endl;
 }
 
 void Provoked::Remove()
@@ -31,7 +30,6 @@ void Provoked::Remove()
 	if (mRecipient->GetProvoked() == mProvoker)
 	{
 		mRecipient->SetProvoked(nullptr);
-		std::cout << mRecipient->GetName() << " is no longer provoked!" << std::endl;
 	}
 }
 

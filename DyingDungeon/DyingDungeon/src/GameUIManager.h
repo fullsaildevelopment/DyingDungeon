@@ -17,6 +17,24 @@ public:
 		Paladin, Mage
 	};
 
+	// This struct will contain all of the UI elements associated with the character HUD
+	struct CharacterHUD
+	{
+		Odyssey::UICanvas* pCanvas;
+		Odyssey::Sprite2D* pPortrait;
+		Odyssey::Rectangle2D* pXpBar;
+		Odyssey::Text2D* pCharacterName;
+		Odyssey::Text2D* pLevelNumber;
+		Odyssey::Text2D* pAttackNumber;
+		Odyssey::Text2D* pDefenseNumber;
+		Odyssey::Text2D* pSpeedNumber;
+		Odyssey::Rectangle2D* pHealthBar;
+		Odyssey::Text2D* pHealthNumber;
+		Odyssey::Rectangle2D* pManaBar;
+		Odyssey::Text2D* pManaNumber;
+		Odyssey::Text2D* pTurnNumber;
+	};
+
 public: // Singleton pattern
 		/**
 		 *	Get the singleton instance of the game ui manager.
@@ -56,7 +74,12 @@ public: // Functions
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
-	void CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, std::shared_ptr<Odyssey::Entity> _gameObject, Character* owner);
+	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
+	
+	// Update health bar
+	void UpdateCharacterBars(Character* _currCharacter);
+	// UPdate turn number
+	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
 	//Updates
 	void UpdateGraph();
@@ -110,6 +133,9 @@ public: // Functions
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
+
+	// Get the list of all of the character hud canvases
+	std::vector<std::shared_ptr<CharacterHUD>> GetCharacterHuds() { return mCharacterHudList; }
 
 	//Setters
 	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
@@ -186,12 +212,13 @@ private: // Varibales
 	Odyssey::Text2D* mBackButtonText;
 
 	// Colors
+	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
 	DirectX::XMFLOAT4 mHealthBarColor = { 0.0f, 180.0f, 0.0f, 1.0f };
-	DirectX::XMFLOAT4 mBigHealthTextColor = { 180.0f, 0.0f, 0.0f, 1.0f };
 	DirectX::XMFLOAT4 mManaBarColor = { 0.0f, 180.0f, 180.0f, 1.0f };
 	DirectX::XMFLOAT4 mTurnOrderColor = { 255.0f, 210.0f, 0.0f, 1.0f };
 
 	// Vectors
+	std::vector<std::shared_ptr<CharacterHUD>> mCharacterHudList;
 
 	// Queues
 
@@ -202,7 +229,6 @@ private: // Varibales
 	UINT screenHeight = 0;
 	UINT battleTextWidth = 0;
 	UINT battleTextHeight = 0;
-
 
 	// Floats
 

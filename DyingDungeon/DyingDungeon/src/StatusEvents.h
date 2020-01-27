@@ -5,15 +5,6 @@
 #include "EventManager.h"
 #include "Skills.h"
 
-std::string ConvertStrToWStr(const wchar_t* p_char) {
-	const size_t word_size = wcslen(p_char) + 1;
-	size_t zero = 0;
-	char* output = new char[word_size];
-
-	wcstombs_s(&zero, output, word_size, p_char, _TRUNCATE);
-	return std::string(output);
-}
-
 class CharacterDealtDamageEvent : public Odyssey::Event
 {
 public:
@@ -24,8 +15,8 @@ public:
 	EFFECTTYPE actionEffect;
 	CharacterDealtDamageEvent(std::wstring attacker, std::wstring action, float damage, float attackMod, EFFECTTYPE effect)
 	{
-		attackerName = ConvertStrToWStr(attacker.c_str());
-		actionName = ConvertStrToWStr(action.c_str());
+		attackerName = std::string(attacker.begin(), attacker.end());
+		actionName = std::string(action.begin(), action.end());
 		damageAmount = damage;
 		atkMod = attackMod;
 		actionEffect = effect;
@@ -41,8 +32,8 @@ public:
 	
 	CharacterTakeDamage(std::wstring target, std::wstring action, float mitigation)
 	{
-		targetName = ConvertStrToWStr(target.c_str());
-		actionName = ConvertStrToWStr(action.c_str());
+		targetName = std::string(target.begin(), target.end());
+		actionName = std::string(action.begin(), action.end());
 		mitigationAmount = mitigation;
 	}
 };
@@ -56,8 +47,8 @@ public:
 	float health;
 	CharacterHealsEvent(std::wstring healer, std::wstring action, EFFECTTYPE effect, float healthAmount)
 	{
-		healerName = ConvertStrToWStr(healer.c_str());
-		actionName = ConvertStrToWStr(action.c_str());
+		healerName = std::string(healer.begin(), healer.end());
+		actionName = std::string(action.begin(), action.end());
 		actionEffect = effect;
 		health = healthAmount;
 	}
@@ -70,7 +61,7 @@ public:
 	float healingAmount;
 	CharacterRecivesHealingEvent(std::wstring target, float healing)
 	{
-		targetName = ConvertStrToWStr(target.c_str());
+		targetName = std::string(target.begin(), target.end());
 		healingAmount = healing;
 	}
 };
@@ -85,9 +76,9 @@ public:
 	float buffValue;
 	CharacterBuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE buff, float buffAmount)
 	{
-		chracterName = ConvertStrToWStr(character.c_str());
-		targetName = ConvertStrToWStr(target.c_str());
-		actionName = ConvertStrToWStr(action.c_str());
+		chracterName = std::string(character.begin(), character.end());
+		targetName = std::string(target.begin(), target.end());
+		actionName = std::string(action.begin(), action.end());
 		buffType = buff;
 		buffValue = buffAmount;
 	}
@@ -103,9 +94,9 @@ public:
 	float debuffValue;
 	CharacterDebuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
 	{
-		characterName = ConvertStrToWStr(character.c_str());
-		actionName = ConvertStrToWStr(action.c_str());
-		targetName = ConvertStrToWStr(target.c_str());
+		characterName = std::string(character.begin(), character.end());
+		actionName = std::string(action.begin(), action.end());
+		targetName = std::string(target.begin(), target.end());
 		debuffType = debuff;
 		debuffValue = debuff_Value;
 	}
@@ -130,7 +121,7 @@ public:
 	bool isPlayer;
 	TurnStartEvent(std::wstring character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
-		characterName = ConvertStrToWStr(character.c_str());
+		characterName = std::string(character.begin(), character.end());
 		turn = turnNumber;
 		round = roundNumber;
 		isPlayer = isAPlayer;

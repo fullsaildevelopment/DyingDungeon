@@ -217,14 +217,12 @@ void TowerManager::CreateBattleInstance()
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
-		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
 	std::cout << "- Enemy Team\n" << std::endl;
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
-		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
 	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;

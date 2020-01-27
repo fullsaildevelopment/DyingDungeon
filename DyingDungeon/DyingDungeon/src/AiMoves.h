@@ -1,11 +1,15 @@
 #pragma once
-#include "Skills.h"
+//#include "Skills.h"
 #include "Entity.h"
 
+class Skills;
 class Character;
 
 class AIMoves
 {
+	//enum class SKILLTYPE { UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF };
+
+	//Move struct
 	struct Move
 	{
 		Character* target = nullptr;
@@ -17,7 +21,8 @@ class AIMoves
 		AIMoves();
 		AIMoves(int _enemyID, Character* _caster);
 		~AIMoves() = default;
-		bool FindMove(SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		// Called outside to find the best move. Return true if finished.
+		bool FindMove(int ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
 
 	private:
 		//General Functions
@@ -54,15 +59,20 @@ class AIMoves
 		AIMoves::Move mBestDebuff;
 		AIMoves::Move mBestHeal;
 
+		// Previous Best Move
+		AIMoves::Move mPrevMove;
+		
+		// Move Priority
+		int mPriorityMove;
+
+		// Current skill index for finding best move
 		int mCurrMoveCheck;
-		SKILLTYPE mPriorityMove;
 
 		int mEnemyID;
 
 		//////////////////////////GET FUNCTIONS//////////////////////////////////
 	public:
 		std::shared_ptr <AIMoves::Move> GetMove();
-		AIMoves::Move mPrevMove;
 		std::vector<std::shared_ptr<Skills>> GetSkillList();
 
 		//////////////////////////SET FUNCTIONS//////////////////////////////////
