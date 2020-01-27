@@ -658,3 +658,9 @@ void Character::SetDescription(std::wstring newDescription)
 {
 	mDescription = newDescription;
 }
+
+// Returns the Turn order number for this character
+Odyssey::Text2D* Character::GetTurnOrderNumber()
+{
+	return pTurnNumber;
+}

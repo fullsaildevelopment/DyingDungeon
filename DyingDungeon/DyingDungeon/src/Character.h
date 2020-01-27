@@ -177,6 +177,9 @@ public:
 	// Sets the description of the character
 	void SetDescription(std::wstring newDescription);
 
+	// Returns the Turn order number for this character
+	Odyssey::Text2D* GetTurnOrderNumber();
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
@@ -273,7 +276,6 @@ protected:
 	Odyssey::Text2D* pDmgText;
 	bool mDisplaying;
 	///////////////////////////////////////////
-
 
 	public:
 	// shared pointer to the entity used for targeting 
