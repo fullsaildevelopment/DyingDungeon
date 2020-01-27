@@ -244,143 +244,124 @@ float Character::GetBaseDef()
 	return mBaseDefense;
 }
 
-// Increases the Defense stat
+// Increases the current Defense stat of the character
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
+
+	// If defense stat is greater than 1.0f set it to 1.0f
 	if (mDefense > 1.0f)
 		mDefense = 1.0f;
 }
 
-// Decreases the Defense stat
+// Decreases the current Defense stat of the character
 void Character::DecreaseDef(float statDecrease)
 {
 	mDefense -= (mBaseDefense * statDecrease);
 }
 
-// Returns the Speed stat
+// Returns the current Speed stat of the character
 float Character::GetSpeed()
 {
 	return mSpeed;
 }
 
+// Returns the base speed stat of the character
 float Character::GetBaseSpeed()
 {
 	return mBaseSpeed;
 }
 
-// Increases the Speed stat
+// Increases the current Speed stat of the character
 void Character::IncreaseSpd(float statIncrease)
 {
 	mSpeed += (mBaseSpeed * statIncrease);
 }
 
-// Decreases the Speed stat
+// Decreases the current Speed stat of the character
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= (mBaseSpeed * statDecrease);
 }
 
-// Adds Exp to the charater
+// Adds Exp to the character
 void Character::AddExp(float exp)
 {
 	mEXP += exp;
 }
 
-//Get the exp of the character
+// Returns the exp of the character
 float Character::GetExp()
 {
 	return mEXP;
 }
 
+// Returns the pointer that points to the character that provoked this character
 Character* Character::GetProvoked()
 {
 	return mProvoked;
 }
 
+// Sets the characters provoked pointer to the character passed in
 void Character::SetProvoked(Character* provoker)
 {
 	mProvoked = provoker;
 }
 
+// Returns the characters currennt state
 STATE Character::GetState()
 {
 	return mCurrentState;
 }
 
+// Sets the characters current state
 void Character::SetState(STATE newState)
 {
 	mCurrentState = newState;
 }
 
-/*
- * Function:  IsHero()
- * --------------------
- * Gets the Hero staus of the character
- *
- * returns: bool
- */
+// Gets the Hero staus of the character
 bool Character::IsHero()
 {
 	return mHero;
 }
 
-/*
- * Function:  SetHero(bool heroStat)
- * --------------------
- * Set the Hero staus of the character
- *
- * returns: void
- */
+// Sets the Hero staus of the character
 void Character::SetHero(bool heroStat)
 {
 	mHero = heroStat;
 }
 
-/*
- * Function:  GetName()
- * --------------------
- * Gets the characters name
- *
- * returns: string
- */
+// Returns the characters name
 std::wstring Character::GetName()
 {
 	return mName;
 }
 
-/*
- * Function:  SetName(string newName)
- * --------------------
- * Set the character's name
- *
- * returns: void
- */
+// Sets the character's name
 void Character::SetName(std::wstring newName)
 {
 	mName = newName;
 }
 
-/*
-*Function:  GetSkills()
-* --------------------
-* Gets the characters skill list.
-*
-*returns : Skills*
-*/
+// Returns the characters skill list
 std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 {
 	return mSkillList;
 }
 
-// Adds a new status effect to the list of status effects
+// Adds a status effect to the character and sorts it putting it in the correct vector
 bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 {
+	// Make an iterator to check the characters list to see if it already has the passed in effect
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	// Switch statment for detirming what vector the effect needs to go into
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
+		// Loop through if i find the effect return false, else add to the vector of efffect
 		for (it = mBleeds.begin(); it != mBleeds.end();)
 		{
 			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
@@ -491,9 +472,12 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	return true;
 }
 
+// Manages status effects of passed in vector of effects, appling effects and removing expired ones
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires.
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
 	for (it = effectList.begin(); it != effectList.end();)
 	{
 		(*it)->Use();
@@ -510,9 +494,13 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	}
 }
 
+// Manages all status effects, appling effects and removing expired ones
 bool Character::ManageAllEffects()
 {
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	//Regens
 	for (it = mRegens.begin(); it != mRegens.end();)
 	{
 		(*it)->Use();
@@ -525,6 +513,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Bleeds
 	for (it = mBleeds.begin(); it != mBleeds.end();)
 	{
 		(*it)->Use();
@@ -539,6 +529,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Buffs
 	for (it = mBuffs.begin(); it != mBuffs.end();)
 	{
 		(*it)->Use();
@@ -551,6 +543,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+
+	// Debuffs
 	for (it = mDebuffs.begin(); it != mDebuffs.end();)
 	{
 		(*it)->Use();
@@ -563,6 +557,8 @@ bool Character::ManageAllEffects()
 		else
 			it++;
 	}
+	 
+	// Shields
 	for (it = mSheilds.begin(); it != mSheilds.end();)
 	{
 		(*it)->Use();
@@ -588,14 +584,7 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
-
-/*
-*Function:  UpdateHealthBar()
-* --------------------
-* Sets the fill of the health bar for the character
-*
-*returns : void
-*/
+// Sets the fill of the health bar for the character
 void Character::UpdateHealthBar()
 {
 	mHpText->setText(std::to_wstring((int)mCurrentHP));
@@ -610,13 +599,7 @@ void Character::UpdateHealthBar()
 	pHealthBar->setFill(fill);
 }
 
-/*
-*Function:  UpdateManaBar()
-* --------------------
-* Sets the fill of the mana bar for the character
-*
-*returns : void
-*/
+// Sets the fill of the mana bar for the character
 void Character::UpdateManaBar()
 {
 	mMpText->setText(std::to_wstring((int)mCurrentMana));
@@ -629,17 +612,26 @@ void Character::UpdateManaBar()
 	pManaBar->setFill(fill);
 }
 
+// Sets the Particle system pointer to a "Hit effect"
 void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
 {
 	mBloodParticleEffect = newBloodEffect;
 }
 
+// Returns the Particle system pointer to a "Hit effect"
 Odyssey::ParticleSystem* Character::GetPSBlood()
 {
 	return mBloodParticleEffect;
 }
 
+// Returns the character portrait file path
 std::wstring Character::GetPortraitPath()
 {
 	return mPortrait;
+}
+
+// Returns the vector of strings containing the animation paths
+std::vector<std::string> Character::GetAnimationPaths()
+{
+	return mAnimations;
 }

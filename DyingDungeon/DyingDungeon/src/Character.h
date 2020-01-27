@@ -162,6 +162,9 @@ public:
 	// Returns the character portrait file path
 	std::wstring GetPortraitPath();
 
+	// Returns the vector of strings containing the animation paths
+	std::vector<std::string> GetAnimationPaths();
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
