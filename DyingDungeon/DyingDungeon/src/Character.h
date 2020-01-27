@@ -159,9 +159,15 @@ public:
 	// Returns the Particle system pointer to a "Hit effect"
 	Odyssey::ParticleSystem* GetPSBlood();
 
+	// Returns the character portrait file path
+	std::wstring GetPortraitPath();
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
+
+	// Characters current level
+	unsigned int mCurrentLevel;
 
 	// Float for the current HP of the character
 	float mCurrentHP;
@@ -198,6 +204,15 @@ protected:
 
 	// The name for the character
 	std::wstring mName;
+
+	// Name of file path for character portrait
+	std::wstring mPortrait;
+
+	// Name of Model used for character
+	std::string mModel;
+
+	// Vector of animation names used for character
+	std::vector<std::string> mAnimations;
 	
 	// Vector of shared pointers that point to the skills the character has
 	std::vector<std::shared_ptr<Skills>> mSkillList;
@@ -237,6 +252,7 @@ protected:
 	Odyssey::Text2D* pDmgText;
 	bool mDisplaying;
 	///////////////////////////////////////////
+
 
 	public:
 	// shared pointer to the entity used for targeting 
