@@ -533,7 +533,7 @@ float AIMoves::StatusEffectScore(std::shared_ptr<Skills> skill, Character* targe
 void AIMoves::SkeletonDeterminePriority()
 {
 	// If I'm provoked then attack them
-	if (mCaster->GetProvoked() != nullptr)
+	if (caster->GetProvoked() != nullptr)
 		mPriorityMove = 0;
 
 	// If a priority was not set then find a priority
