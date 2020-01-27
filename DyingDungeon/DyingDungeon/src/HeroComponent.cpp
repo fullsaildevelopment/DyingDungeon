@@ -57,15 +57,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseSpeed = mSpeed = 35.0f;
 		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>("Judgement", "BigAttack", 0.50f, 15.0f, 200.0f, 25.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "BigAttack", 0.50f, 15.0f, 200.0f, 25.0f));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>("Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>("Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
 		break;
 	}
 	case HEROID::Mage:
@@ -78,15 +78,15 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseSpeed = mSpeed = 40.0f;
 		// Basic attack, stun
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Basic Attack", "OneHandedCast", 0.60f, -10.0f, 10.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "OneHandedCast", 0.60f, -10.0f, 10.0f,temp));
 		// Wind Slash, aoe dps, speed down 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("Wind Slash", "OneHandedCast", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "OneHandedCast", 0.25f, 10.0f, 15.0f, temp, true));
 		// Fire sTrom BIIIIGGGGG DPS with bleed
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>("FireStorm", "TwoHandedCast", 0.60f, 30.0f, 50.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "TwoHandedCast", 0.60f, 30.0f, 50.0f, temp, true));
 		// Lighting Bolt BIGGGGG siongle target dps
-		mSkillList.push_back(std::make_shared<Attack>("Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
 	case HEROID::Bard:

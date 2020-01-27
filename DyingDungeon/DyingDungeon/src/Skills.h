@@ -18,13 +18,15 @@ public:
 		float mFiringTime = 0.0f;
 	};
 protected:
+
+	// Skill type
 	SKILLTYPE mTypeId;
-	//how much mana it will cost the caster
+	// How much mana it will cost the caster
 	float mMpCost;
 	// Animation time for when effects such as hit animation or particle effects should go out
 	float mAnimationTime;
 	// Name of skill
-	std::string mName;
+	std::wstring mName;
 	// Animation ID
 	std::string mAnimationId;
 	// Tell if it affects a whole team or a single target
@@ -33,17 +35,23 @@ protected:
 	std::shared_ptr<StatusEffect> mStatusEffect;
 	// Particle effect if the skill has it 
 	ParticleInfomation mPS;
+	// Description of the skill
+	std::wstring mDescription;
+	// The Icon sprite for the skill
+	std::wstring mIconName;
+
+
 private:
 //public and private functions
 public:
-	//constructor
+	// Constructor
 	Skills() = default;
-	//deconstructor
+	// Deconstructor
 	~Skills() = default;
-	//get how much mana the skill cost
+	// Get how much mana the skill cost
 	float GetManaCost();
 	// Get Skill name
-	std::string GetName();
+	std::wstring GetName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
 	// Gets the animation timing
@@ -69,6 +77,16 @@ public:
 	void SetParticleFiringTime(float newFiringTime);
 	// Use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
+	// Set Description
+	void SetDescription(std::wstring desc);
+	// Get Description Of The Skill
+	std::wstring GetDescription();
+	// Get Icon Name
+	std::wstring GetIconName();
+	// Set Icon Name	
+	void SetIconName(std::wstring icon);
+
+
 private:
 
 };
