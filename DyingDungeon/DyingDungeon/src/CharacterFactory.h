@@ -31,7 +31,7 @@ public:
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _gameScene);
+	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _gameScene);
 
 	//Getters
 

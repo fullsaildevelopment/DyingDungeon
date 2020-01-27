@@ -14,7 +14,7 @@ CharacterFactory& CharacterFactory::getInstance()
 	return instance;
 }
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::string _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
 	// Create the new pointer for the character we are creating
 	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
@@ -147,6 +147,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
+			// Set the image filename for this character
+			imageFilename = L"assets/images/GanfaulPortrait.jpg";
 			break;
 		}
 		default:
@@ -161,15 +163,19 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Have the animator be displayed in debug mode
 	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 
+	// Create entity to add the HUD to
+	std::shared_ptr<Odyssey::Entity> hudEntity = std::make_shared<Odyssey::Entity>();
 	//Create the character's HUD UI
-	Odyssey::UICanvas* characterHud = GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition.x, _hudPosition.y, imageFilename, newCharacter->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition.x, _hudPosition.y, imageFilename, hudEntity.get(), newCharacter->getComponent<Character>());
 	// Set the character's hud index number
 	// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
-	//newCharacter->getComponent<Character>().SetHudIndex(characterHudIndex);
+	newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
 	// Increase the character index
 	characterHudIndex++;
 	// Set the canvas to active depending on the bool passed in
-	characterHud->setActive(_showHUD);
+	hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
+	// Add the hud to the scene
+	mCurrentScene->addEntity(hudEntity);
 
 	// Create the impact indicator for each character
 	CreateCharacterImpactIndicator(newCharacter);
