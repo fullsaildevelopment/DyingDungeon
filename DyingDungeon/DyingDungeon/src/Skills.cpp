@@ -40,7 +40,10 @@ std::wstring Skills::GetSkillDescription()
 // Return a wstring to the icon name
 std::wstring Skills::GetSkillIconPath()
 {
-    return mSkillIconName;
+    if (mSkillIconName.size() > 0)
+        return mSkillIconName;
+    else
+        return L"assets/images/Blank.png";
 }
 
 // Set Icon name to passed in name
