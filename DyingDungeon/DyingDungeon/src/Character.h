@@ -144,15 +144,6 @@ public:
 	// Removes all status effects from characters
 	void ClearStatusEffects();
 
-	//Update HealthBar UI related to this character
-	void UpdateHealthBar();
-
-	//Update ManaBar UI related to this character
-	void UpdateManaBar();
-
-	// For bryces dumbasss, made by reds dumbass
-	//std::wstring FormatToPercentageW(float number);
-
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 
@@ -176,9 +167,6 @@ public:
 
 	// Sets the description of the character
 	void SetDescription(std::wstring newDescription);
-
-	// Returns the Turn order number for this character
-	Odyssey::Text2D* GetTurnOrderNumber();
 
 	// Set the characters Hud index
 	void SetHudIndex(unsigned int newIndex);
@@ -273,19 +261,6 @@ protected:
 
 	// Pointer to the particle system used for "getting hit" effects
 	Odyssey::ParticleSystem* mBloodParticleEffect;
-
-	//DELETE THIS HERASY
-	// Odyssey Entitys needed for UI elements //
-	///////////////////////////////////////////
-	Odyssey::Rectangle2D* pHealthBar;
-	Odyssey::Rectangle2D* pManaBar;
-	Odyssey::Text2D* pTurnNumber;
-	Odyssey::Text2D* mBigHpText;
-	Odyssey::Text2D* mHpText;
-	Odyssey::Text2D* mMpText;
-	Odyssey::Text2D* pDmgText;
-	bool mDisplaying;
-	///////////////////////////////////////////
 
 	public:
 	// shared pointer to the entity used for targeting 

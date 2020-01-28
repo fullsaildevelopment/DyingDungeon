@@ -30,15 +30,7 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mProvoked = nullptr;
-	mDisplaying = true;
-	mBigHpText = nullptr;
 	mBloodParticleEffect = nullptr;
-	mHpText = nullptr;
-	mMpText = nullptr;
-	pDmgText = nullptr;
-	pHealthBar = nullptr;
-	pManaBar = nullptr;
-	pTurnNumber = nullptr;
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -49,12 +41,27 @@ HeroComponent::HeroComponent(HEROID id)
 	{
 	case HEROID::Paladin:
 	{
+		// Set the character name
 		mName = L"Paladin";
+
+		// Set the character subname
+		mSubName = L"Tank";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 150.0f;
+
+		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.30f;
 		mBaseSpeed = mSpeed = 35.0f;
+		////////////////////////////////////
+
+		// Make the character skills //
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
@@ -66,16 +73,33 @@ HeroComponent::HeroComponent(HEROID id)
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		break;
 	}
 	case HEROID::Mage:
 	{
+		// Set the character name
 		mName = L"Mage";
+
+		// Set the character subname
+		mSubName = L"Dps";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 150.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.10f;
 		mBaseSpeed = mSpeed = 40.0f;
+		////////////////////////////////////
+
+		// Make the character skills //
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic attack, stun
 		temp = std::make_shared<Stun>(1,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "OneHandedCast", 0.60f, -10.0f, 10.0f,temp));
@@ -87,16 +111,37 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "TwoHandedCast", 0.60f, 30.0f, 50.0f, temp, true));
 		// Lighting Bolt BIGGGGG siongle target dps
 		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		break;
 	}
 	case HEROID::Bard:
 	{
+		// Set the character name
 		mName = L"TheBestClassToEverExist";
+
+		// Set the character subname
+		mSubName = L"Literal God";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.15f;
 		mBaseSpeed = mSpeed = 20.0f;
+		////////////////////////////////////
+
+		// Make the character skills //
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		break;
 	}
 	default:
 		break;
@@ -138,22 +183,31 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
+		// Use ability 1
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
 			SelctionState(heros, enemies, 0);
 		}
+
+		// Use ability 2
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
 			SelctionState(heros, enemies, 1);
 		}
+
+		// Use ability 3
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
 			SelctionState(heros, enemies, 2);
 		}
+
+		// Use ability 4
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
 			SelctionState(heros, enemies, 3);
 		}
+
+		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
 			ResetToSelection(heros, enemies);
@@ -161,14 +215,17 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		break;
 	}
 
-	// If the player character's selection is not Aoe or currently provoked they will then select thier target
+	// If the player character's selection is not Aoe or not currently provoked they will then select thier target
 	case STATE::SELECTTARGET:
 	{
+		// Static int used for targeting
 		static int tempIndex = -1;
+		// If an attack or debuff highlight applicable enemy target else look for applicable hero to target
 		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 		{
 			if (tempIndex == -1)
 			{
+				// Loop till i find a non-dead target 
 				for (int i = 0; i < enemies.size(); ++i)
 				{
 					if (enemies[i] != nullptr && enemies[i]->getComponent<Character>()->GetState() != STATE::DEAD)
@@ -178,6 +235,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					}
 				}
 			}
+			// Returns true when the player hits enter to confirm a target
 			if(SelectTarget(enemies, tempIndex))
 				tempIndex = -1;
 		}
@@ -185,6 +243,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			if (tempIndex == -1)
 			{
+				// Loop till i find a non - dead target
 				for (int i = 0; i < heros.size(); ++i)
 				{
 					if (heros[i] != nullptr && heros[i]->getComponent<Character>()->GetState() != STATE::DEAD)
@@ -194,9 +253,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					}
 				}
 			}
+			// Returns true when the player hits enter to confirm a target
 			if (SelectTarget(heros, tempIndex))
 				tempIndex = -1;
 		}
+		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
 			ResetToSelection(heros, enemies);
@@ -211,103 +272,138 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed, or particle effect 
 		static bool particleTrigger = false;
 		static bool animeTrigger = false;
+
 		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
 			// Turn particle effect on
 			mCurrentSkill->GetParticleSystem()->play();
+
+			// If its a projectile particle effect turn on its mover
 			if(!mCurrentSkill->IsAOE())
 				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+
+			// Set static bool to true to prevent repeating this effect
 			particleTrigger = true;
 		}
+
 		// Play animation when the timming is right
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
-			// If its ment for the enemies play the hit animation to time with the animation timing
+			// If its ment for the enemy party play the hit animation to time with the animation timing, else play the animations and particle effects to the hero party
 			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 			{
+				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
 				{
+					// For each party member
 					for (std::shared_ptr<Odyssey::Entity> c : enemies)
 					{
+						// If they arnt dead play thier animations and particle effects
 						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
+							// Play "Hit" animation
 							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit"); 
+
+							// Set up particle effect location
 							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
 							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
+
+							// Play particle effect
 							c.get()->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
 				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
 				{
+					// Play "Hit" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
+
+					// Set up particle effect location
 					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
 					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+
+					// Play particle effect
 					mCurrentTarget->GetPSBlood()->play();
 				}
 			}
 			else
 			{
-				// If its ment for the players characters play the recived buff animation to time with the animation timing
+				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
 				{
+					// For each party member
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
+						// If the target is not dead, and not the caster
 						if (c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
 						{
+							// Play "GotBuffed" animation
 							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
-							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-							// Add particle effect for reciveing buffs you dingus
-							//c.get()->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
 				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD && mCurrentTarget != this)
 				{
+					// Play "GotBuffed" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
-					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-					// Add particle effect for reciveing buffs you dingus
-					//mCurrentTarget->GetPSBlood()->play();
 				}
 			}
-			// Set trigger to true to avoid looping the recipents animation
+			// Set trigger to true to avoid repeating the recipents animation
 			animeTrigger = true;
 		}
+
 		// Once the animation is nearly finished use the skill and apply the effects
 		if (mAnimator->getProgress() > 0.9f)
 		{
+			// Depleate the caster mana
 			DepleteMana(mCurrentSkill->GetManaCost());
+
+			// If its ment for the enemies apply the effect to the enemy party, else apply the effect to the hero party
 			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 			{
+				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
 				{
+					// Temp character pointer to help loop through list of targets
 					Character* temp = nullptr;
+
+					// For each party member
 					for (std::shared_ptr<Odyssey::Entity> c : enemies)
 					{
+						// If the entity is valid
 						if (c != nullptr)
 						{
+							// Get the character from the entity
 							temp = c.get()->getComponent<Character>();
+
+							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mCurrentSkill->Use(*this, *temp);
 						}
 					}
 				}
-				else if(mCurrentTarget != nullptr)
+				else if(mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
 					mCurrentSkill->Use(*this, *mCurrentTarget);
 			}
 			else
 			{
+				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
 				{
+					// Temp character pointer to help loop through list of targets
 					Character* temp = nullptr;
+
+					// For each party member
 					for (std::shared_ptr<Odyssey::Entity> c : heros)
 					{
+						// If the entity is valid
 						if (c != nullptr)
 						{
+							// Get the character from the entity
 							temp = c.get()->getComponent<Character>();
+
+							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mCurrentSkill->Use(*this, *temp);
 						}
@@ -316,34 +412,54 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				else if(mCurrentTarget != nullptr)
 					mCurrentSkill->Use(*this, *mCurrentTarget);
 			}
-			mCurrentSkill = nullptr;
-			mCurrentTarget = nullptr;
+
+			// Reset static bools
 			animeTrigger = false;
 			particleTrigger = false;
+
+			// Set this characters state to finished
 			mCurrentState = STATE::FINISHED;			
 		}
+		break;
 	}
-	break;
-		// Once here loop through remaining status effects and reset current state
+
+	// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
-		mCurrentState = STATE::NONE;
+		// Manage all my buffs
 		ManageStatusEffects(mBuffs);
+
+		// Manage all my debuffs
 		ManageStatusEffects(mDebuffs);
+
+		// Manage all my shields
 		ManageStatusEffects(mSheilds);
+
+		// Turns off all targeting and 
 		ResetToSelection(heros, enemies);
+
+		// Reset state to default
+		mCurrentState = STATE::NONE;
+
+		// Return true
 		return true;
+
 		break;
 	}
-		// If here the character has died and will begin his death animation
+	// If here the character has died and will begin his death animation
 	case STATE::DEAD:
 	{
+		// If the "death" animation is over return true so it skips this character turn
 		if (mAnimator->getProgress() > 0.8f)
 			return true;
+
 		break;
 	}
+	// Default case should never hit here
 	default:
+	{
 		break;
+	}
 	}
 	return false;
 }
@@ -359,9 +475,6 @@ void HeroComponent::Die()
 	
 	// Play the death animation
 	mAnimator->playClip("Dead");
-
-	// Set turn text to be an X because tristan is a dumbass
-	pTurnNumber->setText(L"X");
 }
 
 // Returns the characters skill list
@@ -373,9 +486,13 @@ std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 // Function that gets called to manage the state in which the player is selecting a skill to use
 void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
 {
+	// If i have enough mana to use the skill take me to the target selection state
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
 	{
+		// Set temp variable to the selected move
 		mCurrentSkill = mSkillList[moveIndex].get();
+
+		// Change state to target selection
 		mCurrentState = STATE::SELECTTARGET;
 	}
 }
@@ -385,54 +502,67 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 {
 	// Static refrence to old character
 	static Character* prevChar = nullptr;
-	//If its a single target move set the indicator over the first applicable party memeber 
+
+	//If its a single target move set the indicator over the first applicable party memeber, else target all apllicable party members 
 	if (!mCurrentSkill->IsAOE())
 	{
-		// If left then go up the party list
+		// If left arrow key down, go up the party list
 		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::Left))
 		{
+			// Reduce the index
 			targetIndex--;
+
+			// If index is going out of bounds set it to size - 1
 			if (targetIndex < 0)
 				targetIndex = (targets.size() - 1);
-			while (targets[targetIndex] == nullptr)
+
+			// Loop till i am over a applicable target again
+			while (targets[targetIndex] == nullptr || targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
 			{
+				// Reduce the index
 				targetIndex--;
-				if (targetIndex < 0)
-					targetIndex = (targets.size() - 1);
-			}
-			while(targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
-			{
-				targetIndex--;	
+
+				// If index is going out of bounds set it to size - 1
 				if (targetIndex < 0)
 					targetIndex = (targets.size() - 1);
 			}
 		}
-		// If right go down the party list
+		// If right arrow key down, go down the party list
 		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::Right))
 		{
+			// Increase the index
 			targetIndex++;
+
+			// If index is going out of bounds set it to 0
 			if (targetIndex >= targets.size())
 				targetIndex = 0;
-			while (targets[targetIndex] == nullptr)
-			{
-				targetIndex++;
-				if (targetIndex >= targets.size())
-					targetIndex = 0;
-			}
-			while (targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
-			{
-				targetIndex++;
-				if (targetIndex >= targets.size())
-					targetIndex = 0;
-			}
 
+			// Loop till i am over a applicable target again
+			while (targets[targetIndex] == nullptr || targets[targetIndex]->getComponent<Character>()->GetState() == STATE::DEAD)
+			{
+				// Increase the index
+				targetIndex++;
+
+				// If index is going out of bounds set it to 0
+				if (targetIndex >= targets.size())
+					targetIndex = 0;
+			}
 		}
+
+		// Set my temp target storage to the highleted target
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
+
+		// Turn on thier targeter
 		mCurrentTarget->mImpactIndicator->setActive(true);
+
+		// if my prev targert doesnt equal my current target
 		if (prevChar != mCurrentTarget)
 		{
+			// If there is an old target, turn off targeter
 			if (prevChar != nullptr)
 				prevChar->mImpactIndicator->setActive(false);
+
+			// Set the old target to mt current one
 			prevChar = mCurrentTarget;
 		}
 	}
@@ -441,21 +571,33 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		// If its an aoe skill then turn all applicable partys indicators on
 		for (std::shared_ptr<Odyssey::Entity> t : targets)
 		{
+			// If the entity is valid and  the character is not dead, turn on targeter
 			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
 				t->getComponent<Character>()->mImpactIndicator->setActive(true);
 		}
+
+		// Set current target to something to avoid repeating this loop
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 	}
+
 	// If enter is hit set state to in progress and begin playing animations for caster
 	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
 	{
+		// Set state to inprogress
 		mCurrentState = STATE::INPROGRESS;
+
+		// Reset temp target storage
 		prevChar = nullptr;
+
+		// For each applicable entity turn off targeters
 		for (std::shared_ptr<Odyssey::Entity> t : targets)
 		{
+			// If the entity if valid and the character is no dead, turn off targeter
 			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
 				t->getComponent<Character>()->mImpactIndicator->setActive(false);
 		}
+
+		// 
 		BeginAttack(targets);
 		return true;
 	}

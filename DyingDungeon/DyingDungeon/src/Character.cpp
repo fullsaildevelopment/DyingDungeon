@@ -26,15 +26,7 @@ Character::Character()
 	mHudIndex = 0;
 	mProvoked = nullptr;
 	mAnimator = nullptr;
-	pDmgText = nullptr;
-	pHealthBar = nullptr;
-	pManaBar = nullptr;
-	pTurnNumber = nullptr;
-	mDisplaying = false;
-	mBigHpText = nullptr;
 	mBloodParticleEffect = nullptr;
-	mHpText = nullptr;
-	mMpText = nullptr;
 	////////////////////////////////////////////////
 }
 
@@ -68,23 +60,6 @@ void Character::Die()
 {
 	return;
 }
-
-// Some dumbass thing made by red, used by dumbass bryce
-//std::wstring Character::FormatToPercentageW(float number)
-//{
-//	if (number >= 100.0f)
-//	{
-//		return std::to_wstring(number).substr(0, 6);
-//	}
-//	else if (number >= 10.0f)
-//	{
-//		return std::to_wstring(number).substr(0, 5);
-//	}
-//	else
-//	{
-//		return std::to_wstring(number).substr(0, 4);
-//	}
-//}
 
 // Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
@@ -137,11 +112,6 @@ void Character::ReceiveHealing(float healing)
 {
 	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
-	
-	// Pop up battle text that appears over the character whenever something happens to them
-	/*pDmgText->setText(std::to_wstring(healing).substr(0, 5));
-	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);*/
 	
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
@@ -585,36 +555,6 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
-//DELETE
-// Sets the fill of the health bar for the character
-void Character::UpdateHealthBar()
-{
-	mHpText->setText(std::to_wstring((int)mCurrentHP));
-	if (!mHero)
-		mBigHpText->setText(std::to_wstring((int)mCurrentHP));
-	float fill = GetHP() / GetMaxHP();
-	if (fill < 0.0f)
-		fill = 0.0f;
-	else if (fill > 1.0f)
-		fill = 1.0f;
-
-	//pHealthBar->setFill(fill);
-}
-
-//DELETE
-// Sets the fill of the mana bar for the character
-void Character::UpdateManaBar()
-{
-	mMpText->setText(std::to_wstring((int)mCurrentMana));
-	float fill = GetMana() / GetMaxMana();
-	if (fill < 0.0f)
-		fill = 0.0f;
-	else if (fill > 1.0f)
-		fill = 1.0f;
-
-	//pManaBar->setFill(fill);
-}
-
 // Sets the Particle system pointer to a "Hit effect"
 void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
 {
@@ -661,12 +601,6 @@ std::wstring Character::GetDescription()
 void Character::SetDescription(std::wstring newDescription)
 {
 	mDescription = newDescription;
-}
-
-// Returns the Turn order number for this character
-Odyssey::Text2D* Character::GetTurnOrderNumber()
-{
-	return pTurnNumber;
 }
 
 // Set the characters Hud index
