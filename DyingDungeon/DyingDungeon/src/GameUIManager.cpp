@@ -991,31 +991,32 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
 {
 	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
+	UINT spriteSize = 25;
 	
 	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
 		{
-			mCombatCasterIcons[i] = mCombatCasterIcons[i - 1];
-			mCombatSkillIcons[i] = mCombatSkillIcons[i - 1];
-			mCombatTargetIcons[i] = mCombatTargetIcons[i - 1];
+			mCombatCasterIcons[i]->setSprite(mCombatCasterIcons[i -1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatSkillIcons[i]->setSprite(mCombatSkillIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatTargetIcons[i]->setSprite(mCombatTargetIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
 		}
 	}
 
 	if (caster->GetPortraitPath().size() > 0)
-		mCombatCasterIcons[0]->setSprite(caster->GetPortraitPath(), 25, 25);
+		mCombatCasterIcons[0]->setSprite(caster->GetPortraitPath(), spriteSize, spriteSize);
 	else
-		mCombatCasterIcons[0]->setSprite(L"assets/images/Blank.png", 25, 25);
+		mCombatCasterIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 	
 	if (skill->GetSkillIconPath().size() > 0)
-		mCombatSkillIcons[0]->setSprite(skill->GetSkillIconPath(), 25, 25);
+		mCombatSkillIcons[0]->setSprite(skill->GetSkillIconPath(), spriteSize, spriteSize);
 	else
-		mCombatSkillIcons[0]->setSprite(L"assets/images/Blank.png", 25, 25);
+		mCombatSkillIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 	
 	if (target->GetPortraitPath().size() > 0)
-		mCombatTargetIcons[0]->setSprite(target->GetPortraitPath(), 25, 25);
+		mCombatTargetIcons[0]->setSprite(target->GetPortraitPath(), spriteSize, spriteSize);
 	else
-		mCombatTargetIcons[0]->setSprite(L"assets/images/Blank.png", 25, 25);
+		mCombatTargetIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 
 }
 

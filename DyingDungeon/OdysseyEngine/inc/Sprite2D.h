@@ -29,6 +29,12 @@ namespace Odyssey
 		 */
 		void setSprite(std::wstring filename, UINT width = 0, UINT height = 0);
 
+		/**
+		 *	Return the sprite filepath name
+		 *	@return filename
+		 */
+		std::wstring getSpriteFilename();
+
 	protected:
 		virtual void createResource();
 
