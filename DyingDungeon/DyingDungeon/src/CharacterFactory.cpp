@@ -121,23 +121,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
 			}
 
-			//DELETE THIS BROTHER
-			// Set up its animations
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim", false);
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
-			//done
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
-
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
 
@@ -153,17 +136,22 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		}
 		case Ganfaul:
 		{
-			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Ganfaul.dxm", false);
-			// Set up its animations
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Ganfaul/Ganfaul_Idle.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Ganfaul/Ganfaul_Death.dxanim", false);
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack.dxanim"); 
 			// Set up enemy component
 			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Ganfaul);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
+
+			//No longer need
 			// Set the image filename for this character
 			imageFilename = L"assets/images/GanfaulPortrait.jpg";
 			break;
