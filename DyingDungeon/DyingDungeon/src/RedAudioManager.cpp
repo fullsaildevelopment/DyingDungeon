@@ -124,16 +124,16 @@ unsigned int RedAudioManager::GetVolume()
 	return m_volume;
 }
 
-void RedAudioManager::Update()
-{
-	for (int i = 0; i < m_audioFiles.size(); i++) 
-	{
-		if (m_audioFiles[i].isPlaying() && !m_audioFiles[i].isLooping()) 
-		{
-			m_audioFiles[i].Update();
-		}
-	}
-}
+//void RedAudioManager::Update()
+//{
+//	for (int i = 0; i < m_audioFiles.size(); i++) 
+//	{
+//		if (m_audioFiles[i].isPlaying() && !m_audioFiles[i].isLooping()) 
+//		{
+//			m_audioFiles[i].Update();
+//		}
+//	}
+//}
 
 void RedAudioManager::AddAudio(const char* path, const char* alias)
 {
