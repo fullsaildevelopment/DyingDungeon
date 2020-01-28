@@ -65,6 +65,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			//done, get rid of this variable when its meshed together 
 			// Set the image filename for this character
 			imageFilename = L"assets/images/PaladinPortrait.jpg";
+
 			break;
 		}
 		case Mage:
@@ -99,6 +100,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			// DELETE THIS HERASY
 			// Set the image filename for this character
 			imageFilename = L"assets/images/MagePortrait.jpg";
+
 			break;
 		}
 		case Bard:
@@ -107,25 +109,46 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		}
 		case Skeleton:
 		{
-			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Skeleton.dxm", false);
-			// Set up its animations
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim", false);
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 			// Set up enemy component
 			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			//DELETE THIS BROTHER
+			// Set up its animations
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Skeleton/Skeleton_Idle.dxanim");
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BasicAttackButBetter", "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim");
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Skeleton/Skeleton_Death.dxanim", false);
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("FwdKick", "assets/animations/Skeleton/Skeleton_FwdKick.dxanim");
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Skeleton/Skeleton_Hit.dxanim");
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
+			//done
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
+
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
+
 			// Set up particle effects for skills
 			tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
 			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);
+
+			//HERASY DELETE
 			// Set the image filename for this character
 			imageFilename = L"assets/images/SkeletonPortrait.png";
+
 			break;
 		}
 		case Ganfaul:
