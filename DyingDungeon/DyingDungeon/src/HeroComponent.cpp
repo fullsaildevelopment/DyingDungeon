@@ -583,9 +583,6 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 	// If enter is hit set state to in progress and begin playing animations for caster
 	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
 	{
-		// Set state to inprogress
-		mCurrentState = STATE::INPROGRESS;
-
 		// Reset temp target storage
 		prevChar = nullptr;
 
@@ -597,74 +594,121 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 				t->getComponent<Character>()->mImpactIndicator->setActive(false);
 		}
 
-		// 
+		// Que animations, and set variables for particle effect locations
 		BeginAttack(targets);
+
+		// Return true for the characters turn to be over
 		return true;
 	}
+
+	// Return false while the player is taking thier turn 
 	return false;
 }
 
 // Function that gets called to send the player back to the selection state
 void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 {
+	// For each valid entity 
 	for (std::shared_ptr<Odyssey::Entity> e : enemies)
 	{
+		// Turn off targeter
 		if (e != nullptr)
 			e->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
+
+	// For each valid entity 
 	for (std::shared_ptr<Odyssey::Entity> h : heros)
 	{
+		// Turn off targeter
 		if(h != nullptr)
 			h->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
+
+	// Reset temp target and skill variables to default
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
+
+	// Reset state to select move
 	mCurrentState = STATE::SELECTMOVE;
-	std::cout << "Reselect A Skill..." << std::endl;
 }
 
-// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
+// Function that sends the state into the inprogress state, queing animations, and setting variables for particle effect locations
 void HeroComponent::BeginAttack(EntityList targets)
 {
+	// Play the skills animation
 	mAnimator->playClip(mCurrentSkill->GetAnimationId());
+
+	// If the skill is an AOE move, and it has a valid particle effect
 	if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
 	{
+		// Make variables to store position data
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
+
+		// If its an attack loop through all enemies to get an avg position, else loop though all the players
 		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
 		{
+			// For each entity
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{
+				// If valid
 				if (t)
 				{
+					// Get the transforms position
 					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
+
+					// Add posititon to variable for each entity //
+					///////////////////////////////////////////////
 					aoeSpawn.x += tempTransform.x;
 					aoeSpawn.y += tempTransform.y;
 					aoeSpawn.z += tempTransform.z;
+					///////////////////////////////////////////////
 				}
 			}
+
+			// Divid by party size to get the average position //
+			/////////////////////////////////////////////////////
 			aoeSpawn.x /= static_cast<float>(targets.size());
 			aoeSpawn.y /= static_cast<float>(targets.size());
 			aoeSpawn.z /= static_cast<float>(targets.size());
+			/////////////////////////////////////////////////////
 		}
+
+		// Set the skills particle systems postion to be the calculated position
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
 	}
 	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
 	{
-		// Set position to start in desired postion
+		// Get my entitys position
 		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
+
+		// Add the effects offset to the entitys position to place the projectile in the proper starting position //
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		temp.x += mCurrentSkill->GetPosOffset().x;
 		temp.y += mCurrentSkill->GetPosOffset().y;
 		temp.z += mCurrentSkill->GetPosOffset().z;
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the projectiles position to the calculated postition
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-		// Set target position
+
+		// Get the projectiles target position
 		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
+
+		// Offset the target position by an amount to have it hit about center mass
 		temp2.y += 3.0f;
+
+		// Set the projectiles target position
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-		// Use velocity to calc lifetime
+
+		// Use projectiles velocity to calc lifetime to target //
+		/////////////////////////////////////////////////////////
 		DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
 		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
+		/////////////////////////////////////////////////////////
 	}
+
+	// Set the current state to inprogress
 	mCurrentState = STATE::INPROGRESS;
 }
