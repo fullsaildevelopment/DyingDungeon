@@ -5,6 +5,8 @@
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
 
+
+
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -909,12 +911,16 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	float xAnchor = _hudPosition.x + 134.0f;
 	float yAnchor = _hudPosition.y + 24.0f;
 
+	// Get the list of skills from the character
+	std::vector<std::shared_ptr<Skills>> characterSkills = _newCharacter->GetSkills();
+
 	// 1st Skill
 	// Skill Icon
-	Odyssey::Sprite2D* skill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_1.png", 52, 45);
+	std::shared_ptr<Skills> currSkill = characterSkills[0];
+	Odyssey::Sprite2D* skill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas1, L"Paladin", L"Basic Attack", L"assets/images/Paladin_Skill_1.png", L"0", L"Attack", L"1", L"15 dmg",
-		L"Description: Strike an enemy with divine power dealing 15 damage with a 30% chance to apply provoke. Restores 5 mana.");
+	// TODO :: ADD GETTER AND SETTER FOR TYPE OF CHARACTER
+	SetupSkillHover(canvas1, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Basic Attack trigger
 	hover->registerSprite(skill1, canvas1);
 
@@ -923,10 +929,10 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 
 	// 2nd Skill
 	// Skill Icon
-	Odyssey::Sprite2D* skill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_2.png", 52, 45);
+	currSkill = characterSkills[1];
+	Odyssey::Sprite2D* skill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas2, L"Paladin", L"Judgement", L"assets/images/Paladin_Skill_2.png", L"15", L"Attack", L"1", L"200 dmg",
-		L"Description: Smite the enemy with holy light dealing 200 damage and healing the paladin for 15 health. Costs 15 mana.");
+	SetupSkillHover(canvas2, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Wind Slash trigger
 	hover->registerSprite(skill2, canvas2);
 
@@ -935,10 +941,10 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 
 	// 3rd Skill
 	// Skill Icon
-	Odyssey::Sprite2D* skill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_3.png", 52, 45);
+	currSkill = characterSkills[2];
+	Odyssey::Sprite2D* skill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas3, L"Paladin", L"Shield of Light", L"assets/images/Paladin_Skill_3.png", L"20", L"Support", L"4", L"+25 shield",
-		L"Description: A shield of light slams down in front of all team members granting a 25 health shield for 3 turns. Costs 20 mana.");
+	SetupSkillHover(canvas3, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Firestorm trigger
 	hover->registerSprite(skill3, canvas3);
 
@@ -947,47 +953,23 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 
 	// 4th Skill
 	// Skill Icon
-	Odyssey::Sprite2D* skill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_4.png", 52, 45);
+	currSkill = characterSkills[3];
+	Odyssey::Sprite2D* skill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas4, L"Paladin", L"Blessing of Light", L"assets/images/Paladin_Skill_4.png", L"15", L"Support", L"4", L"+50% def",
-		L"Description: Protects all allies from harm granting them 50% reduced damage for 3 turns. Costs 15 mana.");
+	SetupSkillHover(canvas4, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Lightning Bolt trigger
 	hover->registerSprite(skill4, canvas4);
 }
 
-void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description)
+void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description)
 {
-	// Append the number of targets
-	std::wstring targets = L"Targets: ";
-	std::wstring valueText;
-	targets = targets.append(numTargets.c_str());
-
 	DirectX::XMFLOAT4 themeColor;
-
-	if (character == L"Paladin")
-	{
+	// Assign theme color for text
+	// TODO :: CHANGE TO USE TYPE ID OF CHARACTER
+	if (character == L"assets/images/PaladinPortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	}
-	else if (character == L"Mage")
-	{
+	else if (character == L"assets/images/MagePortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	}
-
-	if (skillType == L"Attack")
-	{
-		valueText = L"Damage: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
-	else if (skillType == L"Support")
-	{
-		valueText = L"Value: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
-	else if (skillType == L"Heal")
-	{
-		valueText = L"Heal: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
 
 	UINT windowWidth = screenWidth;
 	UINT windowHeight = screenHeight;
@@ -1023,16 +1005,6 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
-
-	// Skill Info
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 50), themeColor, 150, 50, skillType, properties);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 80 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 105 + pad, y + 50), themeColor, 150, 50, targets, properties);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 175 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 200 + pad, y + 50), themeColor, 150, 50, skillValue, properties);
 
 	// Description
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),

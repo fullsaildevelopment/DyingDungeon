@@ -1372,7 +1372,8 @@ void setUpTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 hudPosition = { 10.0f, static_cast<float>(height) - 120.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
 
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
