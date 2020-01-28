@@ -113,23 +113,84 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mDescription = L"One Skelly boi, who wants to rattle your bones";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Make the character skills //
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 		break;
 	}
 	case GameplayTypes::ENEMYID::Ganfaul:
 	{
+		// Set the character Model path
+		mModel = "assets/models/Ganfaul.dxm";
+
+		// Set the character name
 		mName = L"Ganfaul";
+
+		// Set the character subname
+		mSubName = L"Killer of chickens";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/GanfaulPortrait.jpg";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 300.0f;
+
+		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 300.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.25f;
 		mBaseSpeed = mSpeed = 45.0f;
-		mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+		
+		// Set mechanic pointer
 		mMechPtr = &EnemyComponent::GanfaulPhaseMechanic;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"The Big Bad Evil Guy who wants to kill your chickens";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
 	default:
