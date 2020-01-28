@@ -76,17 +76,22 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			// Basic Attack, good dps, stun
 			debuff = std::make_shared<Stun>(1,nullptr);
 			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 25.0f, debuff));
+			mSkillList[0]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_1.png");
 			//  good dps, spd down ,aoe
 			debuff = std::make_shared<StatDown>(0.25f, 4, STATS::Spd, nullptr);
 			mSkillList.push_back(std::make_shared<Attack>(L"AOE Slow", "Skill_1", 0.25f, 20.0f, 15.0f, debuff, true));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_2.png");
 			//  Big smack
 			mSkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Skill_1", 0.25f, 50.0f, 45.0f));
+			mSkillList[2]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_3.png");
 			// Attack buff
 			debuff = std::make_shared<StatUp>(0.30f,3,STATS::Atk, nullptr);
 			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Skill_1", 0.25f, 20.0f, debuff, true));
+			mSkillList[3]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_4.png");
 			// Regen
 			debuff = std::make_shared<Regens>(0.15f, 5, nullptr);
 			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Skill_1",0.15f, 10.0f, debuff,true));
+			mSkillList[4]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_5.png");
 			break;
 		}
 		default:
