@@ -121,11 +121,8 @@ void Character::TakeDamage(float dmg)
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);*/
 
-	// BattleLogText shit that dumbass Bryce uses
-	std::cout << dmg << " damage!" << std::endl;
-	std::wstring dmgText = L"";
-	dmgText.append(L" damage!");
-	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
+	// TODO: Update Combat Log Text Here
+
 
 	// If they run out of Health kill the character
 	if (mCurrentHP <= 0.0f)
@@ -145,6 +142,10 @@ void Character::ReceiveHealing(float healing)
 	
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
+
+	// TODO: Update Combat Log Text Here
+
+
 }
 
 // Called whenever this character needs to reduce its current mana

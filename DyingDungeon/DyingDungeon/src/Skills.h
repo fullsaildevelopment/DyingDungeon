@@ -83,9 +83,9 @@ public:
 	// Get Description Of The Skill
 	std::wstring GetSkillDescription();
 	// Get Icon Name
-	std::wstring GetSkillIconName();
+	std::wstring GetSkillIconPath();
 	// Set Icon Name	
-	void SetSkillIconName(std::wstring icon);
+	void SetSkillIconPath(std::wstring icon);
 
 
 private:

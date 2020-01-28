@@ -79,7 +79,9 @@ void Attack::Use(Character& caster, Character& target)
 	std::wstring skillName = mSkillName;
 	std::wstring targetName = target.GetName();
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
-	GameUIManager::getInstance().SetBattleLogText(battleText, false);
+	//GameUIManager::getInstance().SetBattleLogText(battleText, false);
+	//
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 
 	target.TakeDamage(totalDps);
 	if (mStatusEffect != nullptr)

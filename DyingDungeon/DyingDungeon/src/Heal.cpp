@@ -30,6 +30,7 @@ void Heal::Use(Character& caster, Character& target)
 {
 	target.ReceiveHealing(mHealing);
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 }
 
 // Get the amount the heal is for
