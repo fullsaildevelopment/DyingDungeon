@@ -48,7 +48,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		case Paladin:
 		{
 			// Add hero component to the entity
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Paladin);
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter,tempHero->GetModel().c_str() , true);
@@ -71,7 +71,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		case Mage:
 		{
 			// Set up hero component
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Mage);
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Mage);
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
@@ -110,7 +110,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		case Skeleton:
 		{
 			// Set up enemy component
-			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Skeleton);
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);

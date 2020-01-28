@@ -39,7 +39,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mSubName = L"Skelly Boi";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/SkeletonPortrait.jpg";
+		mPortrait = L"assets/images/SkeletonPortrait.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
