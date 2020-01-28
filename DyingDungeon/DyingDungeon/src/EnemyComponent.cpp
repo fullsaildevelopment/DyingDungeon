@@ -158,13 +158,13 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
@@ -172,7 +172,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
@@ -180,7 +180,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Ganfaul_Attack.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Attack.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
