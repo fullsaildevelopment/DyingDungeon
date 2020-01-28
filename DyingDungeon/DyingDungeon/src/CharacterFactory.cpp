@@ -161,7 +161,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit.dxanim");
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack.dxanim"); 
 			// Set up enemy component
-			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Ganfaul);
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
 			// Set the image filename for this character

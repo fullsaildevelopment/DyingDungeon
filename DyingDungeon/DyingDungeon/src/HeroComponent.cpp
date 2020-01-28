@@ -19,7 +19,7 @@
 CLASS_DEFINITION(Character, HeroComponent)
 
 // Constructor
-HeroComponent::HeroComponent(HEROID id)
+HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 {
 	// Setting default values for member variables //
 	////////////////////////////////////////////////
@@ -43,7 +43,7 @@ HeroComponent::HeroComponent(HEROID id)
 	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (id)
 	{
-	case HEROID::Paladin:
+	case GameplayTypes::HEROID::Paladin:
 	{
 		// Set the character Model path
 		mModel = "assets/models/Paladin.dxm";
@@ -146,7 +146,7 @@ HeroComponent::HeroComponent(HEROID id)
 
 		break;
 	}
-	case HEROID::Mage:
+	case GameplayTypes::HEROID::Mage:
 	{
 		// Set the character Model path
 		mModel = "assets/models/Mage.dxm";
@@ -238,7 +238,7 @@ HeroComponent::HeroComponent(HEROID id)
 
 		break;
 	}
-	case HEROID::Bard:
+	case GameplayTypes::HEROID::Bard:
 	{
 		// Set the character Model path
 		mModel = "";
@@ -377,8 +377,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	{
 		// Static int used for targeting
 		static int tempIndex = -1;
+
 		// If an attack or debuff highlight applicable enemy target else look for applicable hero to target
-		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			if (tempIndex == -1)
 			{
@@ -448,7 +449,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
 			// If its ment for the enemy party play the hit animation to time with the animation timing, else play the animations and particle effects to the hero party
-			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
@@ -517,7 +518,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			DepleteMana(mCurrentSkill->GetManaCost());
 
 			// If its ment for the enemies apply the effect to the enemy party, else apply the effect to the hero party
-			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
 				if (mCurrentSkill->IsAOE())
@@ -803,7 +804,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
 
 		// If its an attack loop through all enemies to get an avg position, else loop though all the players
-		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			// For each entity
 			for (std::shared_ptr<Odyssey::Entity> t : targets)

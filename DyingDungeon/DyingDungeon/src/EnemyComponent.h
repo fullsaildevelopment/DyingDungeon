@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "AiMoves.h"
+#include "GameplayTypes.h"
 
 class EnemyComponent : public Character
 {
@@ -11,7 +12,7 @@ public:
 	EnemyComponent() = default;
 
 	// Pass in Enemy identifcation to get a specific Enemy class	
-	EnemyComponent(ENEMYID _enemyID);
+	EnemyComponent(GameplayTypes::ENEMYID _enemyID);
 
 	// Destructors
 	~EnemyComponent();
@@ -41,6 +42,6 @@ private:
 	AIMoves mMoves;
 
 	// Used to detrim what kind of move the AI should make
-	SKILLTYPE mMoveOverride;
+	GameplayTypes::SKILLTYPE mMoveOverride;
 };
 

@@ -7,12 +7,6 @@
 #include "GameUIManager.h"
 #include <vector>
 
-// Hero identification enum
-enum class HEROID { Paladin = 0, Mage, Bard };
-
-// Enemy identification enum
-enum class ENEMYID { Skeleton = 0, Ganfaul };
-
 // Character State identification enum
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 

@@ -4,6 +4,7 @@
 enum class STATS {None = -1, Atk = 0, Def, Spd};
 enum class EFFECTTYPE { None = -1, Bleed = 0, Regen, StatUp, StatDown, Stun, Shield, Provoke};
 class Character; 
+
 class StatusEffect
 {
 	// public and private variables

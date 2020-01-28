@@ -4,7 +4,7 @@
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
-EnemyComponent::EnemyComponent(ENEMYID _enemyID)
+EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 {
 	// Setting default values for member variables //
 	////////////////////////////////////////////////
@@ -16,7 +16,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	mBloodParticleEffect = nullptr;
 	mImpactIndicator = nullptr;
 	mMechPtr = nullptr;
-	mMoveOverride = SKILLTYPE::UNDEFINED;
+	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 	mCurrentState = STATE::NONE;
 	mMoves = AIMoves(static_cast<int>(_enemyID), this);
 	////////////////////////////////////////////////
@@ -27,7 +27,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (_enemyID)
 	{
-	case ENEMYID::Skeleton:
+	case GameplayTypes::ENEMYID::Skeleton:
 	{
 		// Set the character Model path
 		mModel = "assets/models/Skeleton.dxm";
@@ -53,6 +53,9 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mBaseDefense = mDefense = 0.15f;
 		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +120,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 
 		break;
 	}
-	case ENEMYID::Ganfaul:
+	case GameplayTypes::ENEMYID::Ganfaul:
 	{
 		mName = L"Ganfaul";
 		mBaseMaxHP = mCurrentHP = 300.0f;
@@ -125,7 +128,7 @@ EnemyComponent::EnemyComponent(ENEMYID _enemyID)
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.25f;
 		mBaseSpeed = mSpeed = 45.0f;
-		mMoveOverride = SKILLTYPE::UNDEFINED;
+		mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 		mMechPtr = &EnemyComponent::GanfaulPhaseMechanic;
 		break;
 	}
@@ -164,10 +167,10 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (mMoves.FindMove(int(mMoveOverride), playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
+		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
 		{
 			mCurrentState = STATE::INPROGRESS;
-			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 				BeginAttack(playerTeam);
 			else
 				BeginAttack(enemyTeam);
@@ -193,7 +196,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 			if (!trigger && mAnimator->getProgress() > mMoves.GetMove()->skill->GetAnimationTiming())
 			{
 				// If its ment for the enemies play the hit animation to time with the animation timing
-				if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+				if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 				{
 					if (mMoves.GetMove()->skill->IsAOE())
 					{
@@ -247,7 +250,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
-			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
@@ -325,7 +328,7 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 	{
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-		if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{
