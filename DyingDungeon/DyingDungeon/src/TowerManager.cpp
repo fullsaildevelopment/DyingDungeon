@@ -19,6 +19,9 @@ TowerManager::~TowerManager()
 
 void TowerManager::initialize()
 {
+	// Reset cheat code bools
+	mUsedBossCheatCode = false;
+
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
@@ -57,13 +60,26 @@ void TowerManager::update(double deltaTime)
 		TogglePauseMenu();
 	}
 
+	// Go straight to the BOSS when F3 is hit
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	{
+		// Destroy the current battle instance
+		DestroyBattleInstance();
+		// Set the game to in rewards 
+		mTowerState = IN_REWARDS;
+		// Set the tower level to the last level which is the boss
+		mCurrentLevel = mNumberOfLevels;
+		// Set the cheat code bool
+		mUsedBossCheatCode = true;
+	}
+
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
 		{
-      int result = mCurrentBattle->UpdateBattle();
+			int result = mCurrentBattle->UpdateBattle();
 
 			// If the result of the updated battle was DESTROY, destory the current battle instance
 			if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
@@ -93,8 +109,11 @@ void TowerManager::update(double deltaTime)
 		}
 		else if (GetTowerState() == IN_REWARDS)
 		{
-			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter) || mUsedBossCheatCode)
 			{
+				// Reset cheat code bool
+				mUsedBossCheatCode = false;
+				// Create temp xp variable
 				float tempXP = 0.0f;
 
 				// Check to see if that was our last level for completing the tower
@@ -134,9 +153,6 @@ void TowerManager::update(double deltaTime)
 					}
 
 					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
-					// Publish the current level number
-					Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 					// Give player some XP
 					tempXP = 100.0f;

@@ -74,7 +74,7 @@ public: // Functions
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
-	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
+	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
 	// Update health bar
 	void UpdateCharacterBars(Character* _currCharacter);
@@ -160,7 +160,6 @@ private: // Varibales
 	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	Odyssey::Text2D* mBattleLogText;
 
-
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
@@ -239,6 +238,10 @@ private: // Functions
 	void OptionsBackButton();
 	void DecreaseVolume();
 	void IncreaseVolume();
+
+	// Skill Icon Creation Fucntions
+	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition);
+	void SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);

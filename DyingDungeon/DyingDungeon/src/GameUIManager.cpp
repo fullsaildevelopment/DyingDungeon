@@ -653,7 +653,7 @@ void GameUIManager::OptionsBackButton()
 }
 
 // Create the character's UI Portrait
-Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
+Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
 {
 	// Create CharacterHUD object
 	std::shared_ptr<CharacterHUD> newHUD = std::make_shared<CharacterHUD>();
@@ -706,7 +706,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		// Add the name to the canvas
 		properties.bold = true;
 
-		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, L"Change in GUIManager", properties);
+		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
 
 		properties.bold = false;
 
@@ -848,10 +848,161 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
 
+	// Only add the skill icons if it is a hero
+	if (owner->IsHero())
+	{
+		// Create the skill icons for the character's hud
+		DirectX::XMFLOAT2 pHudPosition = { anchorX, anchorY };
+		SetupSkillIcons(_gameObjectToAddTo, owner, pHudPosition);
+	}
 	// Add the canvas to the mHudCharacterList
 	mCharacterHudList.push_back(newHUD);
 	// Return the canvas we just created 
 	return newHUD->pCanvas;
+}
+
+
+void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition)
+{
+	Odyssey::UICanvas* canvas1 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas2 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas3 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas4 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	SkillHoverComponent* hover = _objToAddTo->addComponent<SkillHoverComponent>();
+
+	// Set the correct offset position for the skills
+	float xAnchor = _hudPosition.x + 134.0f;
+	float yAnchor = _hudPosition.y + 24.0f;
+
+	// 1st Skill
+	// Skill Icon
+	Odyssey::Sprite2D* skill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_1.png", 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas1, L"Paladin", L"Basic Attack", L"assets/images/Paladin_Skill_1.png", L"0", L"Attack", L"1", L"15 dmg",
+		L"Description: Strike an enemy with divine power dealing 15 damage with a 30% chance to apply provoke. Restores 5 mana.");
+	// Basic Attack trigger
+	hover->registerSprite(skill1, canvas1);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 2nd Skill
+	// Skill Icon
+	Odyssey::Sprite2D* skill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_2.png", 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas2, L"Paladin", L"Judgement", L"assets/images/Paladin_Skill_2.png", L"15", L"Attack", L"1", L"200 dmg",
+		L"Description: Smite the enemy with holy light dealing 200 damage and healing the paladin for 15 health. Costs 15 mana.");
+	// Wind Slash trigger
+	hover->registerSprite(skill2, canvas2);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 3rd Skill
+	// Skill Icon
+	Odyssey::Sprite2D* skill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_3.png", 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas3, L"Paladin", L"Shield of Light", L"assets/images/Paladin_Skill_3.png", L"20", L"Support", L"4", L"+25 shield",
+		L"Description: A shield of light slams down in front of all team members granting a 25 health shield for 3 turns. Costs 20 mana.");
+	// Firestorm trigger
+	hover->registerSprite(skill3, canvas3);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 4th Skill
+	// Skill Icon
+	Odyssey::Sprite2D* skill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_4.png", 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas4, L"Paladin", L"Blessing of Light", L"assets/images/Paladin_Skill_4.png", L"15", L"Support", L"4", L"+50% def",
+		L"Description: Protects all allies from harm granting them 50% reduced damage for 3 turns. Costs 15 mana.");
+	// Lightning Bolt trigger
+	hover->registerSprite(skill4, canvas4);
+}
+
+void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description)
+{
+	// Append the number of targets
+	std::wstring targets = L"Targets: ";
+	std::wstring valueText;
+	targets = targets.append(numTargets.c_str());
+
+	DirectX::XMFLOAT4 themeColor;
+
+	if (character == L"Paladin")
+	{
+		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	}
+	else if (character == L"Mage")
+	{
+		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	}
+
+	if (skillType == L"Attack")
+	{
+		valueText = L"Damage: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+	else if (skillType == L"Support")
+	{
+		valueText = L"Value: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+	else if (skillType == L"Heal")
+	{
+		valueText = L"Heal: ";
+		valueText = valueText.append(skillValue.c_str());
+	}
+
+	UINT windowWidth = screenWidth;
+	UINT windowHeight = screenHeight;
+	float x = 950;
+	float y = 425;
+	UINT width = 300;
+	UINT height = 150;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 24.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 80), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+
+	// Title Text and Icons
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
+
+	// Skill Info
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 50), themeColor, 150, 50, skillType, properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 80 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 105 + pad, y + 50), themeColor, 150, 50, targets, properties);
+
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 175 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 200 + pad, y + 50), themeColor, 150, 50, skillValue, properties);
+
+	// Description
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),
+		DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, description, properties);
+	canvas->setActive(false);
 }
 
 void GameUIManager::UpdateCharacterBars(Character* _currCharacter)

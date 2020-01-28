@@ -40,7 +40,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set the character's scale
 	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	// Create the temp image file name for creating the HUD portrait
-	LPCWSTR imageFilename = L" ";
+	std::wstring imageFilename = L" ";
 
 	switch (_characterToCreate)
 	{
