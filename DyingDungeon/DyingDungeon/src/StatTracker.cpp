@@ -1049,6 +1049,24 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat, unsign
 	return (totalStat / toatalTurns) * 100.0f;
 }
 
+std::string StatTracker::GetCharacterName(unsigned int level, unsigned int turn) 
+{
+	return m_levels[level - 1].turns[turn - 1].characterName;
+}
+
+std::vector<std::string> StatTracker::GetTargetList(unsigned int level, unsigned int turn)
+{
+	std::vector<std::string> temp_name;
+	for (int i = 0; i < m_levels[level - 1].turns[turn - 1].targets.size(); i++)
+	{
+		if ((m_levels[level - 1].turns[turn - 1].targets[i].first.substr(0, 4) != "HEAL") && (m_levels[level - 1].turns[turn - 1].targets[i].first.substr(0, 6) != "DEBUFF"))
+		{
+			temp_name.push_back(m_levels[level - 1].turns[turn - 1].targets[i].first);
+		}
+	}
+	return temp_name;
+}
+
 std::string StatTracker::FormatToPercentage(float number, unsigned int decimal_places)
 {
 	unsigned int count = 1 + decimal_places;

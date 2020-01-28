@@ -147,7 +147,52 @@ public:
 	/// <param name="round">The level which the damage output amount should be returned from</param>
 	/// <returns>The amount of damage output from the specified level and round</returns>
 	float CalculateDamageDealt(unsigned int level, unsigned int round);
+	/// <summary>
+	/// Get the character name of the character whose turn it is in aspecified level and turn
+	/// </summary>
+	/// <param name="level">Level the character name is being requested by</param>
+	/// <param name="turn">Turn the character name is being requested</param>
+	/// <returns></returns>
+	std::string GetCharacterName(unsigned int level, unsigned int turn);
 
+	/// <summary>
+	/// Returns a list of targets from a specific level and turn
+	/// </summary>
+	/// <param name="level">Spesified level the target list that is being requested</param>
+	/// <param name="turn"></param>
+	/// <returns></returns>
+	std::vector<std::string> GetTargetList(unsigned int level, unsigned int turn);
+
+	//Formats a float to a string with two decimal places
+	/// <summary>
+	/// Function to format an float in to a string with a specified amount of decimal place
+	/// </summary>
+	/// <param name="number">The value to be formated</param>
+	/// <param name="decimal_places">The number of decimal places wanted in the string</param>
+	/// <returns>The float as a string with a specific amount of decimal places</returns>
+	std::string FormatToPercentage(float number, unsigned int decimal_places = 2);
+	/// <summary>
+	/// Function to format an float in to a wstring with a specified amount of decimal place
+	/// </summary>
+	/// <param name="number">The value to be formated</param>
+	/// <param name="decimal_places">The number of decimal places wanted in the wstring</param>
+	/// <returns>The float as a string with a specific amount of decimal places</returns>
+	std::wstring FormatToPercentageW(float number, unsigned int decimal_places = 2);
+	//functions to round decimal alues to a certain decimal place
+	/// <summary>
+	/// Function that rounds a float to a specified amount of decimal places
+	/// </summary>
+	/// <param name="num">The value to be rounded</param>
+	/// <param name="decimal_places">The amount of decimal places to be rounded to</param>
+	/// <returns>The rounded float value</returns>
+	float roundf(float num, unsigned int decimal_places = 0);
+	/// <summary>
+	/// Function that rounds a double to a specified amount of decmial places
+	/// </summary>
+	/// <param name="num">The value to be rounded</param>
+	/// <param name="decimal_places">The amount of decimal places to be rounded to</param>
+	/// <returns>The rounded double value</returns>
+	double round(double num, unsigned int decimal_places = 0);
 
 private:
 	StatTracker();
@@ -367,38 +412,6 @@ private:
 	/// <param name="round">The specified round from which the use percentage is being requested</param>
 	/// <returns>The percentage of the use of the specified Action in a specified character in a specified level and round</returns>
 	float CalculatePercentageStat(std::string name, Action stat, unsigned int level, unsigned int round);
-
-	//Formats a float to a string with two decimal places
-	/// <summary>
-	/// Function to format an float in to a string with a specified amount of decimal place
-	/// </summary>
-	/// <param name="number">The value to be formated</param>
-	/// <param name="decimal_places">The number of decimal places wanted in the string</param>
-	/// <returns>The float as a string with a specific amount of decimal places</returns>
-	std::string FormatToPercentage(float number, unsigned int decimal_places = 2);
-	/// <summary>
-	/// Function to format an float in to a wstring with a specified amount of decimal place
-	/// </summary>
-	/// <param name="number">The value to be formated</param>
-	/// <param name="decimal_places">The number of decimal places wanted in the wstring</param>
-	/// <returns>The float as a string with a specific amount of decimal places</returns>
-	std::wstring FormatToPercentageW(float number, unsigned int decimal_places = 2);
-
-	//functions to round decimal alues to a certain decimal place
-	/// <summary>
-	/// Function that rounds a float to a specified amount of decimal places
-	/// </summary>
-	/// <param name="num">The value to be rounded</param>
-	/// <param name="decimal_places">The amount of decimal places to be rounded to</param>
-	/// <returns>The rounded float value</returns>
-	float roundf(float num, unsigned int decimal_places = 0);
-	/// <summary>
-	/// Function that rounds a double to a specified amount of decmial places
-	/// </summary>
-	/// <param name="num">The value to be rounded</param>
-	/// <param name="decimal_places">The amount of decimal places to be rounded to</param>
-	/// <returns>The rounded double value</returns>
-	double round(double num, unsigned int decimal_places = 0);
 
 	//unsigned int CalculateRoundsInLevel(unsigned int levelNumber);
 };
