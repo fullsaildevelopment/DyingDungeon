@@ -61,7 +61,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Paladin/Paladin_Taunt.dxanim");
 			// Add hero component
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Paladin);
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
 			// Set the image filename for this character
@@ -79,7 +79,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Mage/Mage_Death.dxanim", false);
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Mage/Mage_Idle.dxanim");
 			// Set up hero component
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Mage);
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Mage);
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
 			// Set up particle effects for skills
@@ -104,7 +104,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			// Set up its animations
 
 			// Set up hero component
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Bard);
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Bard);
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
 			// Set the image filename for this character
@@ -124,7 +124,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("SpinKick", "assets/animations/Skeleton/Skeleton_SpinKick.dxanim");
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Skeleton/Skeleton_Yell.dxanim");
 			// Set up enemy component
-			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Skeleton);
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Skeleton);
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
 			// Set up particle effects for skills
@@ -144,7 +144,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Ganfaul/Ganfaul_Hit.dxanim");
 			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Attack", "assets/animations/Ganfaul/Ganfaul_Attack.dxanim"); 
 			// Set up enemy component
-			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(ENEMYID::Ganfaul);
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Ganfaul);
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
 			// Set the image filename for this character

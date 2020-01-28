@@ -14,7 +14,7 @@ public:
 	{
 		std::string profile = "";
 		std::string name = "";
-		HEROID characterIDs[3] = {HEROID::Paladin, HEROID::Paladin, HEROID::Paladin};
+		GameplayTypes::HEROID characterIDs[3] = {GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin};
 	};
 private:
 	std::vector<Loadout> loadouts;
@@ -27,7 +27,7 @@ public:
 	bool LoadStats(std::string loadFileName);
 	bool SaveGame(std::string saveProfile);
 	bool LoadGame(std::string saveProfile);
-	void AddLoadOut(std::string loadoutName, HEROID characterID_0, HEROID characterID_1, HEROID characterID_2);
+	void AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2);
 	bool SaveLoadOut();
 	bool LoadLoadOut();
 	bool LoadLoadOut(std::string loadoutName);

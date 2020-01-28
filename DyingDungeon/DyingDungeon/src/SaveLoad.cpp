@@ -178,7 +178,7 @@ bool SaveLoad::LoadGame(std::string saveProfile)
 	return false;
 }
 
-void SaveLoad::AddLoadOut(std::string loadoutName, HEROID characterID_0, HEROID characterID_1, HEROID characterID_2)
+void SaveLoad::AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2)
 {
 	Loadout newLoadout;
 	newLoadout.characterIDs[0] = characterID_0;

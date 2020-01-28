@@ -1,4 +1,5 @@
 #include "Skills.h"
+#include "GameplayTypes.h"
 #include "Character.h"
 
 /*
@@ -67,7 +68,7 @@ float Skills::GetAnimationTiming()
 }
 
 // Returns Type Id
-SKILLTYPE Skills::GetSkillTypeId()
+GameplayTypes::SKILLTYPE Skills::GetSkillTypeId()
 {
 	return mSkillTypeId;
 }

@@ -2,10 +2,10 @@
 #include "ParticleMover.h"
 #include "StatusEffect.h"
 #include "StatusEvents.h"
+#include "GameplayTypes.h"
 #include <memory>
 //forward declare charater class
 class Character;
-enum class SKILLTYPE {UNDEFINED = -1, ATTACK = 0, HEAL, BUFF, DEBUFF};
 
 class Skills
 {
@@ -19,9 +19,9 @@ public:
 		float mFiringTime = 0.0f;
 	};
 protected:
-
+	
 	// Skill type
-	SKILLTYPE mSkillTypeId;
+	GameplayTypes::SKILLTYPE mSkillTypeId;
 	// How much mana it will cost the caster
 	float mMpCost;
 	// Animation time for when effects such as hit animation or particle effects should go out
@@ -58,7 +58,7 @@ public:
 	// Gets the animation timing
 	float GetAnimationTiming();
 	// Get TypeID
-	SKILLTYPE GetSkillTypeId();
+	GameplayTypes::SKILLTYPE GetSkillTypeId();
 	// Get isAOE
 	bool IsAOE();
 	StatusEffect* GetStatusEffect();

@@ -197,6 +197,9 @@
     <ClInclude Include="src\SkillHoverComponent.h">
       <Filter>Header Files\User Interface</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameplayTypes.h">
+      <Filter>Header Files\Gameplay Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico">
@@ -260,6 +263,9 @@
     </Filter>
     <Filter Include="Source Files\Stat Tracking">
       <UniqueIdentifier>{98afeb78-fe9b-435a-af8c-9ef224416c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Gameplay Types">
+      <UniqueIdentifier>{7400cc8e-d03e-4269-a939-a811daaa4c9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@
 CLASS_DEFINITION(Character, HeroComponent)
 
 // Constructor
-HeroComponent::HeroComponent(HEROID id)
+HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 {
 	// Setting default values for member variables //
 	////////////////////////////////////////////////
@@ -47,7 +47,7 @@ HeroComponent::HeroComponent(HEROID id)
 	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (id)
 	{
-	case HEROID::Paladin:
+	case GameplayTypes::HEROID::Paladin:
 	{
 		mName = L"Paladin";
 		mBaseMaxHP = mCurrentHP = 150.0f;
@@ -68,7 +68,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
 		break;
 	}
-	case HEROID::Mage:
+	case GameplayTypes::HEROID::Mage:
 	{
 		mName = L"Mage";
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -89,7 +89,7 @@ HeroComponent::HeroComponent(HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
 		break;
 	}
-	case HEROID::Bard:
+	case GameplayTypes::HEROID::Bard:
 	{
 		mName = L"TheBestClassToEverExist";
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -165,7 +165,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	case STATE::SELECTTARGET:
 	{
 		static int tempIndex = -1;
-		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			if (tempIndex == -1)
 			{
@@ -224,7 +224,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (!animeTrigger && mAnimator->getProgress() > mCurrentSkill->GetAnimationTiming())
 		{
 			// If its ment for the enemies play the hit animation to time with the animation timing
-			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
 				{
@@ -280,7 +280,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			DepleteMana(mCurrentSkill->GetManaCost());
-			if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				if (mCurrentSkill->IsAOE())
 				{
@@ -489,7 +489,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 	{
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-		if (mCurrentSkill->GetSkillTypeId() == SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{

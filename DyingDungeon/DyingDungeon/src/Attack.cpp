@@ -3,7 +3,7 @@
 
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage)
 {
-	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -16,7 +16,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
 {
-	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -29,7 +29,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
 {
-	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -42,7 +42,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
 {
-	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -55,7 +55,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
-	mSkillTypeId = SKILLTYPE::ATTACK;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;

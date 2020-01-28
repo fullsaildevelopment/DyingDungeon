@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "AiMoves.h"
+#include "GameplayTypes.h"
 
 class EnemyComponent : public Character
 {
@@ -8,7 +9,7 @@ class EnemyComponent : public Character
 
 public:
 	EnemyComponent() = default;
-	EnemyComponent(ENEMYID _enemyID);
+	EnemyComponent(GameplayTypes::ENEMYID _enemyID);
 	~EnemyComponent();
 	//virtual void initialize();
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
@@ -28,6 +29,6 @@ private:
 	//std::function<float(Skills, Character*)> fScoreMove = nullptr;
 	int currentSkillMoveCheck = 0;
 	AIMoves mMoves;
-	SKILLTYPE mMoveOverride;
+	GameplayTypes::SKILLTYPE mMoveOverride;
 };
 
