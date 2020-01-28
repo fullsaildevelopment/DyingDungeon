@@ -20,6 +20,25 @@ private:
 	std::vector<Loadout> loadouts;
 	std::string m_saveProfile;
 	//unsigned int loadoutCount;
+private:
+	/// <summary>
+	/// Creates director(s) from a given path
+	/// </summary>
+	/// <param name="directory_path">Path of directory(s) to be created</param>
+	/// <returns>Error code determining if the directory was succesfully created</returns>
+	int create_directory(std::string& directory_path);
+	/// <summary>
+	/// Counts files in specified directory 
+	/// </summary>
+	/// <param name="path">Path to directory</param>
+	/// <returns>unsigned int count of files in specified directory</returns>
+	unsigned int dir_file_count(std::string path);
+	/// <summary>
+	/// Counts files in specified directory
+	/// </summary>
+	/// <param name="dir">Path to directory</param>
+	/// <returns>unsigned int count of files in specified directory</returns>
+	unsigned int dir_file_count(std::experimental::filesystem::v1::path dir);
 public:
 	static SaveLoad& Instance();
 	~SaveLoad();
@@ -71,20 +90,6 @@ public:
 	/// <param name="loadoutName">Name of loadout to be loaded</param>
 	/// <returns>bool of wheather the file was loaded in properly</returns>
 	bool LoadLoadOut(std::string loadoutName);
-
-	/// <summary>
-	/// Counts files in specified directory 
-	/// </summary>
-	/// <param name="path">Path to directory</param>
-	/// <returns>unsigned int count of files in specified directory</returns>
-	unsigned int dir_file_count(std::string path);
-	/// <summary>
-	/// Counts files in specified directory
-	/// </summary>
-	/// <param name="dir">Path to directory</param>
-	/// <returns>unsigned int count of files in specified directory</returns>
-	unsigned int dir_file_count(std::experimental::filesystem::v1::path dir);
-
 	/// <summary>
 	/// Setter for the profile instance
 	/// </summary>
