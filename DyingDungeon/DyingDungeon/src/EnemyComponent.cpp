@@ -4,36 +4,193 @@
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
-EnemyComponent::EnemyComponent(ENEMYID _enemyID)
+EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 {
-	SetHero(false);
-	mMoveOverride = SKILLTYPE::UNDEFINED;
+	// Setting default values for member variables //
+	////////////////////////////////////////////////
+	mCurrentState = STATE::NONE;
+	mHero = false;
+	mEXP = 0.0f;
+	mCurrentLevel = 0;
+	mProvoked = nullptr;
+	mBloodParticleEffect = nullptr;
+	mImpactIndicator = nullptr;
+	mMechPtr = nullptr;
+	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 	mCurrentState = STATE::NONE;
 	mMoves = AIMoves(static_cast<int>(_enemyID), this);
+	////////////////////////////////////////////////
+
+	// Make a temp variable to contain animation data
+	AnimationImportData tempAnimationData;
+
+	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (_enemyID)
 	{
-	case ENEMYID::Skeleton:
+	case GameplayTypes::ENEMYID::Skeleton:
 	{
+		// Set the character Model path
+		mModel = "assets/models/Skeleton.dxm";
+
+		// Set the character name
 		mName = L"Skeleton";
+
+		// Set the character subname
+		mSubName = L"Skelly Boi";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/SkeletonPortrait.png";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
-		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 125.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.0f;
+		mBaseDefense = mDefense = 0.15f;
 		mBaseSpeed = mSpeed = 20.0f;
-		mMoveOverride = SKILLTYPE::ATTACK;
-		mMechPtr = nullptr;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Yell.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_SpinKick.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_FwdKick.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"One Skelly boi, who wants to rattle your bones";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
 		break;
 	}
-	case ENEMYID::Ganfaul:
+	case GameplayTypes::ENEMYID::Ganfaul:
 	{
+		// Set the character Model path
+		mModel = "assets/models/Ganfaul.dxm";
+
+		// Set the character name
 		mName = L"Ganfaul";
+
+		// Set the character subname
+		mSubName = L"Killer of chickens";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/GanfaulPortrait.jpg";
+
+		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 300.0f;
+
+		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 300.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
 		mAttack = 0.0f;
 		mBaseDefense = mDefense = 0.25f;
 		mBaseSpeed = mSpeed = 45.0f;
-		mMoveOverride = SKILLTYPE::UNDEFINED;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+		
+		// Set mechanic pointer
 		mMechPtr = &EnemyComponent::GanfaulPhaseMechanic;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"The Big Bad Evil Guy who wants to kill your chickens";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
 	default:
@@ -71,10 +228,10 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	}
 	case STATE::SELECTMOVE:
 	{
-		if (mMoves.FindMove(int(mMoveOverride), playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
+		if (mMoves.FindMove(mMoveOverride, playerTeam, enemyTeam) && mMoves.GetMove()->target != nullptr)
 		{
 			mCurrentState = STATE::INPROGRESS;
-			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 				BeginAttack(playerTeam);
 			else
 				BeginAttack(enemyTeam);
@@ -100,7 +257,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 			if (!trigger && mAnimator->getProgress() > mMoves.GetMove()->skill->GetAnimationTiming())
 			{
 				// If its ment for the enemies play the hit animation to time with the animation timing
-				if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+				if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 				{
 					if (mMoves.GetMove()->skill->IsAOE())
 					{
@@ -154,7 +311,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		if (mAnimator->getProgress() > 0.9f)
 		{
 			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
-			if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
@@ -232,7 +389,7 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 	{
 		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-		if (mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == SKILLTYPE::DEBUFF)
+		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{

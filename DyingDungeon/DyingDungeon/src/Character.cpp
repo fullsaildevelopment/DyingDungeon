@@ -26,15 +26,13 @@ Character::Character()
 	mHudIndex = 0;
 	mProvoked = nullptr;
 	mAnimator = nullptr;
-	pDmgText = nullptr;
-	pHealthBar = nullptr;
-	pManaBar = nullptr;
-	pTurnNumber = nullptr;
-	mDisplaying = false;
-	mBigHpText = nullptr;
 	mBloodParticleEffect = nullptr;
-	mHpText = nullptr;
-	mMpText = nullptr;
+	mImpactIndicator = nullptr;
+	mName = L"";
+	mSubName = L"";
+	mPortrait = L"";
+	mDescription = L"";
+	mModel = "";
 	////////////////////////////////////////////////
 }
 
@@ -68,23 +66,6 @@ void Character::Die()
 {
 	return;
 }
-
-// Some dumbass thing made by red, used by dumbass bryce
-//std::wstring Character::FormatToPercentageW(float number)
-//{
-//	if (number >= 100.0f)
-//	{
-//		return std::to_wstring(number).substr(0, 6);
-//	}
-//	else if (number >= 10.0f)
-//	{
-//		return std::to_wstring(number).substr(0, 5);
-//	}
-//	else
-//	{
-//		return std::to_wstring(number).substr(0, 4);
-//	}
-//}
 
 // Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
@@ -121,11 +102,8 @@ void Character::TakeDamage(float dmg)
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	pDmgText->setOpacity(1.0f);*/
 
-	// BattleLogText shit that dumbass Bryce uses
-	std::cout << dmg << " damage!" << std::endl;
-	std::wstring dmgText = L"";
-	dmgText.append(L" damage!");
-	GameUIManager::getInstance().SetBattleLogText(dmgText, true);
+	// TODO: Update Combat Log Text Here
+
 
 	// If they run out of Health kill the character
 	if (mCurrentHP <= 0.0f)
@@ -138,13 +116,12 @@ void Character::ReceiveHealing(float healing)
 	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
 	
-	// Pop up battle text that appears over the character whenever something happens to them
-	/*pDmgText->setText(std::to_wstring(healing).substr(0, 5));
-	pDmgText->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);*/
-	
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
+
+	// TODO: Update Combat Log Text Here
+
+
 }
 
 // Called whenever this character needs to reduce its current mana
@@ -585,36 +562,6 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
-//DELETE
-// Sets the fill of the health bar for the character
-void Character::UpdateHealthBar()
-{
-	mHpText->setText(std::to_wstring((int)mCurrentHP));
-	if (!mHero)
-		mBigHpText->setText(std::to_wstring((int)mCurrentHP));
-	float fill = GetHP() / GetMaxHP();
-	if (fill < 0.0f)
-		fill = 0.0f;
-	else if (fill > 1.0f)
-		fill = 1.0f;
-
-	//pHealthBar->setFill(fill);
-}
-
-//DELETE
-// Sets the fill of the mana bar for the character
-void Character::UpdateManaBar()
-{
-	mMpText->setText(std::to_wstring((int)mCurrentMana));
-	float fill = GetMana() / GetMaxMana();
-	if (fill < 0.0f)
-		fill = 0.0f;
-	else if (fill > 1.0f)
-		fill = 1.0f;
-
-	//pManaBar->setFill(fill);
-}
-
 // Sets the Particle system pointer to a "Hit effect"
 void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
 {
@@ -634,7 +581,7 @@ std::wstring Character::GetPortraitPath()
 }
 
 // Returns the vector of strings containing the animation paths
-std::vector<std::string> Character::GetAnimationPaths()
+std::vector<Character::AnimationImportData> Character::GetAnimationPaths()
 {
 	return mAnimations;
 }
@@ -657,16 +604,15 @@ std::wstring Character::GetDescription()
 	return mDescription;
 }
 
+std::string Character::GetModel()
+{
+	return mModel;
+}
+
 // Sets the description of the character
 void Character::SetDescription(std::wstring newDescription)
 {
 	mDescription = newDescription;
-}
-
-// Returns the Turn order number for this character
-Odyssey::Text2D* Character::GetTurnOrderNumber()
-{
-	return pTurnNumber;
 }
 
 // Set the characters Hud index

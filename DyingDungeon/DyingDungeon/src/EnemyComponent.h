@@ -1,33 +1,47 @@
 #pragma once
 #include "Character.h"
 #include "AiMoves.h"
+#include "GameplayTypes.h"
 
 class EnemyComponent : public Character
 {
 	CLASS_DECLARATION(EnemyComponent)
 
 public:
+	// Constructors
 	EnemyComponent() = default;
-	EnemyComponent(ENEMYID _enemyID);
+
+	// Pass in Enemy identifcation to get a specific Enemy class	
+	EnemyComponent(GameplayTypes::ENEMYID _enemyID);
+
+	// Destructors
 	~EnemyComponent();
-	//virtual void initialize();
+
+	// Function that allows the AI to take thier turn, Character Controler
 	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
-	//Death Functions
+
+	// Function that gets called to set the character state to dead, along with all other necessary variables
 	virtual void Die();
+
+	// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
 	void BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets);
 
-	// Skills functions
+	// Returns the characters skill list
 	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
 
-	// Extra Mechanics for enemys 
+	// Function pointer that will point to mechanics for enemys 
 	void (EnemyComponent::*mMechPtr)() = nullptr;
+
+	// Ganfouls game mechanic function
 	void GanfaulPhaseMechanic();
-	/////Get and Set Functions/////
-	/////End of Get and Set Functions/////
 private:
-	//std::function<float(Skills, Character*)> fScoreMove = nullptr;
+	// Idk Bryce what does this do? (Fill out this line for comments)
 	int currentSkillMoveCheck = 0;
+
+	// Contains the move thae AI will make
 	AIMoves mMoves;
-	SKILLTYPE mMoveOverride;
+
+	// Used to detrim what kind of move the AI should make
+	GameplayTypes::SKILLTYPE mMoveOverride;
 };
 

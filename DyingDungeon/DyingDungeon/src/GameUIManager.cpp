@@ -45,6 +45,41 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 
+	position.y += 50.0f;
+	position.x += 2.0f;
+
+	Odyssey::Sprite2D* iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
+
+	position.x -= 70.0f;
+	position.y -= 35.0f;
+
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
+
+	position.x -= 70.0f;
+	position.y -= 35.0f;
+
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
 
 	// Add the entity to the game scene
 	_sceneToAddTo->addEntity(mBattleLog);
@@ -1102,4 +1137,41 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 	canvas->setActive(false);
 
 	return canvas;
+}
+
+void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
+{
+	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
+	UINT spriteSize = 25;
+	
+	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
+	{
+		if (i - 1 >= 0)
+		{
+			mCombatCasterIcons[i]->setSprite(mCombatCasterIcons[i -1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatSkillIcons[i]->setSprite(mCombatSkillIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatTargetIcons[i]->setSprite(mCombatTargetIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
+		}
+	}
+
+	if (caster->GetPortraitPath().size() > 0)
+		mCombatCasterIcons[0]->setSprite(caster->GetPortraitPath(), spriteSize, spriteSize);
+	else
+		mCombatCasterIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+	
+	if (skill->GetSkillIconPath().size() > 0)
+		mCombatSkillIcons[0]->setSprite(skill->GetSkillIconPath(), spriteSize, spriteSize);
+	else
+		mCombatSkillIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+	
+	if (target->GetPortraitPath().size() > 0)
+		mCombatTargetIcons[0]->setSprite(target->GetPortraitPath(), spriteSize, spriteSize);
+	else
+		mCombatTargetIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+}
+
+void GameUIManager::UpdateCombatLogText(float damage)
+{
+
 }

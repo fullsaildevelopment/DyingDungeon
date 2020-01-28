@@ -4,9 +4,9 @@
 Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
 {
 	if (isBuff)
-		mSkillTypeId = SKILLTYPE::BUFF;
+		mSkillTypeId = GameplayTypes::SKILLTYPE::BUFF;
 	else
-		mSkillTypeId = SKILLTYPE::DEBUFF;
+		mSkillTypeId = GameplayTypes::SKILLTYPE::DEBUFF;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -17,9 +17,9 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
 {
 	if (isBuff)
-		mSkillTypeId = SKILLTYPE::BUFF;
+		mSkillTypeId = GameplayTypes::SKILLTYPE::BUFF;
 	else
-		mSkillTypeId = SKILLTYPE::DEBUFF;
+		mSkillTypeId = GameplayTypes::SKILLTYPE::DEBUFF;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;

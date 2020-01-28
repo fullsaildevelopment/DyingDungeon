@@ -42,6 +42,14 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
+	std::wstring Sprite2D::getSpriteFilename()
+	{
+		mLock.lock(LockState::Read);
+		std::wstring temp = mFilename;
+		mLock.unlock(LockState::Read);
+		return temp;
+	}
+
 	void Sprite2D::createResource()
 	{
 		mLock.lock(LockState::Write);

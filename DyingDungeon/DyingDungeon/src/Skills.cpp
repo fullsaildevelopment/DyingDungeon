@@ -1,4 +1,5 @@
 #include "Skills.h"
+#include "GameplayTypes.h"
 #include "Character.h"
 
 /*
@@ -37,13 +38,13 @@ std::wstring Skills::GetSkillDescription()
 }
 
 // Return a wstring to the icon name
-std::wstring Skills::GetSkillIconName()
+std::wstring Skills::GetSkillIconPath()
 {
     return mSkillIconName;
 }
 
 // Set Icon name to passed in name
-void Skills::SetSkillIconName(std::wstring icon)
+void Skills::SetSkillIconPath(std::wstring icon)
 {
     mSkillIconName = icon;
 }
@@ -67,7 +68,7 @@ float Skills::GetAnimationTiming()
 }
 
 // Returns Type Id
-SKILLTYPE Skills::GetSkillTypeId()
+GameplayTypes::SKILLTYPE Skills::GetSkillTypeId()
 {
 	return mSkillTypeId;
 }
