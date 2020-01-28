@@ -80,7 +80,7 @@ void StatTracker::SetCanvas(Odyssey::UICanvas* canvas)
 
 void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
 {
-	std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
+	//std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
 	/*for (unsigned int i = 1; i <= temp_nameList.size(); i++) {
 		std::wstring rewardsText;
 		rewardsText.append(   L" - Attack: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[i - 1], Action::Attack, raEvent->level)) + L"%"
@@ -100,22 +100,22 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 			std::wstring rewardsText;
 			if (txt < 6)
 			{
-				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Attack, raEvent->level),2) + L"%\n" +
-								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(temp_nameList[j], raEvent->level),2) + L"\n" + 
-								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(temp_nameList[j], raEvent->level),2) + L"%");
+				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Attack, m_levels.size()),2) + L"%\n" +
+								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
+								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characterNames[j], m_levels.size()),2) + L"%");
 			}
 			else if (txt < 9)
 			{
-				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Defend, raEvent->level),2) + L"%\n" + 
-								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(temp_nameList[j], raEvent->level),2) + L"\n" + 
-								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(temp_nameList[j], raEvent->level),2) + L"%\n" + 
-								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(temp_nameList[j], raEvent->level),2));
+				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Defend, m_levels.size()),2) + L"%\n" +
+								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
+								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characterNames[j], m_levels.size()),2) + L"%\n" +
+								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2));
 			}
 			else if (txt < 12)
 			{
-				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(temp_nameList[j], Action::Aid, raEvent->level),2) + L"%\n" + 
-								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(temp_nameList[j], raEvent->level),2) + L"\n" + 
-								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(temp_nameList[j], raEvent->level),2));
+				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Aid, m_levels.size()),2) + L"%\n" +
+								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
+								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characterNames[j], m_levels.size()),2));
 			}
 			m_p_canvas->getElements<Odyssey::Text2D>()[txt]->setText(rewardsText);
 			txt++;
@@ -196,26 +196,25 @@ void StatTracker::LogDebuffingEvent(CharacterDebuffsEvent* cdEvent)
 
 void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 {
-	if (lsEvent->levelNumber != m_levels.size()) {
-		if (m_levels.size() > 0) {
-			m_levels[m_currentLevel - 1].rounds = m_levels.back().turns.back().round;
-		}
-		StatTracker::Level newLevel;
-		newLevel.levelNumber = lsEvent->levelNumber;
-		m_levels.push_back(newLevel);
-		m_currentLevel = newLevel.levelNumber;
-	}
+	StatTracker::Level newLevel;
+	newLevel.levelNumber = lsEvent->levelNumber;
+	newLevel.characterNames[0] = lsEvent->playerCharacters[0];
+	newLevel.characterNames[1] = lsEvent->playerCharacters[1];
+	newLevel.characterNames[2] = lsEvent->playerCharacters[2];
+	m_levels.push_back(newLevel);
+	m_currentLevel = newLevel.levelNumber;
+	
 }
 
 void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 {
 	StatTracker::Turn newTurn;
-	m_levels[m_currentLevel - 1].turnCount = tsEvent->turn;
+	m_levels.back().turnCount = tsEvent->turn;
 	newTurn.characterName = tsEvent->characterName;
 	newTurn.round = tsEvent->round;
 	newTurn.isPlayer = tsEvent->isPlayer;
-	m_levels[m_currentLevel - 1].turns.push_back(newTurn);
-	m_levels[m_currentLevel - 1].turnCount = static_cast<uint32_t>(m_levels[m_currentLevel - 1].turns.size());
+	m_levels.back().turns.push_back(newTurn);
+	m_levels.back().turnCount = static_cast<uint32_t>(m_levels.back().turns.size());
 }
 
 unsigned int StatTracker::GetStatCount(Action stat)
