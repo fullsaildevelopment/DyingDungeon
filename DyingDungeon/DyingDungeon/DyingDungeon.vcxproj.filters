@@ -92,6 +92,9 @@
     <ClCompile Include="src\SkillHoverComponent.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
+    <ClCompile Include="src\TeamManager.cpp">
+      <Filter>Source Files\Game Management</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DyingDungeon.h">
@@ -196,6 +199,9 @@
     <ClInclude Include="src\ParticleMover.h" />
     <ClInclude Include="src\SkillHoverComponent.h">
       <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TeamManager.h">
+      <Filter>Header Files\Game Management</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

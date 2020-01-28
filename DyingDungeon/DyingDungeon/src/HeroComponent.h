@@ -14,7 +14,7 @@ public:
 	HeroComponent() = default;
 
 	// Pass in Hero identifcation to get a specific Hero class	
-	HeroComponent(HEROID id);
+	HeroComponent(GameplayTypes::HEROID id);
 
 	// Destructor
 	~HeroComponent();

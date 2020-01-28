@@ -5,6 +5,8 @@
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
 
+
+
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -45,6 +47,41 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 
+	position.y += 50.0f;
+	position.x += 2.0f;
+
+	Odyssey::Sprite2D* iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
+
+	position.x -= 70.0f;
+	position.y -= 35.0f;
+
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
+
+	position.x -= 70.0f;
+	position.y -= 35.0f;
+
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatCasterIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatSkillIcons.push_back(iconPointer);
+	position.x += 35.0f;
+	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	mCombatTargetIcons.push_back(iconPointer);
 
 	// Add the entity to the game scene
 	_sceneToAddTo->addEntity(mBattleLog);
@@ -396,7 +433,7 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	Odyssey::TextProperties properties;
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 60.0f;
+	properties.fontSize = 42.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Constantia";
@@ -404,44 +441,36 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	UINT graphBackgroundWidth = 750;
 	UINT graphBackgroundHeight = 450;
 	graphPosition.x = position.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
-	graphPosition.y = position.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, color, graphBackgroundWidth, graphBackgroundHeight, L"NO STATS", properties);
-	statsMenuCanvas->getElement<Odyssey::Text2D>()->setVisible(false);
+	graphPosition.y = position.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f) + 30.0f;
 
-	UINT graphWidth = graphBackgroundWidth + 20;
-	UINT graphHeight = graphBackgroundHeight + 20;
+	//Menu Set-up
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight);
+	position.x += 3;
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth - 6, graphBackgroundHeight, L"No Turn Data", properties);
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	position.x -= 3;
+	position.y -= 50.0f;
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12));
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12), L"No Round Data", properties);
+	position.y -= 50.0f;
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12));
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12), L"No Level Data", properties);
+	
 
-	//UINT barWidth = (graphWidth - 80) / 7;
-	//float max_damage = 200.0f;
-	//position.x += 50.0f;
+	//Button Set-up
+	position.y = static_cast<float>(graphBackgroundHeight) - 30.0f;
 
-	//for (int i = 0; i < 7; i++)
-	//{
-	//	UINT barHeight = (graphHeight - 80) * (static_cast<float>(rand() % (200 - 75 + 1) + 75) / max_damage);
-	//	position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
-	//	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
-	//	position.x += barWidth;
-	//	properties.fontSize = 15.0f;
-	//	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(i + 1), properties);
-	//}
-	//float intervals = max_damage / 10.0f;
-	//for (int j = 0; j < 10; j++)
-	//{
-	//	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(graphPosition.x, graphPosition.y + ((graphBackgroundHeight - 60.0f) * 0.1f * j)), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 50, 50, std::to_wstring(max_damage - (j*intervals)).substr(0, 4), properties);
-	//}
-
-	position.y = graphPosition.y - (graphHeight/2.0f) + 40.0f;
-	position.x = graphPosition.x;
-
-	properties.fontSize = 60.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Damage", properties);
-
-	position.y = graphPosition.y + (graphHeight / 2.0f) + 20.0f;
 	properties.fontSize = 30.0f;
 
 	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
+	mStatsBackButtonText->setVisible(true);
 	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
+	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f);
+	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) + 60.0f;
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
+	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
+	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
 
 	_sceneToAddTo->addEntity(mStatsMenu);
 	
@@ -449,11 +478,24 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 }
 
-void GameUIManager::ToggleStatsMenu()
+void GameUIManager::ShowStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
-	UpdateGraph();
+	UpdateStatsMenu();
+	mStatMenuCurrentLevel = 1;
+	mStatMenuCurrentTurn = 1;
+	//mStatMenuCurrentRound = 1;
+}
+
+void GameUIManager::StatsMenuPrev()
+{
+
+}
+
+void GameUIManager::StatsMeuNext()
+{
+
 }
 
 void GameUIManager::HideStatsMenu()
@@ -462,89 +504,86 @@ void GameUIManager::HideStatsMenu()
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 }
 
-void GameUIManager::UpdateGraph()
+void GameUIManager::UpdateStatsMenu()
 {
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
-	DirectX::XMFLOAT2 graphPosition = { 0.0f, 0.0f };
-	DirectX::XMFLOAT4 color = { 31.0f, 255.0f, 244.0f, 1.0f };
-
-	Odyssey::TextProperties properties;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Constantia";
-
-	UINT graphBackgroundWidth = 750;
-	UINT graphBackgroundHeight = 450;
-	graphPosition.x = position.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
-	graphPosition.y = position.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
-
-	/*for (int i = 1; i < mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Rectangle2D>().size(); i++)
-	{
-		mStatsMenu->getComponent<Odyssey::UICanvas>()->removeElement(mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Rectangle2D>()[i]);
-	}
-	for (int j = 1; j < mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>().size(); j++)
-	{
-		mStatsMenu->getComponent<Odyssey::UICanvas>()->removeElement(mStatsMenu->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>()[j]);
-	}*/
-
-	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
-	UINT graphWidth = graphBackgroundWidth + 20;
-	UINT graphHeight = graphBackgroundHeight + 20;
-	
 	if (StatTracker::Instance().GetLevelSize() > 0) {
-
-		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
-
-		graphPosition.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
-		graphPosition.y = (screenHeight / 2.0f) - (static_cast<float>(graphBackgroundHeight) / 2.0f);
-
-		float max_damage = 0.0f;
-
-		for (int k = 0; k < StatTracker::Instance().GetRoundCount(1); k++)
+		if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel).turns.size() > mStatMenuCurrentTurn) 
 		{
-			float curr_dmg = StatTracker::Instance().CalculateDamageDealt(1, (k + 1));
-			if (max_damage < curr_dmg)
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentLevel++;
+			if (mStatMenuCurrentLevel > StatTracker::Instance().GetLevelSize())
 			{
-				max_damage = curr_dmg;
+				mStatMenuCurrentLevel = 1;
 			}
 		}
+		
+		Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
 
-		UINT barWidth = (graphWidth - 80) / StatTracker::Instance().GetRoundCount(1);
-		position.x += 50.0f;
+		std::string characterName = StatTracker::Instance().GetCharacterName(mStatMenuCurrentLevel, mStatMenuCurrentTurn);
+		std::string actionName = StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName;
 
-		for (int l = 0; l < StatTracker::Instance().GetRoundCount(1); l++)
+		std::wstring _turnText;
+
+		_turnText.append(L"Turn " + std::to_wstring(mStatMenuCurrentTurn) + L": " + std::wstring(characterName.begin(), characterName.end()) + L"\n\n" +
+						 L"Action: " + std::wstring(actionName.begin(), actionName.end()) + L"\n\n" +
+						 L"Targets: ");
+		std::vector<std::string> _targetNames = StatTracker::Instance().GetTargetList(mStatMenuCurrentLevel, mStatMenuCurrentTurn);
+		for (int i = 0; i < _targetNames.size(); i++)
 		{
-			UINT barHeight = (graphHeight - 80) * (StatTracker::Instance().CalculateDamageDealt(1, (l + 1)) / max_damage);
-			position.y = graphPosition.y + (graphHeight - barHeight) - 60.0f;
-			statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth - 5, barHeight)->setVisible(true);
-			position.x += barWidth;
-			properties.fontSize = 15.0f;
-			statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - barWidth, position.y + barHeight), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 100, 25, std::to_wstring(l + 1), properties);
+			if(i > 0)
+			{
+				_turnText.append(L"                 ");
+			}
+			_turnText.append(std::wstring(_targetNames[i].begin(), _targetNames[i].end()) + L"\n");
 		}
-	}
-	else
-	{
-		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(true);
-	}
-	/*if (StatTracker::Instance().GetLevelSize() > 0) {
-		UINT barWidth = graphWidth / StatTracker::Instance().GetRoundCount(1);
-		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(false);
-		position.x += 20.0f;
-		position.y += 20.0f;
-		for (int i = 0; i < StatTracker::Instance().GetRoundCount(1); i++)
-		{
-			statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, graphHeight);
-		}
-	}
-	else
-	{
-		statsMenuCanvas->getElement<Odyssey::Text2D>()[0].setVisible(true);
-	}*/
-	
 
+		_turnText.append(L"\n");
+
+		switch (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionType)
+		{
+		case StatTracker::Action::Attack:
+		{
+			_turnText.append(L"\tDamage: " + StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value) /*+ "\n\tAttack Modifier: " + FormatToPercentage(m_levels[i].turns[j].attackModifier)*/ + L"\n\n");
+			for (int j = 0; j < _targetNames.size(); j++)
+			{
+				_turnText.append(L"\tTarget " + std::to_wstring(j + 1) + L": " + std::wstring(_targetNames[j].begin(), _targetNames[j].end()) + L"\n\tDamage Mitigated: " + StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().roundf(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].second, 2)) + L"\n\t    Danage Taken: " + StatTracker::Instance().FormatToPercentageW((StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value - (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value * StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].second))) + L"\n\n");
+			}
+		}
+			break;
+		case StatTracker::Action::Defend:
+		{
+			if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect == EFFECTTYPE::Shield)
+			{
+				_turnText.append(L"\tShield: ");
+			}
+			else
+			{
+				_turnText.append(L"\tHeal: ");
+			}
+			_turnText.append(StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value));
+		}
+			break;
+		case StatTracker::Action::Aid:
+		{
+			if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect == EFFECTTYPE::Shield)
+			{
+				_turnText.append(L"\tShield: ");
+			}
+			else
+			{
+				_turnText.append(L"\tHeal: ");
+			}
+			_turnText.append(StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value));
+		}
+			break;
+		default:
+			break;
+		}
+		statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setFontSize(15.0f);
+		statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setText(_turnText);
+		statsMenuCanvas->getElements<Odyssey::Text2D>()[2]->setText(L"Level " + std::to_wstring(mStatMenuCurrentLevel));
+		statsMenuCanvas->getElements<Odyssey::Text2D>()[1]->setText(L"Turn " + std::to_wstring(mStatMenuCurrentTurn));
+	}
 }
 
 // This is where I will design and add all elements into the options menu canvas
@@ -653,7 +692,7 @@ void GameUIManager::OptionsBackButton()
 }
 
 // Create the character's UI Portrait
-Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
+Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
 {
 	// Create CharacterHUD object
 	std::shared_ptr<CharacterHUD> newHUD = std::make_shared<CharacterHUD>();
@@ -706,7 +745,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		// Add the name to the canvas
 		properties.bold = true;
 
-		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, L"Change in GUIManager", properties);
+		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
 
 		properties.bold = false;
 
@@ -848,10 +887,131 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
 
+	// Only add the skill icons if it is a hero
+	if (owner->IsHero())
+	{
+		// Create the skill icons for the character's hud
+		DirectX::XMFLOAT2 pHudPosition = { anchorX, anchorY };
+		SetupSkillIcons(_gameObjectToAddTo, owner, pHudPosition);
+	}
 	// Add the canvas to the mHudCharacterList
 	mCharacterHudList.push_back(newHUD);
 	// Return the canvas we just created 
 	return newHUD->pCanvas;
+}
+
+
+void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition)
+{
+	Odyssey::UICanvas* canvas1 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas2 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas3 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* canvas4 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	SkillHoverComponent* hover = _objToAddTo->addComponent<SkillHoverComponent>();
+
+	// Set the correct offset position for the skills
+	float xAnchor = _hudPosition.x + 134.0f;
+	float yAnchor = _hudPosition.y + 24.0f;
+
+	// Get the list of skills from the character
+	std::vector<std::shared_ptr<Skills>> characterSkills = _newCharacter->GetSkills();
+
+	// 1st Skill
+	// Skill Icon
+	std::shared_ptr<Skills> currSkill = characterSkills[0];
+	Odyssey::Sprite2D* skill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
+	// Skill Hover Popup
+	// TODO :: ADD GETTER AND SETTER FOR TYPE OF CHARACTER
+	SetupSkillHover(canvas1, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	// Basic Attack trigger
+	hover->registerSprite(skill1, canvas1);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 2nd Skill
+	// Skill Icon
+	currSkill = characterSkills[1];
+	Odyssey::Sprite2D* skill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas2, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	// Wind Slash trigger
+	hover->registerSprite(skill2, canvas2);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 3rd Skill
+	// Skill Icon
+	currSkill = characterSkills[2];
+	Odyssey::Sprite2D* skill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas3, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	// Firestorm trigger
+	hover->registerSprite(skill3, canvas3);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// 4th Skill
+	// Skill Icon
+	currSkill = characterSkills[3];
+	Odyssey::Sprite2D* skill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
+	// Skill Hover Popup
+	SetupSkillHover(canvas4, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	// Lightning Bolt trigger
+	hover->registerSprite(skill4, canvas4);
+}
+
+void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description)
+{
+	DirectX::XMFLOAT4 themeColor;
+	// Assign theme color for text
+	// TODO :: CHANGE TO USE TYPE ID OF CHARACTER
+	if (character == L"assets/images/PaladinPortrait.jpg")
+		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	else if (character == L"assets/images/MagePortrait.jpg")
+		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+
+	UINT windowWidth = screenWidth;
+	UINT windowHeight = screenHeight;
+	float x = 950;
+	float y = 425;
+	UINT width = 300;
+	UINT height = 150;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 24.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 80), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+
+	// Title Text and Icons
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
+
+	// Description
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),
+		DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, description, properties);
+	canvas->setActive(false);
 }
 
 void GameUIManager::UpdateCharacterBars(Character* _currCharacter)
@@ -951,4 +1111,41 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 	canvas->setActive(false);
 
 	return canvas;
+}
+
+void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
+{
+	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
+	UINT spriteSize = 25;
+	
+	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
+	{
+		if (i - 1 >= 0)
+		{
+			mCombatCasterIcons[i]->setSprite(mCombatCasterIcons[i -1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatSkillIcons[i]->setSprite(mCombatSkillIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
+			mCombatTargetIcons[i]->setSprite(mCombatTargetIcons[i - 1]->getSpriteFilename(), spriteSize, spriteSize);
+		}
+	}
+
+	if (caster->GetPortraitPath().size() > 0)
+		mCombatCasterIcons[0]->setSprite(caster->GetPortraitPath(), spriteSize, spriteSize);
+	else
+		mCombatCasterIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+	
+	if (skill->GetSkillIconPath().size() > 0)
+		mCombatSkillIcons[0]->setSprite(skill->GetSkillIconPath(), spriteSize, spriteSize);
+	else
+		mCombatSkillIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+	
+	if (target->GetPortraitPath().size() > 0)
+		mCombatTargetIcons[0]->setSprite(target->GetPortraitPath(), spriteSize, spriteSize);
+	else
+		mCombatTargetIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+}
+
+void GameUIManager::UpdateCombatLogText(float damage)
+{
+
 }

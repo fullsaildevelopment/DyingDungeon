@@ -58,6 +58,8 @@ private: // Varibales
 
 private: // Functions
 	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
+
+	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter();
 	Odyssey::ParticleSystem* setUpFireStorm();
 	Odyssey::ParticleSystem* setupBlood();

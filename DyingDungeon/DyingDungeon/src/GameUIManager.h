@@ -69,12 +69,16 @@ public: // Functions
 	// Creation of the stats menu
 	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
-	void ToggleStatsMenu();
+	void ShowStatsMenu();
+
+	void StatsMenuPrev();
+
+	void StatsMeuNext();
 
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
-	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, LPCWSTR _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
+	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
 	// Update health bar
 	void UpdateCharacterBars(Character* _currCharacter);
@@ -82,7 +86,11 @@ public: // Functions
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
 	//Updates
-	void UpdateGraph();
+	void UpdateStatsMenu();
+
+	// Update Combat Log
+	void UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill);
+	void UpdateCombatLogText(float dmg);
 
 	//Getters
 	// Get battle log text
@@ -159,7 +167,9 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mBattleLog;
 	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	Odyssey::Text2D* mBattleLogText;
-
+	std::vector<Odyssey::Sprite2D*> mCombatCasterIcons;
+	std::vector<Odyssey::Sprite2D*> mCombatSkillIcons;
+	std::vector<Odyssey::Sprite2D*> mCombatTargetIcons;
 
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
@@ -211,6 +221,11 @@ private: // Varibales
 	Odyssey::Sprite2D* mMinusImage;
 	Odyssey::Text2D* mBackButtonText;
 
+	//Stats Menu Items
+	unsigned int mStatMenuCurrentLevel = 1;
+	//unsigned int mStatMenuCurrentRound = 1;
+	unsigned int mStatMenuCurrentTurn = 1;
+
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
 	DirectX::XMFLOAT4 mHealthBarColor = { 0.0f, 180.0f, 0.0f, 1.0f };
@@ -239,6 +254,10 @@ private: // Functions
 	void OptionsBackButton();
 	void DecreaseVolume();
 	void IncreaseVolume();
+
+	// Skill Icon Creation Fucntions
+	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition);
+	void SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
