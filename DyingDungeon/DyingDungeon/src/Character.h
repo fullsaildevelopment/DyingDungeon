@@ -22,6 +22,12 @@ class Character : public Odyssey::Component
 
 public:
 	Character();
+	struct AnimationImportData
+	{
+		std::string mAnimationNickName = "NULLNAME";
+		std::string mAnimationPath = "NULLPATH";
+		bool mIsLooping = true;
+	};
 public:
 	//Virtual functions from Component base class
 	virtual void initialize();
@@ -153,8 +159,8 @@ public:
 	// Returns the character portrait file path
 	std::wstring GetPortraitPath();
 
-	// Returns the vector of strings containing the animation paths
-	std::vector<std::string> GetAnimationPaths();
+	// Returns the vector of animation import data containing the animation paths, names, and bools
+	std::vector<AnimationImportData> GetAnimationPaths();
 
 	// Returns the current level of the character
 	unsigned int GetLevel();
@@ -164,6 +170,9 @@ public:
 
 	// Returns the description of the character
 	std::wstring GetDescription();
+
+	// Returns the models file path name
+	std::string GetModel();
 
 	// Sets the description of the character
 	void SetDescription(std::wstring newDescription);
@@ -232,8 +241,8 @@ protected:
 	// Character Description
 	std::wstring mDescription;
 
-	// Vector of animation names used for character
-	std::vector<std::string> mAnimations;
+	// Vector of animation import data used for character
+	std::vector<AnimationImportData> mAnimations;
 	
 	// Vector of shared pointers that point to the skills the character has
 	std::vector<std::shared_ptr<Skills>> mSkillList;

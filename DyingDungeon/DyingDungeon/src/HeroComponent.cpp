@@ -31,21 +31,90 @@ HeroComponent::HeroComponent(HEROID id)
 	mCurrentTarget = nullptr;
 	mProvoked = nullptr;
 	mBloodParticleEffect = nullptr;
+	mImpactIndicator = nullptr;
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
 	std::shared_ptr<StatusEffect> temp;
+
+	// Make a temp variable to contain animation data
+	AnimationImportData tempAnimationData;
 	
 	// Switch statment that builds the hero depending on the hero id that gets passed in the constructor
 	switch (id)
 	{
 	case HEROID::Paladin:
 	{
+		// Set the character Model path
+		mModel = "assets/models/Paladin.dxm";
+
 		// Set the character name
 		mName = L"Paladin";
-
+		
 		// Set the character subname
 		mSubName = L"Tank";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/PaladinPortrait.jpg";
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+		
+		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Taunt.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_BasicAttack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_BigAttack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Heal.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 4
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/Paladin/Paladin_Defense.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"The paladin is a guardian of divine power and a protector of the righteous. Utilize the paladin's skills to protect your team and bring evil to bear.";
+		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 150.0f;
@@ -64,26 +133,32 @@ HeroComponent::HeroComponent(HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "BasicAttack", 0.47f, -5.0f, 15.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.47f, -5.0f, 15.0f, temp));
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "BigAttack", 0.50f, 15.0f, 200.0f, 25.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_2", 0.50f, 15.0f, 200.0f, 25.0f));
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Heal", 0.89f, 20.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Defense", 0.89f, 15.0f,temp,true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
 	}
 	case HEROID::Mage:
 	{
+		// Set the character Model path
+		mModel = "assets/models/Mage.dxm";
+
 		// Set the character name
 		mName = L"Mage";
 
 		// Set the character subname
 		mSubName = L"Dps";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/MagePortrait.jpg";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -98,30 +173,84 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Mage/Mage_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Mage/Mage_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Mage/Mage_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Mage/Mage_1H_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Mage/Mage_2H_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"The mage possesses an ancient knowledge of the elemental forces. These skills can be used to inflict tremendous damage on all enemies in your path.";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic attack, stun
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "OneHandedCast", 0.60f, -10.0f, 10.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.60f, -10.0f, 10.0f,temp));
 		// Wind Slash, aoe dps, speed down 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "OneHandedCast", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
 		// Fire sTrom BIIIIGGGGG DPS with bleed
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "TwoHandedCast", 0.60f, 30.0f, 50.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_2", 0.60f, 30.0f, 50.0f, temp, true));
 		// Lighting Bolt BIGGGGG siongle target dps
-		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "TwoHandedCast", 0.25f, 35.0f, 60.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_2", 0.25f, 35.0f, 60.0f));
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
 	}
 	case HEROID::Bard:
 	{
+		// Set the character Model path
+		mModel = "";
+
 		// Set the character name
 		mName = L"TheBestClassToEverExist";
 
 		// Set the character subname
 		mSubName = L"Literal God";
+
+		// Set the portaits path
+		mPortrait = L"";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -135,6 +264,34 @@ HeroComponent::HeroComponent(HEROID id)
 		mBaseDefense = mDefense = 0.15f;
 		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		
+		// Dead
+		
+		// Is Stunned
+
+		// Recieves Hit
+		
+		// Recieves Buff
+
+		// Skill 1
+		
+		// Skill 2
+		
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,12 @@ Character::Character()
 	mProvoked = nullptr;
 	mAnimator = nullptr;
 	mBloodParticleEffect = nullptr;
+	mImpactIndicator = nullptr;
+	mName = L"";
+	mSubName = L"";
+	mPortrait = L"";
+	mDescription = L"";
+	mModel = "";
 	////////////////////////////////////////////////
 }
 
@@ -574,7 +580,7 @@ std::wstring Character::GetPortraitPath()
 }
 
 // Returns the vector of strings containing the animation paths
-std::vector<std::string> Character::GetAnimationPaths()
+std::vector<Character::AnimationImportData> Character::GetAnimationPaths()
 {
 	return mAnimations;
 }
@@ -595,6 +601,11 @@ std::wstring Character::GetSubName()
 std::wstring Character::GetDescription()
 {
 	return mDescription;
+}
+
+std::string Character::GetModel()
+{
+	return mModel;
 }
 
 // Sets the description of the character

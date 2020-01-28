@@ -39,6 +39,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
 	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	// DELETE THIS TRASH
 	// Create the temp image file name for creating the HUD portrait
 	LPCWSTR imageFilename = L" ";
 
@@ -46,42 +47,43 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	{
 		case Paladin:
 		{
-			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Paladin.dxm", true);
-			// Set up its animations
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("AttackUp", "assets/animations/Paladin/Paladin_AttackUp.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BasicAttack", "assets/animations/Paladin/Paladin_BasicAttack.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("BigAttack", "assets/animations/Paladin/Paladin_BigAttack.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Defense", "assets/animations/Paladin/Paladin_Defense.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Heal", "assets/animations/Paladin/Paladin_Heal.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Shield", "assets/animations/Paladin/Paladin_Shield.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Paladin/Paladin_Idle.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Stun", "assets/animations/Paladin/Paladin_Kick.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Paladin/Paladin_Death.dxanim", false);
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Paladin/Paladin_Hit.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("GotBuffed", "assets/animations/Paladin/Paladin_Taunt.dxanim");
-			// Add hero component
+			// Add hero component to the entity
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Paladin);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter,tempHero->GetModel().c_str() , true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
+
+			//done, get rid of this variable when its meshed together 
 			// Set the image filename for this character
 			imageFilename = L"assets/images/PaladinPortrait.jpg";
 			break;
 		}
 		case Mage:
 		{
-			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Mage.dxm", true);
-			// Set up its animations
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Hit", "assets/animations/Mage/Mage_Hit.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("OneHandedCast", "assets/animations/Mage/Mage_1H_Attack.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("TwoHandedCast", "assets/animations/Mage/Mage_2H_Attack.dxanim");
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Dead", "assets/animations/Mage/Mage_Death.dxanim", false);
-			newCharacter->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Mage/Mage_Idle.dxanim");
 			// Set up hero component
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Mage);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
+
 			// Set up particle effects for skills
 			tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter());
 			tempHero->GetSkills()[0]->SetParticleFiringTime(0.23f);
@@ -93,22 +95,14 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter());
 			tempHero->GetSkills()[3]->SetParticleFiringTime(0.23f);
 			tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
+
+			// DELETE THIS HERASY
 			// Set the image filename for this character
 			imageFilename = L"assets/images/MagePortrait.jpg";
 			break;
 		}
 		case Bard:
 		{
-			// Set up its model
-			//Odyssey::FileManager::getInstance().importModel(newCharacter, "assets/models/Bard.dxm", true);
-			// Set up its animations
-
-			// Set up hero component
-			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(HEROID::Bard);
-			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
-			// Set the image filename for this character
-			imageFilename = L" ";
 			break;
 		}
 		case Skeleton:
