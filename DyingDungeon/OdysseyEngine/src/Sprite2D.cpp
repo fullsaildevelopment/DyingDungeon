@@ -73,6 +73,7 @@ namespace Odyssey
 		mFilename = filename;
 		mBitmap.Reset();
 		mBitmapConverter = nullptr;
+		mBitmapBrush = nullptr;
 		createBitmapFromFile(filename, width, height);
 		mLock.unlock(LockState::Write);
 	}

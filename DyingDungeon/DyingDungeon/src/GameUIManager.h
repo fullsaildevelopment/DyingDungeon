@@ -98,7 +98,8 @@ public: // Functions
 
 	// Get the main menu
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
-	Odyssey::Sprite2D* GetTeamLogo() { return mTeamLogo; }
+	Odyssey::Sprite2D* GetApeBackground() { return mApeBackground; }
+	Odyssey::Sprite2D* GetAnimatedLaser() { return mAnimatedLaser; }
 	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
 	Odyssey::Text2D* GetStatsText() { return mStatsText; }
 
@@ -180,7 +181,8 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mStatsMenu;
 
 	// Main Menu Items
-	Odyssey::Sprite2D* mTeamLogo;
+	Odyssey::Sprite2D* mApeBackground;
+	Odyssey::Sprite2D* mAnimatedLaser;
 	Odyssey::Text2D* mNewGameText;
 	Odyssey::Text2D* mStatsText;
 
