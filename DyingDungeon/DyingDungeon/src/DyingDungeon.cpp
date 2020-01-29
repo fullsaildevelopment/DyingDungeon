@@ -158,6 +158,9 @@ int playGame()
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
+	// Set up the game user interface
+	setupGameInterface();
+
 	// Set up the team selection screen
 	setupTeamSelectMenu(application.get());
 
@@ -172,11 +175,9 @@ int playGame()
 	// BUILD 2
 	setupFire();
 
-	// Set up the game user interface
-	setupGameInterface();
 
 	// Set up the tower manager
-	setUpTowerManager();
+	//setUpTowerManager();
 
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
@@ -505,6 +506,9 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	//pListOfGameScenes.push_back(gScene2);
 	// Set the list of scenes in team select controller
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
+
+	// Set the game entity that the hud will be attached to
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameEntity(gGameMenu);
 
 	// Set up a directional light
 	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
