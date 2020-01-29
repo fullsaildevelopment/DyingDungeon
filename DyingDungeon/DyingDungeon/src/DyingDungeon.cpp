@@ -500,6 +500,13 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Set up the team selection screen
 	setupMenu(gRenderDevice, application, gTeamSelectScene, gTeamSelectMenu, L"", "TeamSelection", MenuComponent::eTeamSelector);
 
+	// Create vector of all game scene
+	std::vector<std::shared_ptr<Odyssey::Scene>> pListOfGameScenes;
+	pListOfGameScenes.push_back(gGameScene);
+	pListOfGameScenes.push_back(gScene2);
+	// Set the list of scenes in team select controller
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
+
 	// Set up a directional light
 	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
 	gMenuLights[2]->addComponent<Odyssey::Transform>();
