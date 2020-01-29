@@ -117,9 +117,9 @@ public: // Functions
 	{
 		switch (_teamMemberSlot)
 		{
-			case 1: return firstTeamMemberSlot; break;
-			case 2: return secondTeamMemberSlot; break;
-			case 3: return thirdTeamMemberSlot; break;
+			case 0: return firstTeamMemberSlot; break;
+			case 1: return secondTeamMemberSlot; break;
+			case 2: return thirdTeamMemberSlot; break;
 		}
 	}
 	// Get the sprite of which character you selected

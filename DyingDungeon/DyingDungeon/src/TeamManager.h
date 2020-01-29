@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Entity.h"
 
 
 class TeamManager
@@ -28,20 +29,31 @@ private: // Singleton pattern
 
 public: // Functions
 
+	// Add player to the player team
+	void AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+	// Add player to the enemy team
+	void AddCharacterToEnemyTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+
 	// Getters
-	// Get the player team enums to determine what charcters we need to create
-	std::vector<HeroType> GetPlayerTeamToCreate() { return mPlayerTeamToCreate; }
+	// Get the players that were created
+	std::vector<std::shared_ptr<Odyssey::Entity>> GetPlayerTeam() { return mPlayerTeam; }
+	// Get the enemies that were created
+	std::vector<std::shared_ptr<Odyssey::Entity>> GetEnemyTeam() { return mEnemyTeam; }
+
 	// Get the enemy team enums to determine what charcters we need to create
-	std::vector<EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
+	std::vector<TeamManager::EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
 
 	// Setters
 
 private: // Variables
 
-	// Holds the enum types of the characters we need to create for the player team
-	std::vector<HeroType> mPlayerTeamToCreate;
 	// Holds the enum types of the characters we need to create for the enemy team
-	std::vector<EnemyType> mEnemyTeamToCreate;
+	std::vector<TeamManager::EnemyType> mEnemyTeamToCreate;
+
+	// Holds the player characters to add into the Tower Manager
+	std::vector<std::shared_ptr<Odyssey::Entity>> mPlayerTeam;
+	// Holds the enemy characters to add into the Tower Manager
+	std::vector<std::shared_ptr<Odyssey::Entity>> mEnemyTeam;
 
 private: // Functions
 

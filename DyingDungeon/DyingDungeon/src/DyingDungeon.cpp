@@ -133,6 +133,8 @@ int playGame()
 	// Create the main scene
 	gGameScene = gRenderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
 	gGameScene->setSkybox("Skybox.dds");
+	gScene2 = gRenderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 50.0f), 100.0f);
+	gScene2->setSkybox("Dusk.dds");
 
 	// Set up the scene lighting
 	setupLighting();
@@ -156,6 +158,9 @@ int playGame()
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
+	// Set up the game user interface
+	setupGameInterface();
+
 	// Set up the team selection screen
 	setupTeamSelectMenu(application.get());
 
@@ -170,11 +175,9 @@ int playGame()
 	// BUILD 2
 	setupFire();
 
-	// Set up the game user interface
-	setupGameInterface();
 
 	// Set up the tower manager
-	setUpTowerManager();
+	//setUpTowerManager();
 
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
@@ -183,8 +186,6 @@ int playGame()
 	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
 
 	// Create scene 2
-	gScene2 = gRenderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 50.0f), 100.0f);
-	gScene2->setSkybox("Dusk.dds");
 	setupScene2();
 
 	application->addScene("Scene2", gScene2);
@@ -247,8 +248,8 @@ void setupLighting()
 	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.5f, 0.5f, 0.5f);
-	light->setIntensity(1.0f);
-	light->setRange(30.0f);
+	light->setIntensity(2.0f);
+	light->setRange(50.0f);
 	light->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 1
@@ -489,7 +490,6 @@ void setupMainMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Main Menu Paladin", charPosition, charRotation, uiPosition, false, gMainMenu);
-	gMainMenu->addEntity(characterToAdd);
 
 	// Create the UI
 	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
@@ -499,6 +499,16 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 {
 	// Set up the team selection screen
 	setupMenu(gRenderDevice, application, gTeamSelectScene, gTeamSelectMenu, L"", "TeamSelection", MenuComponent::eTeamSelector);
+
+	// Create vector of all game scene
+	std::vector<std::shared_ptr<Odyssey::Scene>> pListOfGameScenes;
+	pListOfGameScenes.push_back(gGameScene);
+	//pListOfGameScenes.push_back(gScene2);
+	// Set the list of scenes in team select controller
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
+
+	// Set the game entity that the hud will be attached to
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameEntity(gGameMenu);
 
 	// Set up a directional light
 	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
@@ -532,14 +542,12 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
-	gTeamSelectScene->addEntity(characterToAdd);
 
 	// Create a mage and add him to the team select scene
 	charPosition = DirectX::XMVectorSet(3.0f, -2.0f, 6.0f, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
-	gTeamSelectScene->addEntity(characterToAdd);
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
@@ -1278,7 +1286,6 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Paladin #2
@@ -1292,7 +1299,6 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Mage #1
@@ -1306,7 +1312,6 @@ void setUpTowerManager()
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gPlayerUnit.push_back(characterToAdd);
 
 	// Skeleton #1
@@ -1315,7 +1320,6 @@ void setUpTowerManager()
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #2
@@ -1324,7 +1328,6 @@ void setUpTowerManager()
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #3
@@ -1333,7 +1336,6 @@ void setUpTowerManager()
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Skeleton #4
@@ -1342,7 +1344,6 @@ void setUpTowerManager()
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	gEnemyUnit.push_back(characterToAdd);
 
 	// Ganfaul
@@ -1351,7 +1352,6 @@ void setUpTowerManager()
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, gGameScene);
 	// Added the Character's health popup
 	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
-	gGameScene->addEntity(characterToAdd);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower
 	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);

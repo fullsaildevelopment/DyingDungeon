@@ -5,8 +5,6 @@
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
 
-
-
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -87,7 +85,6 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	_sceneToAddTo->addEntity(mBattleLog);
 }
 
-
 void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 {
 	if (concat)
@@ -108,6 +105,7 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 
 }
 
+// Be able to turn a canvas on and off
 void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 {
 	// Set the passed in entity's canvas to active or deactived based on the bool _isActive.
