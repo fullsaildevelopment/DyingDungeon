@@ -3,6 +3,7 @@
 #include "Transform.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
+
 // Constructor
 EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 {
