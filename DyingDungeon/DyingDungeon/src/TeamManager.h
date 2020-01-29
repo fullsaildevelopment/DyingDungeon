@@ -29,19 +29,15 @@ private: // Singleton pattern
 public: // Functions
 
 	// Getters
-	// Get the player team enums to determine what charcters we need to create
-	std::vector<HeroType> GetPlayerTeamToCreate() { return mPlayerTeamToCreate; }
 	// Get the enemy team enums to determine what charcters we need to create
-	std::vector<EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
+	std::vector<TeamManager::EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
 
 	// Setters
 
 private: // Variables
 
-	// Holds the enum types of the characters we need to create for the player team
-	std::vector<HeroType> mPlayerTeamToCreate;
 	// Holds the enum types of the characters we need to create for the enemy team
-	std::vector<EnemyType> mEnemyTeamToCreate;
+	std::vector<TeamManager::EnemyType> mEnemyTeamToCreate;
 
 private: // Functions
 

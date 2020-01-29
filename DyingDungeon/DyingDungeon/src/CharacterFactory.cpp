@@ -184,6 +184,9 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 	// Create the impact indicator for each character
 	CreateCharacterImpactIndicator(newCharacter);
+
+	// Add the character to the current scene
+	mCurrentScene->addEntity(newCharacter);
 	// Return the brand new charcter that was created
 	return newCharacter;
 }

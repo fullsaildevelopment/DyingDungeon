@@ -17,7 +17,7 @@ public:
 	Odyssey::Rectangle2D* mRect;
 
 	// Functions
-	void SetGameScenes(std::vector<std::shared_ptr<Odyssey::Scene>> _listOfScenes) { mListOfGameScenes == _listOfScenes; }
+	void SetGameScenes(std::vector<std::shared_ptr<Odyssey::Scene>> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
 
 private:
 	Odyssey::Application* mApplication;

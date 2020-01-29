@@ -56,27 +56,6 @@ void TeamSelectionController::update(double deltaTime)
 		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseExit");
 		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseExit");
 
-		// Before changing to the game scene, create the characters and add them for the scene
-		// For every player to create
-		for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
-		{
-			// Get the hero type, to determine what type of character to create
-			TeamManager::HeroType heroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
-
-			switch (heroType)
-			{
-				case TeamManager::HeroType::Paladin:
-					CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", DirectX::XMVECTOR{ 0.0f, 0.3f, 0.0f, 1.0f }, DirectX::XMVECTOR{ 0.0f, 180.0f, 0.0f, 1.0f }, DirectX::XMFLOAT2{ 0.0f, 0.0f }, false, mListOfGameScenes[0]);
-					break;
-				case TeamManager::HeroType::Mage:
-					CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", DirectX::XMVECTOR{ 0.0f, 0.3f, 0.0f, 1.0f }, DirectX::XMVECTOR{ 0.0f, 180.0f, 0.0f, 1.0f }, DirectX::XMFLOAT2{ 0.0f, 0.0f }, false, mListOfGameScenes[0]);
-					break;
-				default:
-					std::cout << "I could not find the hero type that was passed in. The error is in Team Selection Controller's update function" << std::endl;
-					break;
-			}
-		}
-
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
@@ -110,8 +89,17 @@ void TeamSelectionController::AddPaladinImage()
 		//Set the new image to the slot
 		GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->setSprite(L"assets/images/PaladinPortrait.jpg", deminsion.x, deminsion.y);
 
-		// Add the character type in the players to create list from the team manager
-		TeamManager::getInstance().GetPlayerTeamToCreate().push_back(TeamManager::HeroType::Paladin);
+		// Create the paladin and add it to the game scene
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(0.0f, 0.3f, 0.0f, 1.0f);
+		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+		std::shared_ptr<Odyssey::Entity> paladinCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", position, rotation, DirectX::XMFLOAT2{ 0.0f, 0.0f }, false, mListOfGameScenes[0]);
+
+		// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
+		for (int i = 1; i < mListOfGameScenes.size(); i++)
+		{
+
+		}
+
 
 		// Check if the team is full now
 		if (teamCount == 3)
@@ -133,8 +121,16 @@ void TeamSelectionController::AddMageImage()
 		//Set the new image to the slot
 		GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->setSprite(L"assets/images/MagePortrait.jpg", deminsion.x, deminsion.y);
 
-		// Add the character type in the players to create list from the team manager
-		TeamManager::getInstance().GetPlayerTeamToCreate().push_back(TeamManager::HeroType::Mage);
+		// Create the mage and add it to the game scene
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(0.0f, 0.3f, 0.0f, 1.0f);
+		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+		std::shared_ptr<Odyssey::Entity> mageCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", position, rotation, DirectX::XMFLOAT2{ 0.0f, 0.0f }, false, mListOfGameScenes[0]);
+
+		// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
+		for (int i = 1; i < mListOfGameScenes.size(); i++)
+		{
+
+		}
 
 		// Check if the team is full now
 		if (teamCount == 3)
