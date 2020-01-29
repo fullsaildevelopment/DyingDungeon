@@ -91,10 +91,14 @@ public: // Functions
 	// Update Combat Log
 	void UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill);
 	void UpdateCombatLogText(float dmg);
+	void ClearCombatLog();
 
 	//Getters
 	// Get battle log text
 	Odyssey::Text2D* GetBattleLogText() { return mBattleLogText; }
+
+	// Get Combat Log Canvas
+	Odyssey::UICanvas* GetCombatLogCanvas() { return mCombatLogCanvas; }
 
 	// Get the main menu
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
@@ -109,6 +113,8 @@ public: // Functions
 	std::vector<Odyssey::Sprite2D*> GetDoorSprites() { return mDoorImages; }
 	// Get the tower info canvas
 	Odyssey::UICanvas* GetTowerInfoCanvas() { return mTowerInfoCanvas; }
+
+	
 
 	// Get the team select menu
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
@@ -165,9 +171,10 @@ public: // Functions
 private: // Varibales
 
 	// Battle Log Object
+	Odyssey::UICanvas* mCombatLogCanvas;
+	Odyssey::Text2D* mBattleLogText;
 	std::shared_ptr<Odyssey::Entity> mBattleLog;
 	std::vector<Odyssey::Text2D*> mBattleLogVec;
-	Odyssey::Text2D* mBattleLogText;
 	std::vector<Odyssey::Sprite2D*> mCombatCasterIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatSkillIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatTargetIcons;

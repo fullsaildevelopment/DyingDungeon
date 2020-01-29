@@ -60,6 +60,14 @@ void TowerManager::update(double deltaTime)
 		TogglePauseMenu();
 	}
 
+	// Toggles the combat canvas
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Tab))
+	{
+		Odyssey::UICanvas* combatCanvas = GameUIManager::getInstance().GetCombatLogCanvas();
+
+		GameUIManager::getInstance().ToggleCanvas(combatCanvas, !combatCanvas->isActive());
+	}
+
 	// Go straight to the BOSS when F3 is hit
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
 	{

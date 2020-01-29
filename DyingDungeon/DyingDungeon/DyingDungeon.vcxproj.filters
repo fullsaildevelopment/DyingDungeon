@@ -207,6 +207,9 @@
     <ClInclude Include="src\ParticleMover.h">
       <Filter>Header Files\Skills</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameplayTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico">
