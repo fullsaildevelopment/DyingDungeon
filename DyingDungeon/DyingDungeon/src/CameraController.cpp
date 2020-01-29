@@ -32,8 +32,8 @@ void CameraController::update(double deltaTime)
 		{
 			if (Odyssey::Transform* transform = mEntity->getComponent<Odyssey::Transform>())
 			{
-				transform->setPosition(3.432f, 7.053f, 14.602f);
-				transform->setRotation(25.189f, -160.439f, 0.0f);
+				transform->setPosition(0.395f, 6.703f, 13.438f);
+				transform->setRotation(23.669f, -178.152f, 0.0f);
 			}
 		}
 
