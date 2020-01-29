@@ -997,6 +997,8 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
 	else if (character == L"assets/images/MagePortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	else if (character == L"assets/images/Guy.png")
+		themeColor = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
 
 	// Don't display negative mana, display 0 instead
 	if (manaCost.substr(0, 1) == L"-")
