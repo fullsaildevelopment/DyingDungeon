@@ -117,15 +117,14 @@ bool RedAudioManager::SetMasterVolume(unsigned int volume)
 
 void RedAudioManager::Mute()
 {
-	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(0));
 	m_muted = true;
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(0));
 }
 
 void RedAudioManager::Unmute()
 {
-	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume));
 	m_muted = false;
-		
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume));
 }
 
 void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)

@@ -5,6 +5,8 @@ StatTracker::StatTracker()
 	m_currentLevel = 1;
 	m_maxPlayerCount = 3;
 	m_p_canvas = nullptr;
+	m_portrait_width = 500;
+	m_portrait_height = 500;
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogDamageDeltEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogTakeDamageEvent);
@@ -73,9 +75,11 @@ void StatTracker::ClearLevels()
 //	m_currentLevel = newLevel.levelNumber;
 //}
 
-void StatTracker::SetCanvas(Odyssey::UICanvas* canvas)
+void StatTracker::SetCanvas(Odyssey::UICanvas* canvas, unsigned int path_width, unsigned int path_height)
 {
 	m_p_canvas = canvas;
+	m_portrait_width = path_width;
+	m_portrait_height = path_height;
 }
 
 void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
@@ -95,7 +99,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 	}*/
 	for (int txt = 3, i = 0; i < 3; i++) 
 	{
-		m_p_canvas->getElements<Odyssey::Sprite2D>()[i]->setSprite(m_levels.back().characters[i].second);
+		m_p_canvas->getElements<Odyssey::Sprite2D>()[i]->setSprite(m_levels.back().characters[i].second, m_portrait_width, m_portrait_height);
 		for (int j = 0; j < 3; j++)
 		{
 			std::wstring rewardsText;

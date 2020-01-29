@@ -45,6 +45,9 @@ private:
 	//TowerManager* m_towerManager;
 	//RewardScreen
 	Odyssey::UICanvas* m_p_canvas;
+	unsigned int m_portrait_width;
+	unsigned int m_portrait_height;
+
 public:
 	static StatTracker& Instance();
 	~StatTracker();
@@ -86,7 +89,7 @@ public:
 	/// Setter for the in-game rewards/end screen canvas
 	/// </summary>
 	/// <param name="canvas"></param>
-	void SetCanvas(Odyssey::UICanvas* canvas);
+	void SetCanvas(Odyssey::UICanvas* canvas, unsigned int path_width, unsigned int path_height);
 
 	/// <summary>
 	/// clears all the levels stored in the StatTrackers level container
