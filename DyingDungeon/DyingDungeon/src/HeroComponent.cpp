@@ -643,14 +643,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void HeroComponent::Die()
 {
-	// Set state to dead
-	mCurrentState = STATE::DEAD;
-
 	// Clear all remaining status effects
 	ClearStatusEffects();
 	
 	// Play the death animation
 	mAnimator->playClip("Dead");
+
+	// Set state to dead
+	mCurrentState = STATE::DEAD;
 }
 
 // Returns the characters skill list

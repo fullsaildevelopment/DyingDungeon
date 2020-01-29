@@ -447,14 +447,14 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void EnemyComponent::Die()
 {
-	// Set state to dead
-	mCurrentState = STATE::DEAD;
-
 	// Clear all remaining status effects
 	ClearStatusEffects();
 
 	// Play the death animation
 	mAnimator->playClip("Dead");
+
+	// Set state to dead
+	mCurrentState = STATE::DEAD;
 }
 
 void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
