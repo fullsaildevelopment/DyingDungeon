@@ -36,6 +36,18 @@ void MainMenuController::update(double deltaTime)
 			madeItPassedLogo = true;	
 		}
 	}
+
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	{
+		if (!RedAudioManager::Instance().isMuted())
+		{
+			RedAudioManager::Instance().Mute();
+		}
+		else
+		{
+			RedAudioManager::Instance().Unmute();
+		}
+	}
 }
 
 void MainMenuController::EnterTowerSelectScreen()

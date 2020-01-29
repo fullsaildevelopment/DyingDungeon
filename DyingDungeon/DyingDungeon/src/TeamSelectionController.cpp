@@ -52,6 +52,17 @@ void TeamSelectionController::update(double deltaTime)
 
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	{
+		if (!RedAudioManager::Instance().isMuted())
+		{
+			RedAudioManager::Instance().Mute();
+		}
+		else
+		{
+			RedAudioManager::Instance().Unmute();
+		}
+	}
 }
 
 void TeamSelectionController::setupHovers()
