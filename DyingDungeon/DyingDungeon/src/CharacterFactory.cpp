@@ -218,6 +218,13 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 {
 	std::shared_ptr<Odyssey::Entity> gFireBall = std::make_shared<Odyssey::Entity>();
 	gFireBall->addComponent<Odyssey::Transform>();
+	Odyssey::Light* light = gFireBall->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.0f, 0.75f, 0.75f);
+	light->setIntensity(0.5f);
+	light->setRange(10.0f);
+	light->setSpotAngle(0.0f);
+
 	Odyssey::ParticleSystem* fireButBetter = gFireBall->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
 	fireButBetter->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
 	fireButBetter->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -230,10 +237,15 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 	fireButBetter->setLooping(false);
 	fireButBetter->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.05f));
 	fireButBetter->stop();
+
+	// TODO: VERIFY CHANGE
+	gFireBall->setActive(false);
+
 	gFireBall->addComponent<ParticleMover>();
 	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);
 	gFireBall->getComponent<ParticleMover>()->SetSpeed(1.0f);
 	mCurrentScene->addEntity(gFireBall);
+	mCurrentScene->addLight(gFireBall);
 	return fireButBetter;
 }
 

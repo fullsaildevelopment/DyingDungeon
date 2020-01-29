@@ -69,7 +69,11 @@ public: // Functions
 	// Creation of the stats menu
 	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
-	void ToggleStatsMenu();
+	void ShowStatsMenu();
+
+	void StatsMenuPrev();
+
+	void StatsMeuNext();
 
 	void HideStatsMenu();
 	 
@@ -82,7 +86,7 @@ public: // Functions
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
 	//Updates
-	void UpdateGraph();
+	void UpdateStatsMenu();
 
 	// Update Combat Log
 	void UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill);
@@ -94,7 +98,8 @@ public: // Functions
 
 	// Get the main menu
 	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
-	Odyssey::Sprite2D* GetTeamLogo() { return mTeamLogo; }
+	Odyssey::Sprite2D* GetApeBackground() { return mApeBackground; }
+	Odyssey::Sprite2D* GetAnimatedLaser() { return mAnimatedLaser; }
 	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
 	Odyssey::Text2D* GetStatsText() { return mStatsText; }
 
@@ -176,7 +181,8 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mStatsMenu;
 
 	// Main Menu Items
-	Odyssey::Sprite2D* mTeamLogo;
+	Odyssey::Sprite2D* mApeBackground;
+	Odyssey::Sprite2D* mAnimatedLaser;
 	Odyssey::Text2D* mNewGameText;
 	Odyssey::Text2D* mStatsText;
 	Odyssey::Text2D* mStatsBackButtonText;
@@ -216,6 +222,11 @@ private: // Varibales
 	Odyssey::Sprite2D* mPlusImage;
 	Odyssey::Sprite2D* mMinusImage;
 	Odyssey::Text2D* mBackButtonText;
+
+	//Stats Menu Items
+	unsigned int mStatMenuCurrentLevel = 1;
+	//unsigned int mStatMenuCurrentRound = 1;
+	unsigned int mStatMenuCurrentTurn = 1;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };

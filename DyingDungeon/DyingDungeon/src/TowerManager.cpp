@@ -220,7 +220,7 @@ void TowerManager::CreateBattleInstance()
 		system("CLS");
 
 	// Send off the current level number
-	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName()));
 
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);

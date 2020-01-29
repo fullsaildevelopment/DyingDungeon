@@ -19,7 +19,7 @@ namespace Odyssey
 
 		// Set the default scale
 		mScale = DirectX::XMFLOAT2(1.0f, 1.0f);
-
+		mFill = 1.0f;
 		mIsVisible = true;
 
 		// Set mouse tracking bools
@@ -52,7 +52,6 @@ namespace Odyssey
 		// Recreate the shape to match the new position and dimensions
 		createShape();
 		createResource();
-
 	}
 
 	void UIElement::onMouseClick(MouseClickEvent* evnt)
@@ -339,6 +338,24 @@ namespace Odyssey
 		return mColor.w;
 	}
 
+	void UIElement::addFill(float value)
+	{
+		// Add the parameter value to the fill and clamp between 0.0 and 1.0
+		mLock.lock(LockState::Write);
+		mFill += value;
+		mFill = max(0.0f, min(mFill, 1.0f));
+		mLock.unlock(LockState::Write);
+	}
+
+	void Odyssey::UIElement::setFill(float fill)
+	{
+		// Set the parameter value to the fill and clamp between 0.0 and 1.0
+		mLock.lock(LockState::Write);
+		mFill = fill;
+		mFill = max(0.0f, min(mFill, 1.0f));
+		mLock.unlock(LockState::Write);
+	}
+
 	void UIElement::setVisible(bool visible)
 	{
 		mIsVisible = visible;
@@ -370,7 +387,6 @@ namespace Odyssey
 
 	void UIElement::createResource()
 	{
-		int debug = 0;
 	}
 
 	void UIElement::resetBrush()

@@ -22,7 +22,7 @@ namespace Odyssey
 		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
 	}
 
-	void TransparentPass::preRender(RenderArgs& args)
+	void TransparentPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Update the buffer
 		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
@@ -31,18 +31,18 @@ namespace Odyssey
 		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
 	}
 
-	void TransparentPass::render(RenderArgs& args)
+	void TransparentPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Bind the world
-		for (ParticleSystem* ps : args.systemList)
+		for (VFXObject vfxObject : renderPackage.vfxObjects)
 		{
-			if (ps->isActive() && ps->getEntity()->isActive() && ps->getEntity()->isVisible())
+			if (vfxObject.system->isActive() && vfxObject.system->getEntity()->isActive() && vfxObject.system->getEntity()->isVisible())
 			{
-				args.perObject.world = ps->getEntity()->getComponent<Transform>()->getGlobalTransform(true);
+				args.perObject.world = vfxObject.transform->getGlobalTransform(true);
 				updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 				args.perObjectBuffer->bind(mDeviceContext, 1, ShaderType::GeometryShader);
 
-				ps->run(mDeviceContext);
+				vfxObject.system->run(mDeviceContext);
 			}
 		}
 	}

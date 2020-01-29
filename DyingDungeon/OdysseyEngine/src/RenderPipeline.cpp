@@ -30,7 +30,7 @@ namespace Odyssey
 	void RenderPipeline::render(std::shared_ptr<SceneDX11> scene)
 	{
 		generateRenderArgs(scene);
-
+		scene->getRenderPackage(mRenderPackage);
 		// Iterate over each render pass in the list
 		for (std::shared_ptr<RenderPass> pass : mRenderPasses)
 		{
@@ -38,8 +38,8 @@ namespace Odyssey
 			if (pass->isEnabled())
 			{
 				// Perform pre-render and render processs
-				pass->preRender(args);
-				pass->render(args);
+				pass->preRender(args, mRenderPackage);
+				pass->render(args, mRenderPackage);
 			}
 		}
 	}
@@ -59,20 +59,6 @@ namespace Odyssey
 			// Calculate and set view proj
 			DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&camera->getProjectionMatrix()));
 			DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
-
-			// Get the camera's position
-			args.camPos = camera->getEntity()->getComponent<Transform>()->getPosition();
 		}
-
-		args.camera = scene->getMainCamera();
-		args.lightList = scene->getSceneLights();
-		args.entityList = scene->getEntities();
-		args.elementList = scene->getElementList();
-		args.renderList = scene->getRenderList();
-		args.systemList = scene->getSystemList();
-		args.skybox = scene->getSkybox();
-		args.shadowLight = scene->getShadowLight();
-		args.sceneCenter = scene->getSceneCenter();
-		args.sceneRadius = scene->getSceneRadius();
 	}
 }

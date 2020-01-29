@@ -228,6 +228,10 @@ namespace Odyssey
 		 */
 		float getOpacity();
 
+		void addFill(float value);
+
+		void setFill(float fill);
+
 		void setVisible(bool visible);
 
 		bool isVisible();
@@ -264,6 +268,7 @@ namespace Odyssey
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 		ReadWriteLock mLock;
+		float mFill;
 		bool mIsVisible;
 		bool mIsRegistered;
 	};

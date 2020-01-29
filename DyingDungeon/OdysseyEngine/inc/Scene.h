@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include "EngineIncludes.h"
+#include "RenderTypes.h"
 
 namespace Odyssey
 {
@@ -28,7 +29,7 @@ namespace Odyssey
 		 *	@param[in] light The light object to add.
 		 *	@return void
 		 */
-		void addLight(std::shared_ptr<Light> light);
+		void addLight(std::shared_ptr<Entity> light);
 
 		/**
 		 *	Add an entity object to the scene
@@ -60,26 +61,22 @@ namespace Odyssey
 
 		void setActive(bool active);
 
-		// TODO: REFACTOR THIS LATER
-		void setShadowStats(std::shared_ptr<Light> shadowLight, DirectX::XMFLOAT3 sceneCenter, float sceneRadius);
-
 		void setSkybox(const char* filename);
+
 	protected: // Members
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<Entity> mMainCamera;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
-		std::vector<std::shared_ptr<Light>> mSceneLights;
-		std::vector<UICanvas*> mSceneCanvas;
-		std::vector<MeshRenderer*> mRenderList;
-		std::vector<UIElement*> mElementList;
+		std::vector<Light*> mSceneLights;
 		std::vector<Component*> mComponentList;
-		std::vector<ParticleSystem*> mSystemList;
 		std::shared_ptr<Entity> mSkybox;
-		std::shared_ptr<Light> mShadowLight;
+		Light* mShadowLight;
 		DirectX::XMFLOAT3 mSceneCenter;
 		float mSceneRadius;
 		XTime mXTimer;
 		double mDeltaTime;
 		bool mActive;
+		RenderPackage mRenderPackage;
+		std::map<Entity*, std::vector<Component*>> mComponentMap;
 	};
 }
