@@ -30,6 +30,15 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 
 	DirectX::XMFLOAT2 position = { 10.0f, (static_cast<float>(screenHeight) / 3.0f) + 280.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	
+	// Create background rectangle
+	position.x -= 5.0f;
+	position.y -= 65.0f;
+	Odyssey::Rectangle2D* tempBackground = mCombatLogCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 100, 95);
+	tempBackground->setOpacity(0.65f);
+
+	position.x += 5.0f;
+	position.y += 65.0f;
 
 	// Setup text properties
 	Odyssey::TextProperties properties;
