@@ -620,6 +620,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 		break;
 	}
+
 	// If here the character has died and will begin his death animation
 	case STATE::DEAD:
 	{
@@ -629,6 +630,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 		break;
 	}
+
 	// Default case should never hit here
 	default:
 	{
