@@ -100,22 +100,22 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 			std::wstring rewardsText;
 			if (txt < 6)
 			{
-				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Attack, m_levels.size()),2) + L"%\n" +
-								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characterNames[j], m_levels.size()),2) + L"%");
+				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Attack, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2) + L"%");
 			}
 			else if (txt < 9)
 			{
-				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Defend, m_levels.size()),2) + L"%\n" +
-								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characterNames[j], m_levels.size()),2) + L"%\n" +
-								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2));
+				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Defend, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2));
 			}
 			else if (txt < 12)
 			{
-				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Aid, m_levels.size()),2) + L"%\n" +
-								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characterNames[j], m_levels.size()),2));
+				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Aid, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characterNames[j], static_cast<unsigned int>(m_levels.size())),2));
 			}
 			m_p_canvas->getElements<Odyssey::Text2D>()[txt]->setText(rewardsText);
 			txt++;
