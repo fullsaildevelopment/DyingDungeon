@@ -73,7 +73,7 @@ public: // Functions
 
 	void StatsMenuPrev();
 
-	void StatsMeuNext();
+	void StatsMenuNext();
 
 	void HideStatsMenu();
 	 
@@ -177,7 +177,6 @@ private: // Varibales
 	Odyssey::Sprite2D* mTeamLogo;
 	Odyssey::Text2D* mNewGameText;
 	Odyssey::Text2D* mStatsText;
-	Odyssey::Text2D* mStatsBackButtonText;
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;
@@ -219,6 +218,9 @@ private: // Varibales
 	unsigned int mStatMenuCurrentLevel = 1;
 	//unsigned int mStatMenuCurrentRound = 1;
 	unsigned int mStatMenuCurrentTurn = 1;
+	Odyssey::Text2D* mStatsBackButtonText;
+	Odyssey::Text2D* mStatsPrevButtonText;
+	Odyssey::Text2D* mStatsNextButtonText;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
