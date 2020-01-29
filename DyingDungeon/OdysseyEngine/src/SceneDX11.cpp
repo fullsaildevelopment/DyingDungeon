@@ -7,54 +7,28 @@
 #include "RenderDevice.h"
 #include "Texture.h"
 #include "Transform.h"
+#include "Camera.h"
+#include "Light.h"
 
 namespace Odyssey
 {
 	SceneDX11::SceneDX11(std::shared_ptr<RenderDevice> renderDevice)
 	{
-		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentAdd);
-		EventManager::getInstance().subscribe(this, &SceneDX11::onComponentRemove);
-
+		mSceneCenter = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+		mSceneRadius = 0.0f;
 		mRenderDevice = renderDevice;
-		mSkybox = nullptr;
 		mShadowLight = nullptr;
+		mRenderPackage.shadowLight = nullptr;
+		setSkybox("Skybox.dds");
 	}
 
-	void SceneDX11::onComponentAdd(ComponentAddEvent* evnt)
-	{ 
-		mLock.lock(LockState::Write);
-
-		for (std::shared_ptr<Entity> entity : mSceneEntities)
-		{
-			if (entity.get() == evnt->component->getEntity())
-			{
-				mComponentList.push_back(evnt->component);
-				mLock.unlock(LockState::Write);
-				return;
-			}
-		}
-		mLock.unlock(LockState::Write);
-	}
-
-	void SceneDX11::onComponentRemove(ComponentRemoveEvent* evnt)
+	SceneDX11::SceneDX11(std::shared_ptr<RenderDevice> renderDevice, DirectX::XMFLOAT3 center, float radius)
 	{
-		mLock.lock(LockState::Write);
-		for (int i = 0; i < mSceneEntities.size(); i++)
-		{
-			if (mSceneEntities[i].get() == evnt->component->getEntity())
-			{
-				for (int j = 0; j < mComponentList.size(); j++)
-				{
-					if (mComponentList[j] == evnt->component)
-					{
-						mComponentList.erase(mComponentList.begin() + j);
-						mLock.unlock(LockState::Write);
-						return;
-					}
-				}
-			}
-		}
-		mLock.unlock(LockState::Write);
+		mSceneCenter = center;
+		mSceneRadius = radius;
+		mRenderDevice = renderDevice;
+		mShadowLight = nullptr;
+		setSkybox("Skybox.dds");
 	}
 
 	void SceneDX11::initialize()
@@ -68,6 +42,11 @@ namespace Odyssey
 			// Initialize the component
 			component->initialize();
 		}
+
+		for (Light* light : mRenderPackage.sceneLights)
+		{
+			light->initialize();
+		}
 	}
 
 	void SceneDX11::update()
@@ -78,7 +57,20 @@ namespace Odyssey
 		// Recalculate delta time
 		mDeltaTime = mXTimer.SmoothDelta();
 
-		// Iterate through each component of the entity
+		// Maybe an optimization for creation/destruction?
+		//for (std::pair<std::shared_ptr<Entity>, std::vector<Component*>> pair : mComponentMap)
+		//{
+		//	if (pair.first->isActive())
+		//	{
+		//		for (Component* component : pair.second)
+		//		{
+		//			if (component->isActive())
+		//			{
+		//				component->update(mDeltaTime);
+		//			}
+		//		}
+		//	}
+		//}
 		for (auto* component : mComponentList)
 		{
 			if (component->isActive() && component->getEntity()->isActive())
@@ -89,38 +81,15 @@ namespace Odyssey
 		}
 	}
 
-	std::vector<std::shared_ptr<Light>> SceneDX11::getSceneLights()
-	{
-		// Return the scene light vector
-		return mSceneLights;
-	}
-
 	std::vector<std::shared_ptr<Entity>> SceneDX11::getEntities()
 	{
 		// Return the scene entity vector
 		return mSceneEntities;
 	}
 
-	std::vector<UICanvas*> SceneDX11::getCanvasList()
-	{
-		// Return the scene canvas vector
-		return mSceneCanvas;
-	}
-	std::vector<MeshRenderer*> SceneDX11::getRenderList()
-	{
-		return mRenderList;
-	}
 	std::vector<Component*> SceneDX11::getComponentList()
 	{
 		return mComponentList;
-	}
-	std::vector<UIElement*> SceneDX11::getElementList()
-	{
-		return mElementList;
-	}
-	std::vector<ParticleSystem*> SceneDX11::getSystemList()
-	{
-		return mSystemList;
 	}
 
 	Entity* SceneDX11::getSkybox()
@@ -139,11 +108,6 @@ namespace Odyssey
 		return mSkybox.get();
 	}
 
-	std::shared_ptr<Light> SceneDX11::getShadowLight()
-	{
-		return mShadowLight;
-	}
-
 	DirectX::XMFLOAT3 SceneDX11::getSceneCenter()
 	{
 		return mSceneCenter;
@@ -152,5 +116,14 @@ namespace Odyssey
 	float SceneDX11::getSceneRadius()
 	{
 		return mSceneRadius;
+	}
+
+	void SceneDX11::getRenderPackage(RenderPackage& renderPackage)
+	{
+		mRenderPackage.sceneCenter = mSceneCenter;
+		mRenderPackage.sceneRadius = mSceneRadius;
+		mRenderPackage.cameraPosition = mMainCamera->getComponent<Transform>()->getPosition();
+		mRenderPackage.frustum = mMainCamera->getComponent<Camera>()->getFrustum();
+		renderPackage = mRenderPackage;
 	}
 }

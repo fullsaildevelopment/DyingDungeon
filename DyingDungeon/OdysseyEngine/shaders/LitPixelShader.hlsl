@@ -19,17 +19,17 @@ struct LightOutput
 
 // Forward declarations - Light Calculations
 LightOutput calculateLighting(float3 viewNormal, float3 surfaceNormal, float3 worldPosition, float4 lightViewPosition);
-LightOutput calculateDirectionalLight(Light light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition);
-LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
-LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
+LightOutput calculateDirectionalLight(ShaderLight light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition);
+LightOutput calculatePointLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
+LightOutput calculateSpotLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
 
 float calculateShadowFactor(float3 lightDirection, float3 surfaceNormal, float4 shadowPos);
 
 // Forward declarations - Helper Functions
-float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal);
-float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, float3 surfaceNormal);
-float calculateAttenuation(Light light, float distance);
-float calculateSpot(Light light, float3 lightVector);
+float4 calculateDiffuse(ShaderLight light, float3 lightVector, float3 surfaceNormal);
+float4 calculateSpecular(ShaderLight light, float3 viewVector, float3 lightVector, float3 surfaceNormal);
+float calculateAttenuation(ShaderLight light, float distance);
+float calculateSpot(ShaderLight light, float3 lightVector);
 
 float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 {
@@ -135,7 +135,7 @@ LightOutput calculateLighting(float3 viewNormal, float3 surfaceNormal, float3 wo
 }
 
 // Calculates the diffuse and specular lighting of a directional light
-LightOutput calculateDirectionalLight(Light light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition)
+LightOutput calculateDirectionalLight(ShaderLight light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition)
 {
     LightOutput output;
 
@@ -201,7 +201,7 @@ float calculateShadowFactor(float3 lightDirection, float3 surfaceNormal, float4 
 }
 
 // Calculates the diffuse and specular lighting of a point light
-LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
+LightOutput calculatePointLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
 {
     LightOutput output;
 
@@ -221,7 +221,7 @@ LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos,
 }
 
 // Calculates the diffuse and specular lighting of a spot light
-LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
+LightOutput calculateSpotLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
 {
     LightOutput output;
 
@@ -242,7 +242,7 @@ LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, 
 }
 
 // Calculates the total specular lighting of any given light type
-float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, float3 surfaceNormal)
+float4 calculateSpecular(ShaderLight light, float3 viewVector, float3 lightVector, float3 surfaceNormal)
 {
 	// Calculate the half vector of the light vector and view vector
     float3 R = reflect(-lightVector, surfaceNormal);
@@ -259,7 +259,7 @@ float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, flo
 }
 
 // Calculates the total diffuse lighting of any given light type
-float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal)
+float4 calculateDiffuse(ShaderLight light, float3 lightVector, float3 surfaceNormal)
 {
 	// Calculate the intensity of the light using the dot between the surface normal and the light vector while factoring in the intensity of the light itself
     float intensity = max(0.0f, dot(surfaceNormal, lightVector));
@@ -268,7 +268,7 @@ float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal)
 }
 
 // Calculates the attenuation factor of any point/spot light
-float calculateAttenuation(Light light, float distance)
+float calculateAttenuation(ShaderLight light, float distance)
 {
 	// Calculate the attenuation of the light based on the distance and the light's range
     float attenuation = (1.0f - saturate(distance / light.range));
@@ -277,7 +277,7 @@ float calculateAttenuation(Light light, float distance)
 }
 
 // Calculates the spot factor of any spot light
-float calculateSpot(Light light, float3 lightVector)
+float calculateSpot(ShaderLight light, float3 lightVector)
 {
 	// Calculate the min and max cos of the light's cone
     float minCos = cos(light.cone);

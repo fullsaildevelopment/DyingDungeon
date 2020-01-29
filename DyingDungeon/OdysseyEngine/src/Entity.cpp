@@ -10,6 +10,7 @@ namespace Odyssey
 		mDebugEnabled = false;
 		mIsActive = true;
 		mIsVisible = true;
+		mChildren.clear();
 	}
 
 	void Entity::addChild(std::shared_ptr<Entity> child)

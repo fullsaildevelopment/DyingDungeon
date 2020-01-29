@@ -22,11 +22,11 @@ namespace Odyssey
 		return mEnabled;
 	}
 
-	void RenderPass::preRender(RenderArgs& args)
+	void RenderPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 	}
 
-	void RenderPass::postRender(RenderArgs& args)
+	void RenderPass::postRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 	}
 

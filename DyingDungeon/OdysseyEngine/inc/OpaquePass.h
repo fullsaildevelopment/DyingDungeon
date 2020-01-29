@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineIncludes.h"
+#include "RenderTypes.h"
 #include "RenderPass.h"
 #include "Light.h"
 
@@ -15,7 +16,7 @@ namespace Odyssey
 	{
 		struct SceneLighting
 		{
-			Light sceneLights[8];
+			ShaderLight sceneLights[8];
 			///////////////////////////// 16 x 8 bytes
 			unsigned int numLights;
 			DirectX::XMFLOAT3 camPos;
@@ -24,12 +25,12 @@ namespace Odyssey
 
 	public:
 		OpaquePass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow);
-		virtual void preRender(RenderArgs& args);
-		virtual void render(RenderArgs& args);
+		virtual void preRender(RenderArgs& args, RenderPackage& renderPackage);
+		virtual void render(RenderArgs& args, RenderPackage& renderPackage);
 		void setFrustumCullEnable(bool enable);
 	private:
-		void updateLightingBuffer(Entity* entity, RenderArgs& args);
-		void renderSceneObject(Entity* object, RenderArgs& args);
+		void updateLightingBuffer(RenderObject* renderObject, RenderArgs& args, RenderPackage& renderPackage);
+		void renderSceneObject(RenderObject* renderObject, RenderArgs& args);
 	private:
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;

@@ -22,7 +22,7 @@ namespace Odyssey
 		shadow->bind(context);
 	}
 
-	void ClearRenderTargetPass::render(RenderArgs& args)
+	void ClearRenderTargetPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Bind the render target
 		mRenderWindow->get3DRenderTarget()->bind(mContext);

@@ -36,13 +36,14 @@ namespace Odyssey
 		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/DebugPixelShader.cso", nullptr);
 	}
 
-	void DebugPass::preRender(RenderArgs& args)
+	void DebugPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Update the buffer
 		updatePerFrameBuffer(mContext, args.perFrame, args.perFrameBuffer);
 
 		// Calculate and set view proj
-		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), DirectX::XMLoadFloat4x4(&args.camera->getComponent<Camera>()->getProjectionMatrix()));
+		DirectX::XMMATRIX viewProj = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&args.perFrame.view), 
+			DirectX::XMLoadFloat4x4(&renderPackage.camera->getProjectionMatrix()));
 		DirectX::XMStoreFloat4x4(&args.perFrame.viewProj, viewProj);
 		// Update the buffer
 		updatePerFrameBuffer(mContext, args.perFrame, args.perFrameBuffer);
@@ -54,44 +55,26 @@ namespace Odyssey
 		DebugManager::getInstance().clearBuffer();
 	}
 
-	void DebugPass::render(RenderArgs& args)
+	void DebugPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		for (std::shared_ptr<Entity> debugObject : args.entityList)
+		for (RenderObject renderObject : renderPackage.renderObjects)
 		{
-			if (AnimatorDX11* animator = debugObject->getComponent<AnimatorDX11>())
+			if (renderObject.animator)
 			{
-				if (animator->getDebugEnabled())
+				if (renderObject.animator->getDebugEnabled())
 				{
-					DirectX::XMFLOAT4X4 transform = debugObject->getComponent<Transform>()->getLocalTransform();
-					animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
+					DirectX::XMFLOAT4X4 transform = renderObject.transform->getLocalTransform();
+					renderObject.animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
 				}
 			}
 
-			if (AABB* aabb = debugObject->getComponent<AABB>())
+			if (renderObject.aabb)
 			{
-				aabb->debugDraw({ 0,0,1 });
-			}
-
-			for (std::shared_ptr<Entity> child : debugObject->getChildren())
-			{
-				if (AnimatorDX11* animator = child->getComponent<AnimatorDX11>())
-				{
-					if (animator->getDebugEnabled())
-					{
-						DirectX::XMFLOAT4X4 transform = child->getComponent<Transform>()->getGlobalTransform();
-						animator->debugDraw(transform, { 1.0f, 0.0f, 0.0f });
-					}
-				}
-
-				if (AABB* aabb = child->getComponent<AABB>())
-				{
-					child->getComponent<AABB>()->debugDraw({ 0,0,1 });
-					aabb->debugDraw({ 0,0,1 });
-				}
+				renderObject.aabb->debugDraw({ 0,0,1 });
 			}
 		}
 
-		for (std::shared_ptr<Light> lightObject : args.lightList)
+		for (Light* lightObject : renderPackage.sceneLights)
 		{
 			lightObject->debugDraw();
 		}

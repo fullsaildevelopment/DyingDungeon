@@ -21,20 +21,6 @@ namespace Odyssey
 		virtual void draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context);
 
 		/**
-		 *	Add to the rectangle's fill.
-		 *	@param[in] fill The value to add to the fill.
-		 *	@return void
-		 */
-		void addFill(float fill);
-
-		/**
-		 *	Set the rectangle's fill.
-		 *	@param[in] fill The value of the fill.
-		 *	@return void
-		 */
-		void setFill(float fill);
-
-		/**
 		 *	Lerp the rectangle's color based on the fill amount. The color will be lerped from the zero fill color to the rectangle's base color.
 		 *	@param[in] zeroFillColor The color of the rectangle at zero fill. (0 - 255 color channels)
 		 *	@return void
@@ -65,7 +51,6 @@ namespace Odyssey
 
 	private: // Members
 		DirectX::XMFLOAT4 mZeroFillColor;
-		float mFill;
 		bool mColorLerpEnabled;
 	};
 }
