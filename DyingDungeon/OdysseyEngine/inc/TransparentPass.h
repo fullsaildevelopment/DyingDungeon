@@ -13,8 +13,8 @@ namespace Odyssey
 	{
 	public:
 		TransparentPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow);
-		virtual void preRender(RenderArgs& args);
-		virtual void render(RenderArgs& args);
+		virtual void preRender(RenderArgs& args, RenderPackage& renderPackage);
+		virtual void render(RenderArgs& args, RenderPackage& renderPackage);
 	private:
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;

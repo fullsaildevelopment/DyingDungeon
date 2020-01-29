@@ -71,9 +71,9 @@ namespace
 	std::vector<std::shared_ptr<Odyssey::Entity>> gPlayerUnit;
 	std::vector<std::shared_ptr<Odyssey::Entity>> gEnemyUnit;
 	// Light resources
-	std::shared_ptr<Odyssey::Light> gDirLight;
-	std::shared_ptr<Odyssey::Light> gLights[15];
-	std::shared_ptr<Odyssey::Light> gLights2[15];
+	std::shared_ptr<Odyssey::Entity> gScene1Lights[24];
+	std::shared_ptr<Odyssey::Entity> gScene2Lights[24];
+	std::shared_ptr<Odyssey::Entity> gMenuLights[24];
 	Odyssey::TextProperties gDefaultText;
 	// Particle systems
 	std::shared_ptr<Odyssey::Entity> gFireBall;
@@ -98,9 +98,9 @@ void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, co
 
 // BUILD 2 STUFF
 void setupFire();
-void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
-void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
-void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
+//void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
+//void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
+//void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor);
 
 // BUILD 3 STUFF
 void setupScene2();
@@ -131,14 +131,11 @@ int playGame()
 	gDefaultText.fontName = L"Constantia";
 
 	// Create the main scene
-	gGameScene = gRenderDevice->createScene();
+	gGameScene = gRenderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
 	gGameScene->setSkybox("Skybox.dds");
 
 	// Set up the scene lighting
 	setupLighting();
-
-	// Set the shadow pass stats
-	gGameScene->setShadowStats(gDirLight, { 0.0f, 0.0f, 0.0f }, 50.0f);
 
 	// Set up the default rendering pipeline
 	setupPipeline(gRenderDevice, application);
@@ -186,12 +183,9 @@ int playGame()
 	GameUIManager::getInstance().CreatePauseMenuCanvas(gGameScene);
 
 	// Create scene 2
-	gScene2 = gRenderDevice->createScene();
+	gScene2 = gRenderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 50.0f), 100.0f);
 	gScene2->setSkybox("Dusk.dds");
 	setupScene2();
-
-	// Set the shadow pass stats
-	gScene2->setShadowStats(gLights2[9], { 0.0f, 0.0f, 50.0f }, 100.0f);
 
 	application->addScene("Scene2", gScene2);
 
@@ -218,7 +212,6 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 
 	// Create a shadow pass and add it to the render pipeline
 	std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(4096, 4096);
-	//std::shared_ptr<Odyssey::ShadowPass> shadowPass = renderDevice->createShadowPass(gLights2[9], 4096, 4096);
 	application->addRenderPass(shadowPass);
 
 	// Create an opaque pass and add it to the render pipeline
@@ -236,159 +229,174 @@ void setupPipeline(Odyssey::RenderDevice* renderDevice, std::shared_ptr<Odyssey:
 void setupLighting()
 {
 	// Set up a directional light
-	gDirLight = std::make_shared<Odyssey::Light>();
-	gDirLight->setLightType(Odyssey::LightType::Directional);
-	gDirLight->setPosition(0, 0, 0);
-	gDirLight->setDirection(0.75f, -0.45f, -0.055f);
-	gDirLight->setColor(0.4f, 0.5f, 0.7f);
-	gDirLight->setIntensity(1.0f);
-	gDirLight->setRange(0.0f);
-	gDirLight->setSpotAngle(0.0f);
+	gScene1Lights[0] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[0]->addComponent<Odyssey::Transform>();
+	gScene1Lights[0]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	gScene1Lights[0]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	Odyssey::Light* light = gScene1Lights[0]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Directional);
+	light->setColor(0.4f, 0.5f, 0.7f);
+	light->setIntensity(1.0f);
+	light->setRange(0.0f);
+	light->setSpotAngle(0.0f);
 
-	// First Level Arena Lights
 	// Arena ambient
-	gLights[0] = std::make_shared<Odyssey::Light>();
-	gLights[0]->setLightType(Odyssey::LightType::Point);
-	gLights[0]->setPosition(0.0, 10.0f, 0.0f);
-	gLights[0]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[0]->setColor(0.5f, 0.5f, 0.5f);
-	gLights[0]->setIntensity(2.25f);
-	gLights[0]->setRange(30.0f);
-	gLights[0]->setSpotAngle(0.0f);
+	gScene1Lights[1] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[1]->addComponent<Odyssey::Transform>();
+	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 10.0f, 0.0f);
+	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.5f, 0.5f, 0.5f);
+	light->setIntensity(1.0f);
+	light->setRange(30.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 1
-	gLights[1] = std::make_shared<Odyssey::Light>();
-	gLights[1]->setLightType(Odyssey::LightType::Point);
-	gLights[1]->setPosition(-5.45f, 4.75f, 14.4f);
-	gLights[1]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[1]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[1]->setIntensity(2.0f);
-	gLights[1]->setRange(5.0f);
-	gLights[1]->setSpotAngle(0.0f);
+	gScene1Lights[2] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[2]->addComponent<Odyssey::Transform>();
+	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, 14.4f);
+	light = gScene1Lights[2]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 2
-	gLights[2] = std::make_shared<Odyssey::Light>();
-	gLights[2]->setLightType(Odyssey::LightType::Point);
-	gLights[2]->setPosition(-5.45f, 4.75f, 7.5f);
-	gLights[2]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[2]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[2]->setIntensity(2.0f);
-	gLights[2]->setRange(5.0f);
-	gLights[2]->setSpotAngle(0.0f);
+	gScene1Lights[3] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[3]->addComponent<Odyssey::Transform>();
+	gScene1Lights[3]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, 7.5f);
+	light = gScene1Lights[3]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 3
-	gLights[3] = std::make_shared<Odyssey::Light>();
-	gLights[3]->setLightType(Odyssey::LightType::Point);
-	gLights[3]->setPosition(-5.45f, 4.75f, -6.22f);
-	gLights[3]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[3]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[3]->setIntensity(2.0f);
-	gLights[3]->setRange(5.0f);
-	gLights[3]->setSpotAngle(0.0f);
+	gScene1Lights[4] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[4]->addComponent<Odyssey::Transform>();
+	gScene1Lights[4]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, -6.22f);
+	light = gScene1Lights[4]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Pillar 4
-	gLights[4] = std::make_shared<Odyssey::Light>();
-	gLights[4]->setLightType(Odyssey::LightType::Point);
-	gLights[4]->setPosition(-5.45f, 4.75f, -13.22f);
-	gLights[4]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[4]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[4]->setIntensity(2.0f);
-	gLights[4]->setRange(5.0f);
-	gLights[4]->setSpotAngle(0.0f);
+	gScene1Lights[5] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[5]->addComponent<Odyssey::Transform>();
+	gScene1Lights[5]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, -13.22f);
+	light = gScene1Lights[5]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 1
-	gLights[5] = std::make_shared<Odyssey::Light>();
-	gLights[5]->setLightType(Odyssey::LightType::Point);
-	gLights[5]->setPosition(5.45f, 4.75f, 14.4f);
-	gLights[5]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[5]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[5]->setIntensity(2.0f);
-	gLights[5]->setRange(5.0f);
-	gLights[5]->setSpotAngle(0.0f);
+	gScene1Lights[6] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[6]->addComponent<Odyssey::Transform>();
+	gScene1Lights[6]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, 14.4f);
+	light = gScene1Lights[6]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 2
-	gLights[6] = std::make_shared<Odyssey::Light>();
-	gLights[6]->setLightType(Odyssey::LightType::Point);
-	gLights[6]->setPosition(5.45f, 4.75f, 7.5f);
-	gLights[6]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[6]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[6]->setIntensity(2.0f);
-	gLights[6]->setRange(5.0f);
-	gLights[6]->setSpotAngle(0.0f);
+	gScene1Lights[7] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[7]->addComponent<Odyssey::Transform>();
+	gScene1Lights[7]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, 7.5f);
+	light = gScene1Lights[7]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Right Pillar 3
-	gLights[7] = std::make_shared<Odyssey::Light>();
-	gLights[7]->setLightType(Odyssey::LightType::Point);
-	gLights[7]->setPosition(5.45f, 4.75f, -13.22f);
-	gLights[7]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[7]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[7]->setIntensity(2.0f);
-	gLights[7]->setRange(5.0f);
-	gLights[7]->setSpotAngle(0.0f);
+	gScene1Lights[8] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[8]->addComponent<Odyssey::Transform>();
+	gScene1Lights[8]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, -13.22f);
+	light = gScene1Lights[8]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Door Light 1
-	gLights[8] = std::make_shared<Odyssey::Light>();
-	gLights[8]->setLightType(Odyssey::LightType::Point);
-	gLights[8]->setPosition(-12.0f, 4.75f, -6.7f);
-	gLights[8]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[8]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[8]->setIntensity(2.0f);
-	gLights[8]->setRange(5.0f);
-	gLights[8]->setSpotAngle(0.0f);
+	gScene1Lights[9] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[9]->addComponent<Odyssey::Transform>();
+	gScene1Lights[9]->getComponent<Odyssey::Transform>()->setPosition(-12.0f, 4.75f, -6.7f);
+	light = gScene1Lights[9]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Left Door Light 2
-	gLights[9] = std::make_shared<Odyssey::Light>();
-	gLights[9]->setLightType(Odyssey::LightType::Point);
-	gLights[9]->setPosition(-12.0f, 4.75f, 1.2f);
-	gLights[9]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[9]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[9]->setIntensity(2.0f);
-	gLights[9]->setRange(5.0f);
-	gLights[9]->setSpotAngle(0.0f);
+	gScene1Lights[10] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[10]->addComponent<Odyssey::Transform>();
+	gScene1Lights[10]->getComponent<Odyssey::Transform>()->setPosition(-12.0f, 4.75f, 1.2f);
+	light = gScene1Lights[10]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Right Door Light 1
-	gLights[10] = std::make_shared<Odyssey::Light>();
-	gLights[10]->setLightType(Odyssey::LightType::Point);
-	gLights[10]->setPosition(12.74f, 5.0f, -2.85f);
-	gLights[10]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[10]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[10]->setIntensity(2.0f);
-	gLights[10]->setRange(5.0f);
-	gLights[10]->setSpotAngle(0.0f);
+	gScene1Lights[11] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[11]->addComponent<Odyssey::Transform>();
+	gScene1Lights[11]->getComponent<Odyssey::Transform>()->setPosition(12.74f, 5.0f, -2.85f);
+	light = gScene1Lights[11]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// World-Space Right Door Light 2
-	gLights[11] = std::make_shared<Odyssey::Light>();
-	gLights[11]->setLightType(Odyssey::LightType::Point);
-	gLights[11]->setPosition(12.74f, 5.0f, 4.25f);
-	gLights[11]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[11]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[11]->setIntensity(2.0f);
-	gLights[11]->setRange(5.0f);
-	gLights[11]->setSpotAngle(0.0f);
+	gScene1Lights[12] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[12]->addComponent<Odyssey::Transform>();
+	gScene1Lights[12]->getComponent<Odyssey::Transform>()->setPosition(12.74f, 5.0f, 4.25f);
+	light = gScene1Lights[12]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(5.0f);
+	light->setSpotAngle(0.0f);
 
 	// Library-Area Candle Light
-	gLights[12] = std::make_shared<Odyssey::Light>();
-	gLights[12]->setLightType(Odyssey::LightType::Point);
-	gLights[12]->setPosition(-1.25f, 12.5f, -35.0f);
-	gLights[12]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[12]->setColor(0.8f, 0.5f, 0.4f);
-	gLights[12]->setIntensity(2.0f);
-	gLights[12]->setRange(12.5f);
+	gScene1Lights[13] = std::make_shared<Odyssey::Entity>();
+	gScene1Lights[13]->addComponent<Odyssey::Transform>();
+	gScene1Lights[13]->getComponent<Odyssey::Transform>()->setPosition(-1.25f, 12.5f, -35.0f);
+	light = gScene1Lights[13]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(2.0f);
+	light->setRange(12.5f);
+	light->setSpotAngle(0.0f);
 
-	gGameScene->addLight(gDirLight);
-	gGameScene->addLight(gLights[0]);
-	gGameScene->addLight(gLights[1]);
-	gGameScene->addLight(gLights[2]);
-	gGameScene->addLight(gLights[3]);
-	gGameScene->addLight(gLights[4]);
-	gGameScene->addLight(gLights[5]);
-	gGameScene->addLight(gLights[6]);
-	gGameScene->addLight(gLights[7]);
-	gGameScene->addLight(gLights[8]);
-	gGameScene->addLight(gLights[9]);
-	gGameScene->addLight(gLights[10]);
-	gGameScene->addLight(gLights[11]);
-	gGameScene->addLight(gLights[12]);
+	gGameScene->addLight(gScene1Lights[0]);
+	gGameScene->addLight(gScene1Lights[1]);
+	gGameScene->addLight(gScene1Lights[2]);
+	gGameScene->addLight(gScene1Lights[3]);
+	gGameScene->addLight(gScene1Lights[4]);
+	gGameScene->addLight(gScene1Lights[5]);
+	gGameScene->addLight(gScene1Lights[6]);
+	gGameScene->addLight(gScene1Lights[7]);
+	gGameScene->addLight(gScene1Lights[8]);
+	gGameScene->addLight(gScene1Lights[9]);
+	gGameScene->addLight(gScene1Lights[10]);
+	gGameScene->addLight(gScene1Lights[11]);
+	gGameScene->addLight(gScene1Lights[12]);
+	gGameScene->addLight(gScene1Lights[13]);
 }
 
 void setupCamera()
@@ -405,7 +413,7 @@ void setupCamera()
 
 void setupMenu(Odyssey::RenderDevice* renderDevice, Odyssey::Application* application, std::shared_ptr<Odyssey::Scene>& _sceneObject, std::shared_ptr<Odyssey::Entity>& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent)
 {
-	_sceneObject = renderDevice->createScene();
+	_sceneObject = renderDevice->createScene(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f);
 	_entityToAdd = std::make_shared<Odyssey::Entity>();
 	_entityToAdd->addComponent<Odyssey::Transform>();
 	_entityToAdd->addComponent<Odyssey::UICanvas>();
@@ -451,26 +459,29 @@ void setupMainMenu(Odyssey::Application* application)
 	setupMenu(gRenderDevice, application, gMainMenu, gMenu, L"", "MainMenu", MenuComponent::eMainMenu);
 
 	// Set up a directional light
-	std::shared_ptr<Odyssey::Light> dirLight = std::make_shared<Odyssey::Light>();
-	dirLight->setLightType(Odyssey::LightType::Directional);
-	dirLight->setPosition(0, 0, 0);
-	dirLight->setDirection(0.75f, -0.45f, -0.055f);
-	dirLight->setColor(0.4f, 0.5f, 0.7f);
-	dirLight->setIntensity(1.0f);
-	dirLight->setRange(0.0f);
-	dirLight->setSpotAngle(0.0f);
-	gMainMenu->addLight(dirLight);
+	gMenuLights[0] = std::make_shared<Odyssey::Entity>();
+	gMenuLights[0]->addComponent<Odyssey::Transform>();
+	gMenuLights[0]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	gMenuLights[0]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	Odyssey::Light* light = gMenuLights[0]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Directional);
+	light->setColor(0.4f, 0.5f, 0.7f);
+	light->setIntensity(1.0f);
+	light->setRange(0.0f);
+	light->setSpotAngle(0.0f);
 
-	// Set up an ambient light
-	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
-	ambientLight->setLightType(Odyssey::LightType::Point);
-	ambientLight->setPosition(0.0, 10.0f, 0.0f);
-	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
-	ambientLight->setColor(0.5f, 0.5f, 0.5f);
-	ambientLight->setIntensity(10.0f);
-	ambientLight->setRange(30.0f);
-	ambientLight->setSpotAngle(0.0f);
-	gMainMenu->addLight(ambientLight);
+	gMenuLights[1] = std::make_shared<Odyssey::Entity>();
+	gMenuLights[1]->addComponent<Odyssey::Transform>();
+	gMenuLights[1]->getComponent<Odyssey::Transform>()->setPosition(0.0, 10.0f, 0.0f);
+	light = gMenuLights[1]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.5f, 0.5f, 0.5f);
+	light->setIntensity(5.0f);
+	light->setRange(30.0f);
+	light->setSpotAngle(0.0f);
+
+	gMainMenu->addLight(gMenuLights[0]);
+	gMainMenu->addLight(gMenuLights[1]);
 
 	// Create a paladin and add him to the main menu scene
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
@@ -490,26 +501,29 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	setupMenu(gRenderDevice, application, gTeamSelectScene, gTeamSelectMenu, L"", "TeamSelection", MenuComponent::eTeamSelector);
 
 	// Set up a directional light
-	std::shared_ptr<Odyssey::Light> dirLight = std::make_shared<Odyssey::Light>();
-	dirLight->setLightType(Odyssey::LightType::Directional);
-	dirLight->setPosition(0, 0, 0);
-	dirLight->setDirection(0.75f, -0.45f, -0.055f);
-	dirLight->setColor(0.4f, 0.5f, 0.7f);
-	dirLight->setIntensity(1.0f);
-	dirLight->setRange(0.0f);
-	dirLight->setSpotAngle(0.0f);
-	gTeamSelectScene->addLight(dirLight);
+	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
+	gMenuLights[2]->addComponent<Odyssey::Transform>();
+	gMenuLights[2]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	gMenuLights[2]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	Odyssey::Light* light = gMenuLights[2]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Directional);
+	light->setColor(0.4f, 0.5f, 0.7f);
+	light->setIntensity(1.0f);
+	light->setRange(0.0f);
+	light->setSpotAngle(0.0f);
 
-	// Set up an ambient light
-	std::shared_ptr<Odyssey::Light> ambientLight = std::make_shared<Odyssey::Light>();
-	ambientLight->setLightType(Odyssey::LightType::Point);
-	ambientLight->setPosition(0.0, 0.0f, 2.0f);
-	ambientLight->setDirection(0.0f, 0.0f, 0.0f);
-	ambientLight->setColor(0.5f, 0.5f, 0.5f);
-	ambientLight->setIntensity(5.0f);
-	ambientLight->setRange(30.0f);
-	ambientLight->setSpotAngle(0.0f);
-	gTeamSelectScene->addLight(ambientLight);
+	gMenuLights[3] = std::make_shared<Odyssey::Entity>();
+	gMenuLights[3]->addComponent<Odyssey::Transform>();
+	gMenuLights[3]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 2.0f);
+	light = gMenuLights[3]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.5f, 0.5f, 0.5f);
+	light->setIntensity(1.0f);
+	light->setRange(30.0f);
+	light->setSpotAngle(0.0f);
+
+	gTeamSelectScene->addLight(gMenuLights[2]);
+	gTeamSelectScene->addLight(gMenuLights[3]);
 
 	// Create a paladin and add him to the team select scene
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
@@ -883,194 +897,109 @@ void setupFire()
 	gGameScene->addEntity(fire11);
 }
 
-void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description)
-{
-	// Append the number of targets
-	std::wstring targets = L"Targets: ";
-	std::wstring valueText;
-	targets = targets.append(numTargets.c_str());
-
-	DirectX::XMFLOAT4 themeColor;
-
-	if (character == L"Paladin")
-	{
-		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	}
-	else if (character == L"Mage")
-	{
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	}
-
-	if (skillType == L"Attack")
-	{
-		valueText = L"Damage: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
-	else if (skillType == L"Support")
-	{
-		valueText = L"Value: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
-	else if (skillType == L"Heal")
-	{
-		valueText = L"Heal: ";
-		valueText = valueText.append(skillValue.c_str());
-	}
-
-	UINT windowWidth = gMainWindow->getWidth();
-	UINT windowHeight = gMainWindow->getHeight();
-	float x = 950;
-	float y = 425;
-	UINT width = 300;
-	UINT height = 150;
-	UINT pad = 10;
-
-	Odyssey::TextProperties title;
-	title.bold = true;
-	title.italic = false;
-	title.fontSize = 24.0f;
-	title.textAlignment = Odyssey::TextAlignment::Center;
-	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	title.fontName = L"Tw Cen MT Condensed";
-
-	Odyssey::TextProperties properties;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 14.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
-	properties.fontName = L"Tw Cen MT Condensed";
-
-	// Background and Separators
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 80), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-
-	// Title Text and Icons
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
-
-	// Skill Info
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 25 + pad, y + 50), themeColor, 150, 50, skillType, properties);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 80 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 105 + pad, y + 50), themeColor, 150, 50, targets, properties);
-
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + 175 + pad, y + 40 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 200 + pad, y + 50), themeColor, 150, 50, skillValue, properties);
-
-	// Description
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),
-		DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, description, properties);
-	canvas->setActive(false);
-}
-
-void setupPaladinSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor)
-{
-	// TODO: REFACTOR THIS LATER
-	// Add skill icons to portrait
-	Odyssey::UICanvas* canvas1 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas2 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas3 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas4 = character->addComponent<Odyssey::UICanvas>();
-	SkillHoverComponent* hover = character->addComponent<SkillHoverComponent>();
-
-	// Basic Attack icon
-	Odyssey::Sprite2D* skill1 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_1.png", 52, 45);
-	// Basic Attack hover
-	setupSkillHover(canvas1, L"Paladin", L"Basic Attack", L"assets/images/Paladin_Skill_1.png", L"0", L"Attack", L"1", L"15 dmg",
-		L"Description: Strike an enemy with divine power dealing 15 damage with a 30% chance to apply provoke. Restores 5 mana.");
-	// Basic Attack trigger
-	hover->registerSprite(skill1, canvas1);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Wind Slash icon
-	Odyssey::Sprite2D* skill2 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_2.png", 52, 45);
-	// Wind Slash hover
-	setupSkillHover(canvas2, L"Paladin", L"Judgement", L"assets/images/Paladin_Skill_2.png", L"15", L"Attack", L"1", L"200 dmg",
-		L"Description: Smite the enemy with holy light dealing 200 damage and healing the paladin for 15 health. Costs 15 mana.");
-	// Wind Slash trigger
-	hover->registerSprite(skill2, canvas2);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Firestorm icon
-	Odyssey::Sprite2D* skill3 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_3.png", 52, 45);
-	// Firestorm hover
-	setupSkillHover(canvas3, L"Paladin", L"Shield of Light", L"assets/images/Paladin_Skill_3.png", L"20", L"Support", L"4", L"+25 shield",
-		L"Description: A shield of light slams down in front of all team members granting a 25 health shield for 3 turns. Costs 20 mana.");
-	// Firestorm trigger
-	hover->registerSprite(skill3, canvas3);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Lightning Bolt icon
-	Odyssey::Sprite2D* skill4 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Paladin_Skill_4.png", 52, 45);
-	// Lightning Bolt hover
-	setupSkillHover(canvas4, L"Paladin", L"Blessing of Light", L"assets/images/Paladin_Skill_4.png", L"15", L"Support", L"4", L"+50% def",
-		L"Description: Protects all allies from harm granting them 50% reduced damage for 3 turns. Costs 15 mana.");
-	// Lightning Bolt trigger
-	hover->registerSprite(skill4, canvas4);
-}
-
-void setupMageSkills(std::shared_ptr<Odyssey::Entity> character, float xAnchor, float yAnchor)
-{
-	// TODO: REFACTOR THIS LATER
-	// Add skill icons to portrait
-	Odyssey::UICanvas* canvas1 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas2 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas3 = character->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas4 = character->addComponent<Odyssey::UICanvas>();
-	SkillHoverComponent* hover = character->addComponent<SkillHoverComponent>();
-
-	// Basic Attack icon
-	Odyssey::Sprite2D* skill1 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_1.png", 52, 45);
-	// Basic Attack hover
-	setupSkillHover(canvas1, L"Mage", L"Basic Attack", L"assets/images/Mage_Skill_1.png", L"0", L"Attack", L"1", L"10 dmg",
-		L"Description: Send forth an orb of chaotic magic inflicting 10 damage with a 15% chance to stun. Refunds 10 mana.");
-	// Basic Attack trigger
-	hover->registerSprite(skill1, canvas1);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Wind Slash icon
-	Odyssey::Sprite2D* skill2 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_2.png", 52, 45);
-	// Wind Slash hover
-	setupSkillHover(canvas2, L"Mage", L"Wind Slash", L"assets/images/Mage_Skill_2.png", L"10", L"Attack", L"4", L"15 x 4 dmg",
-		L"Description: Slash all enemies with a burst of wind dealing 15 damage per hit with a 100% chance to inflict speed down. Costs 10 mana.");
-	// Wind Slash trigger
-	hover->registerSprite(skill2, canvas2);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Firestorm icon
-	Odyssey::Sprite2D* skill3 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_3.png", 52, 45);
-	// Firestorm hover
-	setupSkillHover(canvas3, L"Mage", L"Firestorm", L"assets/images/Mage_Skill_3.png", L"30", L"Attack", L"4", L"50 x 4 dmg",
-		L"Description: Conjure a hellstorm dealing 50 damage to all enemies and inflicting burn with a 100% chance. Costs 30 mana.");
-	// Firestorm trigger
-	hover->registerSprite(skill3, canvas3);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// Lightning Bolt icon
-	Odyssey::Sprite2D* skill4 = character->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Mage_Skill_4.png", 52, 45);
-	// Lightning Bolt hover
-	setupSkillHover(canvas4, L"Mage", L"Lightning Bolt", L"assets/images/Mage_Skill_4.png", L"35", L"Attack", L"1", L"60 dmg",
-		L"Description: Channel a bolt of lightning dealing 60 damage to a single enemy with a 100% chance to stun. Costs 35 mana.");
-	// Lightning Bolt trigger
-	hover->registerSprite(skill4, canvas4);
-}
+//void setuppaladinskills(std::shared_ptr<odyssey::entity> character, float xanchor, float yanchor)
+//{
+//	// todo: refactor this later
+//	// add skill icons to portrait
+//	odyssey::uicanvas* canvas1 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas2 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas3 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas4 = character->addcomponent<odyssey::uicanvas>();
+//	skillhovercomponent* hover = character->addcomponent<skillhovercomponent>();
+//
+//	// basic attack icon
+//	odyssey::sprite2d* skill1 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/paladin_skill_1.png", 52, 45);
+//	// basic attack hover
+//	setupskillhover(canvas1, l"paladin", l"basic attack", l"assets/images/paladin_skill_1.png", l"0", l"attack", l"1", l"15 dmg",
+//		l"description: strike an enemy with divine power dealing 15 damage with a 30% chance to apply provoke. restores 5 mana.");
+//	// basic attack trigger
+//	hover->registersprite(skill1, canvas1);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// wind slash icon
+//	odyssey::sprite2d* skill2 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/paladin_skill_2.png", 52, 45);
+//	// wind slash hover
+//	setupskillhover(canvas2, l"paladin", l"judgement", l"assets/images/paladin_skill_2.png", l"15", l"attack", l"1", l"200 dmg",
+//		l"description: smite the enemy with holy light dealing 200 damage and healing the paladin for 15 health. costs 15 mana.");
+//	// wind slash trigger
+//	hover->registersprite(skill2, canvas2);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// firestorm icon
+//	odyssey::sprite2d* skill3 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/paladin_skill_3.png", 52, 45);
+//	// firestorm hover
+//	setupskillhover(canvas3, l"paladin", l"shield of light", l"assets/images/paladin_skill_3.png", l"20", l"support", l"4", l"+25 shield",
+//		l"description: a shield of light slams down in front of all team members granting a 25 health shield for 3 turns. costs 20 mana.");
+//	// firestorm trigger
+//	hover->registersprite(skill3, canvas3);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// lightning bolt icon
+//	odyssey::sprite2d* skill4 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/paladin_skill_4.png", 52, 45);
+//	// lightning bolt hover
+//	setupskillhover(canvas4, l"paladin", l"blessing of light", l"assets/images/paladin_skill_4.png", l"15", l"support", l"4", l"+50% def",
+//		l"description: protects all allies from harm granting them 50% reduced damage for 3 turns. costs 15 mana.");
+//	// lightning bolt trigger
+//	hover->registersprite(skill4, canvas4);
+//}
+//
+//void setupmageskills(std::shared_ptr<odyssey::entity> character, float xanchor, float yanchor)
+//{
+//	// todo: refactor this later
+//	// add skill icons to portrait
+//	odyssey::uicanvas* canvas1 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas2 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas3 = character->addcomponent<odyssey::uicanvas>();
+//	odyssey::uicanvas* canvas4 = character->addcomponent<odyssey::uicanvas>();
+//	skillhovercomponent* hover = character->addcomponent<skillhovercomponent>();
+//
+//	// basic attack icon
+//	odyssey::sprite2d* skill1 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/mage_skill_1.png", 52, 45);
+//	// basic attack hover
+//	setupskillhover(canvas1, l"mage", l"basic attack", l"assets/images/mage_skill_1.png", l"0", l"attack", l"1", l"10 dmg",
+//		l"description: send forth an orb of chaotic magic inflicting 10 damage with a 15% chance to stun. refunds 10 mana.");
+//	// basic attack trigger
+//	hover->registersprite(skill1, canvas1);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// wind slash icon
+//	odyssey::sprite2d* skill2 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/mage_skill_2.png", 52, 45);
+//	// wind slash hover
+//	setupskillhover(canvas2, l"mage", l"wind slash", l"assets/images/mage_skill_2.png", l"10", l"attack", l"4", l"15 x 4 dmg",
+//		l"description: slash all enemies with a burst of wind dealing 15 damage per hit with a 100% chance to inflict speed down. costs 10 mana.");
+//	// wind slash trigger
+//	hover->registersprite(skill2, canvas2);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// firestorm icon
+//	odyssey::sprite2d* skill3 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/mage_skill_3.png", 52, 45);
+//	// firestorm hover
+//	setupskillhover(canvas3, l"mage", l"firestorm", l"assets/images/mage_skill_3.png", l"30", l"attack", l"4", l"50 x 4 dmg",
+//		l"description: conjure a hellstorm dealing 50 damage to all enemies and inflicting burn with a 100% chance. costs 30 mana.");
+//	// firestorm trigger
+//	hover->registersprite(skill3, canvas3);
+//
+//	// increment the icon
+//	xanchor += 56.5f;
+//
+//	// lightning bolt icon
+//	odyssey::sprite2d* skill4 = character->getcomponent<odyssey::uicanvas>()->addelement<odyssey::sprite2d>(directx::xmfloat2(xanchor, yanchor), l"assets/images/mage_skill_4.png", 52, 45);
+//	// lightning bolt hover
+//	setupskillhover(canvas4, l"mage", l"lightning bolt", l"assets/images/mage_skill_4.png", l"35", l"attack", l"1", l"60 dmg",
+//		l"description: channel a bolt of lightning dealing 60 damage to a single enemy with a 100% chance to stun. costs 35 mana.");
+//	// lightning bolt trigger
+//	hover->registersprite(skill4, canvas4);
+//}
 
 void setupScene2()
 {
@@ -1088,147 +1017,115 @@ void setupScene2()
 	Odyssey::FileManager::getInstance().importScene(gScene2, "assets/models/SceneFinal.dxm");
 
 	// Set up a directional light
+	gScene2Lights[0] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[0]->addComponent<Odyssey::Transform>();
+	gScene2Lights[0]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	gScene2Lights[0]->getComponent<Odyssey::Transform>()->setRotation(15.0f, 250.0f, 0.0f);
+
+	Odyssey::Light* light = gScene2Lights[0]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Directional);
+	light->setColor(0.65f, 0.2f, 0.1f);
+	light->setIntensity(1.0f);
+	light->setRange(0.0f);
+	light->setSpotAngle(0.0f);
 
 	// Ambient Lighting
-	gLights2[0] = std::make_shared<Odyssey::Light>();
-	gLights2[0]->setLightType(Odyssey::LightType::Directional);
-	gLights2[0]->setPosition(0, 0, 0);
-	gLights2[0]->setDirection(-0.6f, -0.35f, -0.5f);
-	gLights2[0]->setColor(0.65f, 0.2f, 0.1f);
-	gLights2[0]->setIntensity(1.0f);
-	gLights2[0]->setRange(0.0f);
-	gLights2[0]->setSpotAngle(0.0f);
+	gScene2Lights[1] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[1]->addComponent<Odyssey::Transform>();
+	gScene2Lights[1]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 5.0f, 30.0f);
+	light = gScene2Lights[1]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.25f, 0.25f, 0.25f);
+	light->setIntensity(0.1f);
+	light->setRange(75.0f);
+	light->setSpotAngle(0.0f);
+
+	// Ambient Lighting
+	gScene2Lights[2] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[2]->addComponent<Odyssey::Transform>();
+	gScene2Lights[2]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 10.0f, 40.0f);
+	light = gScene2Lights[2]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.5f, 0.2f, 0.1f);
+	light->setIntensity(0.5f);
+	light->setRange(100.0f);
+	light->setSpotAngle(0.0f);
 
 	// Fire 1
-	gLights2[1] = std::make_shared<Odyssey::Light>();
-	gLights2[1]->setLightType(Odyssey::LightType::Point);
-	gLights2[1]->setPosition(-18.3f, 11.75f, 22.8f);
-	gLights2[1]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[1]->setColor(0.8f, 0.5f, 0.4f);
-	gLights2[1]->setIntensity(1.0f);
-	gLights2[1]->setRange(25.0f);
-	gLights2[1]->setSpotAngle(0.0f);
+	gScene2Lights[3] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[3]->addComponent<Odyssey::Transform>();
+	gScene2Lights[3]->getComponent<Odyssey::Transform>()->setPosition(-18.3f, 11.75f, 22.8f);
+	light = gScene2Lights[3]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(1.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
 	// Fire 2
-	gLights2[2] = std::make_shared<Odyssey::Light>();
-	gLights2[2]->setLightType(Odyssey::LightType::Point);
-	gLights2[2]->setPosition(-18.3f, 11.75f, 4.0f);
-	gLights2[2]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[2]->setColor(0.8f, 0.5f, 0.4f);
-	gLights2[2]->setIntensity(1.0f);
-	gLights2[2]->setRange(25.0f);
-	gLights2[2]->setSpotAngle(0.0f);
+	gScene2Lights[4] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[4]->addComponent<Odyssey::Transform>();
+	gScene2Lights[4]->getComponent<Odyssey::Transform>()->setPosition(-18.3f, 11.75f, 4.0f);
+	light = gScene2Lights[4]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(1.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
 	// Fire 3
-	gLights2[3] = std::make_shared<Odyssey::Light>();
-	gLights2[3]->setLightType(Odyssey::LightType::Point);
-	gLights2[3]->setPosition(-9.58f, 10.5f, 84.08f);
-	gLights2[3]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[3]->setColor(0.8f, 0.5f, 0.4f);
-	gLights2[3]->setIntensity(1.0f);
-	gLights2[3]->setRange(25.0f);
-	gLights2[3]->setSpotAngle(0.0f);
-
-	/*gLights[3] = std::make_shared<Odyssey::Light>();
-	gLights[3]->setLightType(Odyssey::LightType::Point);
-	gLights[3]->setPosition(-1.0f, 3.5f, 29.5f);
-	gLights[3]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights[3]->setColor(0.0f, 0.75f, 0.6f);
-	gLights[3]->setIntensity(2.0f);
-	gLights[3]->setRange(25.0f);
-	gLights[3]->setSpotAngle(0.0f);*/
+	gScene2Lights[5] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[5]->addComponent<Odyssey::Transform>();
+	gScene2Lights[5]->getComponent<Odyssey::Transform>()->setPosition(-9.58f, 10.5f, 84.08f);
+	light = gScene2Lights[5]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(1.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
 	// Fire 4
-	gLights2[4] = std::make_shared<Odyssey::Light>();
-	gLights2[4]->setLightType(Odyssey::LightType::Point);
-	gLights2[4]->setPosition(-23.1f, 10.50f, 84.08f);
-	gLights2[4]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[4]->setColor(0.8f, 0.5f, 0.4f);
-	gLights2[4]->setIntensity(1.0f);
-	gLights2[4]->setRange(25.0f);
-	gLights2[4]->setSpotAngle(0.0f);
+	gScene2Lights[6] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[6]->addComponent<Odyssey::Transform>();
+	gScene2Lights[6]->getComponent<Odyssey::Transform>()->setPosition(-23.1f, 10.50f, 84.08f);
+	light = gScene2Lights[6]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(1.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
 	// Candle Light
-	gLights2[5] = std::make_shared<Odyssey::Light>();
-	gLights2[5]->setLightType(Odyssey::LightType::Point);
-	gLights2[5]->setPosition(-19.06f, 10.17f, 56.03f);
-	gLights2[5]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[5]->setColor(0.8f, 0.5f, 0.4f);
-	gLights2[5]->setIntensity(0.25f);
-	gLights2[5]->setRange(25.0f);
-	gLights2[5]->setSpotAngle(0.0f);
-
-	// Spot light
-	gLights2[6] = std::make_shared<Odyssey::Light>();
-	gLights2[6]->setLightType(Odyssey::LightType::Spot);
-	gLights2[6]->setPosition(0.0f, 30.0f, 52.5f);
-	gLights2[6]->setDirection(0.0f, -1.0f, 0.0f);
-	gLights2[6]->setColor(0.25f, 0.25f, 0.25f);
-	gLights2[6]->setIntensity(1.0f);
-	gLights2[6]->setRange(70.0f);
-	gLights2[6]->setSpotAngle(0.35f);
+	gScene2Lights[7] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[7]->addComponent<Odyssey::Transform>();
+	gScene2Lights[7]->getComponent<Odyssey::Transform>()->setPosition(-19.06f, 10.17f, 56.03f);
+	light = gScene2Lights[7]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.8f, 0.5f, 0.4f);
+	light->setIntensity(0.25f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
 	// Hall Light
-	gLights2[7] = std::make_shared<Odyssey::Light>();
-	gLights2[7]->setLightType(Odyssey::LightType::Point);
-	gLights2[7]->setPosition(-10.0, 5.0f, 100.0f);
-	gLights2[7]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[7]->setColor(0.7f, 0.25f, 0.1f);
-	gLights2[7]->setIntensity(2.0f);
-	gLights2[7]->setRange(25.0f);
-	gLights2[7]->setSpotAngle(0.0f);
+	gScene2Lights[8] = std::make_shared<Odyssey::Entity>();
+	gScene2Lights[8]->addComponent<Odyssey::Transform>();
+	gScene2Lights[8]->getComponent<Odyssey::Transform>()->setPosition(-10.0f, 5.0f, 100.0f);
+	light = gScene2Lights[8]->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.7f, 0.25f, 0.1f);
+	light->setIntensity(2.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
 
-	// Ambient Lighting
-	gLights2[8] = std::make_shared<Odyssey::Light>();
-	gLights2[8]->setLightType(Odyssey::LightType::Point);
-	gLights2[8]->setPosition(0.0f, 10.0f, 20.0f);
-	gLights2[8]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[8]->setColor(0.6f, 0.4f, 0.2f);
-	gLights2[8]->setIntensity(0.75f);
-	gLights2[8]->setRange(50.0f);
-	gLights2[8]->setSpotAngle(0.0f);
-
-	// Ambient Lighting
-	gLights2[9] = std::make_shared<Odyssey::Light>();
-	gLights2[9]->setLightType(Odyssey::LightType::Point);
-	gLights2[9]->setPosition(0.0f, 10.0f, 40.0f);
-	gLights2[9]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[9]->setColor(0.65f, 0.2f, 0.1f);
-	gLights2[9]->setIntensity(0.75f);
-	gLights2[9]->setRange(50.0f);
-	gLights2[9]->setSpotAngle(0.0f);
-
-	// Ambient Lighting
-	gLights2[10] = std::make_shared<Odyssey::Light>();
-	gLights2[10]->setLightType(Odyssey::LightType::Point);
-	gLights2[10]->setPosition(0.0f, 10.0f, 70.0f);
-	gLights2[10]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[10]->setColor(0.65f, 0.2f, 0.1f);
-	gLights2[10]->setIntensity(0.75f);
-	gLights2[10]->setRange(50.0f);
-	gLights2[10]->setSpotAngle(0.0f);
-
-	gLights2[11] = std::make_shared<Odyssey::Light>();
-	gLights2[11]->setLightType(Odyssey::LightType::Point);
-	gLights2[11]->setPosition(0.0f, 15.0f, 40.0f);
-	gLights2[11]->setDirection(0.0f, 0.0f, 0.0f);
-	gLights2[11]->setColor(0.35f, 0.35f, 0.35f);
-	gLights2[11]->setIntensity(0.5f);
-	gLights2[11]->setRange(100.0f);
-	gLights2[11]->setSpotAngle(0.0f);
-
-	gScene2->addLight(gLights2[0]);
-	gScene2->addLight(gLights2[1]);
-	gScene2->addLight(gLights2[2]);
-	gScene2->addLight(gLights2[3]);
-	gScene2->addLight(gLights2[4]);
-	gScene2->addLight(gLights2[5]);
-	gScene2->addLight(gLights2[6]);
-	gScene2->addLight(gLights2[7]);
-	gScene2->addLight(gLights2[8]);
-	gScene2->addLight(gLights2[9]);
-	gScene2->addLight(gLights2[10]);
-	gScene2->addLight(gLights2[11]);
+	gScene2->addLight(gScene2Lights[0]);
+	gScene2->addLight(gScene2Lights[1]);
+	gScene2->addLight(gScene2Lights[2]);
+	gScene2->addLight(gScene2Lights[3]);
+	gScene2->addLight(gScene2Lights[4]);
+	gScene2->addLight(gScene2Lights[5]);
+	gScene2->addLight(gScene2Lights[6]);
+	gScene2->addLight(gScene2Lights[7]);
+	gScene2->addLight(gScene2Lights[8]);
 
 	// Setup VFX
 	std::shared_ptr<Odyssey::Entity> fire1 = std::make_shared<Odyssey::Entity>();
@@ -1372,11 +1269,12 @@ void setUpTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 hudPosition = { 10.0f, static_cast<float>(height) - 120.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
+	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
 
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
-	setupPaladinSkills(characterToAdd, 144.0f, 624.0f);
+	//setupPaladinSkills(characterToAdd, 144.0f, 624.0f);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
@@ -1390,7 +1288,7 @@ void setUpTowerManager()
 	
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
-	setupPaladinSkills(characterToAdd, 604.0f, 624.0f);
+	//setupPaladinSkills(characterToAdd, 604.0f, 624.0f);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
@@ -1404,7 +1302,7 @@ void setUpTowerManager()
 	
 	// TODO: REFACTOR THIS LATER
 	// Setup Mage skills
-	setupMageSkills(characterToAdd, 1044.0f, 624.0f);
+	//setupMageSkills(characterToAdd, 1044.0f, 624.0f);
 
 	// Added the Character's health popup
 	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());

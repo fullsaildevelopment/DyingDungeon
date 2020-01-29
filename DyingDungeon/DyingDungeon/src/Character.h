@@ -7,12 +7,6 @@
 #include "GameUIManager.h"
 #include <vector>
 
-// Hero identification enum
-enum class HEROID { Paladin = 0, Mage, Bard };
-
-// Enemy identification enum
-enum class ENEMYID { Skeleton = 0, Ganfaul };
-
 // Character State identification enum
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
@@ -22,6 +16,12 @@ class Character : public Odyssey::Component
 
 public:
 	Character();
+	struct AnimationImportData
+	{
+		std::string mAnimationNickName = "NULLNAME";
+		std::string mAnimationPath = "NULLPATH";
+		bool mIsLooping = true;
+	};
 public:
 	//Virtual functions from Component base class
 	virtual void initialize();
@@ -144,15 +144,6 @@ public:
 	// Removes all status effects from characters
 	void ClearStatusEffects();
 
-	//Update HealthBar UI related to this character
-	void UpdateHealthBar();
-
-	//Update ManaBar UI related to this character
-	void UpdateManaBar();
-
-	// For bryces dumbasss, made by reds dumbass
-	//std::wstring FormatToPercentageW(float number);
-
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 
@@ -162,8 +153,8 @@ public:
 	// Returns the character portrait file path
 	std::wstring GetPortraitPath();
 
-	// Returns the vector of strings containing the animation paths
-	std::vector<std::string> GetAnimationPaths();
+	// Returns the vector of animation import data containing the animation paths, names, and bools
+	std::vector<AnimationImportData> GetAnimationPaths();
 
 	// Returns the current level of the character
 	unsigned int GetLevel();
@@ -174,11 +165,11 @@ public:
 	// Returns the description of the character
 	std::wstring GetDescription();
 
+	// Returns the models file path name
+	std::string GetModel();
+
 	// Sets the description of the character
 	void SetDescription(std::wstring newDescription);
-
-	// Returns the Turn order number for this character
-	Odyssey::Text2D* GetTurnOrderNumber();
 
 	// Set the characters Hud index
 	void SetHudIndex(unsigned int newIndex);
@@ -244,8 +235,8 @@ protected:
 	// Character Description
 	std::wstring mDescription;
 
-	// Vector of animation names used for character
-	std::vector<std::string> mAnimations;
+	// Vector of animation import data used for character
+	std::vector<AnimationImportData> mAnimations;
 	
 	// Vector of shared pointers that point to the skills the character has
 	std::vector<std::shared_ptr<Skills>> mSkillList;
@@ -273,19 +264,6 @@ protected:
 
 	// Pointer to the particle system used for "getting hit" effects
 	Odyssey::ParticleSystem* mBloodParticleEffect;
-
-	//DELETE THIS HERASY
-	// Odyssey Entitys needed for UI elements //
-	///////////////////////////////////////////
-	Odyssey::Rectangle2D* pHealthBar;
-	Odyssey::Rectangle2D* pManaBar;
-	Odyssey::Text2D* pTurnNumber;
-	Odyssey::Text2D* mBigHpText;
-	Odyssey::Text2D* mHpText;
-	Odyssey::Text2D* mMpText;
-	Odyssey::Text2D* pDmgText;
-	bool mDisplaying;
-	///////////////////////////////////////////
 
 	public:
 	// shared pointer to the entity used for targeting 

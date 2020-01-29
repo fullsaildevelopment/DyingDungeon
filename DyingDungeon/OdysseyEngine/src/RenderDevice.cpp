@@ -46,12 +46,21 @@ namespace Odyssey
 		return mFactory;
 	}
 
-	RenderDevice::~RenderDevice()
+	std::shared_ptr<Scene> RenderDevice::createScene()
 	{
-		int debug = 0;
+		static bool init = false;
+
+		if (init == false)
+		{
+			FileManager::getInstance().initialize(shared_from_this());
+			init = true;
+		}
+
+		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>(shared_from_this());
+		return scene;
 	}
 
-	std::shared_ptr<Scene> RenderDevice::createScene()
+	std::shared_ptr<Scene> RenderDevice::createScene(DirectX::XMFLOAT3 center, float radius)
 	{
 		static bool init = false;
 		if (init == false)
@@ -59,7 +68,7 @@ namespace Odyssey
 			FileManager::getInstance().initialize(shared_from_this());
 			init = true;
 		}
-		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>(shared_from_this());
+		std::shared_ptr<Scene> scene = std::make_shared<SceneDX11>(shared_from_this(), center, radius);
 		return scene;
 	}
 

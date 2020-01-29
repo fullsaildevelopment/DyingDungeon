@@ -56,6 +56,9 @@ public: // Functions
 
 private: // Varibales
 
+	// Cheat Code Variables
+	bool mUsedBossCheatCode = false;
+
 	//Battle Instance
 	BattleInstance* mCurrentBattle;
 

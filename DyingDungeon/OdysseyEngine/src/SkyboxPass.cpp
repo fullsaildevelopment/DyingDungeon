@@ -40,7 +40,7 @@ namespace Odyssey
 		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/SkyboxPixelShader.cso", nullptr);
 	}
 
-	void SkyboxPass::preRender(RenderArgs& args)
+	void SkyboxPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Update the buffer
 		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
@@ -50,21 +50,21 @@ namespace Odyssey
 		mPixelShader->bind(mDeviceContext);
 	}
 
-	void SkyboxPass::render(RenderArgs& args)
+	void SkyboxPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Set the skybox to the camera's position
-		args.skybox->getComponent<Transform>()->setPosition(args.camPos.x, args.camPos.y, args.camPos.z);
+		renderPackage.skybox.transform->setPosition(renderPackage.cameraPosition.x, renderPackage.cameraPosition.y, renderPackage.cameraPosition.z);
 
 		// Get the object's global transform and set the MVP acoordingly
-		args.perObject.world = args.skybox->getComponent<Transform>()->getLocalTransform();
+		args.perObject.world = renderPackage.skybox.transform->getLocalTransform();
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Draw the skybox
-		if (args.skybox->getComponent<MeshRenderer>())
+		if (renderPackage.skybox.meshRenderer)
 		{
-			args.skybox->getComponent<MeshRenderer>()->bind(mDeviceContext);
-			mDeviceContext->DrawIndexed(args.skybox->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+			renderPackage.skybox.meshRenderer->bind(mDeviceContext);
+			mDeviceContext->DrawIndexed(renderPackage.skybox.meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
 		}
 
 		// Clear the depth of the render targets

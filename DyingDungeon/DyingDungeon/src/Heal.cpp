@@ -3,7 +3,7 @@
 // Constructor
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
-	mSkillTypeId = SKILLTYPE::HEAL;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -15,7 +15,7 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
 {
-	mSkillTypeId = SKILLTYPE::HEAL;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
 	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
@@ -30,6 +30,7 @@ void Heal::Use(Character& caster, Character& target)
 {
 	target.ReceiveHealing(mHealing);
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 }
 
 // Get the amount the heal is for

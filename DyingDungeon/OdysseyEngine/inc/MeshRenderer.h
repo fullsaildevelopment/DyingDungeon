@@ -13,7 +13,7 @@ namespace Odyssey
 
 	class MeshRenderer : public Component
 	{
-		CLASS_DECLARATION(Animator)
+		CLASS_DECLARATION(MeshRenderer)
 
 	public: // Rule of 3
 		MeshRenderer();

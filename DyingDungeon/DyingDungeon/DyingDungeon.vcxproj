@@ -191,6 +191,7 @@
     <ClCompile Include="src\StatUp.cpp" />
     <ClCompile Include="src\StatusEffect.cpp" />
     <ClCompile Include="src\Stun.cpp" />
+    <ClCompile Include="src\TeamManager.cpp" />
     <ClCompile Include="src\TeamSelectionController.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
     <ClCompile Include="src\TowerSelectController.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="src\Stun.h" />
     <ClInclude Include="src\StatusEvents.h" />
     <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\TeamManager.h" />
     <ClInclude Include="src\TeamSelectionController.h" />
     <ClInclude Include="src\TowerManager.h" />
     <ClInclude Include="src\TowerSelectController.h" />

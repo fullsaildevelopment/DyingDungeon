@@ -14,7 +14,7 @@ public:
 	{
 		std::string profile = "";
 		std::string name = "";
-		HEROID characterIDs[3] = {HEROID::Paladin, HEROID::Paladin, HEROID::Paladin};
+		GameplayTypes::HEROID characterIDs[3] = {GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin};
 	};
 private:
 	std::vector<Loadout> loadouts;
@@ -73,7 +73,7 @@ public:
 	/// <param name="characterID_0">Hero id for the first character in the loadout</param>
 	/// <param name="characterID_1">Hero id for the second character in the loadout</param>
 	/// <param name="characterID_2">Hero id for the third character in the loadout</param>
-	void AddLoadOut(std::string loadoutName, HEROID characterID_0, HEROID characterID_1, HEROID characterID_2);
+	void AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2);
 	/// <summary>
 	/// Saves all loadouts to binary files
 	/// </summary>

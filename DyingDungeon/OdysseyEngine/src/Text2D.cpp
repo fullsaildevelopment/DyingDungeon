@@ -39,7 +39,8 @@ namespace Odyssey
 		}
 
 		// Render the text to the render target
-		context->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get());
+		D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_CLIP;
+		context->DrawTextW(mText.c_str(), static_cast<UINT32>(mText.length()), mFormat.Get(), mShape, mBrush.Get(), options);
 		mLock.unlock(LockState::Write);
 	}
 

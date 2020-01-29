@@ -61,7 +61,7 @@ namespace Odyssey
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 	}
 
-	void OpaquePass::preRender(RenderArgs& args)
+	void OpaquePass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Update the buffer
 		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
@@ -76,9 +76,9 @@ namespace Odyssey
 		mPixelShader->bind(mDeviceContext);
 	}
 
-	void OpaquePass::render(RenderArgs& args)
+	void OpaquePass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		std::multimap<float, MeshRenderer*> renderMap;
+		std::multimap<float, RenderObject*> renderMap;
 		UINT numCulled = 0;
 		UINT total = 0;
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
@@ -89,27 +89,25 @@ namespace Odyssey
 		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
-		if (Camera* camera = args.camera->getComponent<Camera>())
+		if (renderPackage.camera)
 		{
-			Frustum* frustum = camera->getFrustum();
-			for (MeshRenderer* meshRenderer : args.renderList)
+			Frustum* frustum = renderPackage.frustum;
+			for (int i = 0; i < renderPackage.renderObjects.size(); i++)
 			{
-				if (meshRenderer->isActive() && meshRenderer->getEntity()->isActive() && meshRenderer->getEntity()->isVisible())
+				if (renderPackage.renderObjects[i].meshRenderer->isActive() && renderPackage.renderObjects[i].meshRenderer->getEntity()->isActive() && renderPackage.renderObjects[i].meshRenderer->getEntity()->isVisible())
 				{
 					if (mFrustumCull == true)
 					{
-						Entity* renderObject = meshRenderer->getEntity();
-
-						AABB* aabb = renderObject->getComponent<AABB>();
+						AABB* aabb = renderPackage.renderObjects[i].aabb;
 						bool inFrustum = frustum->checkFrustumView(*(aabb));
-						if (renderObject->getStatic() == false || inFrustum)
+						if (renderPackage.renderObjects[i].transform->getEntity()->getStatic() == false || inFrustum)
 						{
 							// Depth sorting
-							Transform* transform = renderObject->getComponent<Transform>();
+							Transform* transform = renderPackage.renderObjects[i].transform;
 							globalTransform = transform->getGlobalTransform();
 							DirectX::XMMATRIX viewSpace = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&globalTransform), view);
 							float depth = DirectX::XMVectorGetZ(viewSpace.r[3]);
-							renderMap.insert(std::pair<float, MeshRenderer*>(depth, meshRenderer));
+							renderMap.insert(std::pair<float, RenderObject*>(depth, &renderPackage.renderObjects[i]));
 						}
 						else
 						{
@@ -119,33 +117,25 @@ namespace Odyssey
 				}
 				total++;
 			}
-			if (renderMap.size() == 0)
-			{
-				int debug = 0;
-			}
+
 			for (auto itr = renderMap.begin(); itr != renderMap.end(); itr++)
 			{
-				Entity* renderObject = itr->second->getEntity();
+				updateLightingBuffer(itr->second, args, renderPackage);
 
-				updateLightingBuffer(renderObject, args);
-
-				AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>();
-
-				if (rootAnimator)
+				if (itr->second->animator)
 				{
-					rootAnimator->bind(mDeviceContext);
+					itr->second->animator->bind(mDeviceContext);
 				}
-				updateLightingBuffer(renderObject, args);
-				renderSceneObject(renderObject, args);
 
-				if (rootAnimator)
+				renderSceneObject(itr->second, args);
+
+				if (itr->second->animator)
 				{
-					rootAnimator->unbind(mDeviceContext);
+					itr->second->animator->unbind(mDeviceContext);
 				}
 			}
 		}
 		
-
 		EventManager::getInstance().publish(new RenderEvent(total, static_cast<unsigned int>(renderMap.size()), numCulled));
 		performance->EndEvent();
 	}
@@ -155,34 +145,50 @@ namespace Odyssey
 		mFrustumCull = enable;
 	}
 
-	void OpaquePass::updateLightingBuffer(Entity* entity, RenderArgs& args)
+	void OpaquePass::updateLightingBuffer(RenderObject* renderObject, RenderArgs& args, RenderPackage& renderPackage)
 	{
 		// Generate a list of lights on a per-object basis
 		SceneLighting sceneLighting;
 		sceneLighting.numLights = 0;
 
 		// Set the camera's position for specular highlighting
-		sceneLighting.camPos = args.camera->getComponent<Transform>()->getPosition();
+		sceneLighting.camPos = renderPackage.cameraPosition;
 
-		for (std::shared_ptr<Light> light : args.lightList)
+		for (Light* light : renderPackage.sceneLights)
 		{
-			if (sceneLighting.numLights != 8)
+			ShaderLight shaderLight;
+			if (sceneLighting.numLights != 8 && light->getEntity()->isActive() && light->getEntity()->isVisible())
 			{
 				if (light->getLightType() == LightType::Point)
 				{
 					Sphere sphere;
-					light->getPosition(sphere.center);
+					DirectX::XMFLOAT4 pos = light->getPosition();
+					sphere.center = { pos.x, pos.y, pos.z };
 					sphere.radius = light->getRange();
-					if (entity->getComponent<AABB>()->testAABBtoSphere(sphere))
+					if (renderObject->aabb->testAABBtoSphere(sphere))
 					{
-						sceneLighting.sceneLights[sceneLighting.numLights] = *light;
+						shaderLight.color = light->getColor();
+						shaderLight.intensity = light->getIntensity();
+						shaderLight.range = light->getRange();
+						shaderLight.lightType = (UINT)light->getLightType();
+						shaderLight.cone = light->getSpotAngle();
+						shaderLight.worldPosition = light->getPosition();
+						shaderLight.worldDirection = light->getDirection();
+						sceneLighting.sceneLights[sceneLighting.numLights] = shaderLight;
 						sceneLighting.numLights++;
 					}
 				}
 				else
 				{
 					// Directional and spot lights are automatically added to the light list
-					sceneLighting.sceneLights[sceneLighting.numLights] = *light;
+					shaderLight.color = light->getColor();
+					shaderLight.intensity = light->getIntensity();
+					shaderLight.range = light->getRange();
+					shaderLight.lightType = (UINT)light->getLightType();
+					shaderLight.cone = light->getSpotAngle();
+					shaderLight.worldPosition = light->getPosition();
+					shaderLight.worldDirection = light->getDirection();
+					sceneLighting.sceneLights[sceneLighting.numLights] = shaderLight;
 					sceneLighting.numLights++;
 				}
 			}
@@ -194,17 +200,16 @@ namespace Odyssey
 		mLightingBuffer->bind(mDeviceContext, 1, ShaderType::PixelShader);
 	}
 
-	void OpaquePass::renderSceneObject(Entity* object, RenderArgs& args)
+	void OpaquePass::renderSceneObject(RenderObject* renderObject, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
-		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
+		args.perObject.world = renderObject->transform->getGlobalTransform();
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer
-		MeshRenderer* meshRenderer = object->getComponent<MeshRenderer>();
-		meshRenderer->bind(mDeviceContext);
+		renderObject->meshRenderer->bind(mDeviceContext);
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(renderObject->meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }
