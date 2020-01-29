@@ -158,7 +158,9 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	width += 70;
 	mStatsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Game Statistics", properties);
 	// Setup team logo
-	mTeamLogo = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudiosLogo.png", screenWidth, screenHeight);
+	mApeBackground = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudios_Background_Head.png", screenWidth, screenHeight);
+	// Set the laser image to animate
+	mAnimatedLaser = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudiosBlast.png", screenWidth, screenHeight);
 
 	// Add the pause menu to the main scene
 	_sceneToAddTo->addEntity(mMainMenu);
@@ -899,7 +901,6 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 	// Return the canvas we just created 
 	return newHUD->pCanvas;
 }
-
 
 void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition)
 {
