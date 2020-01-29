@@ -467,12 +467,11 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
 	mStatsBackButtonText->setVisible(true);
-	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
 	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f);
 	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) + 60.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
+	mStatsPrevButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
 	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
+	mStatsNextButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
 
 	_sceneToAddTo->addEntity(mStatsMenu);
 	
@@ -484,20 +483,45 @@ void GameUIManager::ShowStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
-	UpdateStatsMenu();
 	mStatMenuCurrentLevel = 1;
 	mStatMenuCurrentTurn = 1;
-	//mStatMenuCurrentRound = 1;
+	mStatsPrevButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrev);
+	mStatsNextButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNext);
+	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
+	UpdateStatsMenu();
 }
 
 void GameUIManager::StatsMenuPrev()
 {
-
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentTurn > 1)
+		{
+			mStatMenuCurrentTurn--;
+			UpdateStatsMenu();
+		}
+	}
 }
 
-void GameUIManager::StatsMeuNext()
+void GameUIManager::StatsMenuNext()
 {
-
+	if (StatTracker::Instance().GetLevelSize() > 0) {
+		if (mStatMenuCurrentTurn < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
+		{
+			mStatMenuCurrentTurn++;
+			UpdateStatsMenu();
+		}
+		else if ((mStatMenuCurrentTurn + 1) > StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
+		{
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentLevel++;
+			if (mStatMenuCurrentLevel > StatTracker::Instance().GetLevelSize())
+			{
+				mStatMenuCurrentLevel = 1;
+			}
+			UpdateStatsMenu();
+		}
+	}
 }
 
 void GameUIManager::HideStatsMenu()
@@ -509,7 +533,7 @@ void GameUIManager::HideStatsMenu()
 void GameUIManager::UpdateStatsMenu()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
-		if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel).turns.size() > mStatMenuCurrentTurn) 
+		/*if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size() < mStatMenuCurrentTurn) 
 		{
 			mStatMenuCurrentTurn = 1;
 			mStatMenuCurrentLevel++;
@@ -517,7 +541,7 @@ void GameUIManager::UpdateStatsMenu()
 			{
 				mStatMenuCurrentLevel = 1;
 			}
-		}
+		}*/
 		
 		Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
 

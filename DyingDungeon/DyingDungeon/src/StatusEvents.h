@@ -94,9 +94,9 @@ public:
 	float debuffValue;
 	CharacterDebuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
 	{
-		characterName = std::string(character.begin(), character.end());
-		actionName = std::string(action.begin(), action.end());
-		targetName = std::string(target.begin(), target.end());
+		characterName = static_cast<std::string>(std::string(character.begin(), character.end()));
+		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
+		targetName = static_cast<std::string>(std::string(target.begin(), target.end()));
 		debuffType = debuff;
 		debuffValue = debuff_Value;
 	}
