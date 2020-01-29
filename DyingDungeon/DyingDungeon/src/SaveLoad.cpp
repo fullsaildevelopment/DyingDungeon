@@ -198,11 +198,11 @@ bool SaveLoad::SaveLoadOut()
 		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::out | std::ios::trunc | std::ios::binary);
 		if (file.is_open()) 
 		{
-			uint32_t nameSize = loadouts[i].name.size();
+			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
 			file.write((const char*)&nameSize, sizeof(uint32_t));
 			file.write(loadouts[i].name.c_str(), nameSize);
 
-			uint32_t profileNameSize = loadouts[i].profile.size();
+			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
 			file.write((const char*)&profileNameSize, sizeof(uint32_t));
 			file.write(loadouts[i].profile.c_str(), nameSize);
 			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
@@ -232,16 +232,16 @@ bool SaveLoad::LoadLoadOut()
 	//create_directory();
 
 	unsigned int file_count = dir_file_count(std::string("loadouts/"));
-	for (int i = 0; i < file_count; i++)
+	for (unsigned int i = 0; i < file_count; i++)
 	{
 		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::in | std::ios::trunc | std::ios::binary);
 		if (file.is_open())
 		{
-			uint32_t nameSize = loadouts[i].name.size();
+			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
 			file.write((const char*)&nameSize, sizeof(uint32_t));
 			file.write(loadouts[i].name.c_str(), nameSize);
 
-			uint32_t profileNameSize = loadouts[i].profile.size();
+			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
 			file.write((const char*)&profileNameSize, sizeof(uint32_t));
 			file.write(loadouts[i].profile.c_str(), nameSize);
 			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
