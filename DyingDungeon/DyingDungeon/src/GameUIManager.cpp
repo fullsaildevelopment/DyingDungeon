@@ -149,7 +149,7 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	position.x += 200.0f;
 	position.y += 250.0f;
 	width = 200;
-	height = 40;
+	height = 50;
 	// TODO: MAYBE COMMENT THIS IN? LOOKS DUMB
 	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -219,7 +219,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 
 	// Start creating the tower info popup
 	width = 500;
-	height = 250;
+	height = 300;
 	position.x = (static_cast<float>(screenWidth) / 2.0f) - (static_cast<float>(width) / 2.0f);
 	position.y = 100.0f;
 	color = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -227,7 +227,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	rect->setOpacity(BackgroundSmallOpacity);
 
 	// Add in tower level text
-	height = 25;
+	height = 35;
 	// Give a little padding
 	position.x += 5.0f;
 	position.y += 5.0f;
@@ -256,21 +256,21 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	position.x = previousX;
 	position.y += static_cast<float>(height) + 5.0f;
 	width = 300;
-	height = 25;
+	height = 35;
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Rewards: 900 XP", properties);
 
 	// Set up description
 	position.y += static_cast<float>(height) + 20.0f;
 	width = 300;
-	height = 15;
+	height = 25;
 	properties.fontSize = 15.0f;
 	properties.italic = true;
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Description:", properties);
 	position.y += static_cast<float>(height) + 5.0f;
-	width = 500;
-	height = 200;
+	width = 475;
+	height = 275;
 	properties.fontSize = 12.0f;
-	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, wornand ravished by time itself", properties);
+	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
 	// Disable the tower info canvas
 	mTowerInfoCanvas->setActive(false);
 
@@ -973,12 +973,16 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	else if (character == L"assets/images/MagePortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
 
+	// Don't display negative mana, display 0 instead
+	if (manaCost.substr(0, 1) == L"-")
+		manaCost = L"0";
+
 	UINT windowWidth = screenWidth;
 	UINT windowHeight = screenHeight;
 	float x = 950;
 	float y = 425;
 	UINT width = 300;
-	UINT height = 150;
+	UINT height = 110;
 	UINT pad = 10;
 
 	Odyssey::TextProperties title;
@@ -999,8 +1003,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 
 	// Background and Separators
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 80), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 2);
 
 	// Title Text and Icons
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
@@ -1009,8 +1012,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
 
 	// Description
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 85),
-		DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), height - 110 - pad, description, properties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45), themeColor, width - (2 * pad), 85, description, properties);
 	canvas->setActive(false);
 }
 
