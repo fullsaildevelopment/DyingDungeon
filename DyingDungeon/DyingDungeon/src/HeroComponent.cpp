@@ -124,8 +124,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.30f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 80.0f;
 		mBaseSpeed = mSpeed = 35.0f;
 		////////////////////////////////////
 
@@ -176,8 +176,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.10f;
+		mBaseAttack = mAttack = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
@@ -276,9 +276,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.15f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 0.0f;
+		mBaseDefense = mDefense = 0.0f;
+		mBaseSpeed = mSpeed = 0.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //

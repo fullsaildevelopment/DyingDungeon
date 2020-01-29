@@ -49,8 +49,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.15f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
 		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
@@ -137,8 +137,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.25f;
+		mBaseAttack = mAttack = 35.0f;
+		mBaseDefense = mDefense = 50.0f;
 		mBaseSpeed = mSpeed = 45.0f;
 		////////////////////////////////////
 
@@ -457,6 +457,7 @@ void EnemyComponent::Die()
 	mCurrentState = STATE::DEAD;
 }
 
+// Function that sends the state into the inprogress state, queing animations, and setting variables for particle effect locations
 void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
 {
 	// Play the skills animation
