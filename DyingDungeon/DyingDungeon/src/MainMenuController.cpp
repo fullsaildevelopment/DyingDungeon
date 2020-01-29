@@ -55,7 +55,7 @@ void MainMenuController::update(double deltaTime)
 		}
 	}
 
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{

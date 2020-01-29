@@ -84,7 +84,7 @@ void TowerSelectController::update(double deltaTime)
 		Door4Animation(deltaTime);
 	if (mDoorList[4].mDoOpenDoorAnimation || mDoorList[4].mDoCloseDoorAnimation)
 		Door5Animation(deltaTime);
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
