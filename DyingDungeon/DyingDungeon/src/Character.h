@@ -10,12 +10,19 @@
 // Character State identification enum
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
+// #defines for doing the stats math
+#define BASEATK 20.0f
+#define BASEDEF 20.0f
+#define BASESPD 20.0f
+
 class Character : public Odyssey::Component
 {
 	CLASS_DECLARATION(Character)
 
 public:
 	Character();
+
+	// Struct to hold all data needed for animations
 	struct AnimationImportData
 	{
 		std::string mAnimationNickName = "NULLNAME";
@@ -66,6 +73,12 @@ public:
 	// Returns the characters current Attack stat
 	float GetAtk();
 
+	// Returns the characters base attack stat
+	float GetBaseAtk();
+
+	// Returns the attack mod stat
+	float GetAtkMod();
+
 	// Increase the characters current Attack stat
 	void IncreaseAtk(float statIncrease);
 
@@ -78,6 +91,9 @@ public:
 	// Returns the characters base Defense stat
 	float GetBaseDef();
 
+	// Returns the defense mod stat
+	float GetDefMod();
+
 	// Increase the characters current Defense stat
 	void IncreaseDef(float statIncrease);
 
@@ -89,6 +105,9 @@ public:
 
 	// Return the characters base speed stat
 	float GetBaseSpeed();
+
+	// Returns the Speed mod stat
+	float GetSpdMod();
 
 	// Increase the characters current speed stat
 	void IncreaseSpd(float statIncrease);
@@ -199,20 +218,23 @@ protected:
 	// Float for the Max MP of the character
 	float mBaseMaxMana;
 
-	// Float for the base Defense of the character
-	float mBaseDefense;
-
-	// Float for the base Speed of the character
-	float mBaseSpeed;
-
 	// Float for the current Attack of the character
 	float mAttack;
+
+	// Float for the base Attack of the character
+	float mBaseAttack;
 
 	// Float for the current Defense of the character
 	float mDefense;
 
+	// Float for the base Defense of the character
+	float mBaseDefense;
+
 	// Float for the current Speed of the character
 	float mSpeed;
+
+	// Float for the base Speed of the character
+	float mBaseSpeed;
 
 	// Float for the current exp of the character
 	float mEXP;

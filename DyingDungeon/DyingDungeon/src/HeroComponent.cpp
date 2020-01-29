@@ -14,6 +14,7 @@
 #include "Stun.h"
 #include "Shields.h"
 #include "Provoked.h"
+#include "Clense.h"
 #include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
@@ -124,8 +125,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.30f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 80.0f;
 		mBaseSpeed = mSpeed = 35.0f;
 		////////////////////////////////////
 
@@ -176,8 +177,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.10f;
+		mBaseAttack = mAttack = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
@@ -257,7 +258,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	case GameplayTypes::HEROID::Bard:
 	{
 		// Set the character Model path
-		mModel = "";
+		mModel = "assets/models/Bard.dxm";
 
 		// Set the character name
 		mName = L"TheBestClassToEverExist";
@@ -266,7 +267,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Literal God";
 
 		// Set the portaits path
-		mPortrait = L"";
+		mPortrait = L"assets/images/Guy.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -276,28 +277,48 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mAttack = 0.0f;
-		mBaseDefense = mDefense = 0.15f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 30.0f;
+		mBaseSpeed = mSpeed = 10.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Idle
-		
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Bard/Bard_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
 		// Dead
-		
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Bard/Bard_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
 		// Is Stunned
 
 		// Recieves Hit
-		
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Bard/Bard_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
 		// Recieves Buff
 
 		// Skill 1
-		
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Bard/Bard_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
 		// Skill 2
-		
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Bard/Bard_Spell_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
 		// Skill 3
 
 		// Skill 4
@@ -306,12 +327,31 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-
+		mDescription = L"The bard supports their party with the plethora of songs they know. Using music they will buff allies and debuff enemies, and remove harmful effect from the party.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		// Skill 1
+		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.60f, -10.0f, 10.0f));
+		mSkillList[0]->SetSkillIconPath(L"assets/images/Bard_Skill_1.png");
+		mSkillList[0]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		// Skill 2
+		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>(L"Skill 2", "Skill_2", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList[1]->SetSkillIconPath(L"assets/images/Bard_Skill_2.png");
+		mSkillList[1]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		// Skill 3
+		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Atk, nullptr);
+		mSkillList.push_back(std::make_shared<Heal>(L"Skill 3", "Skill_2", 0.60f, 30.0f, 50.0f, true));
+		mSkillList[2]->SetStatusEffect(temp);
+		mSkillList[2]->SetSkillIconPath(L"assets/images/Bard_Skill_3.png");
+		mSkillList[2]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		// Skill 4
+		temp = std::make_shared<Clense>(1, nullptr);
+		mSkillList.push_back(std::make_shared<Buffs>(L"Skill 4", "Skill_2", 0.25f, 35.0f, temp, true, true));
+		mSkillList[3]->SetSkillIconPath(L"assets/images/Bard_Skill_4.png");
+		mSkillList[3]->SetSkillDescription(L"This is a place holder description. *Dabs*");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -620,6 +660,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 		break;
 	}
+
 	// If here the character has died and will begin his death animation
 	case STATE::DEAD:
 	{
@@ -629,6 +670,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 		break;
 	}
+
 	// Default case should never hit here
 	default:
 	{
@@ -641,14 +683,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void HeroComponent::Die()
 {
-	// Set state to dead
-	mCurrentState = STATE::DEAD;
-
 	// Clear all remaining status effects
 	ClearStatusEffects();
 	
 	// Play the death animation
 	mAnimator->playClip("Dead");
+
+	// Set state to dead
+	mCurrentState = STATE::DEAD;
 }
 
 // Returns the characters skill list

@@ -1284,7 +1284,7 @@ void setUpTowerManager()
 	// Paladin #2
 	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
 	hudPosition.x = (static_cast<float>(width) / 2.0f) - 170.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Dos", charPosition, charRotation, hudPosition, true, gGameScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Fuck you tristan", charPosition, charRotation, hudPosition, true, gGameScene);
 	
 	// TODO: REFACTOR THIS LATER
 	// Setup Paladin skills
