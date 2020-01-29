@@ -17,4 +17,7 @@ public:
 	Odyssey::Rectangle2D* mRect;
 private:
 	Odyssey::Application* mApplication;
+
+	// Bools
+	bool mAnimatingLaser = true;
 };
