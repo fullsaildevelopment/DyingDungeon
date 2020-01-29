@@ -403,8 +403,8 @@ void setupCamera()
 {
 	gMainCamera = std::make_shared<Odyssey::Entity>();
 	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(3.432f, 7.053f, 14.602f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(25.189f, -160.439f, 0.0f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.395f, 6.703f, 13.438f);
+	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(23.669f, -178.152f, 0.0f);
 	gMainCamera->addComponent<Odyssey::Camera>();
 	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
 	gMainCamera->addComponent<CameraController>();
