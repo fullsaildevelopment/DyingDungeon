@@ -866,6 +866,9 @@ void HeroComponent::BeginAttack(EntityList targets)
 		// Set the projectiles position to the calculated postition
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
 
+		// TODO: VERIFY CHANGE
+		mCurrentSkill->GetParticleSystem()->getEntity()->setActive(true);
+
 		// Get the projectiles target position
 		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
 
