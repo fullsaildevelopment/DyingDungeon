@@ -34,7 +34,7 @@ public:
 		uint32_t turnCount = 1;
 		uint32_t rounds = 1;
 		std::vector<StatTracker::Turn> turns;
-		std::string characterNames[3];
+		std::pair<std::string, std::wstring> characters[3];
 	};
 
 private:

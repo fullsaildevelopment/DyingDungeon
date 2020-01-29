@@ -107,12 +107,16 @@ class LevelStartEvent : public Odyssey::Event
 public:
 	unsigned int levelNumber;
 	std::string playerCharacters[3];
-	LevelStartEvent(unsigned int level, std::wstring player_character_1, std::wstring player_character_2, std::wstring player_character_3)
+	std::wstring playerPortaits[3];
+	LevelStartEvent(unsigned int level, std::wstring player_character_1, std::wstring player_character_2, std::wstring player_character_3, std::wstring player_portrait_1, std::wstring player_portrait_2, std::wstring player_portrait_3)
 	{
 		levelNumber = level;
 		playerCharacters[0] = static_cast<std::string>(std::string(player_character_1.begin(), player_character_1.end()));
 		playerCharacters[1] = static_cast<std::string>(std::string(player_character_2.begin(), player_character_2.end()));
 		playerCharacters[2] = static_cast<std::string>(std::string(player_character_3.begin(), player_character_3.end()));
+		playerPortaits[0] = player_portrait_1;
+		playerPortaits[1] = player_portrait_2;
+		playerPortaits[2] = player_portrait_3;
 	}
 };
 
