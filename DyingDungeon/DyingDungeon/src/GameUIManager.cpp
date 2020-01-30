@@ -788,10 +788,10 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		// Attack number
-		newHUD->pAttackNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk() * 100.0f)), properties);
+		newHUD->pAttackNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk())), properties);
 		// Defense number
 		position.y += 16.5f;
-		newHUD->pDefenseNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetDef() * 100.0f)), properties);
+		newHUD->pDefenseNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetDef())), properties);
 		// Speed number
 		position.y += 16.5f;
 		newHUD->pSpeedNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring((int)owner->GetSpeed()), properties);
