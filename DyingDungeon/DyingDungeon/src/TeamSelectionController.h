@@ -44,10 +44,16 @@ private:
 
 	// Hold the tower manager object
 	std::shared_ptr<Odyssey::Entity> mCurrentTower;
+	// This will hold all of the entities going into the gameScene
 	std::shared_ptr<Odyssey::Entity> mGameEntity;
 
 	// This is the model of the turn indicator
 	std::shared_ptr<Odyssey::Entity> mTurnIndicatorModel;
+
+	// Character Slot Indexes
+	int mSlot1Index = 0;
+	int mSlot2Index = 0;
+	int mSlot3Index = 0;
 
 private: // Functions
 	void AddPaladinImage();
@@ -58,6 +64,14 @@ private: // Functions
 	void onMageEnter();
 	void onMageExit();
 	void setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character);
+
+	// Callback functions for the arrows
+	void DecreaseSlot1Index();
+	void IncreaseSlot1Index();
+	void DecreaseSlot2Index();
+	void IncreaseSlot2Index();
+	void DecreaseSlot3Index();
+	void IncreaseSlot3Index();
 
 	// Create the tower manager
 	void CreateTheTowerManager();
