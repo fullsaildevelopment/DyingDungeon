@@ -743,7 +743,7 @@ void GameUIManager::OptionsBackButton()
 }
 
 // Create the character's UI Portrait
-Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
+Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
 {
 	// Create CharacterHUD object
 	std::shared_ptr<CharacterHUD> newHUD = std::make_shared<CharacterHUD>();
@@ -762,7 +762,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		properties.fontName = L"Tw Cen MT Condensed";
 
 		// Get the position of the anchor points
-		DirectX::XMFLOAT2 position = { anchorX, anchorY };
+		DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y };
 		// Save the original position for the future when creating new items
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
@@ -887,7 +887,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 		properties.fontName = L"Tw Cen MT Condensed";
 
 		// Get the position of the anchor points
-		DirectX::XMFLOAT2 position = { anchorX, anchorY };
+		DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y };
 		// Save the original position for the future when creating new items
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
@@ -942,9 +942,12 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(float anchorX, float a
 	if (owner->IsHero())
 	{
 		// Create the skill icons for the character's hud
-		DirectX::XMFLOAT2 pHudPosition = { anchorX, anchorY };
-		SetupSkillIcons(_gameObjectToAddTo, owner, pHudPosition);
+		SetupSkillIcons(_gameObjectToAddTo, owner, _hudPosition);
 	}
+
+	// Create the health popup for the character
+	SetupHpPopup(_gameObjectToAddTo, _hpPopupPosition);
+
 	// Add the canvas to the mHudCharacterList
 	mCharacterHudList.push_back(newHUD);
 	// Return the canvas we just created 
@@ -1022,7 +1025,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
 	else if (character == L"assets/images/MagePortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	else if (character == L"assets/images/Guy.png")
+	else
 		themeColor = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
 
 	// Don't display negative mana, display 0 instead
@@ -1068,6 +1071,28 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	canvas->setActive(false);
 }
 
+void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition)
+{
+	// Add health popup canvas to entity
+	Odyssey::UICanvas* canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
+
+	// Create the text properties for the health popup text
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 30.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	// Create the health pop text2D
+	Odyssey::Text2D* newPopup = canvas->addElement<Odyssey::Text2D>(_hpPopupPosition, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, 50, L"100", properties);
+	// Set the opacity to 0 on setup
+	newPopup->setOpacity(0.0f);
+	// Add new popup to the list
+	mCharacterHpPopupList.push_back(newPopup);
+}
+
 void GameUIManager::UpdateCharacterBars(Character* _currCharacter)
 {
 	// Get the ratio from current health and max health
@@ -1079,6 +1104,52 @@ void GameUIManager::UpdateCharacterBars(Character* _currCharacter)
 	mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthBar->setFill(healthRatio);
 	// Set the fill of the character's mana bar
 	mCharacterHudList[_currCharacter->GetHudIndex()]->pManaBar->setFill(manaRatio);
+
+	// Set the text for the health bar
+	mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthNumber->setText(std::to_wstring((int)_currCharacter->GetHP()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxHP()));
+	// Set the text for the mana bar
+	mCharacterHudList[_currCharacter->GetHudIndex()]->pManaNumber->setText(std::to_wstring((int)_currCharacter->GetMana()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxMana()));
+}
+
+// When the health updates for the character, show the health popups
+void GameUIManager::AddHpPopupToUpdateList(Character* _currCharacter, bool _tookDamage, float _changeInHP)
+{
+	// Get the text element that corresponds with the correct character
+	Odyssey::Text2D* textToUpdate = mCharacterHpPopupList[_currCharacter->GetHudIndex()];
+
+	// Set the text to the amount of change in health points
+	textToUpdate->setText(std::to_wstring((int)_changeInHP));
+
+	// If the character took damage set the text color to red, else set to green for gaining health
+	if (_tookDamage)
+		textToUpdate->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	else
+		textToUpdate->setColor(DirectX::XMFLOAT3(0.0f, 255.0f, 0.0f));
+
+	// Set the opacticy to 100%
+	textToUpdate->setOpacity(1.0f);
+
+	// Add the Text2D Health Popup to the update list
+	mUpdateHpPopupList.push_back(textToUpdate);
+}
+
+// This will be called in the tower manager's update because that is when this
+void GameUIManager::UpdateCharacterHealthPopups(float _deltaTime)
+{
+	// Update the health pop ups that need to be updated
+	for (int i = 0; i < mUpdateHpPopupList.size(); i++)
+	{
+		// Get the current opacity if the text element
+		float currentOpacity = mUpdateHpPopupList[i]->getOpacity();
+		// Set the speed varibale 
+		float speed = 0.25f;
+		// Set the new opacity
+		mUpdateHpPopupList[i]->setOpacity(currentOpacity - (speed * _deltaTime));
+
+		// Check to see if the opacity is back 0.0f, if so remove it from the list
+		if (mUpdateHpPopupList[i]->getOpacity() <= 0.0f)
+			mUpdateHpPopupList.erase(mUpdateHpPopupList.begin() + i);
+	}
 }
 
 void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber)

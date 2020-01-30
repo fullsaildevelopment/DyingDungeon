@@ -14,7 +14,7 @@ CharacterFactory& CharacterFactory::getInstance()
 	return instance;
 }
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
 {
 	// Create the new pointer for the character we are creating
 	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
@@ -168,7 +168,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Create entity to add the HUD to
 	std::shared_ptr<Odyssey::Entity> hudEntity = std::make_shared<Odyssey::Entity>();
 	//Create the character's HUD UI
-	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition.x, _hudPosition.y, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity.get(), newCharacter->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity.get(), newCharacter->getComponent<Character>());
 	// Set the character's hud index number
 	// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
 	newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);

@@ -43,6 +43,7 @@ public: // Singleton pattern
 		 */
 	static GameUIManager& getInstance();
 	~GameUIManager() { }
+
 private: // Singleton pattern
 	GameUIManager() { }
 
@@ -78,10 +79,14 @@ public: // Functions
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
-	Odyssey::UICanvas* CreateCharacterPortrait(float anchorX, float anchorY, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
+	Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
 	// Update health bar
 	void UpdateCharacterBars(Character* _currCharacter);
+	// Add character's health popup to update list in order from the to be updated
+	void AddHpPopupToUpdateList(Character* _currCharacter, bool _tookDamage, float _changeInHP);
+	// Update health popups
+	void UpdateCharacterHealthPopups(float _deltaTime);
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
@@ -242,6 +247,10 @@ private: // Varibales
 
 	// Vectors
 	std::vector<std::shared_ptr<CharacterHUD>> mCharacterHudList;
+	std::vector<Odyssey::Text2D*> mCharacterHpPopupList;
+
+	// List of HP popups I need to update
+	std::vector<Odyssey::Text2D*> mUpdateHpPopupList;
 
 	// Queues
 
@@ -266,6 +275,7 @@ private: // Functions
 	// Skill Icon Creation Fucntions
 	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition);
 	void SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
+	void SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);

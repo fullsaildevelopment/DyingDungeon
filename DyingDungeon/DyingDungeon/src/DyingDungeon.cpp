@@ -105,9 +105,6 @@ void setupFire();
 // BUILD 3 STUFF
 void setupScene2();
 
-//Tristen's Stuff
-void setUpTowerManager();
-
 int playGame()
 {
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
@@ -162,6 +159,7 @@ int playGame()
 	setupGameInterface();
 
 	// Set up the team selection screen
+	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
 	setupTeamSelectMenu(application.get());
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
@@ -174,10 +172,6 @@ int playGame()
 
 	// BUILD 2
 	setupFire();
-
-
-	// Set up the tower manager
-	//setUpTowerManager();
 
 	// Add the gGameMenu to the gGameScene after I have added all the elements
 	gGameScene->addEntity(gGameMenu);
@@ -489,7 +483,7 @@ void setupMainMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Main Menu Paladin", charPosition, charRotation, uiPosition, false, gMainMenu);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Main Menu Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gMainMenu);
 
 	// Create the UI
 	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
@@ -546,21 +540,21 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 
 	// Create the character's for the second slot
 	xOffset = 0.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 
 	// Create the character's for the third slot
 	xOffset = 3.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 
 	// Create the UI for the team selection
@@ -1281,119 +1275,6 @@ void setupScene2()
 	ganfaul->getComponent<Odyssey::Animator>()->importAnimation("Idle", "assets/animations/Ganfaul/Ganfaul_Idle.dxanim");
 	ganfaul->setStatic(false);
 	gScene2->addEntity(ganfaul);
-}
-
-void setUpTowerManager()
-{
-	// Create the current tower entity
-	gCurrentTower = std::make_shared<Odyssey::Entity>();
-	gCurrentTower->addComponent<TowerManager>();
-	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
-	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
-	
-	// Get Canvas
-	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
-	// Get the width and height of the window
-	UINT width = gMainWindow->getWidth();
-	UINT height = gMainWindow->getHeight();
-
-	// Paladin #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 hudPosition = { 10.0f, static_cast<float>(height) - 120.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin Uno", charPosition, charRotation, hudPosition, true, gGameScene);
-
-	// TODO: REFACTOR THIS LATER
-	// Setup Paladin skills
-	//setupPaladinSkills(characterToAdd, 144.0f, 624.0f);
-
-	// Added the Character's health popup
-	createCharacterHealthPopup(150, 500, canvas, characterToAdd->getComponent<Character>());
-	gPlayerUnit.push_back(characterToAdd);
-
-	// Paladin #2
-	charPosition = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f);
-	hudPosition.x = (static_cast<float>(width) / 2.0f) - 170.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Fuck you tristan", charPosition, charRotation, hudPosition, true, gGameScene);
-	
-	// TODO: REFACTOR THIS LATER
-	// Setup Paladin skills
-	//setupPaladinSkills(characterToAdd, 604.0f, 624.0f);
-
-	// Added the Character's health popup
-	createCharacterHealthPopup(475, 550, canvas, characterToAdd->getComponent<Character>());
-	gPlayerUnit.push_back(characterToAdd);
-
-	// Mage #1
-	charPosition = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f);
-	hudPosition.x = static_cast<float>(width) - 370.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage Uno", charPosition, charRotation, hudPosition, true, gGameScene);
-	
-	// TODO: REFACTOR THIS LATER
-	// Setup Mage skills
-	//setupMageSkills(characterToAdd, 1044.0f, 624.0f);
-
-	// Added the Character's health popup
-	createCharacterHealthPopup(850, 550, canvas, characterToAdd->getComponent<Character>());
-	gPlayerUnit.push_back(characterToAdd);
-
-	// Skeleton #1
-	charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
-	hudPosition = { 10.0f, 10.0f };
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, gGameScene);
-	// Added the Character's health popup
-	createCharacterHealthPopup(300, 250, canvas, characterToAdd->getComponent<Character>());
-	gEnemyUnit.push_back(characterToAdd);
-
-	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
-	hudPosition.x += 329.7;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, gGameScene);
-	// Added the Character's health popup
-	createCharacterHealthPopup(500, 275, canvas, characterToAdd->getComponent<Character>());
-	gEnemyUnit.push_back(characterToAdd);
-
-	// Skeleton #3
-	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
-	hudPosition.x += 329.7;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, gGameScene);
-	// Added the Character's health popup
-	createCharacterHealthPopup(700, 275, canvas, characterToAdd->getComponent<Character>());
-	gEnemyUnit.push_back(characterToAdd);
-
-	// Skeleton #4
-	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
-	hudPosition.x += 329.7;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, gGameScene);
-	// Added the Character's health popup
-	createCharacterHealthPopup(900, 250, canvas, characterToAdd->getComponent<Character>());
-	gEnemyUnit.push_back(characterToAdd);
-
-	// Ganfaul
-	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
-	hudPosition.x = static_cast<float>(width) / 2.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, gGameScene);
-	// Added the Character's health popup
-	createCharacterHealthPopup(575.0f, height/2, canvas, characterToAdd->getComponent<Character>());
-	characterToAdd->setActive(false);
-	// Assign the boss character for the tower
-	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
-	
-	// Create the turn indicator circle
-	std::shared_ptr<Odyssey::Entity> turnIndicatorModel = std::make_shared<Odyssey::Entity>();
-	turnIndicatorModel->addComponent<Odyssey::Transform>();
-	turnIndicatorModel->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	turnIndicatorModel->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(turnIndicatorModel, "assets/models/TurnIndicator.dxm", false);
-	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
-	turnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
-	turnIndicatorModel->setStatic(false);
-	gGameScene->addEntity(turnIndicatorModel);
-
-	// Set up the tower manager with the enemy and player teams
-	gCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(gPlayerUnit, gEnemyUnit, 2, turnIndicatorModel);
-	gGameScene->addEntity(gCurrentTower);
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)

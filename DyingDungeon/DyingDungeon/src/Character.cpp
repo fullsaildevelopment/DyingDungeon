@@ -97,6 +97,8 @@ void Character::TakeDamage(float dmg)
 	// Reduce health by the amount of damage that made it through
 	SetHP(GetHP() - dmg);
 
+	// Add the 
+
 	// Pop up battle text that appears over the character whenever something happens to them
 	/*pDmgText->setText(std::to_wstring(dmg).substr(0,5));
 	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
@@ -141,6 +143,7 @@ float Character::GetHP()
 void Character::SetHP(float HP)
 {
 	// Set the hp to the passed in amount
+	float previousHealth = mCurrentHP;
 	mCurrentHP = HP;
 
 	// if health is lower that 0.0f set it to 0.0f, if its over the max set it to the max
@@ -151,6 +154,14 @@ void Character::SetHP(float HP)
 
 	// Update the UI
 	GameUIManager::getInstance().UpdateCharacterBars(this);
+	 
+	// Check whether or not the character was healed or damaged
+	// Player took damage
+	if (previousHealth > mCurrentHP)
+		GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
+	//Player was healed or not damaged at all
+	else
+		GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
 }
 
 // Returns the max HP of the character

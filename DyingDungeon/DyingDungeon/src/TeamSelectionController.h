@@ -16,10 +16,19 @@ public:
 	Odyssey::Rectangle2D* mRect;
 
 	// Functions
+
+	// Setters
+
+	// Set the list of scenes that the characters will need to be added to
 	void SetGameScenes(std::vector<std::shared_ptr<Odyssey::Scene>> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
 
 	// Set the game entity that the hud is connected too
 	void SetGameEntity(std::shared_ptr<Odyssey::Entity> _gameEntity) { mGameEntity = _gameEntity; }
+
+	// Set the slot 1 of characters for team selection
+	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
+	void SetSlot2OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
+	void SetSlot3OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
 
 private:
 	Odyssey::Application* mApplication;
@@ -29,18 +38,18 @@ private:
 	int teamCount = 0;
 	// This will let us know when the user has a full team
 	bool teamIsFull = true;
-
 	// Only allow to change scene once
 	bool changedTheScene = false;
 
 	// Game scenes that the players will need to get added to
 	std::vector<std::shared_ptr<Odyssey::Scene>> mListOfGameScenes;
 
-	// List of all of the positions that the character's will spawn at
+	// List of all of the positions that the character's will spawn at in battle
 	std::vector<DirectX::XMVECTOR> mPlayerPositions;
 
-	// List of all of the hud positions for each character
+	// List of all of the hud and health popup positions for each character
 	std::vector<DirectX::XMFLOAT2> mHudPositions;
+	std::vector<DirectX::XMFLOAT2> mHpPopupPositions;
 
 	// Hold the tower manager object
 	std::shared_ptr<Odyssey::Entity> mCurrentTower;
@@ -49,6 +58,11 @@ private:
 
 	// This is the model of the turn indicator
 	std::shared_ptr<Odyssey::Entity> mTurnIndicatorModel;
+
+	// These vectors will hold the character list for each slot
+	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot1CharacterList;
+	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot2CharacterList;
+	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot3CharacterList;
 
 	// Character Slot Indexes
 	int mSlot1Index = 0;
