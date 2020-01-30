@@ -455,6 +455,9 @@ void EnemyComponent::Die()
 	// Play the death animation
 	mAnimator->playClip("Dead");
 
+	// Stop all active particle effects
+	StopParticleEffects();
+
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
 }

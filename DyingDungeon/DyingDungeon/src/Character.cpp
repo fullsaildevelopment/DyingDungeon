@@ -586,6 +586,33 @@ Odyssey::ParticleSystem* Character::GetPSBlood()
 	return mBloodParticleEffect;
 }
 
+// Turns all active particle effects to inactive
+void Character::StopParticleEffects()
+{
+	// If blood effect is active set to false
+	if (mBloodParticleEffect != nullptr)
+	{
+		mBloodParticleEffect->stop();
+		mBloodParticleEffect->setActive(false);
+	}
+
+	// For each skill in the list
+	for (std::shared_ptr<Skills> S : mSkillList)
+	{
+		// If valid
+		if (S)
+		{
+			// If it has a particle effect
+			if (S->GetParticleSystem() != nullptr)
+			{
+				// Stop and set to false
+				S->GetParticleSystem()->stop();
+				S->GetParticleSystem()->setActive(false);
+			}
+		}
+	}
+}
+
 // Returns the character portrait file path
 std::wstring Character::GetPortraitPath()
 {
