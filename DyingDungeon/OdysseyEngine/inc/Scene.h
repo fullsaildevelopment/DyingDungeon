@@ -38,6 +38,7 @@ namespace Odyssey
 		 */
 		void addEntity(std::shared_ptr<Entity> entity);
 
+		void removeEntity(Entity* entity);
 		/**
 		 *	Get the delta time between frames.
 		 *	@param[in] void

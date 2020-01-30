@@ -35,6 +35,7 @@ namespace Odyssey
 		 */
 		void update();
 
+		void onDestroy();
 		/**
 		 *	Get all entities within the scene.
 		 *	@param[in] void

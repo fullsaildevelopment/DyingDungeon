@@ -382,6 +382,8 @@ void TeamSelectionController::CreateTheTowerManager()
 	mCurrentTower->addComponent<TowerManager>();
 	mCurrentTower->getComponent<TowerManager>()->UI = mGameEntity->getComponents<Odyssey::UICanvas>()[0];
 	mCurrentTower->getComponent<TowerManager>()->Rewards = mGameEntity->getComponents<Odyssey::UICanvas>()[1];
+	// TODO: REFACTOR LATER
+	mCurrentTower->getComponent<TowerManager>()->scene = mListOfGameScenes[0].get();
 
 	// Create the turn indicator circle
 	mTurnIndicatorModel = std::make_shared<Odyssey::Entity>();
