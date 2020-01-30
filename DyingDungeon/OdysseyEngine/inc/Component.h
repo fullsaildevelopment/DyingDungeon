@@ -64,6 +64,7 @@ namespace Odyssey
 		 */
 		virtual void update(double deltaTime);
 
+		virtual void onDestroy();
 		/**
 		 *	Get the entity the component is attached to.
 		 *	@param[in] void

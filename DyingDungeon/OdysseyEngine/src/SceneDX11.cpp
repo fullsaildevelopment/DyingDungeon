@@ -81,6 +81,15 @@ namespace Odyssey
 		}
 	}
 
+	void SceneDX11::onDestroy()
+	{
+		for (auto* component : mComponentList)
+		{
+			// Update the component
+			component->onDestroy();
+		}
+	}
+
 	std::vector<std::shared_ptr<Entity>> SceneDX11::getEntities()
 	{
 		// Return the scene entity vector
