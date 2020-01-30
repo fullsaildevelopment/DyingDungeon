@@ -5,8 +5,6 @@
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
 
-
-
 #define BackgroundBigOpacity 0.5f
 #define BackgroundSmallOpacity 0.8f
 
@@ -102,7 +100,6 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	_sceneToAddTo->addEntity(mBattleLog);
 }
 
-
 void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 {
 	if (concat)
@@ -123,6 +120,7 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 
 }
 
+// Be able to turn a canvas on and off
 void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 {
 	// Set the passed in entity's canvas to active or deactived based on the bool _isActive.
@@ -482,12 +480,11 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
 	mStatsBackButtonText->setVisible(true);
-	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
 	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f);
 	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) + 60.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
+	mStatsPrevButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
 	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
+	mStatsNextButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
 
 	_sceneToAddTo->addEntity(mStatsMenu);
 	
@@ -499,20 +496,45 @@ void GameUIManager::ShowStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
-	UpdateStatsMenu();
 	mStatMenuCurrentLevel = 1;
 	mStatMenuCurrentTurn = 1;
-	//mStatMenuCurrentRound = 1;
+	mStatsPrevButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrev);
+	mStatsNextButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNext);
+	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
+	UpdateStatsMenu();
 }
 
 void GameUIManager::StatsMenuPrev()
 {
-
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentTurn > 1)
+		{
+			mStatMenuCurrentTurn--;
+			UpdateStatsMenu();
+		}
+	}
 }
 
-void GameUIManager::StatsMeuNext()
+void GameUIManager::StatsMenuNext()
 {
-
+	if (StatTracker::Instance().GetLevelSize() > 0) {
+		if (mStatMenuCurrentTurn < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
+		{
+			mStatMenuCurrentTurn++;
+			UpdateStatsMenu();
+		}
+		else if ((mStatMenuCurrentTurn + 1) > StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
+		{
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentLevel++;
+			if (mStatMenuCurrentLevel > StatTracker::Instance().GetLevelSize())
+			{
+				mStatMenuCurrentLevel = 1;
+			}
+			UpdateStatsMenu();
+		}
+	}
 }
 
 void GameUIManager::HideStatsMenu()
@@ -524,7 +546,7 @@ void GameUIManager::HideStatsMenu()
 void GameUIManager::UpdateStatsMenu()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
-		if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel).turns.size() > mStatMenuCurrentTurn) 
+		/*if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size() < mStatMenuCurrentTurn) 
 		{
 			mStatMenuCurrentTurn = 1;
 			mStatMenuCurrentLevel++;
@@ -532,7 +554,7 @@ void GameUIManager::UpdateStatsMenu()
 			{
 				mStatMenuCurrentLevel = 1;
 			}
-		}
+		}*/
 		
 		Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
 
@@ -988,6 +1010,8 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
 	else if (character == L"assets/images/MagePortrait.jpg")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	else if (character == L"assets/images/Guy.png")
+		themeColor = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
 
 	// Don't display negative mana, display 0 instead
 	if (manaCost.substr(0, 1) == L"-")

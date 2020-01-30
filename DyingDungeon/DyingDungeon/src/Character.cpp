@@ -18,7 +18,7 @@ Character::Character()
 	mHero = false;
 	mBaseMaxHP = mCurrentHP = 100.0f;
 	mBaseMaxMana = mCurrentMana = 100.0f;
-	mAttack = 0.0f;
+	mAttack = mBaseAttack = 0.0f;
 	mDefense = mBaseDefense = 0.0f;
 	mSpeed = mBaseSpeed = 0.0f;
 	mEXP = 0.0f;
@@ -74,7 +74,7 @@ void Character::TakeDamage(float dmg)
 	RedAudioManager::Instance().PlaySFX("PaladinHit");
 
 	// Calculate damage reduction based on character drffense
-	dmg = dmg - (dmg * mDefense);
+	dmg = dmg - (dmg * GetDefMod());
 
 	// loop through shield vector and reduce the incoming damage by amount of temp health this character has
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
@@ -194,20 +194,26 @@ float Character::GetAtk()
 	return mAttack;
 }
 
+float Character::GetBaseAtk()
+{
+	return mBaseAttack;
+}
+
+float Character::GetAtkMod()
+{
+	return (mAttack - BASEATK) / 500.0f;
+}
+
 // Increases the Attack stat of the character
 void Character::IncreaseAtk(float statIncrease)
 {
-	mAttack += statIncrease;
+	mAttack += (mBaseAttack * statIncrease);
 }
 
 // Decreases the Attack stat of the character
 void Character::DecreaseAtk(float statDecrease)
 {
-	mAttack -= statDecrease;
-
-	// If attack stat is lower than -1.0f set it to -1.0f
-	if (mAttack <= -1.0f)
-		mAttack = -1.0f;
+	mAttack -= (mBaseAttack * statDecrease);
 }
 
 // Returns the Defense stat of the character
@@ -222,14 +228,15 @@ float Character::GetBaseDef()
 	return mBaseDefense;
 }
 
+float Character::GetDefMod()
+{
+	return (mBaseDefense - BASEDEF) / 200.0f;
+}
+
 // Increases the current Defense stat of the character
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
-
-	// If defense stat is greater than 1.0f set it to 1.0f
-	if (mDefense > 1.0f)
-		mDefense = 1.0f;
 }
 
 // Decreases the current Defense stat of the character
@@ -248,6 +255,11 @@ float Character::GetSpeed()
 float Character::GetBaseSpeed()
 {
 	return mBaseSpeed;
+}
+
+float Character::GetSpdMod()
+{
+	return (mSpeed - BASESPD) / 100.0f;
 }
 
 // Increases the current Speed stat of the character

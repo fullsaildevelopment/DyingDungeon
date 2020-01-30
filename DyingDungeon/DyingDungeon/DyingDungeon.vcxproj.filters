@@ -46,9 +46,6 @@
     <ClCompile Include="src\StatTracker.cpp">
       <Filter>Source Files\Stat Tracking</Filter>
     </ClCompile>
-    <ClCompile Include="src\StatusEffect.cpp">
-      <Filter>Source Files\Stat Tracking</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameUIManager.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
@@ -96,6 +93,12 @@
     </ClCompile>
     <ClCompile Include="src\ParticleMover.cpp">
       <Filter>Source Files\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Clense.cpp">
+      <Filter>Source Files\Status Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatusEffect.cpp">
+      <Filter>Source Files\Status Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="src\GameplayTypes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Clense.h">
+      <Filter>Header Files\Status Effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

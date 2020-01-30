@@ -31,6 +31,35 @@ void Heal::Use(Character& caster, Character& target)
 	target.ReceiveHealing(mHealing);
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
+	{
+		mStatusEffect->Apply(target);
+		//Alert Reds stuff for stat tracking?
+		switch (mStatusEffect->GetTypeId())
+		{
+		case EFFECTTYPE::None:
+		{
+			break;
+		}
+		case EFFECTTYPE::Regen:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
+			break;
+		}
+		case EFFECTTYPE::StatUp:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Shield:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 // Get the amount the heal is for

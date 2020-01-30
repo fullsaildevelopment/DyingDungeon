@@ -5,6 +5,8 @@ StatTracker::StatTracker()
 	m_currentLevel = 1;
 	m_maxPlayerCount = 3;
 	m_p_canvas = nullptr;
+	m_portrait_width = 500;
+	m_portrait_height = 500;
 
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogDamageDeltEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &StatTracker::LogTakeDamageEvent);
@@ -73,9 +75,11 @@ void StatTracker::ClearLevels()
 //	m_currentLevel = newLevel.levelNumber;
 //}
 
-void StatTracker::SetCanvas(Odyssey::UICanvas* canvas)
+void StatTracker::SetCanvas(Odyssey::UICanvas* canvas, unsigned int path_width, unsigned int path_height)
 {
 	m_p_canvas = canvas;
+	m_portrait_width = path_width;
+	m_portrait_height = path_height;
 }
 
 void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
@@ -95,27 +99,28 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent)
 	}*/
 	for (int txt = 3, i = 0; i < 3; i++) 
 	{
+		m_p_canvas->getElements<Odyssey::Sprite2D>()[i]->setSprite(m_levels.back().characters[i].second, m_portrait_width, m_portrait_height);
 		for (int j = 0; j < 3; j++)
 		{
 			std::wstring rewardsText;
 			if (txt < 6)
 			{
-				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Attack, m_levels.size()),2) + L"%\n" +
-								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characterNames[j], m_levels.size()),2) + L"%");
+				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Attack, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"%");
 			}
 			else if (txt < 9)
 			{
-				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Defend, m_levels.size()),2) + L"%\n" +
-								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characterNames[j], m_levels.size()),2) + L"%\n" +
-								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2));
+				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Defend, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));
 			}
 			else if (txt < 12)
 			{
-				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characterNames[j], Action::Aid, m_levels.size()),2) + L"%\n" +
-								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characterNames[j], m_levels.size()),2) + L"\n" +
-								   L"Defence Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characterNames[j], m_levels.size()),2));
+				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Aid, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
+								   L"Defense Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));
 			}
 			m_p_canvas->getElements<Odyssey::Text2D>()[txt]->setText(rewardsText);
 			txt++;
@@ -198,9 +203,14 @@ void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 {
 	StatTracker::Level newLevel;
 	newLevel.levelNumber = lsEvent->levelNumber;
-	newLevel.characterNames[0] = lsEvent->playerCharacters[0];
-	newLevel.characterNames[1] = lsEvent->playerCharacters[1];
-	newLevel.characterNames[2] = lsEvent->playerCharacters[2];
+	newLevel.characters[0].first = lsEvent->playerCharacters[0];
+	newLevel.characters[1].first = lsEvent->playerCharacters[1];
+	newLevel.characters[2].first = lsEvent->playerCharacters[2];
+
+	newLevel.characters[0].second = lsEvent->playerPortaits[0];
+	newLevel.characters[1].second = lsEvent->playerPortaits[1];
+	newLevel.characters[2].second = lsEvent->playerPortaits[2];
+
 	m_levels.push_back(newLevel);
 	m_currentLevel = newLevel.levelNumber;
 	
@@ -1077,6 +1087,7 @@ std::string StatTracker::FormatToPercentage(float number, unsigned int decimal_p
 
 	return std::to_string(number).substr(0, count);
 }
+
 std::wstring StatTracker::FormatToPercentageW(float number, unsigned int decimal_places)
 {
 	unsigned int count = 1 + decimal_places;
