@@ -42,6 +42,14 @@ void TeamSelectionController::initialize()
 	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->registerCallback("onMouseExit", this, &TeamSelectionController::onPaladinExit);
 	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->registerCallback("onMouseExit", this, &TeamSelectionController::onMageExit);
 
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot3Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot3Index);
+
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
@@ -372,6 +380,54 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 230 + pad), L"assets/images/Speed.png", 20, 20);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 230 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, speed, properties);
 	canvas->setActive(false);
+}
+
+void TeamSelectionController::DecreaseSlot1Index()
+{
+	// Decrease the slot index
+	mSlot1Index--;
+
+	// If this go negative, set it to the size of a list - 1
+}
+
+void TeamSelectionController::IncreaseSlot1Index()
+{
+	// Increase the slot index
+	mSlot1Index++;
+
+	// If this go above size of a list - 1, set it 0
+}
+
+void TeamSelectionController::DecreaseSlot2Index()
+{
+	// Decrease the slot index
+	mSlot2Index--;
+
+	// If this go negative, set it to the size of a list - 1
+}
+
+void TeamSelectionController::IncreaseSlot2Index()
+{
+	// Increase the slot index
+	mSlot2Index++;
+
+	// If this go above size of a list - 1, set it 0
+}
+
+void TeamSelectionController::DecreaseSlot3Index()
+{
+	// Decrease the slot index
+	mSlot3Index--;
+
+	// If this go negative, set it to the size of a list - 1
+}
+
+void TeamSelectionController::IncreaseSlot3Index()
+{
+	// Increase the slot index
+	mSlot3Index++;
+
+	// If this go above size of a list - 1, set it 0
 }
 
 // This where I will create the brand new tower
