@@ -256,6 +256,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
 			// Turn particle effect on
+			mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
 			mMoves.GetMove()->skill->GetParticleSystem()->play();
 
 			// If its a projectile particle effect turn on its mover
