@@ -19,6 +19,7 @@ class RedAudio
 		bool m_playing;
 		bool m_looping;
 		bool m_segmented;
+		unsigned int m_volume;
 	public:
 	private:
 		const wchar_t* ConvertCharToWChar(const char* p_char);

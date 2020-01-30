@@ -27,8 +27,14 @@ RedAudioManager::RedAudioManager()
 	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::SetVolumeEvent);
 	Odyssey::EventManager::getInstance().subscribe(this, &RedAudioManager::LoopEvent);
 	m_volume = 500;
+	m_muted = false;
 	m_default_audio = new RedAudio("assets/audio/wheres_the_lamb_sauce.mp3", "DEFAULT");
 	m_default_audio->Open();
+}
+
+bool RedAudioManager::isMuted()
+{
+	return m_muted;
 }
 
 //RedAudioManager::RedAudioManager(const char* defult_audio)
@@ -109,13 +115,27 @@ bool RedAudioManager::SetMasterVolume(unsigned int volume)
 	return true;
 }
 
+void RedAudioManager::Mute()
+{
+	m_muted = true;
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(0));
+}
+
+void RedAudioManager::Unmute()
+{
+	m_muted = false;
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume));
+}
+
 void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 {
-	m_volume = avEvent->volumeLevel;
+	if (!m_muted) {
+		m_volume = avEvent->volumeLevel;
+	}
 	
 	for (int i = 0; i < m_audioFiles.size(); i++)
 	{
-		m_audioFiles[i].SetVolume(m_volume);
+		m_audioFiles[i].SetVolume(avEvent->volumeLevel);
 	}
 }
 

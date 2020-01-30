@@ -72,6 +72,17 @@ void TowerManager::update(double deltaTime)
 		// Set the cheat code bool
 		mUsedBossCheatCode = true;
 	}
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
+	{
+		if (!RedAudioManager::Instance().isMuted())
+		{
+			RedAudioManager::Instance().Mute();
+		}
+		else
+		{
+			RedAudioManager::Instance().Unmute();
+		}
+	}
 
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
@@ -220,7 +231,8 @@ void TowerManager::CreateBattleInstance()
 		system("CLS");
 
 	// Send off the current level number
-	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName()));
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
+																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath()));
 
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);

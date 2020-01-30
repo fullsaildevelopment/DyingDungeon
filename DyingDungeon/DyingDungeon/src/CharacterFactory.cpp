@@ -39,9 +39,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
 	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	// DELETE THIS TRASH
-	// Create the temp image file name for creating the HUD portrait
-	std::wstring imageFilename = L" ";
 
 	switch (_characterToCreate)
 	{
@@ -61,10 +58,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
-
-			//done, get rid of this variable when its meshed together 
-			// Set the image filename for this character
-			imageFilename = L"assets/images/PaladinPortrait.jpg";
 
 			break;
 		}
@@ -97,14 +90,25 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			tempHero->GetSkills()[3]->SetParticleFiringTime(0.23f);
 			tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
 
-			// DELETE THIS HERASY
-			// Set the image filename for this character
-			imageFilename = L"assets/images/MagePortrait.jpg";
-
 			break;
 		}
 		case Bard:
 		{
+			// Set up hero component
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Bard);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			// Set up blood particle effect
+			tempHero->SetPSBlood(setupBlood());
+
 			break;
 		}
 		case Skeleton:
@@ -128,10 +132,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
 			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);
 
-			//HERASY DELETE
-			// Set the image filename for this character
-			imageFilename = L"assets/images/SkeletonPortrait.png";
-
 			break;
 		}
 		case Ganfaul:
@@ -151,9 +151,6 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			// Set up blood particle effect
 			tempEnemy->SetPSBlood(setupBlood());
 
-			//No longer need
-			// Set the image filename for this character
-			imageFilename = L"assets/images/GanfaulPortrait.jpg";
 			break;
 		}
 		default:
@@ -171,7 +168,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Create entity to add the HUD to
 	std::shared_ptr<Odyssey::Entity> hudEntity = std::make_shared<Odyssey::Entity>();
 	//Create the character's HUD UI
-	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition.x, _hudPosition.y, imageFilename, hudEntity.get(), newCharacter->getComponent<Character>());
+	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition.x, _hudPosition.y, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity.get(), newCharacter->getComponent<Character>());
 	// Set the character's hud index number
 	// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
 	newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);

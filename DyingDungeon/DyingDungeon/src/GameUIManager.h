@@ -122,6 +122,8 @@ public: // Functions
 			case 2: return thirdTeamMemberSlot; break;
 		}
 	}
+	// Get the arrow sprite when selecting a team
+	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
 	// Get the sprite of which character you selected
 	Odyssey::Rectangle2D* GetCharacterSelectImage(CharacterType _type)
 	{
@@ -202,6 +204,8 @@ private: // Varibales
 	Odyssey::Rectangle2D* paladinSelectionImage;
 	//Odyssey::Sprite2D* mageSelectionImage;
 	Odyssey::Rectangle2D* mageSelectionImage;
+	// The arrow sprites
+	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;

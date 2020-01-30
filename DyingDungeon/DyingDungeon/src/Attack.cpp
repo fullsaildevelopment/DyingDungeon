@@ -73,7 +73,7 @@ Attack::~Attack()
 void Attack::Use(Character& caster, Character& target)
 {
 	float totalDps = 0.0f;
-	totalDps = mDamage + (mDamage * caster.GetAtk());
+	totalDps = mDamage + (mDamage * caster.GetAtkMod());
 	//UI battle log
 	std::wstring battleText = caster.GetName();
 	std::wstring skillName = mSkillName;
@@ -84,7 +84,7 @@ void Attack::Use(Character& caster, Character& target)
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 
 	target.TakeDamage(totalDps);
-	if (mStatusEffect != nullptr)
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
 	{
 		mStatusEffect->Apply(target);
 		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), mStatusEffect->GetTypeId()));

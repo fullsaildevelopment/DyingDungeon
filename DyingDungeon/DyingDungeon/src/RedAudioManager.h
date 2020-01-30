@@ -46,6 +46,7 @@ class RedAudioManager
 		static std::vector<RedAudio> m_audioFiles;
 		RedAudio* m_default_audio;
 		unsigned int m_volume;
+		bool m_muted;
 	private:
 		RedAudio* FindAudio(const char* alias);
 		void StopEvent(AudioStopEvent* asEvent);
@@ -100,10 +101,23 @@ class RedAudioManager
 		/// <returns></returns>
 		bool SetMasterVolume(unsigned int volume);
 		/// <summary>
+		/// Reduces all auido to 0
+		/// </summary>
+		void Mute();
+		/// <summary>
+		/// Restors all audio to master volume value
+		/// </summary>
+		void Unmute();
+		/// <summary>
 		/// Listenner function for a Audio Volume event
 		/// </summary>
 		/// <param name="avEvent"></param>
 		void SetVolumeEvent(AudioVolumeEvent* avEvent);
+		/// <summary>
+		/// Tells weather audio is muted
+		/// </summary>
+		/// <returns>bool of wheatehr the audio is muted or not</returns>
+		bool isMuted();
 		/// <summary>
 		/// Getter for the master volume
 		/// </summary>
