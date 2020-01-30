@@ -16,6 +16,10 @@ void MainMenuController::initialize()
 	RedAudioManager::Instance().Stop("BackgroundBattle");
 	RedAudioManager::Instance().Loop("BackgroundMenu");
 
+	// Register callbacks
+	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
+	GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+
 	// Animating bool
 	mAnimatingLaser = true;
 }
@@ -48,9 +52,6 @@ void MainMenuController::update(double deltaTime)
 			// Turn off logo image
 			GameUIManager::getInstance().GetApeBackground()->setVisible(false);
 			GameUIManager::getInstance().GetAnimatedLaser()->setVisible(false);
-			// Register callback for new game text
-			GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
-			GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
 			madeItPassedLogo = true;	
 		}
 	}
@@ -66,6 +67,13 @@ void MainMenuController::update(double deltaTime)
 			RedAudioManager::Instance().Unmute();
 		}
 	}
+}
+
+void MainMenuController::onDestory()
+{
+	// unregister callbacks
+	GameUIManager::getInstance().GetNewGameText()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetStatsText()->unregisterCallback("onMouseClick");
 }
 
 void MainMenuController::EnterTowerSelectScreen()

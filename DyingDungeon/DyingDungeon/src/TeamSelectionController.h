@@ -10,6 +10,7 @@ public:
 	TeamSelectionController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
+	virtual void onDestory();
 	// TODO: REFACTOR THIS LATER
 	void setupHovers();
 public:
