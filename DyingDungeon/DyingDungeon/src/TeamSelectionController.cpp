@@ -42,12 +42,20 @@ void TeamSelectionController::initialize()
 	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->registerCallback("onMouseExit", this, &TeamSelectionController::onPaladinExit);
 	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->registerCallback("onMouseExit", this, &TeamSelectionController::onMageExit);
 
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot3Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot3Index);
+
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
-	mPlayerPositions[0] = DirectX::XMVectorSet(6.0f, 0.3f, 4.5f, 1.0f); // First Character Selected
-	mPlayerPositions[1] = DirectX::XMVectorSet(2.0f, -0.6f, 4.5f, 1.0f); // Second Character Selected
-	mPlayerPositions[2] = DirectX::XMVectorSet(-2.0f, -0.6f, 4.5f, 1.0f); // Third Character Selected
+	mPlayerPositions[0] = DirectX::XMVectorSet(4.0f, 0.0f, 4.5f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, -0.6f, 4.5f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(-4.0f, 0.0f, 4.5f, 1.0f); // Third Character Selected
 
 	// Set the HUD positions
 	mHudPositions.clear();
@@ -55,6 +63,13 @@ void TeamSelectionController::initialize()
 	mHudPositions[0] = DirectX::XMFLOAT2(10.0f, 600.0f); // First Character HUD
 	mHudPositions[1] = DirectX::XMFLOAT2(470.0f, 600.0f); // Second Character HUD
 	mHudPositions[2] = DirectX::XMFLOAT2(910.0f, 600.0f); // Third Character HUD
+
+	// Set the HP positions
+	mHpPopupPositions.clear();
+	mHpPopupPositions.resize(3);
+	mHpPopupPositions[0] = DirectX::XMFLOAT2(350.0f, 400.0f); // First Character HP popup
+	mHpPopupPositions[1] = DirectX::XMFLOAT2(640.0f, 400.0f); // Second Character HP popup
+	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
 
 	// Create the tower manger object
 	CreateTheTowerManager();
@@ -127,7 +142,7 @@ void TeamSelectionController::AddPaladinImage()
 		// Create the paladin and add it to the game scene
 		DirectX::XMVECTOR position = mPlayerPositions[teamCount];
 		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-		std::shared_ptr<Odyssey::Entity> paladinCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", position, rotation, mHudPositions[teamCount], true, mListOfGameScenes[0]);
+		std::shared_ptr<Odyssey::Entity> paladinCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", position, rotation, mHudPositions[teamCount], true, mHpPopupPositions[teamCount], mListOfGameScenes[0]);
 
 		// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
 		for (int i = 1; i < mListOfGameScenes.size(); i++)
@@ -160,7 +175,7 @@ void TeamSelectionController::AddMageImage()
 		// Create the mage and add it to the game scene
 		DirectX::XMVECTOR position = mPlayerPositions[teamCount];
 		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-		std::shared_ptr<Odyssey::Entity> mageCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", position, rotation, mHudPositions[teamCount], true, mListOfGameScenes[0]);
+		std::shared_ptr<Odyssey::Entity> mageCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", position, rotation, mHudPositions[teamCount], true, mHpPopupPositions[teamCount],mListOfGameScenes[0]);
 
 		// Add the mage to all other game scenes, we add it into the first scene because we are passing it in the function
 		for (int i = 1; i < mListOfGameScenes.size(); i++)
@@ -374,6 +389,102 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	canvas->setActive(false);
 }
 
+void TeamSelectionController::DecreaseSlot1Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot1CharacterList[mSlot1Index]->setVisible(false);
+
+	// Decrease the slot index
+	mSlot1Index--;
+
+	// If this go negative, set it to the size of a list - 1
+	if (mSlot1Index < 0)
+		mSlot1Index = mSlot1CharacterList.size() - 1;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot1CharacterList[mSlot1Index]->setVisible(true);
+}
+
+void TeamSelectionController::IncreaseSlot1Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot1CharacterList[mSlot1Index]->setVisible(false);
+
+	// Increase the slot index
+	mSlot1Index++;
+
+	// If this go above size of a list - 1, set it 0
+	if (mSlot1Index > mSlot1CharacterList.size() - 1)
+		mSlot1Index = 0;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot1CharacterList[mSlot1Index]->setVisible(true);
+}
+
+void TeamSelectionController::DecreaseSlot2Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot2CharacterList[mSlot2Index]->setVisible(false);
+
+	// Decrease the slot index
+	mSlot2Index--;
+
+	// If this go negative, set it to the size of a list - 1
+	if (mSlot2Index < 0)
+		mSlot2Index = mSlot2CharacterList.size() - 1;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot2CharacterList[mSlot2Index]->setVisible(true);
+}
+
+void TeamSelectionController::IncreaseSlot2Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot2CharacterList[mSlot2Index]->setVisible(false);
+
+	// Increase the slot index
+	mSlot2Index++;
+
+	// If this go above size of a list - 1, set it 0
+	if (mSlot2Index > mSlot2CharacterList.size() - 1)
+		mSlot2Index = 0;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot2CharacterList[mSlot2Index]->setVisible(true);
+}
+
+void TeamSelectionController::DecreaseSlot3Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot3CharacterList[mSlot3Index]->setVisible(false);
+
+	// Decrease the slot index
+	mSlot3Index--;
+
+	// If this go negative, set it to the size of a list - 1
+	if (mSlot3Index < 0)
+		mSlot3Index = mSlot3CharacterList.size() - 1;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot3CharacterList[mSlot3Index]->setVisible(true);
+}
+
+void TeamSelectionController::IncreaseSlot3Index()
+{
+	// Disable the current character that is visible in scene
+	mSlot3CharacterList[mSlot3Index]->setVisible(false);
+
+	// Increase the slot index
+	mSlot3Index++;
+
+	// If this go above size of a list - 1, set it 0
+	if (mSlot3Index > mSlot3CharacterList.size() - 1)
+		mSlot3Index = 0;
+
+	// Enable the new current character that will need to be visible in scene
+	mSlot3CharacterList[mSlot3Index]->setVisible(true);
+}
+
 // This where I will create the brand new tower
 void TeamSelectionController::CreateTheTowerManager()
 {
@@ -401,31 +512,35 @@ void TeamSelectionController::CreateTheTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 hudPosition = { 10.0f, 10.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, mListOfGameScenes[0]);
+	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 200.0f };
+	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, mListOfGameScenes[0]);
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, mListOfGameScenes[0]);
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, mListOfGameScenes[0]);
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x -= 329.7f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, mListOfGameScenes[0]);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower
 	mCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);

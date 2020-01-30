@@ -72,6 +72,7 @@ void TowerManager::update(double deltaTime)
 		// Set the cheat code bool
 		mUsedBossCheatCode = true;
 	}
+
 	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
@@ -87,6 +88,9 @@ void TowerManager::update(double deltaTime)
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
+		// Update the health popups
+		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
 		{
