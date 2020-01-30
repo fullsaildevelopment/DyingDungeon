@@ -549,6 +549,21 @@ std::vector<std::shared_ptr<Skills>> EnemyComponent::GetSkills()
 // Ganfouls game mechanic function
 void EnemyComponent::GanfaulPhaseMechanic()
 {
-	std::cout << "I DID IT!!!!" << std::endl;
+	static unsigned int CURRENTPHASE = 0;
+	if (CURRENTPHASE != 3 && mCurrentHP <= (mBaseMaxHP * 0.25f))
+	{
+		CURRENTPHASE = 3;
+		mAttack += mBaseAttack;
+	}
+	else if (CURRENTPHASE != 2 && mCurrentHP <= (mBaseMaxHP * 0.50f))
+	{
+		CURRENTPHASE = 2;
+		mDefense += mBaseDefense;
+	}
+	else if (CURRENTPHASE != 1 && mCurrentHP <= (mBaseMaxHP * 0.75f))
+	{
+		CURRENTPHASE = 1;
+		mSpeed += mBaseSpeed;
+	}
 }
 
