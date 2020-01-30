@@ -317,6 +317,18 @@ void TowerManager::GoToMainMenu()
 			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 		}
+
+		// TODO: REFACTOR LATER
+		scene->removeEntity(mPlayerTeam[i].get());
+	}
+
+	// TODO: REFACTOR LATER
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		if (mEnemyTeam[i])
+		{
+			scene->removeEntity(mEnemyTeam[i].get());
+		}
 	}
 
 	// Deactivate the rewards screen

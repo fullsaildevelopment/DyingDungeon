@@ -23,6 +23,9 @@ public: // Constructors
 	Odyssey::UICanvas* UI;
 	Odyssey::UICanvas* Rewards;
 
+	// TODO: REFACTOR LATER
+	Odyssey::Scene* scene;
+
 public: // Functions
 
 	// Necessary

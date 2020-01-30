@@ -31,6 +31,10 @@ namespace Odyssey
 	{
 
 	}
+
+	void Component::onDestroy()
+	{
+	}
 	
 	Entity* Component::getEntity()
 	{
