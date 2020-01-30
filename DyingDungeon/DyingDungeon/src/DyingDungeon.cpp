@@ -693,7 +693,9 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/magic_zap.mp3", "MagicZap");
 	RedAudioManager::Instance().AddAudio("assets/audio/magical_vanish.mp3", "MagicalVanish");
 	RedAudioManager::Instance().AddAudio("assets/audio/medieval_impact_plate_armor.mp3", "PlateArmorHit");
-
+	RedAudioManager::Instance().AddAudio("assets/audio/small_fireball.mp3", "SmallFireball");
+	RedAudioManager::Instance().AddAudio("assets/audio/large_fireball.mp3", "LargeFireball");
+	RedAudioManager::Instance().AddAudio("assets/audio/slime_sound.mp3", "PoisonSlime");
 
 	// Tower select screen door sounds
 	RedAudioManager::Instance().AddAudio("assets/audio/Door_Open.mp3", "DoorOpen");
@@ -708,7 +710,7 @@ void setupAudio()
 	//RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	
 	//Play Initial Loop
-	RedAudioManager::Instance().Loop("NoManaLow");
+	///RedAudioManager::Instance().Loop("LargeFireball");
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
 }
 
