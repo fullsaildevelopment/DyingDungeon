@@ -26,7 +26,10 @@ public:
 	void SetGameEntity(std::shared_ptr<Odyssey::Entity> _gameEntity) { mGameEntity = _gameEntity; }
 
 	// Set the slot 1 of characters for team selection
-	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
+	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) {
+		mSlot1CharacterList = _listOfCharacters;
+		int debug = 0;
+	}
 	void SetSlot2OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
 	void SetSlot3OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
 

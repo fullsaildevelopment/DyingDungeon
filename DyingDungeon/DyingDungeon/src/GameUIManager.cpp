@@ -319,8 +319,8 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	width = 64;
 	height = 64;
 	position = { 100.0f, static_cast<float>(screenHeight) - 100.0f };
-	std::wstring arrowForwardFilepath = L"assets/images/arrowForward.jpg";
-	std::wstring arrowBackFilepath = L"assets/images/arrowBack.jpg";
+	std::wstring arrowForwardFilepath = L"assets/images/Gordon.jpg";
+	std::wstring arrowBackFilepath = L"assets/images/Gordon.jpg";
 	Odyssey::Sprite2D* newArrow;
 	// Create the arrows from left to right, back1, forward1, back2, etc...
 	float spacingFromMidLine = 100.0f;

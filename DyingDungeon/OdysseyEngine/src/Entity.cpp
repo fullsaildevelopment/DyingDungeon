@@ -62,6 +62,11 @@ namespace Odyssey
 	void Entity::setActive(bool active)
 	{
 		mIsActive = active;
+		
+		for (std::shared_ptr<Entity> child : mChildren)
+		{
+			child->setActive(active);
+		}
 	}
 
 	bool Entity::isActive()
@@ -72,6 +77,11 @@ namespace Odyssey
 	void Entity::setVisible(bool active)
 	{
 		mIsVisible = active;
+
+		for (std::shared_ptr<Entity> child : mChildren)
+		{
+			child->setVisible(active);
+		}
 	}
 
 	bool Entity::isVisible()

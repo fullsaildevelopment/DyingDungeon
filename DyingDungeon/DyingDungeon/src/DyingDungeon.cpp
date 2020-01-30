@@ -494,15 +494,18 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Set up the team selection screen
 	setupMenu(gRenderDevice, application, gTeamSelectScene, gTeamSelectMenu, L"", "TeamSelection", MenuComponent::eTeamSelector);
 
+	// Get the team selection controller
+	TeamSelectionController* teamSelectionController = gTeamSelectMenu->getComponent<TeamSelectionController>();
+
 	// Create vector of all game scene
 	std::vector<std::shared_ptr<Odyssey::Scene>> pListOfGameScenes;
 	pListOfGameScenes.push_back(gGameScene);
 	//pListOfGameScenes.push_back(gScene2);
 	// Set the list of scenes in team select controller
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
+	teamSelectionController->SetGameScenes(pListOfGameScenes);
 
 	// Set the game entity that the hud will be attached to
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameEntity(gGameMenu);
+	teamSelectionController->SetGameEntity(gGameMenu);
 
 	// Set up a directional light
 	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
@@ -535,27 +538,91 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	float yHeight = -2.0f;
 	float zDepth = 6.0f;
 
-	// Create the character's for the second slot
+	// Create the character's for the first slot
+	std::vector<std::shared_ptr<Odyssey::Entity>> pListOfCharactersCreated;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
+	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Set the 1st slot of characters
+	teamSelectionController->SetSlot1OfCharacters(pListOfCharactersCreated);
+	// Clear the list before making the new characters for the next slot
+	pListOfCharactersCreated.clear();
 
 	// Create the character's for the second slot
 	xOffset = 0.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Set the 2nd slot of characters
+	teamSelectionController->SetSlot2OfCharacters(pListOfCharactersCreated);
+	// Clear the list before making the new characters for the next slot
+	pListOfCharactersCreated.clear();
 
 	// Create the character's for the third slot
 	xOffset = 3.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Set the 3rd slot of characters
+	teamSelectionController->SetSlot3OfCharacters(pListOfCharactersCreated);
+	// Clear the list before making the new characters for the next slot
+	pListOfCharactersCreated.clear();
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
