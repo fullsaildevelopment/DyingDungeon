@@ -1276,7 +1276,7 @@ void setUpTowerManager()
 	gCurrentTower->addComponent<TowerManager>();
 	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
-	
+
 	// Get Canvas
 	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
 	// Get the width and height of the window

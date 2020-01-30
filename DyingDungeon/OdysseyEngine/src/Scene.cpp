@@ -97,6 +97,58 @@ namespace Odyssey
 		}
 	}
 
+	void Scene::removeEntity(Entity* entity)
+	{
+		// Remove from the entity list.
+
+		// Get the MR
+		MeshRenderer* meshRenderer = entity->getComponent<MeshRenderer>();
+
+		if (meshRenderer)
+		{
+			// Iterate through render objects and compare the pointer, if they match remove that render object.
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				if (meshRenderer == mRenderPackage.renderObjects[i].meshRenderer)
+				{
+					mRenderPackage.renderObjects.erase(mRenderPackage.renderObjects.begin() + i);
+					break;
+				}
+			}
+		}
+
+		// Get the PS
+		ParticleSystem* particleSystem = entity->getComponent<ParticleSystem>();
+
+		// Iterate through vfx objects and compare the pointer, if they match remove that system.
+		if (particleSystem)
+		{
+			for (int i = 0; i < mRenderPackage.vfxObjects.size(); i++)
+			{
+				if (particleSystem == mRenderPackage.vfxObjects[i].system)
+				{
+					mRenderPackage.vfxObjects.erase(mRenderPackage.vfxObjects.begin() + i);
+					break;
+				}
+			}
+		}
+		// Iterate through the canvas objects and compare the entity pointer, if they match remove that object.
+
+		for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
+		{
+			if (entity == mRenderPackage.canvasObjects[i].entity)
+			{
+				mRenderPackage.canvasObjects.erase(mRenderPackage.canvasObjects.begin() + i);
+				break;
+			}
+		}
+
+		for (std::shared_ptr<Entity> child : entity->getChildren())
+		{
+			removeEntity(child.get());
+		}
+	}
+
 	double Scene::getDeltaTime()
 	{
 		// Return delta time
