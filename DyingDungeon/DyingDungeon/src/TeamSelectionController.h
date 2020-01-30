@@ -44,6 +44,7 @@ private:
 
 	// Hold the tower manager object
 	std::shared_ptr<Odyssey::Entity> mCurrentTower;
+	// This will hold all of the entities going into the gameScene
 	std::shared_ptr<Odyssey::Entity> mGameEntity;
 
 	// This is the model of the turn indicator

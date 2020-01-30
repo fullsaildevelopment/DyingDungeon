@@ -535,19 +535,33 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	gTeamSelectScene->addLight(gMenuLights[2]);
 	gTeamSelectScene->addLight(gMenuLights[3]);
 
-	// Create a paladin and add him to the team select scene
+	// Set some variables for positioning
+	float scaleAmount = 0.020f;
+	float xOffset = -3.0f;
+	float yHeight = -2.0f;
+	float zDepth = 6.0f;
+
+	// Create the character's for the second slot
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-1.0f, -2.0f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
-	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 
-	// Create a mage and add him to the team select scene
-	charPosition = DirectX::XMVectorSet(3.0f, -2.0f, 6.0f, 1.0f);
+	// Create the character's for the second slot
+	xOffset = 0.0f;
+	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
-	characterToAdd->getComponent<Odyssey::Transform>()->setScale(0.015f, 0.015f, 0.015f);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+
+	// Create the character's for the third slot
+	xOffset = 3.0f;
+	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
+	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);

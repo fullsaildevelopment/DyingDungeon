@@ -303,21 +303,48 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
 
 	// Create the 3 boxes where the character's images will go when you click on a certain hero
-	position.x = 50.0f;
 	width = 200;
 	height = 200;
-	
 	// First team member
-	position.y += 30.0f;
+	position.x += 10.0f;
 	firstTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
-
 	// Second team member
-	position.y += static_cast<float>(height) + 30.0f;
+	position.x += 10.0f;
 	secondTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
-
 	// Third team member
-	position.y += static_cast<float>(height) + 30.0f;
+	position.x += 10.0f;
 	thirdTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
+
+	// Make the arrow sprites that the user will click to change characters
+	width = 64;
+	height = 64;
+	position = { 100.0f, static_cast<float>(screenHeight) - 100.0f };
+	std::wstring arrowForwardFilepath = L"assets/images/arrowForward.jpg";
+	std::wstring arrowBackFilepath = L"assets/images/arrowBack.jpg";
+	Odyssey::Sprite2D* newArrow;
+	// Create the arrows from left to right, back1, forward1, back2, etc...
+	float spacingFromMidLine = 100.0f;
+	float midLineX = static_cast<float>(screenWidth) / 4.0f;
+	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
+	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
+	midLineX = static_cast<float>(screenWidth) / 2.0f;
+	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
+	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
+	midLineX = (static_cast<float>(screenWidth) / 2.0f) + (static_cast<float>(screenWidth) / 4.0f);
+	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
+	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
+	mTeamSelectionArrows.push_back(newArrow);
 
 	// Make the clickable clear rectangle for the character's when selecting the team members
 	width = 256;
