@@ -112,7 +112,9 @@ int playGame()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(2034525);
 #endif // _DEBUG
-
+	// Seed random using time
+	srand(time(NULL));
+	
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
 	gMainWindow = application->createRenderWindow(L"Dying Dungeon", 1280, 720);
