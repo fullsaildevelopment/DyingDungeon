@@ -20,7 +20,7 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	mBattleLog = std::make_shared<Odyssey::Entity>();
 	mBattleLog->addComponent<Odyssey::UICanvas>();
 	// Get the canvas
-	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
+	mCombatLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
 
 	// Setup init values
 	UINT width = battleTextWidth = (screenWidth / 4) + 50;
@@ -28,6 +28,15 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 
 	DirectX::XMFLOAT2 position = { 10.0f, (static_cast<float>(screenHeight) / 3.0f) + 280.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	
+	// Create background rectangle
+	position.x -= 5.0f;
+	position.y -= 65.0f;
+	Odyssey::Rectangle2D* tempBackground = mCombatLogCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 100, 95);
+	tempBackground->setOpacity(0.65f);
+
+	position.x += 5.0f;
+	position.y += 65.0f;
 
 	// Setup text properties
 	Odyssey::TextProperties properties;
@@ -39,47 +48,53 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Create the battle log text
-	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
+	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 	position.y -= 50.0f;
-	mBattleLogText = battleLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
+	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
 	mBattleLogVec.push_back(mBattleLogText);
 
 	position.y += 50.0f;
 	position.x += 2.0f;
 
-	Odyssey::Sprite2D* iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	float spriteSize = 25.0f;
+	float heightDifference = spriteSize + 5.0f;
+	float widthDifference = spriteSize + 5.0f;
+
+	Odyssey::Sprite2D* iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatCasterIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatSkillIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
 
-	position.x -= 90.0f;
-	position.y -= 45.0f;
+	position.x -= widthDifference * 2.0f;
+	position.y -= heightDifference;
 
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatCasterIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatSkillIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
 
-	position.x -= 90.0f;
-	position.y -= 45.0f;
+	position.x -= widthDifference * 2.0f;
+	position.y -= heightDifference;
 
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatCasterIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatSkillIcons.push_back(iconPointer);
-	position.x += 45.0f;
-	iconPointer = battleLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
+	position.x += widthDifference;
+	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
+
+	mCombatLogCanvas->setActive(false);
 
 	// Add the entity to the game scene
 	_sceneToAddTo->addEntity(mBattleLog);
@@ -1240,8 +1255,7 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 
 void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
 {
-	Odyssey::UICanvas* battleLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
-	UINT spriteSize = 35;
+	float spriteSize = 25.0f;
 	
 	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
 	{
@@ -1268,6 +1282,20 @@ void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, S
 	else
 		mCombatTargetIcons[0]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 
+}
+
+void GameUIManager::ClearCombatLog()
+{
+	float spriteSize = 20.0f;
+
+	for (int i = 0; i < mCombatCasterIcons.size(); i++)
+		mCombatCasterIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+	for (int i = 0; i < mCombatSkillIcons.size(); i++)
+		mCombatSkillIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+	for (int i = 0; i < mCombatTargetIcons.size(); i++)
+		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 }
 
 void GameUIManager::UpdateCombatLogText(float damage)

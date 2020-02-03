@@ -209,6 +209,7 @@
     <ClInclude Include="src\Clense.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
+    <ClInclude Include="src\GameplayTypes.h" />
     <ClInclude Include="src\GameUIManager.h" />
     <ClInclude Include="src\Heal.h" />
     <ClInclude Include="src\HeroComponent.h" />
