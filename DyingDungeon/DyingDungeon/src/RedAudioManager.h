@@ -19,9 +19,11 @@ class AudioVolumeEvent : public Odyssey::Event
 {
 public:
 	unsigned int volumeLevel;
-	AudioVolumeEvent(unsigned int volume)
+	int audioType;
+	AudioVolumeEvent(unsigned int volume, int audio_type = -1)
 	{
 		volumeLevel = volume;
+		audioType = audio_type;
 		priority = Odyssey::EventPriority::Deferred;
 	}
 };
@@ -41,11 +43,12 @@ public:
 class RedAudioManager
 {
 	public:
-		enum class AudioType { Background = 0, SFX };
+		enum class AudioType { None = -1, Background = 0, SFX, Dialog };
 	private:
 		static std::vector<RedAudio> m_audioFiles;
+		std::vector<AudioType> m_audioType;
 		RedAudio* m_default_audio;
-		unsigned int m_volume;
+		unsigned int m_volume[4];
 		bool m_muted;
 	private:
 		RedAudio* FindAudio(const char* alias);
@@ -93,13 +96,13 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		/// <param name="volume">Volume value between 0 and 1000</param>
-		bool SetMasterVolume(const char* alias, unsigned int volume);
+		bool SetVolume(const char* alias, unsigned int volume);
 		/// <summary>
 		/// Setter for the volume of audio files in game
 		/// </summary>
-		/// <param name="volume"></param>
-		/// <returns></returns>
-		bool SetMasterVolume(unsigned int volume);
+		/// <param name="volume">The volume level between 0 and 1000</param>
+		/// <returns>bool wheatehr volume is set</returns>
+		bool SetMasterVolume(unsigned int volume, AudioType audio_type = AudioType::None);
 		/// <summary>
 		/// Reduces all auido to 0
 		/// </summary>
@@ -122,7 +125,7 @@ class RedAudioManager
 		/// Getter for the master volume
 		/// </summary>
 		/// <returns>The current value of the master volume</returns>
-		unsigned int GetVolume();
+		unsigned int GetVolume(AudioType audio_type);
 		/// <summary>
 		/// Update call made to check the state of playing audio tracks
 		/// </summary>
@@ -132,12 +135,14 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="path">Path to audio file in system</param>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
-		void AddAudio(const char* path, const char* alias);
+		/// <param name="audio_type">Audio identifier(SFX, Background)</param>
+		void AddAudio(const char* path, const char* alias, AudioType audio_type = AudioType::SFX);
 		/// <summary>
 		/// Adds audio file to the manager
 		/// </summary>
 		/// <param name="in_audio">Audio object to be added</param>
-		void AddAudio(RedAudio in_audio);
+		/// <param name="audio_type">Audio identifier(SFX, Background)</param>
+		void AddAudio(RedAudio in_audio, AudioType audio_type = AudioType::SFX);
 		/// <summary>
 		/// Getter for audio files stored in the manager
 		/// </summary>

@@ -296,35 +296,39 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 		// If we are provoked
 		else
 		{
-			// Is this our skilltype priority
-			if (skill->GetSkillTypeId() == mPriorityMove)
-				attackScore += 100.0f;
-
-			// Make our target the provoker
-			target = mCaster->GetProvoked();
-
-			// Get the damage and add it to our score
-			Attack* tempATK = dynamic_cast<Attack*>(skill.get());
-			// See if the skill will kill the target
-			if (target->GetHP() - tempATK->GetDamage() <= 0.0f)
-				attackScore += 1000.0f;
-			else
-				attackScore += tempATK->GetDamage();
-
-			// Add any status effect scores
-			attackScore += StatusEffectScore(skill, target);
-
-			// Do we beat our previous attack score
-			if (attackScore >= mBestAttack.score)
+			if (mCaster->GetProvoked()->GetState() != STATE::DEAD)
 			{
-				mBestAttack.skill = skill;
-				mBestAttack.target = mCaster->GetProvoked();
-				mBestAttack.score = attackScore;
-			}
 
-			// Reset values
-			attackScore = 0.0f;
-			target = nullptr;
+				// Is this our skilltype priority
+				if (skill->GetSkillTypeId() == mPriorityMove)
+					attackScore += 100.0f;
+
+				// Make our target the provoker
+				target = mCaster->GetProvoked();
+
+				// Get the damage and add it to our score
+				Attack* tempATK = dynamic_cast<Attack*>(skill.get());
+				// See if the skill will kill the target
+				if (target->GetHP() - tempATK->GetDamage() <= 0.0f)
+					attackScore += 1000.0f;
+				else
+					attackScore += tempATK->GetDamage();
+
+				// Add any status effect scores
+				attackScore += StatusEffectScore(skill, target);
+
+				// Do we beat our previous attack score
+				if (attackScore >= mBestAttack.score)
+				{
+					mBestAttack.skill = skill;
+					mBestAttack.target = mCaster->GetProvoked();
+					mBestAttack.score = attackScore;
+				}
+
+				// Reset values
+				attackScore = 0.0f;
+				target = nullptr;
+			}
 		}
 	}
 }
@@ -362,18 +366,20 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 
 					// Add to our aoe score
 					attackAOEScore += StatusEffectScore(skill, currTarget);
+
+					// Did we beat our previous score
+					if (attackAOEScore >= mBestAttack.score)
+					{
+						mBestAttack.skill = skill;
+						mBestAttack.target = currTarget;
+						mBestAttack.score = attackAOEScore;
+					}
 				}
 			}
 		}
 	}
 
-	// Did we beat our previous score
-	if (attackAOEScore >= mBestAttack.score)
-	{
-		mBestAttack.skill = skill;
-		mBestAttack.target = currTarget;
-		mBestAttack.score = attackAOEScore;
-	}
+	
 }
 
 // Score single target buffs
@@ -408,9 +414,13 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 						mBestBuff.target = target;
 					}
 
+
 					// Reset Scores
 					buffScore = 0.0f;
 					target = nullptr;
+
+					if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::BUFF)
+						buffScore += 50.0f;
 				}
 			}
 		}
@@ -442,17 +452,17 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 						buffAOEScore += 20.0f;
 
 					buffAOEScore += StatusEffectScore(skill, target);
+
+					// Do we beat our previous buff score
+					if (buffAOEScore > mBestBuff.score)
+					{
+						mBestBuff.score = buffAOEScore;
+						mBestBuff.skill = skill;
+						mBestBuff.target = target;
+					}
 				}
 			}
 		}
-	}
-
-	// Do we beat our previous buff score
-	if (buffAOEScore > mBestBuff.score)
-	{
-		mBestBuff.score = buffAOEScore;
-		mBestBuff.skill = skill;
-		mBestBuff.target = target;
 	}
 }
 

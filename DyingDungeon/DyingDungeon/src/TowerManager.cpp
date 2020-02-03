@@ -60,6 +60,14 @@ void TowerManager::update(double deltaTime)
 		TogglePauseMenu();
 	}
 
+	// Toggles the combat canvas
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Tab))
+	{
+		Odyssey::UICanvas* combatCanvas = GameUIManager::getInstance().GetCombatLogCanvas();
+
+		GameUIManager::getInstance().ToggleCanvas(combatCanvas, !combatCanvas->isActive());
+	}
+
 	// Go straight to the BOSS when F3 is hit
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
 	{
@@ -102,7 +110,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
-			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
+			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED

@@ -46,29 +46,22 @@ void TowerSelectController::initialize()
 		SetNextDoorImage(mDoorList[i]);
 	}
 
-	// Assign the callbacks for the door images
-	static bool registeredCallback = false;
-	if (!registeredCallback)
-	{
-		//Set static bool to true
-		registeredCallback = true;
-		mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-		mDoorList[0].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor1State);
-		mDoorList[0].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor1State);
-		mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-		mDoorList[1].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor2State);
-		mDoorList[1].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor2State);
-		mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-		mDoorList[2].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor3State);
-		mDoorList[2].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor3State);
-		mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-		mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
-		mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
-		// Have the fifth door take you to the Scene2
-		mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToScene2);
-		mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
-		mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
-	}
+	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[0].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor1State);
+	mDoorList[0].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor1State);
+	mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[1].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor2State);
+	mDoorList[1].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor2State);
+	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[2].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor3State);
+	mDoorList[2].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor3State);
+	mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
+	mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
+	// Have the fifth door take you to the Scene2
+	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToScene2);
+	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
+	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -95,6 +88,53 @@ void TowerSelectController::update(double deltaTime)
 			RedAudioManager::Instance().Unmute();
 		}
 	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad7))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad9))
+	{
+
+	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad4))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad6))
+	{
+
+	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad1))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad3))
+	{
+
+	}
+}
+
+void TowerSelectController::onDestroy()
+{
+	mDoorList[0].doorImage->unregisterCallback("onMouseClick");
+	mDoorList[0].doorImage->unregisterCallback("onMouseEnter");
+	mDoorList[0].doorImage->unregisterCallback("onMouseExit");
+	mDoorList[1].doorImage->unregisterCallback("onMouseClick");
+	mDoorList[1].doorImage->unregisterCallback("onMouseEnter");
+	mDoorList[1].doorImage->unregisterCallback("onMouseExit");
+	mDoorList[2].doorImage->unregisterCallback("onMouseClick");
+	mDoorList[2].doorImage->unregisterCallback("onMouseEnter");
+	mDoorList[2].doorImage->unregisterCallback("onMouseExit");
+	mDoorList[3].doorImage->unregisterCallback("onMouseClick");
+	mDoorList[3].doorImage->unregisterCallback("onMouseEnter");
+	mDoorList[3].doorImage->unregisterCallback("onMouseExit");
+	// Have the fifth door take you to the Scene2
+	mDoorList[4].doorImage->unregisterCallback("onMouseClick");
+	mDoorList[4].doorImage->unregisterCallback("onMouseEnter");
+	mDoorList[4].doorImage->unregisterCallback("onMouseExit");
 }
 
 void TowerSelectController::GoToTeamSelection()

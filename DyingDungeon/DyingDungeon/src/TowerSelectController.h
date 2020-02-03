@@ -12,6 +12,7 @@ public:
 	TowerSelectController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
+	virtual void onDestroy();
 public:
 	Odyssey::Rectangle2D* mRect;
 private:
