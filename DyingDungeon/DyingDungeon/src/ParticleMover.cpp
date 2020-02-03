@@ -96,4 +96,5 @@ void ParticleMover::Reset()
 	mTempTime = 0.0;
 	mEntity->getComponent<Odyssey::ParticleSystem>()->stop();
 	mFuckYouMax->setPosition(mOrigin.x, mOrigin.y, mOrigin.z);
+	setActive(false);
 }

@@ -169,6 +169,9 @@ public:
 	// Returns the Particle system pointer to a "Hit effect"
 	Odyssey::ParticleSystem* GetPSBlood();
 
+	// Turns all active particle effects to inactive
+	void StopParticleEffects();
+
 	// Returns the character portrait file path
 	std::wstring GetPortraitPath();
 

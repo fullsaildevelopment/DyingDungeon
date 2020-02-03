@@ -155,6 +155,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		break;
 	}
+
 	case GameplayTypes::HEROID::Mage:
 	{
 		// Set the character Model path
@@ -255,6 +256,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		break;
 	}
+
 	case GameplayTypes::HEROID::Bard:
 	{
 		// Set the character Model path
@@ -356,8 +358,12 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		break;
 	}
+
+	// Default case, should never get hit
 	default:
+	{
 		break;
+	}
 	}
 }
 
@@ -491,6 +497,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
 			// Turn particle effect on
+			mCurrentSkill->GetParticleSystem()->getEntity()->setActive(true);
 			mCurrentSkill->GetParticleSystem()->play();
 
 			// If its a projectile particle effect turn on its mover
@@ -688,6 +695,9 @@ void HeroComponent::Die()
 	
 	// Play the death animation
 	mAnimator->playClip("Dead");
+
+	// Stop all active particle effects
+	StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
@@ -907,9 +917,6 @@ void HeroComponent::BeginAttack(EntityList targets)
 
 		// Set the projectiles position to the calculated postition
 		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-
-		// TODO: VERIFY CHANGE
-		mCurrentSkill->GetParticleSystem()->getEntity()->setActive(true);
 
 		// Get the projectiles target position
 		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
