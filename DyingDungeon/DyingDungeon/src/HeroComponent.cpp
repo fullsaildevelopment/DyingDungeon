@@ -140,14 +140,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Skill 1 Judgement (deal damage and heal self)
 		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_2", 0.50f, 15.0f, 50.0f, 20.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Paladin_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 50 damage and healing the paladin for 20 health. Costs 15 mana.");
+		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 50 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Paladin_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
 		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
-		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Def, nullptr);
+		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Paladin_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"Protects all allies from harm granting them 50% increased defense 3 turns. Costs 15 mana.");
@@ -241,17 +241,18 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Mage_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 100% chance to inflict speed down. Costs 10 mana.");
+		mSkillList[1]->SetStatusChance(0.5f);
+		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 10 mana.");
 		// Fire sTrom BIIIIGGGGG DPS with bleed
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_2", 0.60f, 30.0f, 50.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Mage_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 50 damage to all enemies and inflicting burn with a 100% chance. Costs 30 mana.");
+		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 50 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Lighting Bolt BIGGGGG siongle target dps
 		temp = std::make_shared<Stun>(1,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_2", 0.25f, 35.0f, 60.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Mage_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 60 damage to a single enemy with a 100% chance to stun. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 60 damage to a single enemy inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -335,25 +336,25 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.60f, -10.0f, 10.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Bard_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage. Returns 10 mana.");
 		// Skill 2
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Skill 2", "Skill_2", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_2", 0.25f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Bard_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to the enemy party, with a 50% chance to inflict a speed down. Costs 10 mana.");
 		// Skill 3
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Heal>(L"Skill 3", "Skill_2", 0.60f, 30.0f, 50.0f, true));
+		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 50.0f, true));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Bard_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving allies hope, healing 50 health for the party, and giving a 50% attack up. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>(L"Skill 4", "Skill_2", 0.25f, 35.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Bard_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"This is a place holder description. *Dabs*");
+		mSkillList[3]->SetSkillDescription(L"Wash your allies in a clensing wave of magic, riding them of any harmful status effects. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
