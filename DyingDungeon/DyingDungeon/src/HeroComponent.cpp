@@ -371,7 +371,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Off-Tank";
 
 		// Set the portaits path
-		//mPortrait = L"assets/images/Portrait.jpg";
+		mPortrait = L"assets/images/WarriorPortrait.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -449,22 +449,22 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/_Skill_1.png");
+		mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/_Skill_2.png");
+		mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
 		mSkillList[1]->SetSkillDescription(L"");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/_Skill_3.png");
+		mSkillList[2]->SetSkillIconPath(L"assets/images/Warrior_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"");
 		// Skill 4 TODO: Add in mechanic for hitting a random target, possiably the selfbuff
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_4", 0.5f, -10.0f, 15.0f));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/_Skill_4.png");
+		mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
