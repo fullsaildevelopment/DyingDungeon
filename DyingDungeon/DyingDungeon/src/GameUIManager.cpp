@@ -907,24 +907,28 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 228;
-		UINT imageHeight = 43;
-		UINT barWidth = 185;
-		UINT barHeight = 12;
+		UINT imageWidth = 222;
+		UINT imageHeight = 50;
+		UINT barWidth = 171;
+		UINT barHeight = 13;
 		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
 		// Add in the enemy hud template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyHUDTemplate.jpg", imageWidth, imageHeight);
+		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUILayout2.0.png", imageWidth, imageHeight);
 
 		// Add in the enemy's portrait picture
-		imageWidth = 43;
-		imageHeight = 43;
+		imageWidth = 45;
+		imageHeight = 46;
 		// Only add the portrait image if there is one
+		position.x += 2.0f;
+		position.y += 2.0f;
 		if (_imageName != L" ")
 			newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
 		// Add in the enemy's health bar
 		position.x += imageWidth;
+		position.y -= 0.5f;
+		position.x += 3.0f;
 		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
 		newHUD->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 		// Add big health text
