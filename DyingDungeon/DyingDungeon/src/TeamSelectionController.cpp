@@ -71,9 +71,6 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[1] = DirectX::XMFLOAT2(640.0f, 400.0f); // Second Character HP popup
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
 
-	// Create the tower manger object
-	CreateTheTowerManager();
-
 	// Clear the player team from Team Manager before adding in new characters
 	TeamManager::getInstance().GetPlayerTeam().clear();
 }
@@ -96,7 +93,6 @@ void TeamSelectionController::update(double deltaTime)
 
 		// Set up the tower manager with the enemy and player teams
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), TeamManager::getInstance().GetEnemyTeam(), 2, mTurnIndicatorModel);
-		mListOfGameScenes[0]->addEntity(mCurrentTower);
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
@@ -502,65 +498,4 @@ void TeamSelectionController::IncreaseSlot3Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot3CharacterList[mSlot3Index]->setVisible(true);
-}
-
-// This where I will create the brand new tower
-void TeamSelectionController::CreateTheTowerManager()
-{
-	// Create the current tower entity
-	mCurrentTower = std::make_shared<Odyssey::Entity>();
-	mCurrentTower->addComponent<TowerManager>();
-	mCurrentTower->getComponent<TowerManager>()->UI = mGameEntity->getComponents<Odyssey::UICanvas>()[0];
-	mCurrentTower->getComponent<TowerManager>()->Rewards = mGameEntity->getComponents<Odyssey::UICanvas>()[1];
-	// TODO: REFACTOR LATER
-	mCurrentTower->getComponent<TowerManager>()->scene = mListOfGameScenes[0].get();
-
-	// Create the turn indicator circle
-	mTurnIndicatorModel = std::make_shared<Odyssey::Entity>();
-	mTurnIndicatorModel->addComponent<Odyssey::Transform>();
-	mTurnIndicatorModel->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	mTurnIndicatorModel->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
-	Odyssey::FileManager::getInstance().importModel(mTurnIndicatorModel, "assets/models/TurnIndicator.dxm", false);
-	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
-	mTurnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
-	mTurnIndicatorModel->setStatic(false);
-	// Add the turn indicator to the game scene
-	mListOfGameScenes[0]->addEntity(mTurnIndicatorModel);
-
-	// Skeleton #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 hudPosition = { 10.0f, 10.0f };
-	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 200.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Skeleton #3
-	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Skeleton #4
-	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Ganfaul
-	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
-	hudPosition.x -= 329.7f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, mListOfGameScenes[0]);
-	characterToAdd->setActive(false);
-	// Assign the boss character for the tower
-	mCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
 }
