@@ -448,24 +448,24 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Spliting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"");
+		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"");
+		mSkillList[1]->SetSkillDescription(L"Crush an opponents armor lowering thier deffense and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Warrior_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"");
+		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit. Cost 15 mana.");
 		// Skill 4 TODO: Add in mechanic for hitting a random target, possiably the selfbuff
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"", "Skill_4", 0.5f, -10.0f, 15.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 25.0f, 55.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"");
+		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage uping your attack while hitting a random target for 55 damage. Cost 25 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
