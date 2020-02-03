@@ -49,9 +49,6 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 			mEnemyTeam[i]->getComponent<Character>()->SetMana(1000);
 			mEnemyTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
 			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
-
-			mEnemyTeam[i]->getComponent<Character>()->StopParticleEffects();
-
 			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
 			mAllCharacters.push_back(mEnemyTeam[i]);
