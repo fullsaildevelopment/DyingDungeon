@@ -1,13 +1,18 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "RenderTypes.h"
+#include "Component.h"
 
 namespace Odyssey
 {
-	class Light
+	class Light : public Component
 	{
+		CLASS_DECLARATION(Light)
+
 	public: // Rule of 3
-		Light() = default;
+		Light();
+
+		virtual void initialize();
 
 	public: // Interface
 		/**
@@ -34,75 +39,18 @@ namespace Odyssey
 		void buildLightTransformProjection(DirectX::XMFLOAT3& sceneCenter, float sceneRadius, DirectX::XMFLOAT4X4& lightTransform);
 
 		/**
-		 *	Add to the position of the Light.
-		 *	@param[in] x The x value to add to the position.
-		 *	@param[in] y The y value to add to the position.
-		 *	@param[in] z The z value to add to the position.
-		 *	@return void
-		 */
-		void addPosition(float x, float y, float z);
-
-		/**
-		 *	Set the position of the Light in world space.
-		 *	@param[in] x The x value to set the position.
-		 *	@param[in] y The y value to set the position.
-		 *	@param[in] z The z value to set the position.
-		 *	@return void
-		 */
-		void setPosition(float x, float y, float z);
-
-		/**
 		 *	Get the position of the Light in world space.
 		 *	@param[out] position The position of the light in world space.
 		 *	@return void
 		 */
-		void getPosition(DirectX::XMFLOAT3& position);
-
-		/**
-		 *	Add to the direction of the Light.
-		 *	@param[in] x The x value to add to the direction.
-		 *	@param[in] y The y value to add to the direction.
-		 *	@param[in] z The z value to add to the direction.
-		 *	@return void
-		 */
-		void addDirection(float x, float y, float z);
-
-		/**
-		 *	Set the direction of the Light in world space.
-		 *	@param[in] x The x value to set the direction.
-		 *	@param[in] y The y value to set the direction.
-		 *	@param[in] z The z value to set the direction.
-		 *	@return void
-		 */
-		void setDirection(float x, float y, float z);
+		DirectX::XMFLOAT4 getPosition();
 
 		/**
 		 *	Get the direction of the Light in world space.
 		 *	@param[out] direction The direction of the light in world space.
 		 *	@return void
 		 */
-		void getDirection(DirectX::XMFLOAT3& direction);
-
-		/**
-		 *	Rotate the direction of the Light on the X axis.
-		 *	@param[in] angle The angle, in degrees, to rotate the Light by.
-		 *	@return void
-		 */
-		void rotateDirectionX(float angle);
-
-		/**
-		 *	Rotate the direction of the Light on the Y axis.
-		 *	@param[in] angle The angle, in degrees, to rotate the Light by.
-		 *	@return void
-		 */
-		void rotateDirectionY(float angle);
-
-		/**
-		 *	Rotate the direction of the Light on the Z axis.
-		 *	@param[in] angle The angle, in degrees, to rotate the Light by.
-		 *	@return void
-		 */
-		void rotateDirectionZ(float angle);
+		DirectX::XMFLOAT4 getDirection();
 
 		/**
 		 *	Add to the color of the Light.
@@ -141,7 +89,7 @@ namespace Odyssey
 		 *	@param[out] color The color of the light.
 		 *	@return void
 		 */
-		void getColor(DirectX::XMFLOAT3& color);
+		DirectX::XMFLOAT4 getColor();
 
 		/**
 		 *	Set the type of the Light
@@ -228,5 +176,6 @@ namespace Odyssey
 		float mIntensity;
 		float mRange;
 		float mSpotAngle;
+		Transform* mTransform;
 	};
 }

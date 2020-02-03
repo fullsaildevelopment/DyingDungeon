@@ -9,7 +9,7 @@
 #define POINT_LIGHT 1
 #define SPOT_LIGHT 2
 
-struct Light
+struct ShaderLight
 {
 	float4 worldPosition;
 	//------------------------------- ( 16 bytes )
@@ -51,7 +51,7 @@ cbuffer MaterialBuffer : register(b0)
 
 cbuffer Lighting : register(b1)
 {
-	Light sceneLights[8];
+	ShaderLight sceneLights[8];
 	//------------------------------- ( 25 x 64 bytes = 1600 bytes)
 	uint numLights;
 	float3 camPos;

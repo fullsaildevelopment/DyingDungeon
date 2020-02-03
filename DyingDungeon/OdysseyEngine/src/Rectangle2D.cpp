@@ -49,24 +49,6 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
-	void Rectangle2D::addFill(float value)
-	{
-		// Add the parameter value to the fill and clamp between 0.0 and 1.0
-		mLock.lock(LockState::Write);
-		mFill += value;
-		mFill = max(0.0f, min(mFill, 1.0f));
-		mLock.unlock(LockState::Write);
-	}
-
-	void Rectangle2D::setFill(float fill)
-	{
-		// Set the parameter value to the fill and clamp between 0.0 and 1.0
-		mLock.lock(LockState::Write);
-		mFill = fill;
-		mFill = max(0.0f, min(mFill, 1.0f));
-		mLock.unlock(LockState::Write);
-	}
-
 	void Rectangle2D::enableColorLerp(DirectX::XMFLOAT3 zeroFillColor)
 	{
 		// Enable color lerp, store the zero fill color and flag whether alpha lerp is enabled.

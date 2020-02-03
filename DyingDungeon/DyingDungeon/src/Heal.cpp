@@ -1,10 +1,10 @@
 #include "Heal.h"
 #include "Character.h"
 // Constructor
-Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing)
+Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
-	mTypeId = SKILLTYPE::HEAL;
-	mName = skillName;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -13,10 +13,10 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 	mIsAOE = false;
 }
 
-Heal::Heal(std::string skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
+Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
 {
-	mTypeId = SKILLTYPE::HEAL;
-	mName = skillName;
+	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
+	mSkillName = skillName;
 	mAnimationId = animationId;
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
@@ -29,9 +29,39 @@ Heal::Heal(std::string skillName, std::string animationId, float animationTiming
 void Heal::Use(Character& caster, Character& target)
 {
 	target.ReceiveHealing(mHealing);
-	std::cout << caster.GetName() << " has healed " << target.GetName() << " for " << mHealing << " HP." << std::endl;
-	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mName, EFFECTTYPE::None, mHealing));
+	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
+	{
+		mStatusEffect->Apply(target);
+		//Alert Reds stuff for stat tracking?
+		switch (mStatusEffect->GetTypeId())
+		{
+		case EFFECTTYPE::None:
+		{
+			break;
+		}
+		case EFFECTTYPE::Regen:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
+			break;
+		}
+		case EFFECTTYPE::StatUp:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		case EFFECTTYPE::Shield:
+		{
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
+
 // Get the amount the heal is for
 float Heal::GetHealing()
 {

@@ -82,9 +82,9 @@ namespace Odyssey
 		EventManager::getInstance().subscribe(this, &ShadowPass::onSceneChange);
 	}
 
-	void ShadowPass::preRender(RenderArgs& args)
+	void ShadowPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		if (args.shadowLight == nullptr)
+		if (renderPackage.shadowLight == nullptr)
 		{
 			DirectX::XMFLOAT4 shadowsEnabled = { 0.0f, 0.0f, 0.0f, 0.0f };
 			mShadowBuffer->updateData(mDeviceContext, &shadowsEnabled);
@@ -99,7 +99,7 @@ namespace Odyssey
 		}
 
 		// Recalculate the light's transform and set the shader matrix's lightViewProj
-		args.shadowLight->buildLightTransformProjection(args.sceneCenter, args.sceneRadius, args.perFrame.lightViewProj);
+		renderPackage.shadowLight->buildLightTransformProjection(renderPackage.sceneCenter, renderPackage.sceneRadius, args.perFrame.lightViewProj);
 
 		// Update the per frame buffer
 		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
@@ -136,17 +136,17 @@ namespace Odyssey
 		}
 	}
 
-	void ShadowPass::render(RenderArgs& args)
+	void ShadowPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		if (args.shadowLight == nullptr)
+		if (renderPackage.shadowLight == nullptr)
 		{
 			DirectX::XMFLOAT4 shadowsEnabled = { 0.0f, 0.0f, 0.0f, 0.0f };
 			mShadowBuffer->updateData(mDeviceContext, &shadowsEnabled);
 			return;
 		}
 
-		std::vector<std::shared_ptr<Entity>> dynamicObjects;
-		std::vector<std::shared_ptr<Entity>> staticObjects;
+		std::vector<RenderObject*> dynamicObjects;
+		std::vector<RenderObject*> staticObjects;
 
 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&args.perFrame.view);
 
@@ -156,48 +156,22 @@ namespace Odyssey
 		if (renderStatic || renderDynamic)
 		{
 			// Iterate over each scene object in the render list
-			for (std::shared_ptr<Entity> renderObject : args.entityList)
+			for (int i = 0; i < renderPackage.renderObjects.size(); i++)
 			{
 				// Check if the object has a mesh renderer
-				if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
+				if (renderPackage.renderObjects[i].meshRenderer)
 				{
-					if (meshRenderer->isActive())
+					if (renderPackage.renderObjects[i].meshRenderer->isActive())
 					{
-						if (renderObject->getStatic())
+						if (renderPackage.renderObjects[i].meshRenderer->getEntity()->getStatic())
 						{
 							if (renderStatic)
-								staticObjects.push_back(renderObject);
+								staticObjects.push_back(&renderPackage.renderObjects[i]);
 						}
 						else
 						{
 							if (renderDynamic)
-								dynamicObjects.push_back(renderObject);
-						}
-					}
-				}
-
-				for (std::shared_ptr<Entity> child : renderObject->getChildren())
-				{
-					if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
-					{
-						if (meshRenderer->isActive())
-						{
-							if (renderObject->getStatic())
-							{
-								if (renderStatic)
-								{
-									staticObjects.push_back(renderObject);
-									break;
-								}
-							}
-							else
-							{
-								if (renderDynamic)
-								{
-									dynamicObjects.push_back(renderObject);
-									break;
-								}
-							}
+								dynamicObjects.push_back(&renderPackage.renderObjects[i]);
 						}
 					}
 				}
@@ -234,93 +208,71 @@ namespace Odyssey
 		renderStatic = true;
 	}
 
-	void ShadowPass::renderDynamicObjects(std::vector<std::shared_ptr<Entity>> dynamicList, RenderArgs& args)
+	void ShadowPass::renderDynamicObjects(std::vector<RenderObject*> dynamicList, RenderArgs& args)
 	{
 		mDynamicTarget->bind(mDeviceContext);
-		for (std::shared_ptr<Entity> renderObject : dynamicList)
+		for (RenderObject* renderObject : dynamicList)
 		{
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+			if (renderObject->animator)
 			{
-				rootAnimator->bind(mDeviceContext);
+				renderObject->animator->bind(mDeviceContext);
 			}
 
-			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
+			if (renderObject->meshRenderer)
 			{
-				if (meshRenderer->isActive())
+				if (renderObject->meshRenderer->isActive())
 				{
 					renderSceneObject(renderObject, args);
 				}
 			}
 
-			for (std::shared_ptr<Entity> child : renderObject->getChildren())
+			if (renderObject->animator)
 			{
-				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
-				{
-					if (meshRenderer->isActive())
-					{
-						renderSceneObject(child, args);
-					}
-				}
-			}
-
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
-			{
-				rootAnimator->unbind(mDeviceContext);
+				renderObject->animator->unbind(mDeviceContext);
 			}
 		}
 		mDynamicTarget->unBind(mDeviceContext);
 	}
 
-	void ShadowPass::renderStaticObjects(std::vector<std::shared_ptr<Entity>> staticList, RenderArgs& args)
+	void ShadowPass::renderStaticObjects(std::vector<RenderObject*> staticList, RenderArgs& args)
 	{
 		mStaticTarget->bind(mDeviceContext);
-		for (std::shared_ptr<Entity> renderObject : staticList)
+		for (RenderObject* renderObject : staticList)
 		{
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
+			if (renderObject->animator)
 			{
-				rootAnimator->bind(mDeviceContext);
+				renderObject->animator->bind(mDeviceContext);
 			}
 
-			if (MeshRenderer* meshRenderer = renderObject->getComponent<MeshRenderer>())
+			if (renderObject->meshRenderer)
 			{
-				if (meshRenderer->isActive())
+				if (renderObject->meshRenderer->isActive())
 				{
 					renderSceneObject(renderObject, args);
 				}
 			}
 
-			for (std::shared_ptr<Entity> child : renderObject->getChildren())
+			if (renderObject->animator)
 			{
-				if (MeshRenderer* meshRenderer = child->getComponent<MeshRenderer>())
-				{
-					if (meshRenderer->isActive())
-					{
-						renderSceneObject(child, args);
-					}
-				}
-			}
-
-			if (AnimatorDX11* rootAnimator = renderObject->getRootComponent<AnimatorDX11>())
-			{
-				rootAnimator->unbind(mDeviceContext);
+				renderObject->animator->unbind(mDeviceContext);
 			}
 		}
 		mStaticTarget->unBind(mDeviceContext);
 	}
 
-	void ShadowPass::renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args)
+	void ShadowPass::renderSceneObject(RenderObject* renderObject, RenderArgs& args)
 	{
 		// Get the object's global transform and set the MVP acoordingly
-		args.perObject.world = object->getComponent<Transform>()->getGlobalTransform();
+		args.perObject.world = renderObject->transform->getGlobalTransform();
 
 		// Update and bind the constant buffer
 		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
 
 		// Bind the vertex and index buffer of the mesh to the pipeline
-		object->getComponent<MeshRenderer>()->getMesh()->getIndexBuffer()->bind(mDeviceContext);
-		object->getComponent<MeshRenderer>()->getMesh()->getVertexBuffer()->bind(mDeviceContext);
+		renderObject->meshRenderer->getMesh()->getIndexBuffer()->bind(mDeviceContext);
+		renderObject->meshRenderer->getMesh()->getVertexBuffer()->bind(mDeviceContext);
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(object->getComponent<MeshRenderer>()->getMesh()->getNumberOfIndices(), 0, 0);
+		mDeviceContext->DrawIndexed(renderObject->meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }

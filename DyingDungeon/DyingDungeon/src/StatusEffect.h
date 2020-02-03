@@ -2,8 +2,9 @@
 #include <string>
 // enum used for readablity of what stat is affected
 enum class STATS {None = -1, Atk = 0, Def, Spd};
-enum class EFFECTTYPE { None = -1, Bleed = 0, Regen, StatUp, StatDown, Stun, Shield, Provoke};
+enum class EFFECTTYPE { None = -1, Bleed = 0, Regen, StatUp, StatDown, Stun, Shield, Provoke, Clense};
 class Character; 
+
 class StatusEffect
 {
 	// public and private variables

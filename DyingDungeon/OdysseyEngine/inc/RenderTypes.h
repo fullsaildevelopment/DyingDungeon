@@ -12,6 +12,21 @@ namespace Odyssey
 		DirectX::XMFLOAT2 tex;
 	};
 
+	struct ShaderLight
+	{
+		DirectX::XMFLOAT4 worldPosition;
+		//------------------------------- ( 16 bytes )
+		DirectX::XMFLOAT4 worldDirection;
+		//------------------------------- ( 16 bytes )
+		DirectX::XMFLOAT4 color;
+		//------------------------------- ( 16 bytes )
+		UINT lightType;
+		float intensity;
+		float range;
+		float cone;
+		//------------------------------- ( 16 bytes )
+	}; //------------------------------- ( 4 x 16 bytes  = 64 bytes)
+
 	struct Particle
 	{
 		DirectX::XMFLOAT4 color;
@@ -179,5 +194,68 @@ namespace Odyssey
 		Directional = 0,
 		Point = 1,
 		Spot = 2
+	};
+
+	class AABB;
+	class AnimatorDX11;
+	class MeshRenderer;
+	class Transform;
+
+	struct RenderObject
+	{
+		AABB* aabb;
+		MeshRenderer* meshRenderer;
+		Transform* transform;
+		AnimatorDX11* animator;
+	};
+
+	class ParticleSystem;
+	struct VFXObject
+	{
+		ParticleSystem* system;
+		Transform* transform;
+	};
+
+	class Entity;
+	class UICanvas;
+	class UIElement;
+	struct CanvasObject
+	{
+		Entity* entity;
+		UICanvas* canvas;
+		std::vector<UIElement*> elements;
+	};
+
+	class Camera;
+	class Frustum;
+	class Light;
+
+	struct RenderPackage
+	{
+		// All Passes
+		Camera* camera;
+		Frustum* frustum;
+		DirectX::XMFLOAT3 cameraPosition;
+		// Skybox Pass
+		RenderObject skybox;
+		// Shadow Pass
+		Light* shadowLight;
+		DirectX::XMFLOAT3 sceneCenter;
+		float sceneRadius;
+		// Shadow and Opaque Pass
+		std::vector<RenderObject> renderObjects;
+		// Transparent Pass
+		std::vector<VFXObject> vfxObjects;
+		// Sprite2D Pass
+		std::vector<CanvasObject> canvasObjects;
+		// Lighting
+		std::vector<Light*> sceneLights;
+
+		RenderPackage()
+		{
+			camera = nullptr;
+			frustum = nullptr;
+			shadowLight = nullptr;
+		}
 	};
 }

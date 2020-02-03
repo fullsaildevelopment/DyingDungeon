@@ -167,18 +167,18 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 
 bool SaveLoad::SaveGame(std::string saveProfile)
 {
-	StatTracker::Instance().SaveStats(std::string("profiles/" + saveProfile));
+	//StatTracker::Instance().SaveStats(std::string("profiles/" + saveProfile));
 	SaveLoadOut();
 	return true;
 }
 
 bool SaveLoad::LoadGame(std::string saveProfile)
 {
-	StatTracker::Instance().LoadStats(std::string("profiles/" + saveProfile));
+	//StatTracker::Instance().LoadStats(std::string("profiles/" + saveProfile));
 	return false;
 }
 
-void SaveLoad::AddLoadOut(std::string loadoutName, HEROID characterID_0, HEROID characterID_1, HEROID characterID_2)
+void SaveLoad::AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2)
 {
 	Loadout newLoadout;
 	newLoadout.characterIDs[0] = characterID_0;
@@ -198,11 +198,11 @@ bool SaveLoad::SaveLoadOut()
 		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::out | std::ios::trunc | std::ios::binary);
 		if (file.is_open()) 
 		{
-			uint32_t nameSize = loadouts[i].name.size();
+			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
 			file.write((const char*)&nameSize, sizeof(uint32_t));
 			file.write(loadouts[i].name.c_str(), nameSize);
 
-			uint32_t profileNameSize = loadouts[i].profile.size();
+			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
 			file.write((const char*)&profileNameSize, sizeof(uint32_t));
 			file.write(loadouts[i].profile.c_str(), nameSize);
 			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
@@ -232,16 +232,16 @@ bool SaveLoad::LoadLoadOut()
 	//create_directory();
 
 	unsigned int file_count = dir_file_count(std::string("loadouts/"));
-	for (int i = 0; i < file_count; i++)
+	for (unsigned int i = 0; i < file_count; i++)
 	{
 		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::in | std::ios::trunc | std::ios::binary);
 		if (file.is_open())
 		{
-			uint32_t nameSize = loadouts[i].name.size();
+			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
 			file.write((const char*)&nameSize, sizeof(uint32_t));
 			file.write(loadouts[i].name.c_str(), nameSize);
 
-			uint32_t profileNameSize = loadouts[i].profile.size();
+			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
 			file.write((const char*)&profileNameSize, sizeof(uint32_t));
 			file.write(loadouts[i].profile.c_str(), nameSize);
 			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
@@ -277,7 +277,7 @@ unsigned int SaveLoad::dir_file_count(std::experimental::filesystem::v1::path di
 	return static_cast<unsigned int>(std::distance(directory_iterator(dir), directory_iterator{}));
 }
 
-int create_directory(std::string& directory_path)
+int SaveLoad::create_directory(std::string& directory_path)
 {
 	int result = 0;
 	std::experimental::filesystem::v1::path dir = directory_path;
@@ -288,7 +288,7 @@ int create_directory(std::string& directory_path)
 		for (int i = 0; i < directory_path.size(); i++)
 		{
 			directories[directories.size() - 1].append(std::string(1, directory_path[i]));
-			if (directory_path[i] == '/' && (i + 1) != directory_path.size())
+			if (directory_path[i] == '/' && (i + static_cast<int>(1)) != directory_path.size())
 			{
 				directories.push_back(std::string());
 			}
@@ -299,7 +299,7 @@ int create_directory(std::string& directory_path)
 			currentPath.append(directories[j]);
 			std::experimental::filesystem::v1::path curr_dir = currentPath;
 			if (!std::experimental::filesystem::exists(curr_dir)) {
-				_mkdir(currentPath.c_str());
+				int error = _mkdir(currentPath.c_str());
 			}
 		}
 	}

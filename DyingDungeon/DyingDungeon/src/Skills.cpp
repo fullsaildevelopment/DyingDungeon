@@ -1,4 +1,5 @@
 #include "Skills.h"
+#include "GameplayTypes.h"
 #include "Character.h"
 
 /*
@@ -24,10 +25,37 @@ void Skills::Use(Character& caster,Character& target)
 {
 }
 
-// Get skill name 
-std::string Skills::GetName()
+// Set the description of the skill
+void Skills::SetSkillDescription(std::wstring desc)
 {
-	return mName;
+    mSkillDescription = desc;
+}
+
+// Get description of the skill
+std::wstring Skills::GetSkillDescription()
+{
+    return mSkillDescription;
+}
+
+// Return a wstring to the icon name
+std::wstring Skills::GetSkillIconPath()
+{
+    if (mSkillIconName.size() > 0)
+        return mSkillIconName;
+    else
+        return L"assets/images/Blank.png";
+}
+
+// Set Icon name to passed in name
+void Skills::SetSkillIconPath(std::wstring icon)
+{
+    mSkillIconName = icon;
+}
+
+// Get skill name 
+std::wstring Skills::GetSkillName()
+{
+	return mSkillName;
 }
 
 // Returns the skills animation id
@@ -36,57 +64,69 @@ std::string Skills::GetAnimationId()
 	return mAnimationId;
 }
 
+// Return animation timing
 float Skills::GetAnimationTiming()
 {
 	return mAnimationTime;
 }
 
 // Returns Type Id
-SKILLTYPE Skills::GetTypeId()
+GameplayTypes::SKILLTYPE Skills::GetSkillTypeId()
 {
-	return mTypeId;
+	return mSkillTypeId;
 }
 
+// Returns if the skill is an aoe move
 bool Skills::IsAOE()
 {
 	return mIsAOE;
 }
 
+// Gets the pointer to any status effect attatched to the skill if one exists
+// Returns nullptr otherwise
 StatusEffect* Skills::GetStatusEffect()
 {
     return mStatusEffect.get();
 }
 
+// Takes in a shared pointer for statseffects and sets it to the status effect for 
+// the current skill
 void Skills::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 {
 	mStatusEffect = se;
 }
 
+// Return the particlesystems entity
 Odyssey::ParticleSystem* Skills::GetParticleSystem()
 {
 	return mPS.mPixelEntity;
 }
 
+// Returns the position offset for the particle system attatched to the skill
 DirectX::XMFLOAT3 Skills::GetPosOffset()
 {
 	return mPS.mStartingPosOffest;
 }
 
+// Return particle systems firing time
 float Skills::GetPSFiringTime()
 {
 	return mPS.mFiringTime;
 }
 
+// Set the particle system entity
 void Skills::SetParticleSystem(Odyssey::ParticleSystem* newParticleSystem)
 {
 	mPS.mPixelEntity = newParticleSystem;
 }
 
+// Set the particle system offset
 void Skills::SetParticleOffset(DirectX::XMFLOAT3 newOffset)
 {
 	mPS.mStartingPosOffest = newOffset;
 }
 
+// Set the particle system firing time
 void Skills::SetParticleFiringTime(float newFiringTime)
 {
 	mPS.mFiringTime = newFiringTime;

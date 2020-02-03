@@ -17,19 +17,24 @@ namespace Odyssey
 		EventManager::getInstance().subscribe(this, &Sprite2DPass::onDebugEngine);
 	}
 
-	void Sprite2DPass::preRender(RenderArgs& args)
+	void Sprite2DPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
 		mContext->BeginDraw();
 	}
 
-	void Sprite2DPass::render(RenderArgs& args)
+	void Sprite2DPass::render(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		for (UIElement* element : args.elementList)
+		for (CanvasObject canvas : renderPackage.canvasObjects)
 		{
-			if (element->getCanvas()->isActive() && element->getCanvas()->getEntity()->isActive() && element->getCanvas()->getEntity()->isVisible())
+			if (canvas.canvas->isActive() && canvas.entity->isActive() && canvas.entity->isVisible())
 			{
-				if (element->isVisible())
-					element->draw(mContext);
+				for (UIElement* element : canvas.elements)
+				{
+					if (element->isVisible())
+					{
+						element->draw(mContext);
+					}
+				}
 			}
 		}
 

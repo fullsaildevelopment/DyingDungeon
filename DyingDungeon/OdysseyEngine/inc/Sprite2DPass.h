@@ -14,8 +14,8 @@ namespace Odyssey
 		Sprite2DPass(std::shared_ptr<RenderDevice> renderDevice, std::shared_ptr<RenderWindow> targetWindow);
 		virtual ~Sprite2DPass() = default;
 	public:
-		virtual void preRender(RenderArgs& args);
-		virtual void render(RenderArgs& args);
+		virtual void preRender(RenderArgs& args, RenderPackage& renderPackage);
+		virtual void render(RenderArgs& args, RenderPackage& renderPackage);
 		void onDebugEngine(DebugEngine* evnt);
 	private:
 		std::shared_ptr<RenderDevice> mRenderDevice;

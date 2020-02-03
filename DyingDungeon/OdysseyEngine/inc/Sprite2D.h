@@ -29,9 +29,9 @@ namespace Odyssey
 		 */
 		void setSprite(std::wstring filename, UINT width = 0, UINT height = 0);
 
-	protected:
-		virtual void createResource();
+		std::wstring getSpriteFilename();
 
+		virtual void createResource();
 	private: // Helpers
 		/**
 		 *	Create the bitmap resource from the parameter file.
@@ -42,9 +42,8 @@ namespace Odyssey
 		 */
 		void createBitmapFromFile(std::wstring filename, UINT width, UINT height);
 
-		void reloadBitmapFromFile(std::wstring filename, UINT width, UINT height);
-
 	private: // Members
+		Microsoft::WRL::ComPtr<ID2D1BitmapBrush1> mBitmapBrush;
 		IWICImagingFactory* factory;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> mBitmap;
 		IWICFormatConverter* mBitmapConverter;

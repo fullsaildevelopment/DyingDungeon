@@ -1,8 +1,27 @@
 #include "Light.h"
 #include "DebugManager.h"
+#include "Entity.h"
+#include "Transform.h"
 
 namespace Odyssey
 {
+	CLASS_DEFINITION(Component, Light)
+
+	Light::Light()
+	{
+
+	}
+
+	void Light::initialize()
+	{
+		mTransform = mEntity->getComponent<Transform>();
+
+		DirectX::XMFLOAT3 holder = mTransform->getPosition();
+		mPosition = { holder.x, holder.y, holder.z, 1.0f };
+		holder = mTransform->getForward();
+		mDirection = { holder.x, holder.y, holder.z, 0.0f };
+	}
+
 	void Light::debugDraw()
 	{
 		// Directional and spot use a range of 10, point light use it's own range
@@ -59,70 +78,18 @@ namespace Odyssey
 		DirectX::XMStoreFloat4x4(&lightTransform, viewProj);
 	}
 
-	void Light::addPosition(float x, float y, float z)
-	{
-		// Add to the position
-		mPosition.x += x;
-		mPosition.y += y;
-		mPosition.z += z;
-	}
-
-	void Light::setPosition(float x, float y, float z)
-	{
-		// Set the new position
-		mPosition = DirectX::XMFLOAT4(x, y, z, 1.0f);
-	}
-
-	void Light::getPosition(DirectX::XMFLOAT3& position)
+	DirectX::XMFLOAT4 Light::getPosition()
 	{
 		// Set the out parameter to the position
-		position = DirectX::XMFLOAT3(mPosition.x, mPosition.y, mPosition.z);
+		DirectX::XMFLOAT3 pos = mTransform->getPosition();
+		return { pos.x, pos.y, pos.z, 1.0f };
 	}
 
-	void Light::addDirection(float x, float y, float z)
-	{
-		// Add to the direction
-		mDirection.x += x;
-		mDirection.y += y;
-		mDirection.z += z;
-	}
-
-	void Light::setDirection(float x, float y, float z)
-	{
-		// Set the new direction
-		mDirection = DirectX::XMFLOAT4(x, y, z, 0.0f);
-	}
-
-	void Light::getDirection(DirectX::XMFLOAT3& direction)
+	DirectX::XMFLOAT4 Light::getDirection()
 	{
 		// Set the out parameter to the direction
-		direction = DirectX::XMFLOAT3(mDirection.x, mDirection.y, mDirection.z);
-	}
-
-	void Light::rotateDirectionX(float angleInDegrees)
-	{
-		// Rotate the direction by the parameter angle in radians along the X axis
-		DirectX::XMVECTOR rotatedDirection = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&mDirection), DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angleInDegrees)));
-		
-		// Store the newly rotated direction
-		DirectX::XMStoreFloat4(&mDirection, rotatedDirection);
-	}
-
-	void Light::rotateDirectionY(float angleInDegrees)
-	{
-		// Rotate the direction by the parameter angle in radians along the Y axis
-		DirectX::XMVECTOR rotatedDirection = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&mDirection), DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angleInDegrees)));
-
-		// Store the newly rotated direction
-		DirectX::XMStoreFloat4(&mDirection, rotatedDirection);
-	}
-	void Light::rotateDirectionZ(float angleInDegrees)
-	{
-		// Rotate the direction by the parameter angle in radians along the Z axis
-		DirectX::XMVECTOR rotatedDirection = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&mDirection), DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angleInDegrees)));
-
-		// Store the newly rotated direction
-		DirectX::XMStoreFloat4(&mDirection, rotatedDirection);
+		DirectX::XMFLOAT3 fwd = mTransform->getForward();
+		return { fwd.x, fwd.y, fwd.z, 0.0f };
 	}
 
 	void Light::addColor(DirectX::XMFLOAT3 color)
@@ -155,10 +122,10 @@ namespace Odyssey
 		mColor = DirectX::XMFLOAT4(r, g, b, 1.0f);
 	}
 
-	void Light::getColor(DirectX::XMFLOAT3& color)
+	DirectX::XMFLOAT4 Light::getColor()
 	{
 		// Set the out parameter to the color
-		color = DirectX::XMFLOAT3(mColor.x, mColor.y, mColor.z);
+		return DirectX::XMFLOAT4(mColor.x, mColor.y, mColor.z, 1.0f);
 	}
 
 	void Light::setLightType(LightType lightType)

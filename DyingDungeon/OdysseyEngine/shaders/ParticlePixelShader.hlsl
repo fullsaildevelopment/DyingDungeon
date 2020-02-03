@@ -15,7 +15,7 @@ float4 main(GSOutput input) : SV_TARGET
 		return float4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
-	clip(input.color.a - 0.05f);
+	clip(input.color.a - 0.005f);
 	float4 color = txDiffuse.Sample(samLinear, input.tex);
 	color.rgb *= input.color;
 	return saturate(color);

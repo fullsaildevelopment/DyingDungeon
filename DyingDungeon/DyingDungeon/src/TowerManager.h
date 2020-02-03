@@ -23,6 +23,9 @@ public: // Constructors
 	Odyssey::UICanvas* UI;
 	Odyssey::UICanvas* Rewards;
 
+	// TODO: REFACTOR LATER
+	Odyssey::Scene* scene;
+
 public: // Functions
 
 	// Necessary
@@ -55,6 +58,9 @@ public: // Functions
 	void SetStatitics(std::shared_ptr<float> _newStatitics) { mStatitics = _newStatitics; } // This will set a list of new statitics to the mStatitics varibale that will be used in the Overlord
 
 private: // Varibales
+
+	// Cheat Code Variables
+	bool mUsedBossCheatCode = false;
 
 	//Battle Instance
 	BattleInstance* mCurrentBattle;

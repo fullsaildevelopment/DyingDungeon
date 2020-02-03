@@ -11,10 +11,14 @@ public:
 	MainMenuController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
+	virtual void onDestory();
 private:
 	void EnterTowerSelectScreen();
 public:
 	Odyssey::Rectangle2D* mRect;
 private:
 	Odyssey::Application* mApplication;
+
+	// Bools
+	bool mAnimatingLaser = true;
 };

@@ -19,6 +19,7 @@ namespace Odyssey
 		void generateRenderArgs(std::shared_ptr<SceneDX11> scene);
 	private:
 		RenderArgs args;
+		RenderPackage mRenderPackage;
 		std::vector<std::shared_ptr<RenderPass>> mRenderPasses;
 		PerFrameBuffer perFrame;
 		std::shared_ptr<Buffer> mPerFrameBuffer;

@@ -18,13 +18,13 @@ namespace Odyssey
 	public: // Constructors
 		ShadowPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int texWidth, int texHeight);
 	public: // Inherited overrides
-		virtual void preRender(RenderArgs& args);
-		virtual void render(RenderArgs& args);
+		virtual void preRender(RenderArgs& args, RenderPackage& renderPackage);
+		virtual void render(RenderArgs& args, RenderPackage& renderPackage);
 		void onSceneChange(SceneChangeEvent* evnt);
 	private: // Helper functions
-		void renderDynamicObjects(std::vector<std::shared_ptr<Entity>> dynamicList, RenderArgs& args);
-		void renderStaticObjects(std::vector<std::shared_ptr<Entity>> staticList, RenderArgs& args);
-		void renderSceneObject(std::shared_ptr<Entity> object, RenderArgs& args);
+		void renderDynamicObjects(std::vector<RenderObject*> dynamicList, RenderArgs& args);
+		void renderStaticObjects(std::vector<RenderObject*> staticList, RenderArgs& args);
+		void renderSceneObject(RenderObject* renderObject, RenderArgs& args);
 	private:
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;

@@ -35,9 +35,9 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<ID3D11Device> getDevice();
 		Microsoft::WRL::ComPtr<ID2D1DeviceContext> getDevice2DContext();
 		Microsoft::WRL::ComPtr<ID2D1Factory1> get2DFactory();
-		~RenderDevice();
 	public:
 		std::shared_ptr<Scene> createScene();
+		std::shared_ptr<Scene> createScene(DirectX::XMFLOAT3 center, float radius);
 		void importScene(std::shared_ptr<Scene> scene, const char* filename);
 		void importModel(std::shared_ptr<Entity> entity, const char* filename, bool isMultiMesh);
 	public: // Rendering Resources

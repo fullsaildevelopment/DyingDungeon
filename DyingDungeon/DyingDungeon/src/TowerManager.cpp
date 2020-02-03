@@ -19,6 +19,9 @@ TowerManager::~TowerManager()
 
 void TowerManager::initialize()
 {
+	// Reset cheat code bools
+	mUsedBossCheatCode = false;
+
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
@@ -57,13 +60,49 @@ void TowerManager::update(double deltaTime)
 		TogglePauseMenu();
 	}
 
+	// Toggles the combat canvas
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Tab))
+	{
+		Odyssey::UICanvas* combatCanvas = GameUIManager::getInstance().GetCombatLogCanvas();
+
+		GameUIManager::getInstance().ToggleCanvas(combatCanvas, !combatCanvas->isActive());
+	}
+
+	// Go straight to the BOSS when F3 is hit
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	{
+		// Destroy the current battle instance
+		DestroyBattleInstance();
+		// Set the game to in rewards 
+		mTowerState = IN_REWARDS;
+		// Set the tower level to the last level which is the boss
+		mCurrentLevel = mNumberOfLevels;
+		// Set the cheat code bool
+		mUsedBossCheatCode = true;
+	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
+	{
+		if (!RedAudioManager::Instance().isMuted())
+		{
+			RedAudioManager::Instance().Mute();
+		}
+		else
+		{
+			RedAudioManager::Instance().Unmute();
+		}
+	}
+
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
+		// Update the health popups
+		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
 		{
-      int result = mCurrentBattle->UpdateBattle();
+			int result = mCurrentBattle->UpdateBattle();
 
 			// If the result of the updated battle was DESTROY, destory the current battle instance
 			if (result == mCurrentBattle->PLAYER_TEAM_DIED || result == mCurrentBattle->DESTORY)
@@ -71,7 +110,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
-			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
+			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
@@ -93,8 +132,11 @@ void TowerManager::update(double deltaTime)
 		}
 		else if (GetTowerState() == IN_REWARDS)
 		{
-			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter) || mUsedBossCheatCode)
 			{
+				// Reset cheat code bool
+				mUsedBossCheatCode = false;
+				// Create temp xp variable
 				float tempXP = 0.0f;
 
 				// Check to see if that was our last level for completing the tower
@@ -134,9 +176,6 @@ void TowerManager::update(double deltaTime)
 					}
 
 					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
-					// Publish the current level number
-					Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
 
 					// Give player some XP
 					tempXP = 100.0f;
@@ -204,7 +243,8 @@ void TowerManager::CreateBattleInstance()
 		system("CLS");
 
 	// Send off the current level number
-	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel));
+	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
+																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath()));
 
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
@@ -217,14 +257,12 @@ void TowerManager::CreateBattleInstance()
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
-		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
 	std::cout << "- Enemy Team\n" << std::endl;
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
-		std::cout << "- - " << myChar->GetName() << " - HP: " << myChar->GetHP() << "\n" << std::endl;
 	}
 
 	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
@@ -286,6 +324,18 @@ void TowerManager::GoToMainMenu()
 			mPlayerTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
 			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
+		}
+
+		// TODO: REFACTOR LATER
+		scene->removeEntity(mPlayerTeam[i].get());
+	}
+
+	// TODO: REFACTOR LATER
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		if (mEnemyTeam[i])
+		{
+			scene->removeEntity(mEnemyTeam[i].get());
 		}
 	}
 
