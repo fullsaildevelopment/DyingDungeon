@@ -82,7 +82,7 @@ void StatTracker::SetCanvas(Odyssey::UICanvas* canvas, unsigned int path_width, 
 	m_portrait_height = path_height;
 }
 
-void StatTracker::UpdateRewardScreen(RewardsActiveEvnet* raEvent) 
+void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent) 
 {
 	//std::vector<std::string> temp_nameList = GetListPlayerCharacterNames(raEvent->level);
 	/*for (unsigned int i = 1; i <= temp_nameList.size(); i++) {

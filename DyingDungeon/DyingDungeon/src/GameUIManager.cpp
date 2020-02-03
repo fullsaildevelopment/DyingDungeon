@@ -673,7 +673,7 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	color = { 50.0f, 180.0f, 255.0f, 1.0f };
 	mVolumeBar = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
-	mVolumeBar->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f);
+	mVolumeBar->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
 
 	// Create the plus and minus symbols that the user can click on to adjust the volume
 	UINT imageWidth = 32;
@@ -1066,20 +1066,20 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 void GameUIManager::DecreaseVolume()
 {
 	// Decrease volume with Red's audio manager
-	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume() - 50);
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None) - 50);
 
 	// Set the fill of the volume bar
-	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar->setFill(volumeRatio);
 }
 
 void GameUIManager::IncreaseVolume()
 {
 	// Increase volume with Red's audio manager
-	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume() + 50);
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None) + 50);
 
 	// Set the fill of the volume bar
-	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume()) / 1000.0f;
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar->setFill(volumeRatio);
 }
 

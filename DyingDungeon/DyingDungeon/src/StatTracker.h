@@ -205,7 +205,7 @@ private:
 	/// Function is called as a response to the Rewards Screen Active event
 	/// </summary>
 	/// <param name="raEvent"></param>
-	void UpdateRewardScreen(RewardsActiveEvnet* raEvent);
+	void UpdateRewardScreen(RewardsActiveEvent* raEvent);
 
 	//Getter Functions
 	/// <summary>
