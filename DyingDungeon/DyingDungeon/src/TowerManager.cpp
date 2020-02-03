@@ -110,7 +110,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
-			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvnet(mCurrentLevel));
+			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED

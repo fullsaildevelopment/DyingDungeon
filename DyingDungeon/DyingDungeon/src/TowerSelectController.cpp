@@ -88,6 +88,33 @@ void TowerSelectController::update(double deltaTime)
 			RedAudioManager::Instance().Unmute();
 		}
 	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad7))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad9))
+	{
+
+	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad4))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad6))
+	{
+
+	}
+
+	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad1))
+	{
+
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad3))
+	{
+
+	}
 }
 
 void TowerSelectController::onDestroy()

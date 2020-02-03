@@ -4,6 +4,7 @@
 #include "Event.h"
 #include "EventManager.h"
 #include "Skills.h"
+#include "Converter.h"
 
 class CharacterDealtDamageEvent : public Odyssey::Event
 {
@@ -15,8 +16,8 @@ public:
 	EFFECTTYPE actionEffect;
 	CharacterDealtDamageEvent(std::wstring attacker, std::wstring action, float damage, float attackMod, EFFECTTYPE effect)
 	{
-		attackerName = static_cast<std::string>(std::string(attacker.begin(), attacker.end()));
-		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
+		attackerName = Converter::ConvertWStrToStr(attacker.c_str());
+		actionName = Converter::ConvertWStrToStr(action.c_str());
 		damageAmount = damage;
 		atkMod = attackMod;
 		actionEffect = effect;
@@ -32,8 +33,8 @@ public:
 	
 	CharacterTakeDamage(std::wstring target, std::wstring action, float mitigation)
 	{
-		targetName = static_cast<std::string>(std::string(target.begin(), target.end()));
-		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
+		targetName = Converter::ConvertWStrToStr(target.c_str());
+		actionName = Converter::ConvertWStrToStr(action.c_str());
 		mitigationAmount = mitigation;
 	}
 };
@@ -47,8 +48,8 @@ public:
 	float health;
 	CharacterHealsEvent(std::wstring healer, std::wstring action, EFFECTTYPE effect, float healthAmount)
 	{
-		healerName = static_cast<std::string>(std::string(healer.begin(), healer.end()));
-		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
+		healerName = Converter::ConvertWStrToStr(healer.c_str());
+		actionName = Converter::ConvertWStrToStr(action.c_str());
 		actionEffect = effect;
 		health = healthAmount;
 	}
@@ -61,7 +62,7 @@ public:
 	float healingAmount;
 	CharacterRecivesHealingEvent(std::wstring target, float healing)
 	{
-		targetName = static_cast<std::string>(std::string(target.begin(), target.end()));
+		targetName = Converter::ConvertWStrToStr(target.c_str());
 		healingAmount = healing;
 	}
 };
@@ -76,9 +77,9 @@ public:
 	float buffValue;
 	CharacterBuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE buff, float buffAmount)
 	{
-		chracterName = static_cast<std::string>(std::string(character.begin(), character.end()));
-		targetName = static_cast<std::string>(std::string(target.begin(), target.end()));
-		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
+		chracterName = Converter::ConvertWStrToStr(character.c_str());
+		targetName = Converter::ConvertWStrToStr(target.c_str());
+		actionName = Converter::ConvertWStrToStr(action.c_str());
 		buffType = buff;
 		buffValue = buffAmount;
 	}
@@ -94,9 +95,9 @@ public:
 	float debuffValue;
 	CharacterDebuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
 	{
-		characterName = static_cast<std::string>(std::string(character.begin(), character.end()));
-		actionName = static_cast<std::string>(std::string(action.begin(), action.end()));
-		targetName = static_cast<std::string>(std::string(target.begin(), target.end()));
+		characterName = Converter::ConvertWStrToStr(character.c_str());
+		actionName = Converter::ConvertWStrToStr(action.c_str());
+		targetName = Converter::ConvertWStrToStr(target.c_str());
 		debuffType = debuff;
 		debuffValue = debuff_Value;
 	}
@@ -111,9 +112,9 @@ public:
 	LevelStartEvent(unsigned int level, std::wstring player_character_1, std::wstring player_character_2, std::wstring player_character_3, std::wstring player_portrait_1, std::wstring player_portrait_2, std::wstring player_portrait_3)
 	{
 		levelNumber = level;
-		playerCharacters[0] = static_cast<std::string>(std::string(player_character_1.begin(), player_character_1.end()));
-		playerCharacters[1] = static_cast<std::string>(std::string(player_character_2.begin(), player_character_2.end()));
-		playerCharacters[2] = static_cast<std::string>(std::string(player_character_3.begin(), player_character_3.end()));
+		playerCharacters[0] = Converter::ConvertWStrToStr(player_character_1.c_str());
+		playerCharacters[1] = Converter::ConvertWStrToStr(player_character_2.c_str());
+		playerCharacters[2] = Converter::ConvertWStrToStr(player_character_3.c_str());
 		playerPortaits[0] = player_portrait_1;
 		playerPortaits[1] = player_portrait_2;
 		playerPortaits[2] = player_portrait_3;
@@ -129,18 +130,18 @@ public:
 	bool isPlayer;
 	TurnStartEvent(std::wstring character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
-		characterName = static_cast<std::string>(std::string(character.begin(), character.end()));
+		characterName = Converter::ConvertWStrToStr(character.c_str());
 		turn = turnNumber;
 		round = roundNumber;
 		isPlayer = isAPlayer;
 	}
 };
 
-class RewardsActiveEvnet : public Odyssey::Event
+class RewardsActiveEvent : public Odyssey::Event
 {
 public:
 	unsigned int level;
-	RewardsActiveEvnet(unsigned int finishedLevel) 
+	RewardsActiveEvent(unsigned int finishedLevel) 
 	{
 		level = finishedLevel;
 	}

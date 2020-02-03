@@ -99,6 +99,8 @@
     </ClCompile>
     <ClCompile Include="src\StatusEffect.cpp">
       <Filter>Source Files\Status Effects</Filter>
+    <ClCompile Include="src\Converter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="src\Clense.h">
       <Filter>Header Files\Status Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Converter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
