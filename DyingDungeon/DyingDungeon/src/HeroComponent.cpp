@@ -271,7 +271,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Literal God";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/Guy.png";
+		mPortrait = L"assets/images/Wet.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
