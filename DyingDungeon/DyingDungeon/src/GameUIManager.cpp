@@ -1281,7 +1281,36 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
 {
 	float spriteSize = 25.0f;
-	
+
+	switch (skill->GetSkillTypeId())
+	{
+	case GameplayTypes::SKILLTYPE::ATTACK:
+	{
+		newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::DEBUFF:
+	{
+		newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::HEAL:
+	{
+		newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::BUFF:
+	{
+		newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+		break;
+	}
+	default:
+	{
+		newCombatLogColor = { 255.0f, 255.0f, 255.0f };
+		break;
+	}
+	}
+
 	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
@@ -1321,6 +1350,11 @@ void GameUIManager::ClearCombatLog()
 
 	for (int i = 0; i < mCombatTargetIcons.size(); i++)
 		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
+	{
+		mBattleLogVec[i]->setText(L"");
+	}
 }
 
 void GameUIManager::UpdateCombatLogText(float damage)
@@ -1330,8 +1364,15 @@ void GameUIManager::UpdateCombatLogText(float damage)
 	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
+		{
 			mBattleLogVec[i]->setText(mBattleLogVec[i - 1]->getText());
+			DirectX::XMFLOAT4 tempColor = mBattleLogVec[i - 1]->getColor();
+			DirectX::XMFLOAT3 tempColor2 = { tempColor.x, tempColor.y, tempColor.z };
+			mBattleLogVec[i]->setColor(tempColor2);
+		}
 	}
 
 	mBattleLogVec[0]->setText(newText);
+	mBattleLogVec[0]->setColor(newCombatLogColor);
+	
 }

@@ -174,6 +174,9 @@ private: // Varibales
 	std::vector<Odyssey::Sprite2D*> mCombatSkillIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatTargetIcons;
 
+	// Battle Log Colors
+	DirectX::XMFLOAT3 newCombatLogColor;
+
 	// Menu Entities
 	std::shared_ptr<Odyssey::Entity> mMainMenu;
 	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;

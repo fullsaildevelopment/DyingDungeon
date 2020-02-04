@@ -120,6 +120,8 @@ void Character::ReceiveHealing(float healing)
 	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
 	
+	GameUIManager::getInstance().UpdateCombatLogText(healing);
+
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 
