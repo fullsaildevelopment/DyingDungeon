@@ -32,11 +32,17 @@ public:
 	// Function pointer that will point to mechanics for enemys 
 	void (EnemyComponent::*mMechPtr)() = nullptr;
 
+	GameplayTypes::ENEMYID GetID();
+
 	// Ganfouls game mechanic function
 	void GanfaulPhaseMechanic();
+
 private:
 	// Idk Bryce what does this do? (Fill out this line for comments)
 	int currentSkillMoveCheck = 0;
+
+	// Enemy ID
+	GameplayTypes::ENEMYID mID;
 
 	// Contains the move thae AI will make
 	AIMoves mMoves;

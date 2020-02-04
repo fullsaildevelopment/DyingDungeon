@@ -70,6 +70,21 @@ float Skills::GetAnimationTiming()
 	return mAnimationTime;
 }
 
+float Skills::GetStatusChance()
+{
+	return mStatusEffectChance;
+}
+
+void Skills::SetStatusChance(float newPercent)
+{
+	mStatusEffectChance = newPercent;
+}
+
+float Skills::RandomChance()
+{
+	return static_cast <float>(rand()) / static_cast <float>(RAND_MAX);
+}
+
 // Returns Type Id
 GameplayTypes::SKILLTYPE Skills::GetSkillTypeId()
 {

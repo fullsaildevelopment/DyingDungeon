@@ -9,6 +9,7 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
@@ -21,6 +22,7 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = isAoe;
 }
@@ -31,7 +33,7 @@ void Heal::Use(Character& caster, Character& target)
 	target.ReceiveHealing(mHealing);
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
-	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(target);
 		//Alert Reds stuff for stat tracking?

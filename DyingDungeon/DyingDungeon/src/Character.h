@@ -133,6 +133,8 @@ public:
 	// Sets the characters name 
 	void SetName(std::wstring newName);
 
+
+
 	// Returns the pointer to the character that has provoked this character 
 	Character* GetProvoked();
 
