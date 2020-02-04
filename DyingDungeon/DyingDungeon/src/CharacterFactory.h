@@ -25,6 +25,7 @@ public:
 		Paladin,
 		Mage,
 		Bard,
+		Warrior,
 		Skeleton,
 		Ganfaul
 	};
