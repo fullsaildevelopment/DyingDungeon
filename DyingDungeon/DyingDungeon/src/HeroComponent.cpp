@@ -134,11 +134,11 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.47f, -5.0f, 15.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -5.0f, 15.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Paladin_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 15 damage provoking him to hit you. Restores 5 mana.");
 		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_2", 0.50f, 15.0f, 50.0f, 20.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 15.0f, 50.0f, 20.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Paladin_Skill_2.png");
 		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 50 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
@@ -234,7 +234,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic attack, stun
-		mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.60f, -10.0f, 10.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -10.0f, 10.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Mage_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 10 damage. Refunds 10 mana.");
 		// Wind Slash, aoe dps, speed down 
@@ -330,7 +330,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The bard supports their party with the plethora of songs they know. Using music they will buff allies and debuff enemies, and remove harmful effect from the party.";
+		mDescription = L"The bard supports their party with the plethora of songs they know. Using music they will buff allies and debuff enemies, and remove harmful effects from the party.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -354,7 +354,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Bard_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Wash your allies in a clensing wave of magic, riding them of any harmful status effects. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, riding them of any harmful status effects. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -362,7 +362,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	case GameplayTypes::HEROID::Warrior:
 	{
 		// Set the character Model path
-		//mModel = "assets/models/.dxm";
+		mModel = "assets/models/Warrior.dxm";
 
 		// Set the character name
 		mName = L"Warrior";
@@ -378,58 +378,62 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations//_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations//_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Stun.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations//_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
 		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations//_Taunt.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Taunt.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations//_Skill_1.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
 		tempAnimationData.mAnimationNickName = "Skill_2";
-		tempAnimationData.mAnimationPath = "assets/animations//_Skill_2.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Skill_2.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations//_Skill_3.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Skill_3.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
 		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations//_Skill_4.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Skill_4.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The warrior is beefy and strong. Use his nearly endlees pool of health to soak up raw damage, while dealing out debilatating attacks.";
+		mDescription = L"The warrior is beefy and strong. Use his nearly endless pool of health to soak up raw damage, while dealing out debilitating  attacks.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -448,14 +452,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Spliting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
+		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage, healing for 10 hp. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Crush an opponents armor lowering thier deffense and dealing 35 damage. Cost 20 mana.");
+		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
@@ -465,7 +469,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 25.0f, 55.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage uping your attack while hitting a random target for 55 damage. Cost 25 mana.");
+		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack while hitting a random target for 55 damage. Cost 25 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
