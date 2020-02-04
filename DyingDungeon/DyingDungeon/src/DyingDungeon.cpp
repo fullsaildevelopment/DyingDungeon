@@ -542,6 +542,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 
 	// Set some variables for positioning
 	float scaleAmount = 0.020f;
+	float warriorScaleAmount = 0.0175f;
 	float xOffset = -3.0f;
 	float yHeight = -2.0f;
 	float zDepth = 6.0f;
@@ -573,7 +574,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
-	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
@@ -601,7 +602,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
-	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
@@ -629,7 +630,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
-	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
