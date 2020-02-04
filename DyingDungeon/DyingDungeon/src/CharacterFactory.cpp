@@ -38,7 +38,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set rotation
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
-	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	if (_characterToCreate != Warrior)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	else
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.023f, 0.023f, 0.023f);
 
 	switch (_characterToCreate)
 	{
@@ -108,6 +111,26 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
+
+			break;
+		}
+		case Warrior:
+		{
+			// Set up hero component
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Warrior);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			// Set up blood particle effect
+			tempHero->SetPSBlood(setupBlood());
+
 
 			break;
 		}

@@ -283,7 +283,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
 		mBaseDefense = mDefense = 30.0f;
-		mBaseSpeed = mSpeed = 10.0f;
+		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
@@ -344,18 +344,18 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_2", 0.25f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/Bard_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to the enemy party, with a 50% chance to inflict a speed down. Costs 10 mana.");
+		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a speed down. Costs 10 mana.");
 		// Skill 3
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 50.0f, true));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Bard_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving allies hope, healing 50 health for the party, and giving a 50% attack up. Costs 30 mana.");
+		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving allies hope, healing all allies for 50 health, and giving a 50% attack up. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Bard_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, riding them of any harmful status effects. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, ridding them of any harmful status effects. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -372,7 +372,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Off-Tank";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/WarriorPortrait.jpg";
+		mPortrait = L"assets/images/WarriorPortrait.png";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,7 +385,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Dead.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
@@ -402,10 +402,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
-		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Taunt.dxanim";
-		tempAnimationData.mIsLooping = true;
-		mAnimations.push_back(tempAnimationData);
+		//tempAnimationData.mAnimationNickName = "GotBuffed";
+		//tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Taunt.dxanim";
+		//tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -474,94 +474,94 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
-	case GameplayTypes::HEROID::Rouge:
+	case GameplayTypes::HEROID::Rogue:
 	{
 		// Set the character Model path
-		//mModel = "assets/models/Rouge.dxm";
+		//mModel = "assets/models/Rogue.dxm";
 
 		// Set the character name
-		mName = L"Rouge";
+		mName = L"Rogue";
 
 		// Set the character subname
 		mSubName = L"Assassin";
 
 		// Set the portaits path
-		//mPortrait = L"assets/images/RougePortrait.jpg";
+		//mPortrait = L"assets/images/RoguePortrait.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Stun.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
 		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Taunt.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Taunt.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_1.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
 		tempAnimationData.mAnimationNickName = "Skill_2";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_2.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_2.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_3.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_3.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
 		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_4.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_4.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"";
+		mDescription = L"The rogue works to cripple the enemy through multiple types of debuffs including poison, bleed and sundering. The rogue has a high damage and speed but low defensive stats allowing for damage output and team utility.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 500.0f;
+		mBaseMaxHP = mCurrentHP = 150.0f;
 
 		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 75.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 50.0f;
-		mBaseDefense = mDefense = 40.0f;
-		mBaseSpeed = mSpeed = 40.0f;
+		mBaseAttack = mAttack = 90.0f;
+		mBaseDefense = mDefense = 30.0f;
+		mBaseSpeed = mSpeed = 50.0f;
 		////////////////////////////////////
 
 		// Make the character skills //
