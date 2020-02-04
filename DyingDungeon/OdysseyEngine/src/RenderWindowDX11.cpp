@@ -99,10 +99,10 @@ namespace Odyssey
 		// Resize the swapchain buffers
 		mSwapChain->ResizeBuffers(0, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
 
-		float xScale = (float)evnt->width / (float)mProperties.width;
-		float yScale = (float)evnt->height / (float)mProperties.height;
+		mProperties.screenScaleX = (float)evnt->width / (float)mProperties.width;
+		mProperties.screenScaleY = (float)evnt->height / (float)mProperties.height;
 
-		EventManager::getInstance().publish(new UIElementResizeEvent(xScale, yScale));
+		EventManager::getInstance().publish(new UIElementResizeEvent(mProperties.screenScaleX, mProperties.screenScaleY));
 
 		// Recreate the render targets
 		createRenderTargets();

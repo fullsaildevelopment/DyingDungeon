@@ -12,6 +12,7 @@ namespace Odyssey
 		UINT getWidth();
 		UINT getHeight();
 		void getPosition(UINT& x, UINT& y);
+		void getScreenScale(float* x, float* y);
 	protected:
 		std::shared_ptr<HWND> mWindowHandle;
 		bool mIsFullScreen;
@@ -21,11 +22,13 @@ namespace Odyssey
 			UINT top, bottom;
 			UINT width, height;
 			float aspectRatio;
+			float screenScaleX, screenScaleY;
 
 			WindowProperties()
 			{
 				left = right = top = bottom = width = height = 0;
 				aspectRatio = 0.0f;
+				screenScaleX = screenScaleY = 1.0f;
 			}
 
 			void setBounds(UINT winLeft, UINT winRight, UINT winTop, UINT winBottom)

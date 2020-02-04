@@ -14,8 +14,7 @@ namespace Odyssey
 
 		mFilename = filename;
 		mBitmapBrush = nullptr;
-
-		createBitmapFromFile(filename, width, height);
+		createResource();
 	}
 
 	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
