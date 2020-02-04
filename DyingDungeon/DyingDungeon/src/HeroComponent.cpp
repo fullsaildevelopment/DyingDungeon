@@ -474,7 +474,120 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
+	case GameplayTypes::HEROID::Rouge:
+	{
+		// Set the character Model path
+		//mModel = "assets/models/Rouge.dxm";
 
+		// Set the character name
+		mName = L"Rouge";
+
+		// Set the character subname
+		mSubName = L"Assassin";
+
+		// Set the portaits path
+		//mPortrait = L"assets/images/RougePortrait.jpg";
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Stun.dxanim";
+		tempAnimationData.mIsLooping = false;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Taunt.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+
+		// Skill 4
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_4.dxanim";
+		tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 500.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 75.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 50.0f;
+		mBaseDefense = mDefense = 40.0f;
+		mBaseSpeed = mSpeed = 40.0f;
+		////////////////////////////////////
+
+		// Make the character skills //
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Skill 1
+		//mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
+		//mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
+		//mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage, healing for 10 hp. Returns 10 mana.");
+		//// Skill 2 
+		//temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
+		//mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 35.0f, temp, false));
+		//mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
+		//mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense and dealing 35 damage. Cost 20 mana.");
+		//// Skill 3 
+		//temp = std::make_shared<Provoked>(1, this, nullptr);
+		//mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f, temp, true));
+		//mSkillList[2]->SetSkillIconPath(L"assets/images/Warrior_Skill_3.png");
+		//mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit. Cost 15 mana.");
+		//// Skill 4 TODO: Add in mechanic for hitting a random target, possiably the selfbuff
+		//temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
+		//mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 25.0f, 55.0f));
+		//mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
+		//mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack while hitting a random target for 55 damage. Cost 25 mana.");
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
 	// Default case, should never get hit
 	default:
 	{
