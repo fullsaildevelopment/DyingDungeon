@@ -796,6 +796,7 @@ void setupTowerManager()
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x -= 329.7f;
+	hpPopupPosition.x = 640.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower

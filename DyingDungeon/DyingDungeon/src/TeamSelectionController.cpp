@@ -21,26 +21,13 @@ void TeamSelectionController::initialize()
 {
 	//RedAudioManager::Instance().Loop("BackgroundMenu");
 	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
-
-	// Get the deminsion of the original black square
-	DirectX::XMFLOAT2 deminsion = GameUIManager::getInstance().GetTeamMemberSlot(1)->getDimensions();
-	//Set the images black to the default black square
-	GameUIManager::getInstance().GetTeamMemberSlot(0)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
-	GameUIManager::getInstance().GetTeamMemberSlot(1)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
-	GameUIManager::getInstance().GetTeamMemberSlot(2)->setSprite(L"assets/images/blackSquare.png", deminsion.x, deminsion.y);
-
 	// Reset bools and ints
 	changedTheScene = false;
-	teamCount = 0;
-	teamIsFull = false;
+	mEnterBattle = false;
+	mBuildIndex = 0;
 
 	// Register callbacks
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->registerCallback("onMouseClick", this, &TeamSelectionController::AddPaladinImage);
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->registerCallback("onMouseClick", this, &TeamSelectionController::AddMageImage);
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->registerCallback("onMouseEnter", this, &TeamSelectionController::onPaladinEnter);
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->registerCallback("onMouseEnter", this, &TeamSelectionController::onMageEnter);
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->registerCallback("onMouseExit", this, &TeamSelectionController::onPaladinExit);
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->registerCallback("onMouseExit", this, &TeamSelectionController::onMageExit);
+	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
 
 	// Register callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
@@ -77,19 +64,11 @@ void TeamSelectionController::initialize()
 
 void TeamSelectionController::update(double deltaTime)
 {
-	if (teamIsFull && !changedTheScene)
+	if (mEnterBattle && !changedTheScene)
 	{
 		changedTheScene = true;
 		RedAudioManager::Instance().Stop("BackgroundMenu");
 		RedAudioManager::Instance().Loop("BackgroundBattle");
-
-		// Unregister the select images
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseClick");
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseClick");
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseEnter");
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseEnter");
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseExit");
-		GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseExit");
 
 		// Set up the tower manager with the enemy and player teams
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), TeamManager::getInstance().GetEnemyTeam(), 2, mTurnIndicatorModel);
@@ -97,6 +76,7 @@ void TeamSelectionController::update(double deltaTime)
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
+
 	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
@@ -112,15 +92,10 @@ void TeamSelectionController::update(double deltaTime)
 
 void TeamSelectionController::onDestory()
 {
-	// Register callbacks
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseEnter");
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseEnter");
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Paladin)->unregisterCallback("onMouseExit");
-	GameUIManager::getInstance().GetCharacterSelectImage(GameUIManager::CharacterType::Mage)->unregisterCallback("onMouseExit");
+	// Unregister callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
 
-	// Register callbacks for the arrows
+	// Unregister callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->unregisterCallback("onMouseClick");
@@ -141,73 +116,6 @@ void TeamSelectionController::setupHovers()
 	{
 		mMage = mEntity->addComponent<Odyssey::UICanvas>();
 		setupCharacterHover(mMage, L"Mage");
-	}
-}
-
-void TeamSelectionController::AddPaladinImage()
-{
-	// Make sure the team is not full before adding a character
-	if (!teamIsFull)
-	{
-		// Get the deminsion of the original black square
-		DirectX::XMFLOAT2 deminsion = GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->getDimensions();
-		//Set the new image to the slot
-		GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->setSprite(L"assets/images/PaladinPortrait.jpg", deminsion.x, deminsion.y);
-
-		// Create the paladin and add it to the game scene
-		DirectX::XMVECTOR position = mPlayerPositions[teamCount];
-		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-		std::shared_ptr<Odyssey::Entity> paladinCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", position, rotation, mHudPositions[teamCount], true, mHpPopupPositions[teamCount], mListOfGameScenes[0]);
-
-		// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
-		for (int i = 1; i < mListOfGameScenes.size(); i++)
-		{
-			mListOfGameScenes[i]->addEntity(paladinCharacter);
-		}
-
-		// Add the new character to the player list in Team Manager
-		TeamManager::getInstance().AddCharacterToPlayerTeam(paladinCharacter);
-
-		// Increase the team count
-		teamCount++;
-		// Check if the team is full now
-		if (teamCount == 3)
-		{
-			teamIsFull = true;
-		}
-	}
-}
-
-void TeamSelectionController::AddMageImage()
-{
-	if (!teamIsFull)
-	{
-		// Get the deminsion of the original black square
-		DirectX::XMFLOAT2 deminsion = GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->getDimensions();
-		//Set the new image to the slot
-		GameUIManager::getInstance().GetTeamMemberSlot(teamCount)->setSprite(L"assets/images/MagePortrait.jpg", deminsion.x, deminsion.y);
-
-		// Create the mage and add it to the game scene
-		DirectX::XMVECTOR position = mPlayerPositions[teamCount];
-		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-		std::shared_ptr<Odyssey::Entity> mageCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", position, rotation, mHudPositions[teamCount], true, mHpPopupPositions[teamCount],mListOfGameScenes[0]);
-
-		// Add the mage to all other game scenes, we add it into the first scene because we are passing it in the function
-		for (int i = 1; i < mListOfGameScenes.size(); i++)
-		{
-			mListOfGameScenes[i]->addEntity(mageCharacter);
-		}
-
-		// Add the new character to the player list in Team Manager
-		TeamManager::getInstance().AddCharacterToPlayerTeam(mageCharacter);
-
-		// Increase the team count
-		teamCount++;
-		// Check if the team is full now
-		if (teamCount == 3)
-		{
-			teamIsFull = true;
-		}
 	}
 }
 
@@ -402,6 +310,85 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 230 + pad), L"assets/images/Speed.png", 20, 20);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 230 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, speed, properties);
 	canvas->setActive(false);
+}
+
+void TeamSelectionController::EnterBattle()
+{
+	// Make a list of enums to hold based what character it is
+	std::vector<CharacterFactory::CharacterOptions> enumList;
+
+	// Check what characters are shown on the screen for the slot 1
+	for (int i = 0; i < mSlot1CharacterList.size(); i++)
+	{
+		// Check if the character is visible or not
+		if (mSlot1CharacterList[i]->isVisible())
+		{
+			// Get the visible character type
+			CreateCharacterBasedOnName(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
+		}
+	}
+
+	// Check what characters are shown on the screen for the slot 1
+	for (int i = 0; i < mSlot2CharacterList.size(); i++)
+	{
+		// Check if the character is visible or not
+		if (mSlot2CharacterList[i]->isVisible())
+		{
+			// Get the visible character type
+			CreateCharacterBasedOnName(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
+		}
+	}
+
+	// Check what characters are shown on the screen for the slot 1
+	for (int i = 0; i < mSlot3CharacterList.size(); i++)
+	{
+		// Check if the character is visible or not
+		if (mSlot3CharacterList[i]->isVisible())
+		{
+			// Get the visible character type
+			CreateCharacterBasedOnName(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
+		}
+	}
+
+	// Allow the user to enter the battle scene after selecting their characters
+	mEnterBattle = true;
+}
+
+void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
+{
+	CharacterFactory::CharacterOptions heroType;
+	if (_name == L"Paladin")
+	{
+		heroType = CharacterFactory::CharacterOptions::Paladin;
+	}
+	else if (_name == L"Mage")
+	{
+		heroType = CharacterFactory::CharacterOptions::Mage;
+	}
+	else if (_name == L"Bard")
+	{
+		heroType = CharacterFactory::CharacterOptions::Bard;
+	}
+
+	// This is the gGameScene from DyingDungeon.cpp
+	std::shared_ptr<Odyssey::Scene> gameScene = mListOfGameScenes[0];
+
+	// Create the paladin and add it to the game scene
+	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, L"Paladin", position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
+
+	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
+	for (int i = 1; i < mListOfGameScenes.size(); i++)
+	{
+		mListOfGameScenes[i]->addEntity(newCharacter);
+	}
+
+	// Add the new character to the player list in Team Manager
+	TeamManager::getInstance().AddCharacterToPlayerTeam(newCharacter);
+
+	// Increase build index
+	mBuildIndex++;
 }
 
 void TeamSelectionController::DecreaseSlot1Index()

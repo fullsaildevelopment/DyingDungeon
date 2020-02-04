@@ -41,12 +41,12 @@ private:
 	Odyssey::Application* mApplication;
 	Odyssey::UICanvas* mPaladin;
 	Odyssey::UICanvas* mMage;
-	// Set the number of members on your team currently
-	int teamCount = 0;
-	// This will let us know when the user has a full team
-	bool teamIsFull = true;
+	// This will let us know when the user has a clicked the enter battle button
+	bool mEnterBattle = true;
 	// Only allow to change scene once
 	bool changedTheScene = false;
+	// Building Index will keep track of how many charcters have been built
+	int mBuildIndex = 0;
 
 	// Game scenes that the players will need to get added to
 	std::vector<std::shared_ptr<Odyssey::Scene>> mListOfGameScenes;
@@ -74,14 +74,16 @@ private:
 	int mSlot3Index = 0;
 
 private: // Functions
-	void AddPaladinImage();
-	void AddMageImage();
 	// TODO: REFACTOR THIS LATER
 	void onPaladinEnter();
 	void onPaladinExit();
 	void onMageEnter();
 	void onMageExit();
 	void setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character);
+
+	// Callback function for the enter battle button
+	void EnterBattle();
+	void CreateCharacterBasedOnName(std::wstring _name);
 
 	// Callback functions for the arrows
 	void DecreaseSlot1Index();
