@@ -265,6 +265,7 @@ namespace Odyssey
 		DirectX::XMFLOAT2 mScale;
 		DirectX::XMFLOAT2 mDimensions;
 		DirectX::XMFLOAT4 mColor;
+		DirectX::XMFLOAT2 mScreenScale;
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 		ReadWriteLock mLock;

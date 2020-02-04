@@ -64,6 +64,8 @@ namespace Odyssey
 
 		// Subscribe to the engine shutdown event
 		EventManager::getInstance().subscribe(this, &Application::onShutdown);
+
+		EventManager::getInstance().subscribe(this, &Application::onUIScale);
 	}
 
 	Application::~Application()
@@ -107,6 +109,11 @@ namespace Odyssey
 	void Application::onShutdown(EngineShutdownEvent* evnt)
 	{
 		mIsShutdown = true;
+	}
+
+	void Application::onUIScale(UIScaleEvent* evnt)
+	{
+		mActiveWindow->getScreenScale(evnt->xScale, evnt->yScale);
 	}
 
 	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

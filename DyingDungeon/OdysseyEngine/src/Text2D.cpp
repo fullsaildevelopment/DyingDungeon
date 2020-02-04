@@ -12,6 +12,7 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create the text format resource
+		textProperties.fontSize *= ((mScreenScale.x + mScreenScale.y) / 2.0f);
 		createTextFormat(textProperties);
 
 		// Subscribe to the element resize event

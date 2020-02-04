@@ -163,4 +163,16 @@ namespace Odyssey
 			priority = EventPriority::Immediate;
 		}
 	};
+
+	class UIScaleEvent : public Event
+	{
+	public:
+		float* xScale;
+		float* yScale;
+
+		UIScaleEvent(float* screenX, float* screenY) : xScale(screenX), yScale(screenY)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
 }
