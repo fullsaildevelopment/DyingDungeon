@@ -59,7 +59,7 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
-	TeamManager::getInstance().GetPlayerTeam().clear();
+	TeamManager::getInstance().ClearPlayerTeam();
 }
 
 void TeamSelectionController::update(double deltaTime)
@@ -357,17 +357,13 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 {
 	CharacterFactory::CharacterOptions heroType;
 	if (_name == L"Paladin")
-	{
 		heroType = CharacterFactory::CharacterOptions::Paladin;
-	}
 	else if (_name == L"Mage")
-	{
 		heroType = CharacterFactory::CharacterOptions::Mage;
-	}
 	else if (_name == L"Bard")
-	{
 		heroType = CharacterFactory::CharacterOptions::Bard;
-	}
+	else if (_name == L"Warrior")
+		heroType = CharacterFactory::CharacterOptions::Warrior;
 
 	// This is the gGameScene from DyingDungeon.cpp
 	std::shared_ptr<Odyssey::Scene> gameScene = mListOfGameScenes[0];
@@ -375,7 +371,7 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 	// Create the paladin and add it to the game scene
 	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
 	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, L"Paladin", position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
+	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
 
 	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
 	for (int i = 1; i < mListOfGameScenes.size(); i++)

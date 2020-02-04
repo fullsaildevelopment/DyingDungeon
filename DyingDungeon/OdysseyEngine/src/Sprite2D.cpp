@@ -61,7 +61,7 @@ namespace Odyssey
 		mBitmap.Reset();
 		mBitmapConverter = nullptr;
 		mBitmapBrush = nullptr;
-		createBitmapFromFile(mFilename, static_cast<UINT>(mDimensions.x * mScale.x), static_cast<UINT>(mDimensions.y * mScale.y));
+		createBitmapFromFile(mFilename, mDimensions.x * mScale.x, mDimensions.y * mScale.y);
 		mLock.unlock(LockState::Write);
 
 	}
@@ -85,7 +85,7 @@ namespace Odyssey
 		return temp;
 	}
 
-	void Sprite2D::createBitmapFromFile(std::wstring filename, UINT width, UINT height)
+	void Sprite2D::createBitmapFromFile(std::wstring filename, float width, float height)
 	{
 		// Create the bimap decoder
 		Microsoft::WRL::ComPtr<IWICBitmapDecoder> decoder;

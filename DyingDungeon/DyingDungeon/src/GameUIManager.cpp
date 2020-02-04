@@ -1015,7 +1015,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	Odyssey::Sprite2D* skill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
 	// TODO :: ADD GETTER AND SETTER FOR TYPE OF CHARACTER
-	SetupSkillHover(canvas1, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(canvas1, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Basic Attack trigger
 	hover->registerSprite(skill1, canvas1);
 
@@ -1027,7 +1027,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[1];
 	Odyssey::Sprite2D* skill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas2, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(canvas2, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Wind Slash trigger
 	hover->registerSprite(skill2, canvas2);
 
@@ -1039,7 +1039,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[2];
 	Odyssey::Sprite2D* skill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas3, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(canvas3, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Firestorm trigger
 	hover->registerSprite(skill3, canvas3);
 
@@ -1051,7 +1051,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[3];
 	Odyssey::Sprite2D* skill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas4, _newCharacter->GetPortraitPath(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(canvas4, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Lightning Bolt trigger
 	hover->registerSprite(skill4, canvas4);
 }
@@ -1061,12 +1061,16 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	DirectX::XMFLOAT4 themeColor;
 	// Assign theme color for text
 	// TODO :: CHANGE TO USE TYPE ID OF CHARACTER
-	if (character == L"assets/images/PaladinPortrait.jpg")
+	if (character == L"Paladin")
 		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	else if (character == L"assets/images/MagePortrait.jpg")
+	else if (character == L"Mage")
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	else if (character == L"Bard")
+		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
+	else if (character == L"Warrior")
+		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
 	else
-		themeColor = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
+		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Don't display negative mana, display 0 instead
 	if (manaCost.substr(0, 1) == L"-")
