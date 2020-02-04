@@ -59,7 +59,7 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
-	TeamManager::getInstance().GetPlayerTeam().clear();
+	TeamManager::getInstance().ClearPlayerTeam();
 }
 
 void TeamSelectionController::update(double deltaTime)

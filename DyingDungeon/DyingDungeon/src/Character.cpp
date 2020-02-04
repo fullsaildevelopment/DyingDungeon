@@ -353,6 +353,9 @@ void Character::ResetMe()
 	mCurrentMana = mBaseMaxMana;
 	mCurrentState = STATE::NONE;
 	ClearStatusEffects();
+
+	// Update charcter UI bars
+	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the characters skill list
