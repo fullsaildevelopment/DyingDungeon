@@ -949,8 +949,8 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		// Add in the enemy's name bar
 		position.x += imageWidth;
 		position.y -= 0.5f;
-		position.x += 3.0f;
-		DirectX::XMFLOAT4 xpBarColor = { 255.0f, 0.0f, 0.0f, 1.0f };
+		position.x += 2.5f;
+		DirectX::XMFLOAT4 xpBarColor = { 116.0f, 71.0f, 201.0f, 1.0f };
 		newHUD->pXpBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, xpBarColor, barWidth, barHeight);
 		color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		properties.fontSize = 12;
