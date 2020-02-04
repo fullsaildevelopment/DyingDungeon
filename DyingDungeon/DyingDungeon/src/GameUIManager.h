@@ -72,9 +72,13 @@ public: // Functions
 
 	void ShowStatsMenu();
 
-	void StatsMenuPrev();
+	void StatsMenuPrevTurn();
 
-	void StatsMenuNext();
+	void StatsMenuNextTurn();
+
+	void StatsMenuPrevLevel();
+
+	void StatsMenuNextLevel();
 
 	void HideStatsMenu();
 	 
@@ -219,8 +223,8 @@ private: // Varibales
 	//unsigned int mStatMenuCurrentRound = 1;
 	unsigned int mStatMenuCurrentTurn = 1;
 	Odyssey::Text2D* mStatsBackButtonText;
-	Odyssey::Text2D* mStatsPrevButtonText;
-	Odyssey::Text2D* mStatsNextButtonText;
+	Odyssey::Sprite2D* mStatsPrevButtonText;
+	Odyssey::Sprite2D* mStatsNextButtonText;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };

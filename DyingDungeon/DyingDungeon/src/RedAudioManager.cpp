@@ -73,6 +73,11 @@ void RedAudioManager::PlaySFX(const char* alias)
 	FindAudio(alias)->PlayInstance();
 }
 
+void RedAudioManager::PlaySFX(const char* alias, unsigned int volume, bool ignore_master_volume)
+{
+	FindAudio(alias)->PlayInstance(((ignore_master_volume) ? static_cast<unsigned int>(volume * static_cast<float>(m_volume[0] / 1000.0f)) : volume));
+}
+
 void RedAudioManager::Loop(const char* alias)
 {
 	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(alias));
@@ -107,7 +112,9 @@ bool RedAudioManager::SetMasterVolume(unsigned int volume, AudioType audio_type)
 	{
 		return false;
 	}
-	m_volume[int(audio_type) + 1] = volume;
+	if (!m_muted) {
+		m_volume[int(audio_type) + 1] = volume;
+	}
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(volume, int(audio_type)));
 	return true;
 }
@@ -121,6 +128,7 @@ void RedAudioManager::Mute()
 void RedAudioManager::Unmute()
 {
 	m_muted = false;
+
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[1], int(AudioType::Background)));
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[2], int(AudioType::SFX)));
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[3], int(AudioType::Dialog)));

@@ -1,4 +1,5 @@
 #include "Converter.h"
+
  const wchar_t* Converter::ConvertCharToWChar(const char* p_char) {
 	const size_t word_size = strlen(p_char) + 1;
 	size_t zero = 0;
@@ -14,7 +15,10 @@ std::wstring Converter::ConvertCharToWStr(const char* p_char) {
 	wchar_t* output = new wchar_t[word_size];
 
 	mbstowcs_s(&zero, output, word_size, p_char, _TRUNCATE);
-	return std::wstring(output);
+	std::wstring output_wstr;
+	output_wstr.append(output);
+	delete[] output;
+	return output_wstr;
 }
 
 std::string Converter::ConvertWStrToStr(const wchar_t* p_char) {
@@ -23,7 +27,10 @@ std::string Converter::ConvertWStrToStr(const wchar_t* p_char) {
 	char* output = new char[word_size];
 
 	wcstombs_s(&zero, output, word_size, p_char, _TRUNCATE);
-	return std::string(output);
+	std::string output_str;
+	output_str.append(output);
+	delete[] output;
+	return output_str;
 }
 
 std::string Converter::FormatToPercentage(float number, unsigned int decimal_places = 2)

@@ -75,6 +75,12 @@ class RedAudioManager
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		void PlaySFX(const char* alias);
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="alias">Name the audio file is stored as in the manager</param>
+		/// <param name="volume">The volume level between 0 and 1000</param>
+		void PlaySFX(const char* alias, unsigned int volume, bool ignore_master_volume = false);
+		/// <summary>
 		/// Plays the 'alias' audio file in a loop
 		/// </summary>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
