@@ -76,8 +76,7 @@ void TeamSelectionController::update(double deltaTime)
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
-  
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{

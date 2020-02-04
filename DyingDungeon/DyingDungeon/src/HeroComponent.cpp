@@ -283,7 +283,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
 		mBaseDefense = mDefense = 30.0f;
-		mBaseSpeed = mSpeed = 10.0f;
+		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
