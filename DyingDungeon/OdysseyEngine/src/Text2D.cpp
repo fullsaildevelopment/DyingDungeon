@@ -12,8 +12,8 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create the text format resource
-		textProperties.fontSize *= ((mScreenScale.x + mScreenScale.y) / 2.0f);
-		createTextFormat(textProperties);
+		mProperties.fontSize *= ((mScreenScale.x + mScreenScale.y) / 2.0f);
+		createTextFormat(mProperties);
 
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &Text2D::onTextResize);

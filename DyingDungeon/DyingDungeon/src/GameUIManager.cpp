@@ -1077,7 +1077,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	float x = 950;
 	float y = 425;
 	UINT width = 300;
-	UINT height = 110;
+	UINT height = 115;
 	UINT pad = 10;
 
 	Odyssey::TextProperties title;
@@ -1090,7 +1090,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 
 	Odyssey::TextProperties properties;
 	properties.bold = false;
-	properties.italic = true;
+	properties.italic = false;
 	properties.fontSize = 14.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
