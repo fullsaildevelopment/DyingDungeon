@@ -330,34 +330,41 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	position.x += 10.0f;
 	thirdTeamMemberSlot = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackSquare.png", width, height);
 
+	// Create the confirm button to enter battle
+	width = 227;
+	height = 85;
+	float padding = 20.0f;
+	position = { (static_cast<float>(screenWidth - width) - padding), padding };
+	// Create button background
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	// Create confrim text
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	properties.fontSize = 35.0f;
+	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Enter Battle", properties);
+
 	// Make the arrow sprites that the user will click to change characters
 	width = 64;
 	height = 64;
-	position = { 100.0f, static_cast<float>(screenHeight) - 100.0f };
-	std::wstring arrowForwardFilepath = L"assets/images/Gordon.jpg";
-	std::wstring arrowBackFilepath = L"assets/images/Gordon.jpg";
+	std::wstring arrowForwardFilepath = L"assets/images/TeamSelectionImages/ArrowRight.png";
+	std::wstring arrowBackFilepath = L"assets/images/TeamSelectionImages/ArrowLeft.png";
 	Odyssey::Sprite2D* newArrow;
 	// Create the arrows from left to right, back1, forward1, back2, etc...
-	float spacingFromMidLine = 100.0f;
-	float midLineX = static_cast<float>(screenWidth) / 4.0f;
-	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	position = { 50.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	position = { 314.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	midLineX = static_cast<float>(screenWidth) / 2.0f;
-	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	position = { (static_cast<float>(screenWidth) / 2.0f) - 182.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	position = { (static_cast<float>(screenWidth) / 2.0f) + 118.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	midLineX = (static_cast<float>(screenWidth) / 2.0f) + (static_cast<float>(screenWidth) / 4.0f);
-	position.x = midLineX - (static_cast<float>(width / 2)) - spacingFromMidLine;
+	position = { 902.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	position.x = midLineX - (static_cast<float>(width / 2)) + spacingFromMidLine;
+	position = { 1166.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
 
