@@ -7,6 +7,7 @@
 
 //Game UI Manager
 #include "GameUIManager.h"
+#include "TeamManager.h"
 
 // Game Includes
 #include "TowerManager.h"
@@ -67,6 +68,7 @@ namespace
 	std::shared_ptr<Odyssey::Entity> gPaladin;
 	std::shared_ptr<Odyssey::Entity> gSkeleton;
 	std::shared_ptr<Odyssey::Entity> gCurrentTower;
+	std::shared_ptr<Odyssey::Entity> gTurnIndicatorModel;
 	//Vectors
 	std::vector<std::shared_ptr<Odyssey::Entity>> gPlayerUnit;
 	std::vector<std::shared_ptr<Odyssey::Entity>> gEnemyUnit;
@@ -90,6 +92,7 @@ void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
 void setupArena();
 void setupGameInterface();
+void setupTowerManager();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
@@ -160,6 +163,7 @@ int playGame()
 
 	// Set up the team selection screen
 	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
+	setupTowerManager();
 	setupTeamSelectMenu(application.get());
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
@@ -504,8 +508,10 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Set the list of scenes in team select controller
 	teamSelectionController->SetGameScenes(pListOfGameScenes);
 
-	// Set the game entity that the hud will be attached to
-	teamSelectionController->SetGameEntity(gGameMenu);
+	// Set the game's current tower
+	teamSelectionController->SetTowerManager(gCurrentTower);
+	// Set the game's turn indicator model
+	teamSelectionController->SetTurnIndicator(gTurnIndicatorModel);
 
 	// Set up a directional light
 	gMenuLights[2] = std::make_shared<Odyssey::Entity>();
@@ -545,19 +551,19 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
@@ -573,19 +579,19 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
@@ -601,19 +607,19 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Team Select Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Team Select Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Team Select Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
@@ -733,6 +739,68 @@ void setupGameInterface()
 
 	canvas->setActive(false); // The rewards screen won't show up at the start
 	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4, rewardsImageHeight / 4);
+}
+
+void setupTowerManager()
+{
+	// Create the current tower entity
+	gCurrentTower = std::make_shared<Odyssey::Entity>();
+	gCurrentTower->addComponent<TowerManager>();
+	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
+	// TODO: REFACTOR LATER
+	gCurrentTower->getComponent<TowerManager>()->scene = gGameScene.get();
+	gGameScene->addEntity(gCurrentTower);
+
+	// Create the turn indicator circle
+	gTurnIndicatorModel = std::make_shared<Odyssey::Entity>();
+	gTurnIndicatorModel->addComponent<Odyssey::Transform>();
+	gTurnIndicatorModel->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	gTurnIndicatorModel->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::FileManager::getInstance().importModel(gTurnIndicatorModel, "assets/models/TurnIndicator.dxm", false);
+	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
+	gTurnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
+	gTurnIndicatorModel->setStatic(false);
+	// Add the turn indicator to the game scene
+	gGameScene->addEntity(gTurnIndicatorModel);
+
+	// Skeleton #1
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 hudPosition = { 10.0f, 10.0f };
+	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 200.0f };
+	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
+	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+
+	// Skeleton #2
+	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
+	hudPosition.x += 329.7f;
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
+	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+
+	// Skeleton #3
+	charPosition = DirectX::XMVectorSet(-3.0f, -0.6f, -5.0f, 1.0f);
+	hudPosition.x += 329.7f;
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
+	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+
+	// Skeleton #4
+	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
+	hudPosition.x += 329.7f;
+	hpPopupPosition.x += 200.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
+	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+
+	// Ganfaul
+	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
+	hudPosition.x -= 329.7f;
+	hpPopupPosition.x = 640.0f;
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
+	characterToAdd->setActive(false);
+	// Assign the boss character for the tower
+	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
 }
 
 void createCharacterHealthPopup(float anchorX, float anchorY, Odyssey::UICanvas* canvas, Character* owner)
