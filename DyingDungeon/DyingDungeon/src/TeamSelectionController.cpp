@@ -76,8 +76,7 @@ void TeamSelectionController::update(double deltaTime)
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
 	}
-  
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
@@ -376,7 +375,7 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 	// Create the paladin and add it to the game scene
 	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
 	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, L"Paladin", position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
+	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
 
 	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
 	for (int i = 1; i < mListOfGameScenes.size(); i++)

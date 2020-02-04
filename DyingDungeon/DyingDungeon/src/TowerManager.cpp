@@ -242,6 +242,9 @@ void TowerManager::CreateBattleInstance()
 	if (mCurrentLevel == 1)
 		system("CLS");
 
+	// Clear the combat at the start of each battle log
+	GameUIManager::getInstance().ClearCombatLog();
+
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
 																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath()));
@@ -324,20 +327,23 @@ void TowerManager::GoToMainMenu()
 			mPlayerTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
 			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
-		}
 
-		// TODO: REFACTOR LATER
-		scene->removeEntity(mPlayerTeam[i].get());
-	}
+			// Turn off the previous canvases
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
-	// TODO: REFACTOR LATER
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		if (mEnemyTeam[i])
-		{
-			scene->removeEntity(mEnemyTeam[i].get());
+			// TODO: REFACTOR LATER
+			scene->removeEntity(mPlayerTeam[i].get());
 		}
 	}
+
+	//// TODO: REFACTOR LATER
+	//for (int i = 0; i < mEnemyTeam.size(); i++)
+	//{
+	//	if (mEnemyTeam[i])
+	//	{
+	//		scene->removeEntity(mEnemyTeam[i].get());
+	//	}
+	//}
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);
