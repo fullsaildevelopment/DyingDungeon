@@ -77,7 +77,7 @@ void TowerSelectController::update(double deltaTime)
 		Door4Animation(deltaTime);
 	if (mDoorList[4].mDoOpenDoorAnimation || mDoorList[4].mDoCloseDoorAnimation)
 		Door5Animation(deltaTime);
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
@@ -87,33 +87,6 @@ void TowerSelectController::update(double deltaTime)
 		{
 			RedAudioManager::Instance().Unmute();
 		}
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad7))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad9))
-	{
-
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad4))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad6))
-	{
-
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad1))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad3))
-	{
-
 	}
 }
 

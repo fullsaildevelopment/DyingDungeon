@@ -23,8 +23,11 @@ public:
 	// Set the list of scenes that the characters will need to be added to
 	void SetGameScenes(std::vector<std::shared_ptr<Odyssey::Scene>> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
 
-	// Set the game entity that the hud is connected too
-	void SetGameEntity(std::shared_ptr<Odyssey::Entity> _gameEntity) { mGameEntity = _gameEntity; }
+	// Set current tower manager
+	void SetTowerManager(std::shared_ptr<Odyssey::Entity> _towerManager) {mCurrentTower = _towerManager; }
+
+	// Set turn indicator model
+	void SetTurnIndicator(std::shared_ptr<Odyssey::Entity> _turnIndicatorModel) { mTurnIndicatorModel = _turnIndicatorModel; }
 
 	// Set the slot 1 of characters for team selection
 	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) {
@@ -38,12 +41,12 @@ private:
 	Odyssey::Application* mApplication;
 	Odyssey::UICanvas* mPaladin;
 	Odyssey::UICanvas* mMage;
-	// Set the number of members on your team currently
-	int teamCount = 0;
-	// This will let us know when the user has a full team
-	bool teamIsFull = true;
+	// This will let us know when the user has a clicked the enter battle button
+	bool mEnterBattle = true;
 	// Only allow to change scene once
 	bool changedTheScene = false;
+	// Building Index will keep track of how many charcters have been built
+	int mBuildIndex = 0;
 
 	// Game scenes that the players will need to get added to
 	std::vector<std::shared_ptr<Odyssey::Scene>> mListOfGameScenes;
@@ -57,10 +60,7 @@ private:
 
 	// Hold the tower manager object
 	std::shared_ptr<Odyssey::Entity> mCurrentTower;
-	// This will hold all of the entities going into the gameScene
-	std::shared_ptr<Odyssey::Entity> mGameEntity;
-
-	// This is the model of the turn indicator
+	// Hold the turn indicator model
 	std::shared_ptr<Odyssey::Entity> mTurnIndicatorModel;
 
 	// These vectors will hold the character list for each slot
@@ -74,14 +74,16 @@ private:
 	int mSlot3Index = 0;
 
 private: // Functions
-	void AddPaladinImage();
-	void AddMageImage();
 	// TODO: REFACTOR THIS LATER
 	void onPaladinEnter();
 	void onPaladinExit();
 	void onMageEnter();
 	void onMageExit();
 	void setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character);
+
+	// Callback function for the enter battle button
+	void EnterBattle();
+	void CreateCharacterBasedOnName(std::wstring _name);
 
 	// Callback functions for the arrows
 	void DecreaseSlot1Index();
@@ -90,7 +92,4 @@ private: // Functions
 	void IncreaseSlot2Index();
 	void DecreaseSlot3Index();
 	void IncreaseSlot3Index();
-
-	// Create the tower manager
-	void CreateTheTowerManager();
 };

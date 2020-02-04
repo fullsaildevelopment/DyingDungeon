@@ -14,8 +14,7 @@ namespace Odyssey
 
 		mFilename = filename;
 		mBitmapBrush = nullptr;
-
-		createBitmapFromFile(filename, width, height);
+		createResource();
 	}
 
 	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
@@ -62,7 +61,7 @@ namespace Odyssey
 		mBitmap.Reset();
 		mBitmapConverter = nullptr;
 		mBitmapBrush = nullptr;
-		createBitmapFromFile(mFilename, mDimensions.x * mScale.x, mDimensions.y * mScale.y);
+		createBitmapFromFile(mFilename, static_cast<UINT>(mDimensions.x * mScale.x), static_cast<UINT>(mDimensions.y * mScale.y));
 		mLock.unlock(LockState::Write);
 
 	}

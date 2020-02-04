@@ -30,4 +30,9 @@ namespace Odyssey
 		x = mProperties.left;
 		y = mProperties.top;
 	}
+	void RenderWindow::getScreenScale(float* x, float* y)
+	{
+		*x = mProperties.screenScaleX;
+		*y = mProperties.screenScaleY;
+	}
 }

@@ -19,6 +19,7 @@ class RedAudio
 		bool m_playing;
 		bool m_looping;
 		bool m_segmented;
+		bool m_personal_volume;
 		unsigned int m_volume;
 	public:
 	private:
@@ -37,6 +38,11 @@ class RedAudio
 		/// </summary>
 		void PlayLoop();
 		/// <summary>
+		/// Plays the audio file from it's begining at a given volume, and at its end it will play again from the begining
+		/// </summary>
+		/// <param name="volume">unsigned intiger value of the audio level between 0 and 1000</param>
+		void PlayLoop(unsigned int volume);
+		/// <summary>
 		/// <para><c>PlaySegment</c> plays the audio file from 'start' to 'end'</para>
 		/// </summary>
 		/// <param name="start">unsigned intiger value of the start of the segment of the audio file. Has to be less than 'end'</param>
@@ -52,6 +58,11 @@ class RedAudio
 		///		<para>PlayInstance</para> plays track under diffrent alias and closes track when done 
 		/// </summary>
 		void PlayInstance();
+		/// <summary>
+		///  Plays track under diffrent alias at a given volume and closes track when done 
+		/// </summary>
+		/// <param name="volume">unsigned intiger value of the audio level between 0 and 1000</param>
+		void PlayInstance(unsigned int volume);
 		/// <summary>
 		///		<para><c>Pause</c> stops the audio file playing and holds it's current place</para>
 		/// </summary>

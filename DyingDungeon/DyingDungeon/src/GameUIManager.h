@@ -72,9 +72,13 @@ public: // Functions
 
 	void ShowStatsMenu();
 
-	void StatsMenuPrev();
+	void StatsMenuPrevTurn();
 
-	void StatsMenuNext();
+	void StatsMenuNextTurn();
+
+	void StatsMenuPrevLevel();
+
+	void StatsMenuNextLevel();
 
 	void HideStatsMenu();
 	 
@@ -123,27 +127,11 @@ public: // Functions
 
 	// Get the team select menu
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
-	// Get the team member slot 1, 2, or 3
-	Odyssey::Sprite2D* GetTeamMemberSlot(int _teamMemberSlot) 
-	{
-		switch (_teamMemberSlot)
-		{
-			case 0: return firstTeamMemberSlot; break;
-			case 1: return secondTeamMemberSlot; break;
-			case 2: return thirdTeamMemberSlot; break;
-		}
-	}
 	// Get the arrow sprite when selecting a team
 	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
-	// Get the sprite of which character you selected
-	Odyssey::Rectangle2D* GetCharacterSelectImage(CharacterType _type)
-	{
-		switch (_type)
-		{
-		case CharacterType::Paladin: return paladinSelectionImage; break;
-		case CharacterType::Mage: return mageSelectionImage; break;
-		}
-	}
+	// Get the enter battle button sprite
+	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
+
 
 	// Get the pause menu
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
@@ -206,16 +194,8 @@ private: // Varibales
 	Odyssey::UICanvas* mTowerInfoCanvas;
 
 	// Team Menu Items
-	// Team member slots
-	Odyssey::Sprite2D* firstTeamMemberSlot;
-	Odyssey::Sprite2D* secondTeamMemberSlot;
-	Odyssey::Sprite2D* thirdTeamMemberSlot;
-	// Rectangles around the characters
-	// TODO: REFACTOR THIS LATER
-	//Odyssey::Sprite2D* paladinSelectionImage;
-	Odyssey::Rectangle2D* paladinSelectionImage;
-	//Odyssey::Sprite2D* mageSelectionImage;
-	Odyssey::Rectangle2D* mageSelectionImage;
+	// Enter Battle Button
+	Odyssey::Sprite2D* mEnterBattleButton;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 
@@ -243,8 +223,8 @@ private: // Varibales
 	//unsigned int mStatMenuCurrentRound = 1;
 	unsigned int mStatMenuCurrentTurn = 1;
 	Odyssey::Text2D* mStatsBackButtonText;
-	Odyssey::Text2D* mStatsPrevButtonText;
-	Odyssey::Text2D* mStatsNextButtonText;
+	Odyssey::Sprite2D* mStatsPrevButtonText;
+	Odyssey::Sprite2D* mStatsNextButtonText;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };

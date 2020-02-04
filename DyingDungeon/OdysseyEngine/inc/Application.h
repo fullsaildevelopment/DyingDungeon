@@ -42,6 +42,8 @@ namespace Odyssey
 		 */
 		void onShutdown(EngineShutdownEvent* evnt);
 
+		void onUIScale(UIScaleEvent* evnt);
+
 		/**
 		 *	Static callback for render window message handling.
 		 *	@param[in] hwnd The render window's handle.

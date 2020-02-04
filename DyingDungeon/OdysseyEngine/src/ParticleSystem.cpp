@@ -309,7 +309,7 @@ namespace Odyssey
 
 		if (time > emissionInterval)
 		{
-			spawn = floor(time / emissionInterval);
+			spawn = static_cast<int>(floor(time / emissionInterval));
 			spawn = max(0, min(spawn, mEmissionRate));
 			totalTime -= time;
 			numSpawn -= spawn;
@@ -372,7 +372,7 @@ namespace Odyssey
 
 		for (int i = 0; i < mParticleData.size(); i++)
 		{
-			mParticleData[i].lifeTime -= deltaTime;
+			mParticleData[i].lifeTime -= static_cast<float>(deltaTime);
 
 			mCurrentGravity = lerp(0.0f, mGravity, (1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime));
 
@@ -383,12 +383,12 @@ namespace Odyssey
 			}
 			else if (mParticleData[i].active)
 			{
-				mParticleData[i].position.x += mParticleData[i].velocity.x * deltaTime;
-				mParticleData[i].position.y += mParticleData[i].velocity.y * deltaTime;
-				mParticleData[i].position.z += mParticleData[i].velocity.z * deltaTime;
+				mParticleData[i].position.x += mParticleData[i].velocity.x * static_cast<float>(deltaTime);
+				mParticleData[i].position.y += mParticleData[i].velocity.y * static_cast<float>(deltaTime);
+				mParticleData[i].position.z += mParticleData[i].velocity.z * static_cast<float>(deltaTime);
 
 				if (mGravityEnabled)
-					mParticleData[i].position.y -= mCurrentGravity * deltaTime;
+					mParticleData[i].position.y -= mCurrentGravity * static_cast<float>(deltaTime);
 
 				float ratio = 1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime;
 
