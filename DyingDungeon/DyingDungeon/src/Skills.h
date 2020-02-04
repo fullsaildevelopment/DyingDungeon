@@ -22,16 +22,18 @@ protected:
 	
 	// Skill type
 	GameplayTypes::SKILLTYPE mSkillTypeId;
+	// Tell if it affects a whole team or a single target
+	bool mIsAOE;
 	// How much mana it will cost the caster
 	float mMpCost;
 	// Animation time for when effects such as hit animation or particle effects should go out
 	float mAnimationTime;
+	// ratio from 0.0f - 1.0f on chance the status effect will be applied
+	float mStatusEffectChance;
 	// Name of skill
 	std::wstring mSkillName;
 	// Animation ID
 	std::string mAnimationId;
-	// Tell if it affects a whole team or a single target
-	bool mIsAOE;
 	// Status Effect Attached to skill
 	std::shared_ptr<StatusEffect> mStatusEffect;
 	// Particle effect if the skill has it 
@@ -51,12 +53,18 @@ public:
 	~Skills() = default;
 	// Get how much mana the skill cost
 	float GetManaCost();
+	// Gets the animation timing
+	float GetAnimationTiming();
+	// Get the percent chance the status effect will be applied
+	float GetStatusChance();
+	// Sets the percent chace the status effect will be applied
+	void SetStatusChance(float newPercent);
+	// Generate a random value between 0.0f and 1.0f
+	float RandomChance();
 	// Get Skill name
 	std::wstring GetSkillName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
-	// Gets the animation timing
-	float GetAnimationTiming();
 	// Get TypeID
 	GameplayTypes::SKILLTYPE GetSkillTypeId();
 	// Get isAOE

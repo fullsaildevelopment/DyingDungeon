@@ -12,6 +12,7 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mStatusEffect = buff;
+	mStatusEffectChance = 1.0f;
 	mIsAOE = false;
 }
 Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff, bool isAOE)
@@ -25,6 +26,7 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mStatusEffect = buff;
+	mStatusEffectChance = 1.0f;
 	mIsAOE = isAOE;
 }
 

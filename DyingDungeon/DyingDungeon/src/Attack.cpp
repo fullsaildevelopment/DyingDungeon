@@ -10,6 +10,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
@@ -23,6 +24,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = healing;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
@@ -36,6 +38,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = debuff;
 	mIsAOE = false;
 }
@@ -49,6 +52,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = AOE;
 }
@@ -62,6 +66,7 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mMpCost = mpCost;
 	mDamage = damage;
 	mHealing = 0.0f;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = debuff;
 	mIsAOE = AOE;
 }
@@ -79,15 +84,12 @@ void Attack::Use(Character& caster, Character& target)
 	std::wstring skillName = mSkillName;
 	std::wstring targetName = target.GetName();
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
-	//GameUIManager::getInstance().SetBattleLogText(battleText, false);
-	//
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
-
 	target.TakeDamage(totalDps);
-	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(target);
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), mStatusEffect->GetTypeId()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtkMod(), mStatusEffect->GetTypeId()));
 		//Switch stament for reds evvents
 		switch (mStatusEffect->GetTypeId())
 		{

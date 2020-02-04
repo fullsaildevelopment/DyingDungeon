@@ -31,6 +31,7 @@ namespace Odyssey
 
 		std::wstring getSpriteFilename();
 
+	protected:
 		virtual void createResource();
 	private: // Helpers
 		/**

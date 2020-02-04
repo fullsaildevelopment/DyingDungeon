@@ -20,6 +20,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 	mCurrentState = STATE::NONE;
 	mMoves = AIMoves(static_cast<int>(_enemyID), this);
+	mID = _enemyID;
 	////////////////////////////////////////////////
 
 	// Make a temp variable to contain animation data
@@ -547,6 +548,11 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 std::vector<std::shared_ptr<Skills>> EnemyComponent::GetSkills()
 {
 	return mMoves.GetSkillList();
+}
+
+GameplayTypes::ENEMYID EnemyComponent::GetID()
+{
+	return mID;
 }
 
 // Ganfouls game mechanic function

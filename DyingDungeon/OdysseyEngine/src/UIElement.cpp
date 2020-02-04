@@ -26,9 +26,7 @@ namespace Odyssey
 		mTrackMouseEnter = true;
 		mTrackMouseExit = false;
 
-		// Create the rectangle
-		createShape();
-
+		// Clamp the color between 0 and 1
 		mColor.x /= 255.0f;
 		mColor.y /= 255.0f;
 		mColor.z /= 255.0f;
@@ -36,6 +34,19 @@ namespace Odyssey
 		// Subscribe to the element resize event
 		EventManager::getInstance().subscribe(this, &UIElement::onElementResize);
 		mIsRegistered = false;
+
+		// Get the screen scale
+		EventManager::getInstance().publish(new UIScaleEvent(&mScreenScale.x, &mScreenScale.y));
+
+		// Scale the position and dimensions of the UI element to match the change in window size
+		mPosition.x *= mScreenScale.x;
+		mPosition.y *= mScreenScale.y;
+		mDimensions.x *= mScreenScale.x;
+		mDimensions.y *= mScreenScale.y;
+
+		// Recreate the shape to match the new position and dimensions
+		createShape();
+		createResource();
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
@@ -43,12 +54,16 @@ namespace Odyssey
 		mLock.lock(LockState::Write);
 
 		// Scale the position and dimensions of the UI element to match the change in window size
-		mPosition.x *= evnt->xScale;
-		mPosition.y *= evnt->yScale;
-		mDimensions.x *= evnt->xScale;
-		mDimensions.y *= evnt->yScale;
+		mScreenScale.x = evnt->xScale;
+		mScreenScale.y = evnt->yScale;
+
+		mPosition.x *= mScreenScale.x;
+		mPosition.y *= mScreenScale.y;
+		mDimensions.x *= mScreenScale.x;
+		mDimensions.y *= mScreenScale.y;
 
 		mLock.unlock(LockState::Write);
+
 		// Recreate the shape to match the new position and dimensions
 		createShape();
 		createResource();

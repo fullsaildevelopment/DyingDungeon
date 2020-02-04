@@ -27,12 +27,19 @@ public:
 
 	// Returns the characters skill list
 	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
+	// Get the hero id
+	GameplayTypes::HEROID GetID();
+
 private:
 	// Pointer to the current skill the player has selected
 	Skills* mCurrentSkill;
 
 	// Pointer to the current target the player has selected
 	Character* mCurrentTarget;
+
+	// Heros Id
+	GameplayTypes::HEROID mID;
 
 	// Function that gets called to manage the state in which the player is selecting a skill to use
 	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
