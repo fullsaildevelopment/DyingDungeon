@@ -283,7 +283,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
 		mBaseDefense = mDefense = 30.0f;
-		mBaseSpeed = mSpeed = 10.0f;
+		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
@@ -474,94 +474,94 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
-	case GameplayTypes::HEROID::Rouge:
+	case GameplayTypes::HEROID::Rogue:
 	{
 		// Set the character Model path
-		//mModel = "assets/models/Rouge.dxm";
+		//mModel = "assets/models/Rogue.dxm";
 
 		// Set the character name
-		mName = L"Rouge";
+		mName = L"Rogue";
 
 		// Set the character subname
 		mSubName = L"Assassin";
 
 		// Set the portaits path
-		//mPortrait = L"assets/images/RougePortrait.jpg";
+		//mPortrait = L"assets/images/RoguePortrait.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Stun.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
 		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Taunt.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Taunt.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_1.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
 		tempAnimationData.mAnimationNickName = "Skill_2";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_2.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_2.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_3.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_3.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
 		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations/Rouge/Rouge_Skill_4.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_4.dxanim";
 		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"";
+		mDescription = L"The rogue works to cripple the enemy through multiple types of debuffs including poison, bleed and sundering. The rogue has a high damage and speed but low defensive stats allowing for damage output and team utility.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 500.0f;
+		mBaseMaxHP = mCurrentHP = 150.0f;
 
 		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 75.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 50.0f;
-		mBaseDefense = mDefense = 40.0f;
-		mBaseSpeed = mSpeed = 40.0f;
+		mBaseAttack = mAttack = 90.0f;
+		mBaseDefense = mDefense = 30.0f;
+		mBaseSpeed = mSpeed = 50.0f;
 		////////////////////////////////////
 
 		// Make the character skills //

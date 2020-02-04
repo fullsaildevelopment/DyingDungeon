@@ -322,10 +322,7 @@ void TowerManager::GoToMainMenu()
 		{
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
-			mPlayerTeam[i]->getComponent<Character>()->SetHP(1000);
-			mPlayerTeam[i]->getComponent<Character>()->SetMana(1000);
-			mPlayerTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
-			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mPlayerTeam[i]->getComponent<Character>()->ResetMe();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
 			// Turn off the previous canvases
