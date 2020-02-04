@@ -27,12 +27,12 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	UINT height = battleTextHeight = (screenHeight / 16);
 
 	DirectX::XMFLOAT2 position = { 10.0f, (static_cast<float>(screenHeight) / 3.0f) + 280.0f }; // Position
-	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	DirectX::XMFLOAT4 color = { 255.0f, 0.0f, 0.0f, 1.0f }; // Color
 	
 	// Create background rectangle
 	position.x -= 5.0f;
 	position.y -= 65.0f;
-	Odyssey::Rectangle2D* tempBackground = mCombatLogCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 100, 95);
+	Odyssey::Rectangle2D* tempBackground = mCombatLogCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 140, 95);
 	tempBackground->setOpacity(0.65f);
 
 	position.x += 5.0f;
@@ -42,19 +42,11 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	Odyssey::TextProperties properties;
 	properties.bold = false;
 	properties.italic = false;
-	properties.fontSize = 14.0f;
+	properties.fontSize = 12.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
 	properties.fontName = L"Tw Cen MT Condensed";
 
-	// Create the battle log text
-	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
-	mBattleLogVec.push_back(mBattleLogText);
-	position.y -= 50.0f;
-	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
-	mBattleLogVec.push_back(mBattleLogText);
-
-	position.y += 50.0f;
 	position.x += 2.0f;
 
 	float spriteSize = 25.0f;
@@ -69,8 +61,12 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	position.x += widthDifference;
 	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
+	//Combat Text
+	position.x += widthDifference;
+	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
+	mBattleLogVec.push_back(mBattleLogText);
 
-	position.x -= widthDifference * 2.0f;
+	position.x -= widthDifference * 3.0f;
 	position.y -= heightDifference;
 
 	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
@@ -81,8 +77,12 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	position.x += widthDifference;
 	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
+	//Combat Text
+	position.x += widthDifference;
+	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
+	mBattleLogVec.push_back(mBattleLogText);
 
-	position.x -= widthDifference * 2.0f;
+	position.x -= widthDifference * 3.0f;
 	position.y -= heightDifference;
 
 	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
@@ -93,6 +93,10 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	position.x += widthDifference;
 	iconPointer = mCombatLogCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Blank.png", 25, 25);
 	mCombatTargetIcons.push_back(iconPointer);
+	//Combat Text
+	position.x += widthDifference;
+	mBattleLogText = mCombatLogCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"", properties);
+	mBattleLogVec.push_back(mBattleLogText);
 
 	mCombatLogCanvas->setActive(false);
 
@@ -117,7 +121,6 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 	}
 	
 	mBattleLogVec[0]->setText(newText);
-
 }
 
 // Be able to turn a canvas on and off
@@ -925,24 +928,28 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 228;
-		UINT imageHeight = 43;
-		UINT barWidth = 185;
-		UINT barHeight = 12;
+		UINT imageWidth = 222;
+		UINT imageHeight = 50;
+		UINT barWidth = 171;
+		UINT barHeight = 13;
 		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
 		// Add in the enemy hud template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyHUDTemplate.jpg", imageWidth, imageHeight);
+		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUILayout2.0.png", imageWidth, imageHeight);
 
 		// Add in the enemy's portrait picture
-		imageWidth = 43;
-		imageHeight = 43;
+		imageWidth = 45;
+		imageHeight = 46;
 		// Only add the portrait image if there is one
+		position.x += 2.0f;
+		position.y += 2.0f;
 		if (_imageName != L" ")
 			newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
 		// Add in the enemy's health bar
 		position.x += imageWidth;
+		position.y -= 0.5f;
+		position.x += 3.0f;
 		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
 		newHUD->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 		// Add big health text
@@ -1318,5 +1325,13 @@ void GameUIManager::ClearCombatLog()
 
 void GameUIManager::UpdateCombatLogText(float damage)
 {
+	std::wstring newText = Converter::FormatToPercentageW(damage, 2);
 
+	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
+	{
+		if (i - 1 >= 0)
+			mBattleLogVec[i]->setText(mBattleLogVec[i - 1]->getText());
+	}
+
+	mBattleLogVec[0]->setText(newText);
 }

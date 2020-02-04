@@ -97,6 +97,8 @@ void Character::TakeDamage(float dmg)
 	// Reduce health by the amount of damage that made it through
 	SetHP(GetHP() - dmg);
 
+	GameUIManager::getInstance().UpdateCombatLogText(dmg);
+
 	// Add the 
 
 	// Pop up battle text that appears over the character whenever something happens to them
