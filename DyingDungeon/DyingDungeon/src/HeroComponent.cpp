@@ -33,6 +33,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mProvoked = nullptr;
 	mBloodParticleEffect = nullptr;
 	mImpactIndicator = nullptr;
+	mID = id;
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -822,6 +823,11 @@ void HeroComponent::Die()
 std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 {
 	return mSkillList;
+}
+
+GameplayTypes::HEROID HeroComponent::GetID()
+{
+	return mID;
 }
 
 // Function that gets called to manage the state in which the player is selecting a skill to use
