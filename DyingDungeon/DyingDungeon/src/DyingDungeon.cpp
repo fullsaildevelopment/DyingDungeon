@@ -780,13 +780,20 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/large_fireball.mp3", "LargeFireball", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/slime_sound.mp3", "PoisonSlime", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/charge_and_fire.mp3", "ChargeAndFire", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/magic_poof.mp3", "CharacterEntrance", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/spell_cast.mp3", "SpellCasting", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/heal_sound.mp3", "Healing", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/grunt2-death-pain.mp3", "Death", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/fire_torch_burning.mp3", "TorchBurning", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/fire_torch_burning_quietly.mp3", "TorchBurningQuietly", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/fire_torch_burning_wind.mp3", "TorchBurningWind", RedAudioManager::AudioType::SFX);
 
 	// Tower select screen door sounds
 	RedAudioManager::Instance().AddAudio("assets/audio/Door_Open.mp3", "DoorOpen", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Door_Close.mp3", "DoorClose", RedAudioManager::AudioType::SFX);
 	
 	//Background Sound
-	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle", RedAudioManager::AudioType::Background);
+	RedAudioManager::Instance().AddAudio("assets/audio/battle_track_1.mp3", "BackgroundBattle", RedAudioManager::AudioType::Background);
 	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu", RedAudioManager::AudioType::Background);
 	
 	//Background Sound
@@ -794,7 +801,7 @@ void setupAudio()
 	//RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
 	
 	//Play Initial Loop
-	//RedAudioManager::Instance().Loop("ChargeAndFire");
+	//RedAudioManager::Instance().Loop("Death");
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
 }
 

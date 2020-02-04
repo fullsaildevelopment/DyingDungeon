@@ -507,11 +507,11 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
 	mStatsBackButtonText->setVisible(true);
-	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f);
-	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) + 60.0f;
-	mStatsPrevButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"<-Prev", properties);
+	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f) - 120.0f;
+	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) - 255.0f;
+	mStatsPrevButtonText = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth/6, graphBackgroundWidth / 6);
 	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
-	mStatsNextButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Next->", properties);
+	mStatsNextButtonText = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 6, graphBackgroundWidth / 6);
 
 	_sceneToAddTo->addEntity(mStatsMenu);
 	
@@ -525,13 +525,13 @@ void GameUIManager::ShowStatsMenu()
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
 	mStatMenuCurrentLevel = 1;
 	mStatMenuCurrentTurn = 1;
-	mStatsPrevButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrev);
-	mStatsNextButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNext);
+	mStatsPrevButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevTurn);
+	mStatsNextButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextTurn);
 	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
 	UpdateStatsMenu();
 }
 
-void GameUIManager::StatsMenuPrev()
+void GameUIManager::StatsMenuPrevTurn()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0)
 	{
@@ -543,7 +543,7 @@ void GameUIManager::StatsMenuPrev()
 	}
 }
 
-void GameUIManager::StatsMenuNext()
+void GameUIManager::StatsMenuNextTurn()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
 		if (mStatMenuCurrentTurn < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
@@ -562,6 +562,30 @@ void GameUIManager::StatsMenuNext()
 			UpdateStatsMenu();
 		}
 	}
+}
+
+void GameUIManager::StatsMenuPrevLevel()
+{
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentLevel < StatTracker::Instance().GetLevelSize())
+		{
+			mStatMenuCurrentLevel++;
+			mStatMenuCurrentTurn = 1;
+			UpdateStatsMenu();
+		}
+		else if ((mStatMenuCurrentLevel + 1) > StatTracker::Instance().GetLevelSize())
+		{
+			mStatMenuCurrentLevel = 1;
+			mStatMenuCurrentTurn = 1;
+			UpdateStatsMenu();
+		}
+	}
+}
+
+void GameUIManager::StatsMenuNextLevel()
+{
+
 }
 
 void GameUIManager::HideStatsMenu()

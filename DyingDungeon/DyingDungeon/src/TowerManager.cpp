@@ -81,7 +81,7 @@ void TowerManager::update(double deltaTime)
 		mUsedBossCheatCode = true;
 	}
 
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
