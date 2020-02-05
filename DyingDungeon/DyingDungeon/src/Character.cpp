@@ -349,6 +349,17 @@ void Character::SetName(std::wstring newName)
 	mName = newName;
 }
 
+void Character::ResetMe()
+{
+	mCurrentHP = mBaseMaxHP;
+	mCurrentMana = mBaseMaxMana;
+	mCurrentState = STATE::NONE;
+	ClearStatusEffects();
+
+	// Update charcter UI bars
+	GameUIManager::getInstance().UpdateCharacterBars(this);
+}
+
 // Returns the characters skill list
 std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 {

@@ -33,6 +33,12 @@ public:
 		Odyssey::Rectangle2D* pManaBar;
 		Odyssey::Text2D* pManaNumber;
 		Odyssey::Text2D* pTurnNumber;
+
+		// Skills
+		Odyssey::Sprite2D* pSkill1;
+		Odyssey::Sprite2D* pSkill2;
+		Odyssey::Sprite2D* pSkill3;
+		Odyssey::Sprite2D* pSkill4;
 	};
 
 public: // Singleton pattern
@@ -129,6 +135,8 @@ public: // Functions
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
 	// Get the arrow sprite when selecting a team
 	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
+	// Get the text slots for the names
+	std::vector<Odyssey::Text2D*> GetNameSlots() { return mNameSlots; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
 
@@ -201,6 +209,8 @@ private: // Varibales
 	Odyssey::Sprite2D* mEnterBattleButton;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
+	// The name text slots
+	std::vector<Odyssey::Text2D*> mNameSlots;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
@@ -263,7 +273,7 @@ private: // Functions
 	void IncreaseVolume();
 
 	// Skill Icon Creation Fucntions
-	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition);
+	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
 	void SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
 	void SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition);
 

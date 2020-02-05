@@ -542,6 +542,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 
 	// Set some variables for positioning
 	float scaleAmount = 0.020f;
+	float warriorScaleAmount = 0.0175f;
 	float xOffset = -3.0f;
 	float yHeight = -2.0f;
 	float zDepth = 6.0f;
@@ -571,6 +572,13 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
 	// Set the 1st slot of characters
 	teamSelectionController->SetSlot1OfCharacters(pListOfCharactersCreated);
 	// Clear the list before making the new characters for the next slot
@@ -588,6 +596,13 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
@@ -611,6 +626,13 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	characterToAdd->getComponent<Odyssey::Transform>()->setScale(scaleAmount, scaleAmount, scaleAmount);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	characterToAdd->getComponent<Odyssey::Transform>()->setScale(warriorScaleAmount, warriorScaleAmount, warriorScaleAmount);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
 	// Make character
@@ -770,14 +792,14 @@ void setupTowerManager()
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(7.5f, 0.3f, -5.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 hudPosition = { 10.0f, 10.0f };
-	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 200.0f };
+	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 150.0f };
 	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #2
 	charPosition = DirectX::XMVectorSet(3.0f, -0.6f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
+	hpPopupPosition.x += 175.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
@@ -791,14 +813,14 @@ void setupTowerManager()
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
+	hpPopupPosition.x += 175.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x -= 329.7f;
-	hpPopupPosition.x = 640.0f;
+	//hpPopupPosition.x = 625.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower

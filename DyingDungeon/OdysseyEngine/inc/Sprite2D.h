@@ -41,7 +41,7 @@ namespace Odyssey
 		 *	@param[in] height The height of the image. Default 0 uses the file height.
 		 *	@return void
 		 */
-		void createBitmapFromFile(std::wstring filename, UINT width, UINT height);
+		void createBitmapFromFile(std::wstring filename, float width, float height);
 
 	private: // Members
 		Microsoft::WRL::ComPtr<ID2D1BitmapBrush1> mBitmapBrush;
