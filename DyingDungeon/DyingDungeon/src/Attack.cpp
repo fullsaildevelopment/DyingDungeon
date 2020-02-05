@@ -123,7 +123,7 @@ void Attack::Use(Character& caster, Character& target)
 	}
 	else
 		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
-	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mSkillName, target.GetDef()));
+	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mSkillName, target.GetDefMod()));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }
