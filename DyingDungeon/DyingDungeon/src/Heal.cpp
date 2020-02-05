@@ -30,9 +30,9 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 // Use the heal on the target
 void Heal::Use(Character& caster, Character& target)
 {
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	target.ReceiveHealing(mHealing);
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
-	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(target);
