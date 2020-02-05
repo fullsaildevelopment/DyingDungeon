@@ -243,7 +243,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Basic attack, stun
+		// Basic attack
 		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -10.0f, 10.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 10 damage. Refunds 10 mana.");
