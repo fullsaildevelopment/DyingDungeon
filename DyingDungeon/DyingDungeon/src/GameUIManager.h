@@ -129,6 +129,8 @@ public: // Functions
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
 	// Get the arrow sprite when selecting a team
 	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
+	// Get the text slots for the names
+	std::vector<Odyssey::Text2D*> GetNameSlots() { return mNameSlots; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
 
@@ -198,6 +200,8 @@ private: // Varibales
 	Odyssey::Sprite2D* mEnterBattleButton;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
+	// The name text slots
+	std::vector<Odyssey::Text2D*> mNameSlots;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;

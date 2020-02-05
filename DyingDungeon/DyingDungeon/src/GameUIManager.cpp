@@ -348,7 +348,7 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	position = { (static_cast<float>(screenWidth) / 2.0f) - 182.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowBackFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
-	position = { (static_cast<float>(screenWidth) / 2.0f) + 118.0f, static_cast<float>(screenHeight) - 100.0f };
+	position = { 722.0f, static_cast<float>(screenHeight) - 100.0f };
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
 	position = { 902.0f, static_cast<float>(screenHeight) - 100.0f };
@@ -358,18 +358,24 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	newArrow = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, arrowForwardFilepath, width, height);
 	mTeamSelectionArrows.push_back(newArrow);
 
-	// Make the clickable clear rectangle for the character's when selecting the team members
-	width = 256;
-	height = 400;
-	position.x = 400.0f;
-	position.y = 250.0f;
-	//paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
-	//paladinSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
-
-	position.x = 825.0f;
-	position.y = 250.0f;
-	//mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/blackOutlineSquare.png", width, height);
-	//mageSelectionImage = teamSelectMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), width, height);
+	// Set the name slots in between the arrows
+	width = 200;
+	height = 64;
+	// Create the background of the text
+	position = { 114.0f, static_cast<float>(screenHeight) - 100.0f };
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	// Create the name slot
+	mNameSlots.push_back(teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Paladin", properties));
+	// Create the background of the text
+	position = { (static_cast<float>(screenWidth) / 2.0f) - 118.0f, static_cast<float>(screenHeight) - 100.0f };
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	// Create the name slot
+	mNameSlots.push_back(teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Mage", properties));
+	// Create the background of the text
+	position = { 966.0f, static_cast<float>(screenHeight) - 100.0f };
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	// Create the name slot
+	mNameSlots.push_back(teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Bard", properties));
 
 	// Add the mTeamSelectMenu object to the team selection scene
 	_sceneToAddTo->addEntity(mTeamSelectMenu);
