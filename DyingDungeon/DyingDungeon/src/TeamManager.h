@@ -34,6 +34,9 @@ public: // Functions
 	// Add player to the enemy team
 	void AddCharacterToEnemyTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
 
+	// Clear the players from the player team
+	void ClearPlayerTeam();
+
 	// Getters
 	// Get the players that were created
 	std::vector<std::shared_ptr<Odyssey::Entity>> GetPlayerTeam() { return mPlayerTeam; }

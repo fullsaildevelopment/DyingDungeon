@@ -10,7 +10,7 @@ public:
 	TeamSelectionController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
-	virtual void onDestory();
+	virtual void onDestroy();
 	// TODO: REFACTOR THIS LATER
 	void setupHovers();
 public:
@@ -92,4 +92,7 @@ private: // Functions
 	void IncreaseSlot2Index();
 	void DecreaseSlot3Index();
 	void IncreaseSlot3Index();
+
+	// Change the name in the slots
+	void ChangeSlotName(int _slotIndex, std::wstring _name);
 };

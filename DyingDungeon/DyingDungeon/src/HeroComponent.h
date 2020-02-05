@@ -52,5 +52,16 @@ private:
 
 	// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
 	void BeginAttack(EntityList targets);
+
+public:
+	virtual void initialize();
+private:
+	// 
+	void SetupClickableUI();
+	// Skill callbacks
+	void Skill1Callback();
+	void Skill2Callback();
+	void Skill3Callback();
+	void Skill4Callback();
 };
 

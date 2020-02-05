@@ -38,10 +38,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set rotation
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
-	if (_characterToCreate != Warrior)
-		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
-	else
+	if (_characterToCreate == Warrior)
 		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.023f, 0.023f, 0.023f);
+	else
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 
 	switch (_characterToCreate)
 	{
