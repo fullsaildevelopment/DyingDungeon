@@ -11,7 +11,7 @@ public:
 	MainMenuController(Odyssey::Application* application);
 	virtual void initialize();
 	virtual void update(double deltaTime);
-	virtual void onDestory();
+	virtual void onDestroy();
 private:
 	void EnterTowerSelectScreen();
 public:

@@ -70,7 +70,7 @@ void MainMenuController::update(double deltaTime)
 	}
 }
 
-void MainMenuController::onDestory()
+void MainMenuController::onDestroy()
 {
 	// unregister callbacks
 	GameUIManager::getInstance().GetNewGameText()->unregisterCallback("onMouseClick");

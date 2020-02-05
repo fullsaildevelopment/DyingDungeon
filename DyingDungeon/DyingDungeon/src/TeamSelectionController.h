@@ -92,4 +92,7 @@ private: // Functions
 	void IncreaseSlot2Index();
 	void DecreaseSlot3Index();
 	void IncreaseSlot3Index();
+
+	// Change the name in the slots
+	void ChangeSlotName(int _slotIndex, std::wstring _name);
 };

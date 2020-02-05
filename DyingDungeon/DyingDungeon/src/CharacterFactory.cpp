@@ -38,7 +38,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set rotation
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
-	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	if (_characterToCreate != Warrior)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	else
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.023f, 0.023f, 0.023f);
 
 	switch (_characterToCreate)
 	{
@@ -108,6 +111,26 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
+
+			break;
+		}
+		case Warrior:
+		{
+			// Set up hero component
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Warrior);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			// Set up blood particle effect
+			tempHero->SetPSBlood(setupBlood());
+
 
 			break;
 		}
@@ -254,16 +277,16 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	std::shared_ptr<Odyssey::Entity> gFireStorm = std::make_shared<Odyssey::Entity>();
 	gFireStorm->addComponent<Odyssey::Transform>();
 	Odyssey::ParticleSystem* fireStorm = gFireStorm->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
-	fireStorm->setTexture(Odyssey::TextureType::Diffuse, "Guy.png");
-	fireStorm->setColor(DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fireStorm->setLifetime(1.5f, 2.5f);
-	fireStorm->setParticleCount(25, 50);
+	fireStorm->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fireStorm->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fireStorm->setLifetime(0.5f, 1.5f);
+	fireStorm->setParticleCount(700, 1000);
 	fireStorm->setRateOverTime(0.0f);
 	fireStorm->setDuration(5.0f);
 	fireStorm->setSpeed(2.5f, 5.0f);
 	fireStorm->setSize(1.0f, 1.5f);
 	fireStorm->setLooping(true);
-	fireStorm->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.1f, 180.0f, 180.0f));
+	fireStorm->setShape(Odyssey::ConePS(0.0f,0.0f,0.0f,3.0f,75.0f,75.0f));
 	fireStorm->stop();
 	mCurrentScene->addEntity(gFireStorm);
 	return fireStorm;
