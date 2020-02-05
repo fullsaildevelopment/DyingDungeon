@@ -98,6 +98,8 @@ void TowerManager::update(double deltaTime)
 	{
 		// Update the health popups
 		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+		// Update the UI bars
+		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)

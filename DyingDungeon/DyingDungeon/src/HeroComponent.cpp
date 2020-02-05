@@ -1175,6 +1175,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 
 void HeroComponent::initialize()
 {
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 	SetupClickableUI();
 }
 

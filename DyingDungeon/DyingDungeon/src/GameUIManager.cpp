@@ -1149,22 +1149,135 @@ void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2
 	mCharacterHpPopupList.push_back(newPopup);
 }
 
-void GameUIManager::UpdateCharacterBars(Character* _currCharacter)
+// Add character health bar to update list
+void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount)
 {
-	// Get the ratio from current health and max health
-	float healthRatio = _currCharacter->GetHP() / _currCharacter->GetMaxHP();
-	// Get the ratio from current mana and max mana
-	float manaRatio = _currCharacter->GetMana() / _currCharacter->GetMaxMana();
+	// Create new bar to update pointer
+	std::shared_ptr<AnimatingBar> healthBarToUpdate = std::make_shared<AnimatingBar>();
 
-	// Set the fill of the character's health bar
-	mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthBar->setFill(healthRatio);
-	// Set the fill of the character's mana bar
-	mCharacterHudList[_currCharacter->GetHudIndex()]->pManaBar->setFill(manaRatio);
+	// Add its elements
+	healthBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthBar;
+	healthBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthNumber;
+	healthBarToUpdate->pMaxValue = _currCharacter->GetMaxHP();
+	healthBarToUpdate->pCurrValue = _previousHpAmount;
+	healthBarToUpdate->pNewValue = _newHpAmount;
 
-	// Set the text for the health bar
-	mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthNumber->setText(std::to_wstring((int)_currCharacter->GetHP()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxHP()));
-	// Set the text for the mana bar
-	mCharacterHudList[_currCharacter->GetHudIndex()]->pManaNumber->setText(std::to_wstring((int)_currCharacter->GetMana()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxMana()));
+	// Set took damage book
+	healthBarToUpdate->pTookDamage = true;
+	// Check if they were actually granted health
+	if (_newHpAmount > _previousHpAmount)
+	{
+		healthBarToUpdate->pTookDamage = false;
+	}
+
+	// Add the health bar to the update list if there is any change
+	mUpdateCharacterBarsList.push_back(healthBarToUpdate);
+}
+
+// Add character mana bar to update list
+void GameUIManager::AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount)
+{
+	// Create new bar to update pointer
+	std::shared_ptr<AnimatingBar> manaBarToUpdate = std::make_shared<AnimatingBar>();
+
+	// Add its elements
+	manaBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->pManaBar;
+	manaBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->pManaNumber;
+	manaBarToUpdate->pMaxValue = _currCharacter->GetMaxMana();
+	manaBarToUpdate->pCurrValue = _previousMpAmount;
+	manaBarToUpdate->pNewValue = _newMpAmount;
+
+	// Set took damage book
+	manaBarToUpdate->pTookDamage = true;
+	// Check if they were actually granted mana
+	if (_newMpAmount > _previousMpAmount)
+	{
+		manaBarToUpdate->pTookDamage = false;
+	}
+
+	// Add the mana bar to the update list if there is any change
+	mUpdateCharacterBarsList.push_back(manaBarToUpdate);
+}
+
+// Animate the bars
+void GameUIManager::UpdateCharacterBars(float _deltaTime)
+{
+	// Update the health and mana bars that need to be updated
+	for (int i = 0; i < mUpdateCharacterBarsList.size(); i++)
+	{
+		// Set the speed varibale 
+		float speed = 25.0f;
+
+		// Get the max amount of bar value
+		float maxValue = mUpdateCharacterBarsList[i]->pMaxValue;
+		// Get the max amount of bar value
+		float currValue = mUpdateCharacterBarsList[i]->pCurrValue;
+		// Get the target amount of the bar
+		float targetValue = mUpdateCharacterBarsList[i]->pNewValue;
+
+		// Check if the bar is done animating
+		if (mUpdateCharacterBarsList[i]->pTookDamage)
+		{
+			// See if the current value is less or equal to the target value
+			if (currValue <= targetValue)
+			{
+				// Set the bar to the target fill
+				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
+				// Set the text of the bar
+				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				// Remove the bar from being updated
+				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
+				continue;
+			}
+		}
+		else
+		{
+			// See if the current value is greater or equal to the target value
+			if (currValue >= targetValue)
+			{
+				// Set the bar to the target fill
+				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
+				// Set the text of the bar
+				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				// Remove the bar from being updated
+				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
+				continue;
+			}
+		}
+		
+		// Check if we animate bar down or up
+		if (mUpdateCharacterBarsList[i]->pTookDamage)
+		{
+			// Update the bar's currValue
+			mUpdateCharacterBarsList[i]->pCurrValue -= (speed * _deltaTime);
+		}
+		// Else we go up
+		else
+		{
+			// Update the bar's currValue
+			mUpdateCharacterBarsList[i]->pCurrValue += (speed * _deltaTime);
+		}
+
+		// Get the new ratio and set the fill and set the text
+		float newRatio = mUpdateCharacterBarsList[i]->pCurrValue / maxValue;
+		mUpdateCharacterBarsList[i]->pBar->setFill(newRatio);
+		mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)mUpdateCharacterBarsList[i]->pCurrValue) + L"/" + std::to_wstring((int)maxValue));
+	}
+
+	//// Get the ratio from current health and max health
+	//float healthRatio = _currCharacter->GetHP() / _currCharacter->GetMaxHP();
+	//// Get the ratio from current mana and max mana
+	//float manaRatio = _currCharacter->GetMana() / _currCharacter->GetMaxMana();
+	//
+	//// Set the fill of the character's health bar
+	//mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthBar->setFill(healthRatio);
+	//// Set the fill of the character's mana bar
+	//mCharacterHudList[_currCharacter->GetHudIndex()]->pManaBar->setFill(manaRatio);
+	//
+	//// Set the text for the health bar
+	//mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthNumber->setText(std::to_wstring((int)_currCharacter->GetHP()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxHP()));
+	//// Set the text for the mana bar
+	//mCharacterHudList[_currCharacter->GetHudIndex()]->pManaNumber->setText(std::to_wstring((int)_currCharacter->GetMana()) + L"/" + std::to_wstring((int)_currCharacter->GetMaxMana()));
 }
 
 // When the health updates for the character, show the health popups
