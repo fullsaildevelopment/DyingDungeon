@@ -289,7 +289,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 30.0f;
+		mBaseDefense = mDefense = 40.0f;
 		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
@@ -445,14 +445,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 500.0f;
+		mBaseMaxHP = mCurrentHP = 200.0f;
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 75.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 50.0f;
+		mBaseAttack = mAttack = 40.0f;
 		mBaseDefense = mDefense = 40.0f;
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
@@ -654,8 +654,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[4].get();
-			
-			mIsCheating = true;
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
@@ -665,8 +663,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[5].get();
-
-			mIsCheating = true;
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
@@ -932,14 +928,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset state to default
 		mCurrentState = STATE::NONE;
 
-		// Return true unless im cheating
-		if(!mIsCheating)
+		// Return true 
 			return true;
-		else
-		{
-			// In case im cheating :p
-			mIsCheating = false;
-		}
 
 		break;
 	}
