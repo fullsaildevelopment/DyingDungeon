@@ -928,18 +928,18 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 206;
-		UINT imageHeight = 34;
-		UINT barWidth = 170;
-		UINT barHeight = 14;
+		UINT imageWidth = 214;
+		UINT imageHeight = 42;
+		UINT barWidth = 171;
+		UINT barHeight = 12;
 		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
 		// Add in the enemy hud template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUILayout3.0.png", imageWidth, imageHeight);
+		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUI/EnemyUILayout4.0.png", imageWidth, imageHeight);
 
 		// Add in the enemy's portrait picture
-		imageWidth = 30;
-		imageHeight = 30;
+		imageWidth = 39;
+		imageHeight = 39;
 		// Only add the portrait image if there is one
 		position.x += 2.0f;
 		position.y += 2.0f;
@@ -947,18 +947,26 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 			newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
 		// Add in the enemy's name bar
+		barWidth = 94;
+		barHeight = 13;
 		position.x += imageWidth;
-		position.y -= 0.5f;
-		position.x += 2.5f;
+		position.y += 9.0f;
+		position.x += 1.0f;
 		DirectX::XMFLOAT4 xpBarColor = { 116.0f, 71.0f, 201.0f, 1.0f };
 		newHUD->pXpBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, xpBarColor, barWidth, barHeight);
 		color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		properties.fontSize = 12;
 		properties.bold = true;
+		position.x += 2.0f;
+		position.y -= 2.0f;
+		barHeight = 16;
 		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
+		position.x -= 2.0f;
 		properties.bold = false;
 
 		// Add in the enemy's health bar
+		barWidth = 171;
+		barHeight = 15;
 		position.y += 16.0f;
 		barHeight += 1.0f;
 		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
