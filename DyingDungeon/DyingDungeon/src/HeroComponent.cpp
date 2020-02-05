@@ -1172,3 +1172,66 @@ void HeroComponent::BeginAttack(EntityList targets)
 	// Set the current state to inprogress
 	mCurrentState = STATE::INPROGRESS;
 }
+
+void HeroComponent::initialize()
+{
+	SetupClickableUI();
+}
+
+void HeroComponent::SetupClickableUI()
+{
+	// Create new skill
+	Odyssey::Sprite2D* currSkill = nullptr;
+
+	// Assign the new skill with the player's 1st skill icon
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill1;
+	// Set up sprite's callback function for the Skill1Callback
+	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
+
+	// Assign the new skill with the player's 2nd skill icon
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill2;
+	// Set up sprite's callback function for the Skill2Callback
+	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
+
+	// Assign the new skill with the player's 3rd skill icon
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill3;
+	// Set up sprite's callback function for the Skill3Callback
+	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
+
+	// Assign the new skill with the player's 4th skill icon
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill4;
+	// Set up sprite's callback function for the Skill4Callback
+	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
+}
+
+void HeroComponent::Skill1Callback()
+{
+	if (mCurrentState == STATE::SELECTMOVE)
+	{
+		// Set current skill to skill 1
+	}
+}
+
+void HeroComponent::Skill2Callback()
+{
+	if (mCurrentState == STATE::SELECTMOVE)
+	{
+		// Set current skill to skill 2
+	}
+}
+
+void HeroComponent::Skill3Callback()
+{
+	if (mCurrentState == STATE::SELECTMOVE)
+	{
+		// Set current skill to skill 3
+	}
+}
+
+void HeroComponent::Skill4Callback()
+{
+	if (mCurrentState == STATE::SELECTMOVE)
+	{
+		// Set current skill to skill 4
+	}
+}
