@@ -41,9 +41,9 @@ void TeamSelectionController::initialize()
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
-	mPlayerPositions[0] = DirectX::XMVectorSet(4.0f, 0.0f, 4.5f, 1.0f); // First Character Selected
-	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, -0.6f, 4.5f, 1.0f); // Second Character Selected
-	mPlayerPositions[2] = DirectX::XMVectorSet(-4.0f, 0.0f, 4.5f, 1.0f); // Third Character Selected
+	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
 
 	// Set the HUD positions
 	mHudPositions.clear();
@@ -76,7 +76,7 @@ void TeamSelectionController::update(double deltaTime)
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), TeamManager::getInstance().GetEnemyTeam(), 2, mTurnIndicatorModel);
 
 		// Change the scene to the game
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene1"));
 	}
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -376,7 +376,7 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 
 	// Create the paladin and add it to the game scene
 	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
 
 	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function

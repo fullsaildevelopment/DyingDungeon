@@ -137,6 +137,9 @@ float Character::GetHP()
 // Sets the current HP of the character
 void Character::SetHP(float HP)
 {
+	// Add the health bar for animation
+	GameUIManager::getInstance().AddCharacterHpBarsToUpdateList(this, mCurrentHP, HP);
+
 	// Set the hp to the passed in amount
 	float previousHealth = mCurrentHP;
 	mCurrentHP = HP;
@@ -147,9 +150,6 @@ void Character::SetHP(float HP)
 	else if (mCurrentHP > mBaseMaxHP)
 		mCurrentHP = mBaseMaxHP;
 
-	// Update the UI
-	GameUIManager::getInstance().UpdateCharacterBars(this);
-	 
 	// Check whether or not the character was healed or damaged
 	// Player took damage
 	if (previousHealth > mCurrentHP)
@@ -174,6 +174,9 @@ float Character::GetMana()
 // Sets the current mana of the character
 void Character::SetMana(float Mana)
 {
+	// Add the health bar for animation
+	GameUIManager::getInstance().AddCharacterMpBarsToUpdateList(this, mCurrentMana, Mana);
+
 	// Set the mp to the passed in amount
 	mCurrentMana = Mana;
 
@@ -182,10 +185,6 @@ void Character::SetMana(float Mana)
 		mCurrentMana = 0.0f;
 	else if (mCurrentMana > mBaseMaxMana)
 		mCurrentMana = mBaseMaxMana;
-
-	// Update the UI
-	// Update the UI
-	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the max MP of the character
@@ -342,13 +341,14 @@ void Character::SetName(std::wstring newName)
 
 void Character::ResetMe()
 {
+	// Update the bars
+	GameUIManager::getInstance().AddCharacterHpBarsToUpdateList(this, mCurrentHP, mBaseMaxHP);
+	GameUIManager::getInstance().AddCharacterMpBarsToUpdateList(this, mCurrentMana, mBaseMaxMana);
+
 	mCurrentHP = mBaseMaxHP;
 	mCurrentMana = mBaseMaxMana;
 	mCurrentState = STATE::NONE;
 	ClearStatusEffects();
-
-	// Update charcter UI bars
-	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the characters skill list

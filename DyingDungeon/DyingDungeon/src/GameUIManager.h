@@ -41,6 +41,19 @@ public:
 		Odyssey::Sprite2D* pSkill4;
 	};
 
+	// This struct will hold the elements needed in order to animate the health and mana bars
+	struct AnimatingBar
+	{
+		Odyssey::Rectangle2D* pBar = nullptr;
+		Odyssey::Text2D* pBarText = nullptr;
+		float pMaxValue;
+		float pCurrValue; // This will change in the update function
+		float pNewValue;
+
+		// Used for checking while updating
+		bool pTookDamage;
+	};
+
 public: // Singleton pattern
 		/**
 		 *	Get the singleton instance of the game ui manager.
@@ -95,9 +108,12 @@ public: // Functions
 	// Create The UI portraits for the characters
 	Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
+	// Add character health and mana bars to update list in order for the bars to be animated
+	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
+	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
 	// Update health bar
-	void UpdateCharacterBars(Character* _currCharacter);
-	// Add character's health popup to update list in order from the to be updated
+	void UpdateCharacterBars(float _deltaTime);
+	// Add character's health popup to update list in order from them to be updated
 	void AddHpPopupToUpdateList(Character* _currCharacter, bool _tookDamage, float _changeInHP);
 	// Update health popups
 	void UpdateCharacterHealthPopups(float _deltaTime);
@@ -256,9 +272,13 @@ private: // Varibales
 	// Vectors
 	std::vector<std::shared_ptr<CharacterHUD>> mCharacterHudList;
 	std::vector<Odyssey::Text2D*> mCharacterHpPopupList;
+	std::vector<Odyssey::Rectangle2D*> mCharacterBarsList;
 
 	// List of HP popups I need to update
 	std::vector<Odyssey::Text2D*> mUpdateHpPopupList;
+
+	// List of character bars I need to update
+	std::vector<std::shared_ptr<AnimatingBar>> mUpdateCharacterBarsList;
 
 	// Queues
 

@@ -27,6 +27,7 @@ void TowerManager::initialize()
 
 	// Don't show the boos character
 	mBossCharacter->setActive(false);
+	GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
 	// Reset the enemy team to the skely bois
 	if (mSkeletonTeam.size() != 0)
@@ -38,6 +39,7 @@ void TowerManager::initialize()
 		for (int i = 0; i < mSkeletonTeam.size(); i++)
 		{
 			mSkeletonTeam[i]->setActive(true);
+			GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 			mEnemyTeam.push_back(mSkeletonTeam[i]);
 		}
 	}
@@ -98,6 +100,8 @@ void TowerManager::update(double deltaTime)
 	{
 		// Update the health popups
 		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+		// Update the UI bars
+		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
@@ -165,6 +169,7 @@ void TowerManager::update(double deltaTime)
 						for (int i = 0; i < mEnemyTeam.size(); i++)
 						{
 							mEnemyTeam[i]->setActive(false);
+							GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 							mSkeletonTeam.push_back(mEnemyTeam[i]);
 						}
 						// Clear all enemies from the current enemy list
@@ -172,6 +177,8 @@ void TowerManager::update(double deltaTime)
 
 						// Now active the boos and only add the boss to the enemy list
 						mBossCharacter->setActive(true);
+						// Turn on Ganny's UI
+						GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
 						mEnemyTeam.push_back(mBossCharacter);
 					}
 
