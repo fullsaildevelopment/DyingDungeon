@@ -59,8 +59,6 @@ private:
 	// List that contains the list ofheros and enemies
 	EntityList mHeroList;
 	EntityList mEnemyList;
-	// Variable to toggle when im cheating
-	bool mIsCheating;
 
 	//Set up for clickable UI
 	void SetupClickableUI();
