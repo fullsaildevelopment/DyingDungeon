@@ -56,10 +56,15 @@ private:
 public:
 	virtual void initialize();
 private:
+	// List that contains the list ofheros and enemies
 	EntityList mHeroList;
 	EntityList mEnemyList;
-	// 
+	// Variable to toggle when im cheating
+	bool mIsCheating;
+
+	//Set up for clickable UI
 	void SetupClickableUI();
+
 	// Skill callbacks
 	void Skill1Callback();
 	void Skill2Callback();

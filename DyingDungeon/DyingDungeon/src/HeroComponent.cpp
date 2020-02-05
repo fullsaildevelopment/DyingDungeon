@@ -601,6 +601,13 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		break;
 	}
 	}
+
+	if (true)
+	{
+		mSkillList.push_back(std::make_shared<Attack>(L"The Funny Move", "Skill_1", 0.5f, 0.0f, 1000.0f, temp));
+		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.5f, 0.0f, -1000.0f));
+	}
+
 }
 
 // Destructor
@@ -642,6 +649,29 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
+		// Cheat code to instakill a target
+		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
+		{
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[4].get();
+			
+			mIsCheating = true;
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
+
+		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
+		{
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[5].get();
+
+			mIsCheating = true;
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
+
 		// Use ability 1
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
@@ -902,8 +932,14 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset state to default
 		mCurrentState = STATE::NONE;
 
-		// Return true
-		return true;
+		// Return true unless im cheating
+		if(!mIsCheating)
+			return true;
+		else
+		{
+			// In case im cheating :p
+			mIsCheating = false;
+		}
 
 		break;
 	}
@@ -948,7 +984,8 @@ std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 {
 	return mSkillList;
 }
-
+ 
+// Returns this hero hero id
 GameplayTypes::HEROID HeroComponent::GetID()
 {
 	return mID;
@@ -1184,12 +1221,14 @@ void HeroComponent::BeginAttack(EntityList targets)
 	mCurrentState = STATE::INPROGRESS;
 }
 
+// Init function called when object loads into scene
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 	SetupClickableUI();
 }
 
+// Set up for clickable UI
 void HeroComponent::SetupClickableUI()
 {
 	// Create new skill
@@ -1216,6 +1255,8 @@ void HeroComponent::SetupClickableUI()
 	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
 }
 
+// Skill Call backs for clickable UI //
+//////////////////////////////////////////////
 void HeroComponent::Skill1Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
@@ -1232,7 +1273,6 @@ void HeroComponent::Skill1Callback()
 		}
 	}
 }
-
 void HeroComponent::Skill2Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
@@ -1249,7 +1289,6 @@ void HeroComponent::Skill2Callback()
 		}
 	}
 }
-
 void HeroComponent::Skill3Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
@@ -1266,7 +1305,6 @@ void HeroComponent::Skill3Callback()
 		}
 	}
 }
-
 void HeroComponent::Skill4Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
@@ -1283,3 +1321,4 @@ void HeroComponent::Skill4Callback()
 		}
 	}
 }
+//////////////////////////////////////////////
