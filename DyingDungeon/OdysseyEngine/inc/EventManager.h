@@ -56,7 +56,7 @@ namespace Odyssey
 	private: // Members
 		typedef std::vector<std::shared_ptr<AbstractEventHandler>> EventHandlerList;
 		std::map<std::type_index, std::shared_ptr<EventHandlerList>> mSubscribers;
-		std::map<std::type_index, Event*> mCommands;
+		std::map<std::type_index, std::vector<Event*>> mCommands;
 		bool mPublishCommands;
 		bool mIsShutdown;
 
@@ -74,7 +74,7 @@ namespace Odyssey
 			{
 				// Store the command and publish the command receive event
 				// The command receive event will trigger a process commands event allowing us to process commands next frame
-				mCommands[typeid(EventType)] = evnt;
+				mCommands[typeid(EventType)].push_back(evnt);
 				publish(new CommandReceiveEvent());
 			}
 			else

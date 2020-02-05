@@ -9,7 +9,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	m_playing = false;
 	m_looping = false;
 	m_segmented = false;
-	m_personal_volume = false;
+	//m_personal_volume = false;
 	m_start = 0;
 	m_volume = 500;
 
@@ -159,6 +159,7 @@ void RedAudio::PlayLoop(unsigned int volume)
 {
 	Open();
 	SetVolume(volume);
+	//m_personal_volume = true;
 	LPTSTR out_string = LPTSTR(new char[60]);
 	std::string cmd = "play ";
 	cmd.append(m_alias);
@@ -179,7 +180,6 @@ void RedAudio::PlayLoop(unsigned int volume)
 	delete[] in_cmd;
 	delete[] out_string;
 }
-
 
 void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 {

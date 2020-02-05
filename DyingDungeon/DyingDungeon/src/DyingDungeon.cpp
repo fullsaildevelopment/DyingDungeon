@@ -863,8 +863,10 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/Door_Close.mp3", "DoorClose", RedAudioManager::AudioType::SFX);
 	
 	//Background Sound
-	RedAudioManager::Instance().AddAudio("assets/audio/battle_track_1.mp3", "BackgroundBattle", RedAudioManager::AudioType::Background);
-	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu", RedAudioManager::AudioType::Background);
+	RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle", RedAudioManager::AudioType::Background);
+	RedAudioManager::Instance().AddAudio("assets/audio/dark_depths.mp3", "BackgroundMenu1", RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu2", RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/divinum_creaturae.mp3", "BackgroundMenu3", RedAudioManager::AudioType::Background, "BackgroundMenu");
 	
 	//Background Sound
 	//RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");

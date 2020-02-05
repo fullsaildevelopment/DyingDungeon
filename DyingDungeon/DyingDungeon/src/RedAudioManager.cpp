@@ -1,14 +1,14 @@
 #include "RedAudioManager.h"
 
-std::vector<RedAudio> RedAudioManager::m_audioFiles;
+std::vector<std::pair<RedAudio, bool>> RedAudioManager::m_audioFiles;
 
 RedAudio* RedAudioManager::FindAudio(const char* alias)
 {
 	for (int i = 0; i < m_audioFiles.size(); i++) 
 	{
-		if (strcmp(m_audioFiles[i].GetAlias(), alias) == 0) 
+		if (strcmp(m_audioFiles[i].first.GetAlias(), alias) == 0) 
 		{
-			return &m_audioFiles[i];
+			return &m_audioFiles[i].first;
 		}
 	}
 	return m_default_audio;
@@ -68,6 +68,15 @@ void RedAudioManager::Stop(const char* alias)
 	Odyssey::EventManager::getInstance().publish(new AudioStopEvent(alias));
 }
 
+void RedAudioManager::StopGroup(std::string group)
+{
+	std::vector<std::string> _temp = GetGroup(group);
+	for(int i = 0; i < _temp.size(); i++)
+	{
+		Stop(GetGroup(group)[i].c_str());
+	}
+}
+
 void RedAudioManager::PlaySFX(const char* alias)
 {
 	FindAudio(alias)->PlayInstance();
@@ -81,6 +90,14 @@ void RedAudioManager::PlaySFX(const char* alias, unsigned int volume, bool ignor
 void RedAudioManager::Loop(const char* alias)
 {
 	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(alias));
+}
+
+void RedAudioManager::LoopRandom(std::string group)
+{
+	std::vector<std::string> _temp = GetGroup(group);
+	srand(time(NULL));
+	unsigned int index = rand() % (_temp.size());
+	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
 }
 
 void RedAudioManager::LoopEvent(AudioLoopEvent* alEvent)
@@ -142,13 +159,13 @@ void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 	
 	for (int i = 0; i < m_audioFiles.size(); i++)
 	{
-		if (m_audioType[i] == AudioType(avEvent->audioType)) 
+		if (m_audioIdentifiers[i].first == AudioType(avEvent->audioType)) 
 		{
-			m_audioFiles[i].SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0]/1000.0f)));
+			m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0]/1000.0f)));
 		}
 		else if (AudioType(avEvent->audioType) == AudioType::None)
 		{
-			m_audioFiles[i].SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0] / 1000.0f)));
+			m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0] / 1000.0f)));
 		}
 	}
 }
@@ -158,30 +175,47 @@ unsigned int RedAudioManager::GetVolume(AudioType audio_type)
 	return m_volume[int(audio_type) + 1];
 }
 
-void RedAudioManager::AddAudio(const char* path, const char* alias, AudioType audio_type)
+void RedAudioManager::AddAudio(const char* path, const char* alias, AudioType audio_type, std::string group)
 {
-	m_audioFiles.emplace_back(RedAudio(path, alias));
-	m_audioType.emplace_back(audio_type);
-	m_audioFiles[m_audioFiles.size() - 1].Open();
-	m_audioFiles[m_audioFiles.size() - 1].SetVolume(static_cast<unsigned int>(m_volume[int(audio_type) + 1] * static_cast<float>(m_volume[0]/1000.0f)));
+	m_audioFiles.emplace_back(std::make_pair(RedAudio(path, alias), false));
+	m_audioIdentifiers.emplace_back(std::make_pair(audio_type, group));
+	m_audioFiles[m_audioFiles.size() - 1].first.Open();
+	m_audioFiles[m_audioFiles.size() - 1].first.SetVolume(static_cast<unsigned int>(m_volume[int(audio_type) + 1] * static_cast<float>(m_volume[0]/1000.0f)));
 }
 
-void RedAudioManager::AddAudio(RedAudio in_audio,AudioType audio_type)
+void RedAudioManager::AddAudio(RedAudio in_audio, AudioType audio_type, std::string group)
 {
-	m_audioFiles.emplace_back(in_audio);
-	m_audioType.emplace_back(audio_type);
-	m_audioFiles[m_audioFiles.size() - 1].Open();
-	m_audioFiles[m_audioFiles.size() - 1].SetVolume(static_cast<unsigned int>(m_volume[int(audio_type) + 1] * static_cast<float>(m_volume[0] / 1000.0f)));
+	m_audioFiles.emplace_back(std::make_pair(in_audio, false));
+	m_audioIdentifiers.emplace_back(std::make_pair(audio_type, group));
+	m_audioFiles[m_audioFiles.size() - 1].first.Open();
+	m_audioFiles[m_audioFiles.size() - 1].first.SetVolume(static_cast<unsigned int>(m_volume[int(audio_type) + 1] * static_cast<float>(m_volume[0] / 1000.0f)));
 }
 
 RedAudio* RedAudioManager::GetAudio(int i)
 {
-	return &m_audioFiles[i];
+	return &m_audioFiles[i].first;
 }
 
 RedAudio* RedAudioManager::GetAudio(const char* alias)
 {
 	return FindAudio(alias);
+}
+
+std::vector<std::string> RedAudioManager::GetGroup(std::string group)
+{
+	std::vector<std::string> clips;
+	for (int i = 0; i < m_audioIdentifiers.size(); i++)
+	{
+		if (m_audioIdentifiers[i].second == group) {
+			clips.push_back(m_audioFiles[i].first.GetAlias());
+		}
+	}
+	return clips;
+}
+
+size_t RedAudioManager::GetGroupCount(std::string group)
+{
+	return GetGroup(group).size();
 }
 
 void RedAudioManager::SetDefult(const char* path)

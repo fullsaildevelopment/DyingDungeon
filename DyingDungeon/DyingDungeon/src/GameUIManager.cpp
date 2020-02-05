@@ -655,7 +655,7 @@ void GameUIManager::HideStatsMenu()
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	mStatsPrevButtonTurn->unregisterCallback("onMouseClick");
 	mStatsNextButtonTurn->unregisterCallback("onMouseClick");
-	mStatsBackButtonText->unregisterCallback("onMouseClick");
+	//mStatsBackButtonText->unregisterCallback("onMouseClick");
 	mStatsPrevButtonLevel->unregisterCallback("onMouseClick");
 	mStatsNextButtonLevel->unregisterCallback("onMouseClick");
 	//mStatsNextButtonRound->unregisterCallback("onMouseClick");
