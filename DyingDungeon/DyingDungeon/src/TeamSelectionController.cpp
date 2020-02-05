@@ -69,6 +69,7 @@ void TeamSelectionController::update(double deltaTime)
 	{
 		changedTheScene = true;
 		RedAudioManager::Instance().Stop("BackgroundMenu");
+		RedAudioManager::Instance().Loop("TorchBurningQuietly");
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
 		// Set up the tower manager with the enemy and player teams
@@ -314,6 +315,12 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 
 void TeamSelectionController::EnterBattle()
 {
+	RedAudioManager::Instance().StopGroup("BackgroundMenu");
+	RedAudioManager::Instance().Loop("TorchBurningQuietly");
+	RedAudioManager::Instance().Loop("BackgroundBattle");
+	// Make a list of enums to hold based what character it is
+	std::vector<CharacterFactory::CharacterOptions> enumList;
+  
 	// Check what characters are shown on the screen for the slot 1
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{

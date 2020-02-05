@@ -14,7 +14,8 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 void MainMenuController::initialize()
 {
 	RedAudioManager::Instance().Stop("BackgroundBattle");
-	RedAudioManager::Instance().Loop("BackgroundMenu");
+	RedAudioManager::Instance().Stop("TorchBurningQuietly");
+	RedAudioManager::Instance().LoopRandom("BackgroundMenu");
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);

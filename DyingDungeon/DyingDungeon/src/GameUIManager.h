@@ -86,6 +86,10 @@ public: // Functions
 
 	void StatsMenuNextLevel();
 
+	void StatsMenuNextRound();
+
+	void StatsMenuPrevRound();
+
 	void HideStatsMenu();
 	 
 	// Create The UI portraits for the characters
@@ -233,11 +237,15 @@ private: // Varibales
 
 	//Stats Menu Items
 	unsigned int mStatMenuCurrentLevel = 1;
-	//unsigned int mStatMenuCurrentRound = 1;
+	unsigned int mStatMenuCurrentRound = 1;
 	unsigned int mStatMenuCurrentTurn = 1;
 	Odyssey::Text2D* mStatsBackButtonText;
-	Odyssey::Sprite2D* mStatsPrevButtonText;
-	Odyssey::Sprite2D* mStatsNextButtonText;
+	Odyssey::Sprite2D* mStatsPrevButtonTurn;
+	Odyssey::Sprite2D* mStatsNextButtonTurn;
+	Odyssey::Sprite2D* mStatsPrevButtonRound;
+	Odyssey::Sprite2D* mStatsNextButtonRound;
+	Odyssey::Sprite2D* mStatsPrevButtonLevel;
+	Odyssey::Sprite2D* mStatsNextButtonLevel;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
