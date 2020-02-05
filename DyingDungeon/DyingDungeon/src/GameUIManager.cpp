@@ -1302,7 +1302,7 @@ void GameUIManager::AddHpPopupToUpdateList(Character* _currCharacter, bool _took
 	mUpdateHpPopupList.push_back(textToUpdate);
 }
 
-// This will be called in the tower manager's update because that is when this
+// This will be called in the tower manager's update
 void GameUIManager::UpdateCharacterHealthPopups(float _deltaTime)
 {
 	// Update the health pop ups that need to be updated
@@ -1321,6 +1321,7 @@ void GameUIManager::UpdateCharacterHealthPopups(float _deltaTime)
 	}
 }
 
+// This will be called in the tower manager's update 
 void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber)
 {
 	// If the turn number is 666, that means he is dead and the text needs to be set to X

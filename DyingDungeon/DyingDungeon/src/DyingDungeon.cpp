@@ -813,7 +813,7 @@ void setupTowerManager()
 	// Skeleton #4
 	charPosition = DirectX::XMVectorSet(-7.5f, 0.3f, -5.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 175.0f;
+	hpPopupPosition.x += 165.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Quatre", charPosition, charRotation, hudPosition, true, hpPopupPosition, gGameScene);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
