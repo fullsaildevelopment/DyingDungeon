@@ -34,6 +34,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mBloodParticleEffect = nullptr;
 	mImpactIndicator = nullptr;
 	mID = id;
+	mHeroList.resize(4);
+	mEnemyList.resize(4);
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -624,8 +626,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// If the player is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
-		mHeroList = heros;
-		mEnemyList = enemies;
+		for (int i = 0; i < heros.size(); ++i)
+		{
+			if (heros[i] != nullptr)
+				mHeroList[i] = heros[i].get();
+		}
+		for (int i = 0; i < enemies.size(); ++i)
+		{
+			if (enemies[i] != nullptr)
+				mEnemyList[i] = enemies[i].get();
+		}
 		mCurrentState = STATE::NONE;
 		ManageAllEffects();
 		return true;
@@ -635,8 +645,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// If the players character dies he will have his state set to dead, else he will start to select his move.
 	case STATE::NONE:
 	{
-		mHeroList = heros;
-		mEnemyList = enemies;
+		for (int i = 0; i < heros.size(); ++i)
+		{
+			if(heros[i] != nullptr)
+				mHeroList[i] = heros[i].get();
+		}
+		for (int i = 0; i < enemies.size(); ++i)
+		{
+			if (enemies[i] != nullptr)
+				mEnemyList[i] = enemies[i].get();
+		}
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
@@ -1107,7 +1125,7 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 void HeroComponent::ResetToSelection()
 {
 	// For each valid entity 
-	for (std::shared_ptr<Odyssey::Entity> e : mEnemyList)
+	for (Odyssey::Entity* e : mEnemyList)
 	{
 		// Turn off targeter
 		if (e != nullptr)
@@ -1115,13 +1133,12 @@ void HeroComponent::ResetToSelection()
 	}
 
 	// For each valid entity 
-	for (std::shared_ptr<Odyssey::Entity> h : mHeroList)
+	for (Odyssey::Entity* h : mHeroList)
 	{
 		// Turn off targeter
 		if(h != nullptr)
 			h->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
-
 	// Reset temp target and skill variables to default
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;

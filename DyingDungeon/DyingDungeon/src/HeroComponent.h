@@ -57,16 +57,18 @@ public:
 	virtual void initialize();
 private:
 	// List that contains the list ofheros and enemies
-	EntityList mHeroList;
-	EntityList mEnemyList;
+	std::vector<Odyssey::Entity*> mHeroList;
+	std::vector<Odyssey::Entity*> mEnemyList;
 
 	//Set up for clickable UI
 	void SetupClickableUI();
 
-	// Skill callbacks
+	// Skill callbacks //
+	//////////////////////
 	void Skill1Callback();
 	void Skill2Callback();
 	void Skill3Callback();
 	void Skill4Callback();
+	//////////////////////
 };
 
