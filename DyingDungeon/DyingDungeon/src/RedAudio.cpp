@@ -356,6 +356,7 @@ void RedAudio::Pause()
 
 void RedAudio::Stop()
 {
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	std::string cmd = "stop ";
 	cmd.append(m_alias);

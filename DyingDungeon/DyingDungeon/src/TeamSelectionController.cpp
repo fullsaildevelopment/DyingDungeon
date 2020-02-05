@@ -90,7 +90,7 @@ void TeamSelectionController::update(double deltaTime)
 	}
 }
 
-void TeamSelectionController::onDestory()
+void TeamSelectionController::onDestroy()
 {
 	// Unregister callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
@@ -314,6 +314,8 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 
 void TeamSelectionController::EnterBattle()
 {
+	RedAudioManager::Instance().Stop("BackgroundMenu");
+	RedAudioManager::Instance().Loop("BackgroundBattle");
 	// Make a list of enums to hold based what character it is
 	std::vector<CharacterFactory::CharacterOptions> enumList;
 

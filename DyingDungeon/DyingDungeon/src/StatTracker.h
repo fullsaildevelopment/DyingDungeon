@@ -165,6 +165,13 @@ public:
 	/// <param name="turn"></param>
 	/// <returns></returns>
 	std::vector<std::string> GetTargetList(unsigned int level, unsigned int turn);
+	/// <summary>
+	/// Getter for the first turn of a sepcified round in a specified level
+	/// </summary>
+	/// <param name="level"></param>
+	/// <param name="round"></param>
+	/// <returns></returns>
+	unsigned int GetFirstTurn(unsigned int level, unsigned int round);
 
 	//Formats a float to a string with two decimal places
 	/// <summary>

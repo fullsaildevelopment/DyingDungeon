@@ -1077,6 +1077,20 @@ std::vector<std::string> StatTracker::GetTargetList(unsigned int level, unsigned
 	return temp_name;
 }
 
+unsigned int StatTracker::GetFirstTurn(unsigned int level, unsigned int round)
+{
+	unsigned int turn = 1;
+	for (int i = 0; i < m_levels[level - 1].turns.size(); i++)
+	{
+		if (m_levels[level - 1].turns[i].round == round)
+		{
+			turn += i;
+			break;
+		}
+	}
+	return turn;
+}
+
 std::string StatTracker::FormatToPercentage(float number, unsigned int decimal_places)
 {
 	unsigned int count = 1 + decimal_places;
