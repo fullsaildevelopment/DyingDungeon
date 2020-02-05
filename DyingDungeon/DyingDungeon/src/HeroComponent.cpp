@@ -128,7 +128,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
 		mBaseDefense = mDefense = 80.0f;
-		mBaseSpeed = mSpeed = 35.0f;
+		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
 		// Make the character skills //
@@ -409,9 +409,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
-		//tempAnimationData.mAnimationNickName = "GotBuffed";
-		//tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Taunt.dxanim";
-		//tempAnimationData.mIsLooping = true;
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Buff.dxanim";
+		tempAnimationData.mIsLooping = true;
 		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
