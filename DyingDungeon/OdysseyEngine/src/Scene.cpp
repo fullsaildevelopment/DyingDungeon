@@ -81,6 +81,26 @@ namespace Odyssey
 				vfxObject.transform = entity->getComponent<Transform>();
 				mRenderPackage.vfxObjects.push_back(vfxObject);
 			}
+
+			if (component->isClassType(Light::Type))
+			{
+				Light* light = static_cast<Light*>(component);
+
+				mSceneLights.push_back(light);
+
+				if (light->getLightType() == LightType::Directional)
+				{
+					mShadowLight = light;
+					mRenderPackage.shadowLight = mShadowLight;
+
+					if (mSceneRadius == 0.0f)
+					{
+						mSceneRadius = 100.0f;
+					}
+				}
+
+				mRenderPackage.sceneLights.push_back(light);
+			}
 		}
 
 		for (std::shared_ptr<Entity> child : entity->getChildren())
