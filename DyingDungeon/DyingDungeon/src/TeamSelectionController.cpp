@@ -55,9 +55,9 @@ void TeamSelectionController::initialize()
 	// Set the HP positions
 	mHpPopupPositions.clear();
 	mHpPopupPositions.resize(3);
-	mHpPopupPositions[0] = DirectX::XMFLOAT2(350.0f, 400.0f); // First Character HP popup
-	mHpPopupPositions[1] = DirectX::XMFLOAT2(640.0f, 400.0f); // Second Character HP popup
-	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
+	mHpPopupPositions[0] = DirectX::XMFLOAT2(325.0f, 350.0f); // First Character HP popup
+	mHpPopupPositions[1] = DirectX::XMFLOAT2(615.0f, 350.0f); // Second Character HP popup
+	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
 	TeamManager::getInstance().ClearPlayerTeam();

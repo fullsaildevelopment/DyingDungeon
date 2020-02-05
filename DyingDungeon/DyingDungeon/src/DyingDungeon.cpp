@@ -339,7 +339,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	gTeamSelectScene->addLight(gMenuLights[3]);
 
 	// Set some variables for positioning
-	float xOffset = -3.0f;
+	float xOffset = -5.0f;
 	float yHeight = -2.0f;
 	float zDepth = 8.0f;
 
@@ -347,7 +347,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	std::vector<std::shared_ptr<Odyssey::Entity>> pListOfCharactersCreated;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
@@ -408,9 +408,9 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	pListOfCharactersCreated.clear();
 
 	// Create the character's for the third slot
-	xOffset = 3.0f;
+	xOffset = 5.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	charRotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
@@ -568,31 +568,31 @@ void setupTowerManager()
 	gSceneOne->addEntity(gTurnIndicatorModel);
 
 	// Skeleton #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-7.5f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 hudPosition = { 10.0f, 10.0f };
-	DirectX::XMFLOAT2 hpPopupPosition = { 300.0f, 150.0f };
+	DirectX::XMFLOAT2 hudPosition = { 200.0f, 10.0f };
+	DirectX::XMFLOAT2 hpPopupPosition = { 425.0f, 150.0f };
 	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(-3.5f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 175.0f;
+	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	hpPopupPosition.x += 150.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #3
-	charPosition = DirectX::XMVectorSet(0.5f, 0.0f, 20.0f, 1.0f);
+	charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
 	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 200.0f;
+	hpPopupPosition.x += 150.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Ganfaul
 	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x -= 329.7f;
-	//hpPopupPosition.x = 625.0f;
+	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	hpPopupPosition.x -= 150.0f;
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower
