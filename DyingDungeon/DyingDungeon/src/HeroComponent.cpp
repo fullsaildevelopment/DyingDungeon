@@ -617,6 +617,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// If the player is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
+		mHeroList = heros;
+		mEnemyList = enemies;
 		mCurrentState = STATE::NONE;
 		ManageAllEffects();
 		return true;
@@ -626,6 +628,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// If the players character dies he will have his state set to dead, else he will start to select his move.
 	case STATE::NONE:
 	{
+		mHeroList = heros;
+		mEnemyList = enemies;
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
@@ -641,31 +645,31 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Use ability 1
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
-			SelctionState(heros, enemies, 0);
+			SelctionState(0);
 		}
 
 		// Use ability 2
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D2))
 		{
-			SelctionState(heros, enemies, 1);
+			SelctionState(1);
 		}
 
 		// Use ability 3
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D3))
 		{
-			SelctionState(heros, enemies, 2);
+			SelctionState(2);
 		}
 
 		// Use ability 4
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D4))
 		{
-			SelctionState(heros, enemies, 3);
+			SelctionState(3);
 		}
 
 		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection(heros, enemies);
+			ResetToSelection();
 		}
 		break;
 	}
@@ -716,7 +720,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
-			ResetToSelection(heros, enemies);
+			ResetToSelection();
 			tempIndex = -1;
 		}
 		break;
@@ -893,7 +897,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		ManageStatusEffects(mSheilds);
 
 		// Turns off all targeting and 
-		ResetToSelection(heros, enemies);
+		ResetToSelection();
 
 		// Reset state to default
 		mCurrentState = STATE::NONE;
@@ -951,7 +955,7 @@ GameplayTypes::HEROID HeroComponent::GetID()
 }
 
 // Function that gets called to manage the state in which the player is selecting a skill to use
-void HeroComponent::SelctionState(EntityList heros, EntityList enemies, int moveIndex)
+void HeroComponent::SelctionState(int moveIndex)
 {
 	// If i have enough mana to use the skill take me to the target selection state
 	if (mSkillList[moveIndex]->GetManaCost() <= mCurrentMana)
@@ -1073,10 +1077,10 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 }
 
 // Function that gets called to send the player back to the selection state
-void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
+void HeroComponent::ResetToSelection()
 {
 	// For each valid entity 
-	for (std::shared_ptr<Odyssey::Entity> e : enemies)
+	for (std::shared_ptr<Odyssey::Entity> e : mEnemyList)
 	{
 		// Turn off targeter
 		if (e != nullptr)
@@ -1084,7 +1088,7 @@ void HeroComponent::ResetToSelection(EntityList heros, EntityList enemies)
 	}
 
 	// For each valid entity 
-	for (std::shared_ptr<Odyssey::Entity> h : heros)
+	for (std::shared_ptr<Odyssey::Entity> h : mHeroList)
 	{
 		// Turn off targeter
 		if(h != nullptr)
@@ -1182,6 +1186,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 
 void HeroComponent::initialize()
 {
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 	SetupClickableUI();
 }
 
@@ -1213,32 +1218,68 @@ void HeroComponent::SetupClickableUI()
 
 void HeroComponent::Skill1Callback()
 {
-	if (mCurrentState == STATE::SELECTMOVE)
+	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set current skill to skill 1
+		// If i have enough mana to use the skill take me to the target selection state
+		if (mSkillList[0]->GetManaCost() <= mCurrentMana)
+		{
+			ResetToSelection();
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[0].get();
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
 	}
 }
 
 void HeroComponent::Skill2Callback()
 {
-	if (mCurrentState == STATE::SELECTMOVE)
+	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set current skill to skill 2
+		ResetToSelection();
+		// If i have enough mana to use the skill take me to the target selection state
+		if (mSkillList[1]->GetManaCost() <= mCurrentMana)
+		{
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[1].get();
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
 	}
 }
 
 void HeroComponent::Skill3Callback()
 {
-	if (mCurrentState == STATE::SELECTMOVE)
+	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set current skill to skill 3
+		ResetToSelection();
+		// If i have enough mana to use the skill take me to the target selection state
+		if (mSkillList[2]->GetManaCost() <= mCurrentMana)
+		{
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[2].get();
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
 	}
 }
 
 void HeroComponent::Skill4Callback()
 {
-	if (mCurrentState == STATE::SELECTMOVE)
+	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set current skill to skill 4
+		ResetToSelection();
+		// If i have enough mana to use the skill take me to the target selection state
+		if (mSkillList[3]->GetManaCost() <= mCurrentMana)
+		{
+			// Set temp variable to the selected move
+			mCurrentSkill = mSkillList[3].get();
+
+			// Change state to target selection
+			mCurrentState = STATE::SELECTTARGET;
+		}
 	}
 }

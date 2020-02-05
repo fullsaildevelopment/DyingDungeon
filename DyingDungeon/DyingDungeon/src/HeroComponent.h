@@ -42,13 +42,13 @@ private:
 	GameplayTypes::HEROID mID;
 
 	// Function that gets called to manage the state in which the player is selecting a skill to use
-	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
+	void SelctionState(int moveIndex);
 
 	// Function that gets called to manage the state in which the player is selecting a target to use its skill on 
 	bool SelectTarget(EntityList targets, int& targetIndex);
 
 	// Function that gets called to send the player back to the selection state
-	void ResetToSelection(EntityList heros, EntityList enemies);
+	void ResetToSelection();
 
 	// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
 	void BeginAttack(EntityList targets);
@@ -56,6 +56,8 @@ private:
 public:
 	virtual void initialize();
 private:
+	EntityList mHeroList;
+	EntityList mEnemyList;
 	// 
 	void SetupClickableUI();
 	// Skill callbacks
