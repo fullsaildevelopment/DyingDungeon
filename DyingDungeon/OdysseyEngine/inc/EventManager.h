@@ -76,7 +76,9 @@ namespace Odyssey
 			bool isSceneChange = (typeid(EventType) == typeid(SceneChangeEvent));
 
 			// Check if the event is a command and if we are not currently publishing commands
-			if (mPublishCommands == false && isCommand(evnt))
+			bool isSceneChange = (typeid(EventType) == typeid(SceneChangeEvent));
+
+			if (isSceneChange || (mPublishCommands == false && isCommand(evnt)))
 			{
 				// Store the command and publish the command receive event
 				// The command receive event will trigger a process commands event allowing us to process commands next frame

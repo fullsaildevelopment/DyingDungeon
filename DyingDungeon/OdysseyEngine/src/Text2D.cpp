@@ -12,19 +12,8 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create the text format resource
-		mProperties.fontSize *= ((mScreenScale.x + mScreenScale.y) / 2.0f);
-		createTextFormat(mProperties);
-
-		// Subscribe to the element resize event
-		EventManager::getInstance().subscribe(this, &Text2D::onTextResize);
-	}
-
-	void Text2D::onTextResize(UIElementResizeEvent* evnt)
-	{
-		mLock.lock(LockState::Write);
-		mProperties.fontSize *= ((evnt->xScale + evnt->yScale) / 2.0f);
-		mLock.unlock(LockState::Write);
-
+		baseSize = mProperties.fontSize;
+		mProperties.fontSize = baseSize * ((mScreenScale.x + mScreenScale.y) / 2.0f);
 		createTextFormat(mProperties);
 	}
 
@@ -112,6 +101,15 @@ namespace Odyssey
 		mLock.lock(LockState::Write);
 		mProperties.italic = italic;
 		mLock.unlock(LockState::Write);
+		createTextFormat(mProperties);
+	}
+
+	void Text2D::createResource()
+	{
+		mLock.lock(LockState::Write);
+		mProperties.fontSize = baseSize * ((mScreenScale.x + mScreenScale.y) / 2.0f);
+		mLock.unlock(LockState::Write);
+
 		createTextFormat(mProperties);
 	}
 

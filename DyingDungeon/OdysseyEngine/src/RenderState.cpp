@@ -25,6 +25,12 @@ namespace Odyssey
 		rasterizerDesc.DepthBiasClamp = 0.0f;
 		rasterizerDesc.SlopeScaledDepthBias = 1.0f;
 
+		if (isShadowMap)
+		{
+			rasterizerDesc.DepthBias = 10000;
+			rasterizerDesc.DepthBiasClamp = 0.0f;
+			rasterizerDesc.SlopeScaledDepthBias = 1.0f;
+		}
 		HRESULT hr = mDevice->CreateRasterizerState(&rasterizerDesc, mRasterizerState.GetAddressOf());
 		assert(!FAILED(hr));
 	}
