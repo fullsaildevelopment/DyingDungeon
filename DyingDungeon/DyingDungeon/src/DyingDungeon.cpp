@@ -701,9 +701,7 @@ void setupSceneOne()
 	// Set up the directional light
 	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	//light->setColor(1.0f, 1.0f, 1.0f);
 	light->setColor(0.65f, 0.2f, 0.1f);
-	//light->setIntensity(2.0f);
 	light->setIntensity(0.85f);
 	light->setRange(25.0f);
 	light->setSpotAngle(0.0f);
@@ -717,9 +715,7 @@ void setupSceneOne()
 	// Set up the directional light
 	light = gScene1Lights[2]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	//light->setColor(1.0f, 1.0f, 1.0f);
 	light->setColor(0.65f, 0.2f, 0.1f);
-	//light->setIntensity(2.0f);
 	light->setIntensity(0.85f);
 	light->setRange(25.0f);
 	light->setSpotAngle(0.0f);
@@ -853,7 +849,7 @@ void setupSceneOne()
 	fog->getComponent<Odyssey::Transform>()->setPosition(0, 0, 0);
 	fog->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
 	fog->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Smoke.jpg");
-	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.15f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.1f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
 	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
 	fog->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(60);

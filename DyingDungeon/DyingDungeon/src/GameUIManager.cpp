@@ -113,7 +113,6 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 		return;
 	}
 
-
 	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)

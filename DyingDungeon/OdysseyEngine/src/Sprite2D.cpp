@@ -15,6 +15,7 @@ namespace Odyssey
 		mFilename = filename;
 		mBitmapBrush = nullptr;
 		createResource();
+		createShape();
 	}
 
 	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
@@ -61,10 +62,10 @@ namespace Odyssey
 		mBitmap.Reset();
 		mBitmapConverter = nullptr;
 		mBitmapBrush = nullptr;
-		createBitmapFromFile(mFilename, mDimensions.x * mScale.x, mDimensions.y * mScale.y);
+		createBitmapFromFile(mFilename, mDimensions.x, mDimensions.y);
 		mLock.unlock(LockState::Write);
-
 	}
+
 	void Sprite2D::setSprite(std::wstring filename, UINT width, UINT height)
 	{
 		// TODO: Find a better way to swap sprites. Probably create a 2nd instance of a bitmap and only swap when ready.
@@ -75,6 +76,7 @@ namespace Odyssey
 		mBitmapBrush = nullptr;
 		createBitmapFromFile(filename, width, height);
 		mLock.unlock(LockState::Write);
+		createShape();
 	}
 
 	std::wstring Sprite2D::getSpriteFilename()
@@ -104,8 +106,6 @@ namespace Odyssey
 		// Get the original size of the image
 		UINT originalWidth, originalHeight;
 		hr = frame->GetSize(&originalWidth, &originalHeight);
-		mDimensions.x = static_cast<float>(originalWidth);
-		mDimensions.y = static_cast<float>(originalHeight);
 
 		// Check if the user entered a custom width or height
 		if (width != 0.0f || height != 0.0f)
@@ -117,7 +117,7 @@ namespace Odyssey
 			{
 				// Get ratio and calculate a new width
 				float scalar = static_cast<float>(height) / static_cast<float>(originalHeight);
-				width = static_cast<UINT>(scalar * static_cast<float>(originalWidth));
+				width = scalar * static_cast<float>(originalWidth);
 			}
 			// A custom width was input
 			else if (height == 0.0f)
@@ -125,11 +125,12 @@ namespace Odyssey
 				// Get the ratio of the new width to the original width
 				float scalar = static_cast<float>(width) / static_cast<float>(originalWidth);
 				// Calculate a new height based on the ratio
-				height = static_cast<UINT>(scalar * static_cast<float>(originalHeight));
+				height = scalar * static_cast<float>(originalHeight);
 			}
 
-			mDimensions.x = static_cast<float>(width);
-			mDimensions.y = static_cast<float>(height);
+			// Assign the new dimensions of the sprite
+			mDimensions.x = width;
+			mDimensions.y = height;
 
 			// Create a bitmap scaler
 			Microsoft::WRL::ComPtr<IWICBitmapScaler> bitmapScaler;
@@ -137,7 +138,9 @@ namespace Odyssey
 			assert(!FAILED(hr));
 
 			// Initialize the bitmap scaler with the image, width and height
-			hr = bitmapScaler->Initialize(frame.Get(), static_cast<UINT>(mDimensions.x), static_cast<UINT>(mDimensions.y), WICBitmapInterpolationModeCubic);
+			UINT bitWidth = mDimensions.x * mScale.x * mScreenScale.x;
+			UINT bitHeight = mDimensions.y * mScale.y * mScreenScale.y;
+			hr = bitmapScaler->Initialize(frame.Get(), bitWidth, bitHeight, WICBitmapInterpolationModeCubic);
 			assert(!FAILED(hr));
 
 			// Initialize the converter with the scaler
@@ -146,6 +149,10 @@ namespace Odyssey
 		}
 		else
 		{
+			// Assign the original dimensions of the sprite
+			mDimensions.x = static_cast<float>(originalWidth);
+			mDimensions.y = static_cast<float>(originalHeight);
+
 			hr = mBitmapConverter->Initialize(frame.Get(), GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
 		}
 	}

@@ -38,35 +38,22 @@ namespace Odyssey
 		// Get the screen scale
 		EventManager::getInstance().publish(new UIScaleEvent(&mScreenScale.x, &mScreenScale.y));
 
-		// Scale the position and dimensions of the UI element to match the change in window size
-		mPosition.x *= mScreenScale.x;
-		mPosition.y *= mScreenScale.y;
-		mDimensions.x *= mScreenScale.x;
-		mDimensions.y *= mScreenScale.y;
-
 		// Recreate the shape to match the new position and dimensions
-		createShape();
 		createResource();
+		createShape();
 	}
 
 	void UIElement::onElementResize(UIElementResizeEvent* evnt)
 	{
-		mLock.lock(LockState::Write);
-
 		// Scale the position and dimensions of the UI element to match the change in window size
+		mLock.lock(LockState::Write);
 		mScreenScale.x = evnt->xScale;
 		mScreenScale.y = evnt->yScale;
-
-		mPosition.x *= mScreenScale.x;
-		mPosition.y *= mScreenScale.y;
-		mDimensions.x *= mScreenScale.x;
-		mDimensions.y *= mScreenScale.y;
-
 		mLock.unlock(LockState::Write);
 
 		// Recreate the shape to match the new position and dimensions
-		createShape();
 		createResource();
+		createShape();
 	}
 
 	void UIElement::onMouseClick(MouseClickEvent* evnt)
@@ -115,7 +102,6 @@ namespace Odyssey
 				onMouseExit();
 			}
 		}
-
 	}
 
 	void UIElement::onMouseEnter()
@@ -396,7 +382,11 @@ namespace Odyssey
 	{
 		// Create a D2D1 RectF based on the rectangle's position, dimensions, and scale values
 		mLock.lock(LockState::Write);
-		mShape = D2D1::RectF(mPosition.x, mPosition.y, mPosition.x + (mDimensions.x * mScale.x), mPosition.y + (mDimensions.y * mScale.y));
+		float left = mPosition.x * mScreenScale.x;
+		float top = mPosition.y * mScreenScale.y;
+		float width = mDimensions.x * mScale.x * mScreenScale.x;
+		float height = mDimensions.y * mScale.y * mScreenScale.y;
+		mShape = D2D1::RectF(left, top, left + width, top + height);
 		mLock.unlock(LockState::Write);
 	}
 
