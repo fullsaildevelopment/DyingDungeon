@@ -39,7 +39,7 @@ void TowerManager::initialize()
 		for (int i = 0; i < mSkeletonTeam.size(); i++)
 		{
 			mSkeletonTeam[i]->setActive(true);
-			GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
 			mEnemyTeam.push_back(mSkeletonTeam[i]);
 		}
 	}
@@ -334,7 +334,11 @@ void TowerManager::GoToMainMenu()
 
 			// Turn off the previous canvases
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
-
+			// Turn off the skill canvases
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill1Canvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill2Canvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill3Canvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill4Canvas->setActive(false);
 			// TODO: REFACTOR LATER
 			scene->removeEntity(mPlayerTeam[i].get());
 		}
@@ -354,12 +358,6 @@ void TowerManager::GoToMainMenu()
 	// Deactivate the pause menu
 	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
-
-	// Unregister callbacks for the buttons
-	// Set the pause menu button callbacks
-	//GameUIManager::getInstance().GetResumeButton()->unregisterCallback("onMouseClick");
-	//GameUIManager::getInstance().GetOptionsButton()->unregisterCallback("onMouseClick");
-	//GameUIManager::getInstance().GetMainMenuButton()->unregisterCallback("onMouseClick");
 
 	// Set the current level back to 1
 	mCurrentLevel = 1;

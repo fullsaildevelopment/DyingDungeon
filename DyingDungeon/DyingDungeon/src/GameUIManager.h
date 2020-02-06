@@ -36,9 +36,13 @@ public:
 
 		// Skills
 		Odyssey::Sprite2D* pSkill1;
+		Odyssey::UICanvas* pSkill1Canvas;
 		Odyssey::Sprite2D* pSkill2;
+		Odyssey::UICanvas* pSkill2Canvas;
 		Odyssey::Sprite2D* pSkill3;
+		Odyssey::UICanvas* pSkill3Canvas;
 		Odyssey::Sprite2D* pSkill4;
+		Odyssey::UICanvas* pSkill4Canvas;
 	};
 
 	// This struct will hold the elements needed in order to animate the health and mana bars
@@ -318,7 +322,7 @@ private: // Functions
 
 	// Skill Icon Creation Fucntions
 	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
-	void SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
+	void SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2 _position, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
 	void SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition);
 
 	// TODO: REFACTOR THIS LATER

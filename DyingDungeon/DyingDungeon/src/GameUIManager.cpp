@@ -1261,10 +1261,10 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 
 void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud)
 {
-	Odyssey::UICanvas* canvas1 = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas2 = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas3 = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	Odyssey::UICanvas* canvas4 = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	_newHud->pSkill1Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	_newHud->pSkill2Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	_newHud->pSkill3Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
+	_newHud->pSkill4Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
 	SkillHoverComponent* hover = _objToAddTo->addComponent<SkillHoverComponent>();
 
 	// Set the correct offset position for the skills
@@ -1280,9 +1280,9 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	_newHud->pSkill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
 	// TODO :: ADD GETTER AND SETTER FOR TYPE OF CHARACTER
-	SetupSkillHover(canvas1, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(_newHud->pSkill1Canvas, _hudPosition,  _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Basic Attack trigger
-	hover->registerSprite(_newHud->pSkill1, canvas1);
+	hover->registerSprite(_newHud->pSkill1, _newHud->pSkill1Canvas);
 
 	// Increment the icon
 	xAnchor += 56.5f;
@@ -1292,9 +1292,9 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[1];
 	_newHud->pSkill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas2, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(_newHud->pSkill2Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Wind Slash trigger
-	hover->registerSprite(_newHud->pSkill2, canvas2);
+	hover->registerSprite(_newHud->pSkill2, _newHud->pSkill2Canvas);
 
 	// Increment the icon
 	xAnchor += 56.5f;
@@ -1304,9 +1304,9 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[2];
 	_newHud->pSkill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas3, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(_newHud->pSkill3Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Firestorm trigger
-	hover->registerSprite(_newHud->pSkill3, canvas3);
+	hover->registerSprite(_newHud->pSkill3, _newHud->pSkill3Canvas);
 
 	// Increment the icon
 	xAnchor += 56.5f;
@@ -1316,12 +1316,12 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _ne
 	currSkill = characterSkills[3];
 	_newHud->pSkill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
 	// Skill Hover Popup
-	SetupSkillHover(canvas4, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
+	SetupSkillHover(_newHud->pSkill4Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
 	// Lightning Bolt trigger
-	hover->registerSprite(_newHud->pSkill4, canvas4);
+	hover->registerSprite(_newHud->pSkill4, _newHud->pSkill4Canvas);
 }
 
-void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description)
+void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2 _position, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description)
 {
 	DirectX::XMFLOAT4 themeColor;
 	// Assign theme color for text
@@ -1343,8 +1343,8 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 
 	UINT windowWidth = screenWidth;
 	UINT windowHeight = screenHeight;
-	float x = 950;
-	float y = 425;
+	float x = _position.x;
+	float y = _position.y - 130.0f;
 	UINT width = 300;
 	UINT height = 115;
 	UINT pad = 10;
