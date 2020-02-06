@@ -21,6 +21,9 @@ namespace Odyssey
 		rasterizerDesc.FillMode = mFillMode;
 		rasterizerDesc.AntialiasedLineEnable = true;
 		rasterizerDesc.MultisampleEnable = true;
+		rasterizerDesc.DepthBias = 10000;
+		rasterizerDesc.DepthBiasClamp = 0.0f;
+		rasterizerDesc.SlopeScaledDepthBias = 1.0f;
 
 		if (isShadowMap)
 		{

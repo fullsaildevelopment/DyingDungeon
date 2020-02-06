@@ -19,7 +19,7 @@ class RedAudio
 		bool m_playing;
 		bool m_looping;
 		bool m_segmented;
-		bool m_personal_volume;
+		//bool m_personal_volume;
 		unsigned int m_volume;
 	public:
 	private:

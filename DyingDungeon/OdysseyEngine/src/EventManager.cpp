@@ -28,10 +28,13 @@ namespace Odyssey
 		mPublishCommands = true;
 
 		// Iterate through the commands map
-		for (std::pair<std::type_index, Event*> pair : mCommands)
+		for (std::pair<std::type_index, std::vector<Event*>> pair : mCommands)
 		{
 			// Process the commands as events
-			processEvent(pair.first, pair.second);
+			for (Event* e : pair.second)
+			{
+				processEvent(pair.first, e);
+			}
 		}
 
 		// Clear the command list

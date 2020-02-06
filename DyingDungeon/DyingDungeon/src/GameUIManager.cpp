@@ -510,11 +510,22 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 	mStatsBackButtonText = statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight, L"Back", properties);
 	mStatsBackButtonText->setVisible(true);
-	position.y -= (static_cast<float>(graphBackgroundHeight)/2.0f) - 120.0f;
-	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) - 255.0f;
-	mStatsPrevButtonText = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth/6, graphBackgroundWidth / 6);
+	position.x -= 60.0f;
+	position.y -= (static_cast<float>(graphBackgroundHeight) / 2.0f) + 90.0f;
+	mStatsPrevButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth / 12, graphBackgroundWidth / 12);
+	position.y -= 60.0f;
+	mStatsPrevButtonLevel = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth / 12, graphBackgroundWidth / 12);
+	position.y += 60.0f;
+	position.x += static_cast<float>(graphBackgroundWidth) + 60.0f;
+	mStatsNextButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 12, graphBackgroundWidth / 12);
+	position.y -= 60.0f;
+	mStatsNextButtonLevel = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 12, graphBackgroundWidth / 12);
+
+	/*position.y += 270.0f;
+	position.x -= (static_cast<float>(graphBackgroundWidth)/2.0f) + 500.0f;
+	mStatsPrevButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth/6, graphBackgroundWidth / 6);
 	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
-	mStatsNextButtonText = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 6, graphBackgroundWidth / 6);
+	mStatsNextButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 6, graphBackgroundWidth / 6);*/
 
 	_sceneToAddTo->addEntity(mStatsMenu);
 	
@@ -528,9 +539,14 @@ void GameUIManager::ShowStatsMenu()
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
 	mStatMenuCurrentLevel = 1;
 	mStatMenuCurrentTurn = 1;
-	mStatsPrevButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevTurn);
-	mStatsNextButtonText->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextTurn);
+	mStatMenuCurrentRound = 1;
+	mStatsPrevButtonTurn->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevTurn);
+	mStatsNextButtonTurn->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextTurn);
 	mStatsBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::HideStatsMenu);
+	mStatsPrevButtonLevel->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevLevel);
+	mStatsNextButtonLevel->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextLevel);
+	//mStatsNextButtonRound->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextRound);
+	//mStatsPrevButtonRound->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevRound);
 	UpdateStatsMenu();
 }
 
@@ -557,6 +573,7 @@ void GameUIManager::StatsMenuNextTurn()
 		else if ((mStatMenuCurrentTurn + 1) > StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
 		{
 			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentRound = 1;
 			mStatMenuCurrentLevel++;
 			if (mStatMenuCurrentLevel > StatTracker::Instance().GetLevelSize())
 			{
@@ -571,16 +588,11 @@ void GameUIManager::StatsMenuPrevLevel()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0)
 	{
-		if (mStatMenuCurrentLevel < StatTracker::Instance().GetLevelSize())
+		if (mStatMenuCurrentLevel > 1)
 		{
-			mStatMenuCurrentLevel++;
+			mStatMenuCurrentLevel--;
 			mStatMenuCurrentTurn = 1;
-			UpdateStatsMenu();
-		}
-		else if ((mStatMenuCurrentLevel + 1) > StatTracker::Instance().GetLevelSize())
-		{
-			mStatMenuCurrentLevel = 1;
-			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentRound = 1;
 			UpdateStatsMenu();
 		}
 	}
@@ -588,13 +600,72 @@ void GameUIManager::StatsMenuPrevLevel()
 
 void GameUIManager::StatsMenuNextLevel()
 {
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentLevel < StatTracker::Instance().GetLevelSize())
+		{
+			mStatMenuCurrentLevel++;
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentRound = 1;
+			UpdateStatsMenu();
+		}
+		else if ((mStatMenuCurrentLevel + 1) > StatTracker::Instance().GetLevelSize())
+		{
+			mStatMenuCurrentLevel = 1;
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentRound = 1;
+			UpdateStatsMenu();
+		}
+	}
+}
 
+void GameUIManager::StatsMenuNextRound()
+{
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentRound < StatTracker::Instance().GetRoundCount(mStatMenuCurrentLevel))
+		{
+			mStatMenuCurrentRound++;
+			mStatMenuCurrentTurn = StatTracker::Instance().GetFirstTurn(mStatMenuCurrentLevel, mStatMenuCurrentRound);
+			UpdateStatsMenu();
+		}
+		else if ((mStatMenuCurrentRound + 1) > StatTracker::Instance().GetRoundCount(mStatMenuCurrentLevel))
+		{
+			mStatMenuCurrentTurn = 1;
+			mStatMenuCurrentRound = 1;
+			mStatMenuCurrentLevel++;
+			if (mStatMenuCurrentLevel > StatTracker::Instance().GetLevelSize())
+			{
+				mStatMenuCurrentLevel = 1;
+			}
+			UpdateStatsMenu();
+		}
+	}
+}
+
+void GameUIManager::StatsMenuPrevRound()
+{
+	if (StatTracker::Instance().GetLevelSize() > 0)
+	{
+		if (mStatMenuCurrentRound > 1)
+		{
+			mStatMenuCurrentRound--;
+			UpdateStatsMenu();
+		}
+	}
 }
 
 void GameUIManager::HideStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
 	mStatsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mStatsPrevButtonTurn->unregisterCallback("onMouseClick");
+	mStatsNextButtonTurn->unregisterCallback("onMouseClick");
+	//mStatsBackButtonText->unregisterCallback("onMouseClick");
+	mStatsPrevButtonLevel->unregisterCallback("onMouseClick");
+	mStatsNextButtonLevel->unregisterCallback("onMouseClick");
+	//mStatsNextButtonRound->unregisterCallback("onMouseClick");
+	//mStatsPrevButtonRound->unregisterCallback("onMouseClick");
 }
 
 void GameUIManager::UpdateStatsMenu()
@@ -934,38 +1005,61 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		DirectX::XMFLOAT2 originalPosition = position;
 		// Set the image width and height
 		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 222;
-		UINT imageHeight = 50;
+		UINT imageWidth = 214;
+		UINT imageHeight = 42;
 		UINT barWidth = 171;
-		UINT barHeight = 13;
+		UINT barHeight = 12;
 		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
 		// Add in the enemy hud template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUILayout2.0.png", imageWidth, imageHeight);
+		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUI/EnemyUILayout4.0.png", imageWidth, imageHeight);
 
 		// Add in the enemy's portrait picture
-		imageWidth = 45;
-		imageHeight = 46;
+		imageWidth = 39;
+		imageHeight = 39;
 		// Only add the portrait image if there is one
 		position.x += 2.0f;
 		position.y += 2.0f;
 		if (_imageName != L" ")
 			newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
 
-		// Add in the enemy's health bar
+		// Add in the enemy's name bar
+		barWidth = 94;
+		barHeight = 13;
 		position.x += imageWidth;
-		position.y -= 0.5f;
-		position.x += 3.0f;
+		position.y += 9.0f;
+		position.x += 1.0f;
+		DirectX::XMFLOAT4 xpBarColor = { 116.0f, 71.0f, 201.0f, 1.0f };
+		newHUD->pXpBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, xpBarColor, barWidth, barHeight);
+		color = { 0.0f, 0.0f, 0.0f, 1.0f };
+		properties.fontSize = 12;
+		properties.bold = true;
+		position.x += 2.0f;
+		position.y -= 2.0f;
+		barHeight = 16;
+		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
+		position.x -= 2.0f;
+		properties.bold = false;
+
+		// Add in the enemy's health bar
+		barWidth = 171;
+		barHeight = 15;
+		position.y += 16.0f;
+		barHeight += 1.0f;
 		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
 		newHUD->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+		// Enemy HP Bar Number
+		properties.bold = false;
+		newHUD->pHealthNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 100, 43, std::to_wstring((int)owner->GetHP()), properties);
+		newHUD->pHealthNumber->setVisible(false);
+
+
 		// Add big health text
 		position.x += barWidth;
 		properties.fontSize = 25.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Center;
 		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 		// Create but don't show the mini hp text
-		newHUD->pHealthNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
-		newHUD->pHealthNumber->setVisible(false);
 
 		// Add in the enemy's mana bar
 		newHUD->pManaBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
@@ -1139,7 +1233,7 @@ void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2
 	UINT height = 200;
 
 	// Make rectangle background
-	canvas->addElement<Odyssey::Rectangle2D>(_hpPopupPosition, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.25f), width, height);
+	//canvas->addElement<Odyssey::Rectangle2D>(_hpPopupPosition, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.25f), width, height);
 
 	// Create the health pop text2D
 	Odyssey::Text2D* newPopup = canvas->addElement<Odyssey::Text2D>(_hpPopupPosition, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, L"100", properties);
@@ -1411,7 +1505,36 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
 {
 	float spriteSize = 25.0f;
-	
+
+	switch (skill->GetSkillTypeId())
+	{
+	case GameplayTypes::SKILLTYPE::ATTACK:
+	{
+		newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::DEBUFF:
+	{
+		newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::HEAL:
+	{
+		newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+		break;
+	}
+	case GameplayTypes::SKILLTYPE::BUFF:
+	{
+		newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+		break;
+	}
+	default:
+	{
+		newCombatLogColor = { 255.0f, 255.0f, 255.0f };
+		break;
+	}
+	}
+
 	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
@@ -1451,6 +1574,11 @@ void GameUIManager::ClearCombatLog()
 
 	for (int i = 0; i < mCombatTargetIcons.size(); i++)
 		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
+
+	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
+	{
+		mBattleLogVec[i]->setText(L"");
+	}
 }
 
 void GameUIManager::UpdateCombatLogText(float damage)
@@ -1460,8 +1588,15 @@ void GameUIManager::UpdateCombatLogText(float damage)
 	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
+		{
 			mBattleLogVec[i]->setText(mBattleLogVec[i - 1]->getText());
+			DirectX::XMFLOAT4 tempColor = mBattleLogVec[i - 1]->getColor();
+			DirectX::XMFLOAT3 tempColor2 = { tempColor.x, tempColor.y, tempColor.z };
+			mBattleLogVec[i]->setColor(tempColor2);
+		}
 	}
 
 	mBattleLogVec[0]->setText(newText);
+	mBattleLogVec[0]->setColor(newCombatLogColor);
+	
 }

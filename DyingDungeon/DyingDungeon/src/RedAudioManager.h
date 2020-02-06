@@ -3,6 +3,7 @@
 #include <vector>
 #include "Event.h"
 #include "EventManager.h"
+#include <time.h>
 
 class AudioStopEvent : public Odyssey::Event
 {
@@ -45,8 +46,8 @@ class RedAudioManager
 	public:
 		enum class AudioType { None = -1, Background = 0, SFX, Dialog };
 	private:
-		static std::vector<RedAudio> m_audioFiles;
-		std::vector<AudioType> m_audioType;
+		static std::vector<std::pair<RedAudio, bool>> m_audioFiles;
+		std::vector<std::pair<AudioType, std::string>> m_audioIdentifiers;
 		RedAudio* m_default_audio;
 		unsigned int m_volume[4];
 		bool m_muted;
@@ -70,6 +71,11 @@ class RedAudioManager
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		void Stop(const char* alias);
 		/// <summary>
+		/// Stops all the clips in the specified group
+		/// </summary>
+		/// <param name="group"></param>
+		void StopGroup(std::string group);
+		/// <summary>
 		/// Plays an instance of 'alias' audio file
 		/// </summary>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
@@ -85,6 +91,11 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		void Loop(const char* alias);
+		/// <summary>
+		/// Plays a random audio clip from a specified group in a loop
+		/// </summary>
+		/// <param name="group"></param>
+		void LoopRandom(std::string group);
 		/// <summary>
 		/// Listenner function for a Audio Loop event
 		/// </summary>
@@ -142,13 +153,15 @@ class RedAudioManager
 		/// <param name="path">Path to audio file in system</param>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		/// <param name="audio_type">Audio identifier(SFX, Background)</param>
-		void AddAudio(const char* path, const char* alias, AudioType audio_type = AudioType::SFX);
+		/// /// <param name="group">The group of clips the audio file belongs to</param>
+		void AddAudio(const char* path, const char* alias, AudioType audio_type = AudioType::SFX, std::string group = "DEFAULT");
 		/// <summary>
 		/// Adds audio file to the manager
 		/// </summary>
 		/// <param name="in_audio">Audio object to be added</param>
 		/// <param name="audio_type">Audio identifier(SFX, Background)</param>
-		void AddAudio(RedAudio in_audio, AudioType audio_type = AudioType::SFX);
+		/// <param name="group">The group of clips the audio file belongs to</param>
+		void AddAudio(RedAudio in_audio, AudioType audio_type = AudioType::SFX, std::string group = "DEFAULT");
 		/// <summary>
 		/// Getter for audio files stored in the manager
 		/// </summary>
@@ -161,6 +174,18 @@ class RedAudioManager
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		/// <returns>Pointer to requested audio object if found</returns>
 		RedAudio* GetAudio(const char* alias);
+		/// <summary>
+		/// Getter for a vector of clip aliases
+		/// </summary>
+		/// <param name="group">The group for which the vector of clips is being requested</param>
+		/// <returns>A vector of clip aliases</returns>
+		std::vector<std::string> GetGroup(std::string group);
+		/// <summary>
+		/// Getter for the count of clips in a group
+		/// </summary>
+		/// <param name="group">The group for which the count of clips is being requested</param>
+		/// <returns>The count of clips in the requested group</returns>
+		size_t GetGroupCount(std::string group);
 		/// <summary>
 		/// Sets the default audio used if an audio file is not found
 		/// </summary>

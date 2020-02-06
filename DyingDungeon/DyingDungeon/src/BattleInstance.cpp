@@ -13,8 +13,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
-	mPlayerTeam.resize(4);
-	mEnemyTeam.resize(4);
+	mPlayerTeam.resize(3);
+	mEnemyTeam.resize(3);
 
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;

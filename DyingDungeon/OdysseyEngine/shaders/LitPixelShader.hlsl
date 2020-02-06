@@ -273,7 +273,7 @@ float calculateAttenuation(ShaderLight light, float distance)
 	// Calculate the attenuation of the light based on the distance and the light's range
     float attenuation = (1.0f - saturate(distance / light.range));
 	// Return an exponential attenuation
-    return (attenuation * attenuation);
+    return attenuation;
 }
 
 // Calculates the spot factor of any spot light

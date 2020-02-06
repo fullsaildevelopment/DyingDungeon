@@ -33,6 +33,7 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 // Applies buff to target
 void Buffs::Use(Character& caster, Character& target)
 {
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(target);
