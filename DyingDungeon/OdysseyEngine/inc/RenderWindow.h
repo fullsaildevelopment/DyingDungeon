@@ -43,5 +43,6 @@ namespace Odyssey
 			}
 		};
 		WindowProperties mProperties;
+		WindowProperties mBaseProperties;
 	};
 }
