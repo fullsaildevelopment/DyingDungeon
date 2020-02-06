@@ -44,7 +44,7 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	properties.italic = false;
 	properties.fontSize = 12.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	position.x += 2.0f;
@@ -144,6 +144,7 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	UINT height = screenHeight;
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+
 	// Set up text properties
 	Odyssey::TextProperties properties;
 	properties.bold = true;
@@ -161,7 +162,7 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	properties.bold = false;
 	properties.fontSize = 40.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	position.x += 200.0f;
 	position.y += 250.0f;
 	width = 200;
@@ -173,6 +174,16 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	position.y += 70.0f;
 	width += 70;
 	mStatsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Game Statistics", properties);
+
+	// TODO: M3B1 ONLY REFACTOR LATER
+	position.y += 70.0f;
+	width += 70;
+	mCreditsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits", properties);
+	position.y += 70.0f;
+	width += 70;
+	mExitGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Exit Game", properties);
+	// TODO: M3B1 ONLY END
+
 	// Setup team logo
 	mApeBackground = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudios_Background_Head.png", screenWidth, screenHeight);
 	// Set the laser image to animate
@@ -252,7 +263,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	// Set text elements
 	properties.fontSize = 25.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: 1", properties);
 
@@ -533,6 +544,147 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 
 }
 
+void GameUIManager::CreateCreditsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+{
+	// Create the credits menu entity and add a canvas to it
+	mCreditsMenu = std::make_shared<Odyssey::Entity>();
+	Odyssey::UICanvas* creditsCanvas = mCreditsMenu->addComponent<Odyssey::UICanvas>();
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 42.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Constantia";
+
+	// Setup the background
+	UINT width = 900;
+	UINT height = 600;
+	UINT pad = 25;
+	DirectX::XMFLOAT2 position = { 190, 60 }; // Position
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, BackgroundBigOpacity }; // Color
+	creditsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+
+	// Setup the title
+	color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	height = 50;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits & Contact Info", properties);
+
+
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+
+	// Setup the first credit - 1st Row
+	color = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
+	position.y += 75;
+	position.x += pad;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Max Nastri - Odyssey Engine Creator", properties);
+	position.y += 35;
+	position.x += pad;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 16.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Max.Nastri@gmail.com", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (941) 303-9809", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: GameDevPortfolio.net", properties);
+
+	// Setup the first credit - 2nd Row
+	color = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	position.y += 75;
+	position.x -= pad;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tristen Maturski - Lead Gameplay Developer", properties);
+	position.y += 35;
+	position.x += pad;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 16.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Maturski62@gmail.com", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (413) 672-1013", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Setup the second credit - 1st Row
+	color = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
+	position.y = 135;
+	position.x += 425;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Lane Langford - AI/Gameplay Developer", properties);
+	position.y += 35;
+	position.x += pad;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 16.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: LaneLangford.2020@gmail.com", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (352) 275-7723", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Setup the second credit - 2nd Row
+	color = DirectX::XMFLOAT4(75.0f, 100.0f, 255.0f, 1.0f);
+	position.y += 75;
+	position.x -= pad;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Bryce Monkus - Lead AI Developer", properties);
+	position.y += 35;
+	position.x += pad;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 16.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Brycemnks@gmail.com", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (704) 441-5402", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Setup the third credit - 3rd Row
+	color = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
+	position.y += 75;
+	position.x = position.x - pad - 190;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Jeffrey Ouma - Audio/Tools Developer", properties);
+	position.y += 35;
+	position.x += pad;
+	properties.bold = false;
+	properties.italic = true;
+	properties.fontSize = 16.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Jwaostar@gmail.com", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (703) 419-5296", properties);
+	position.y += 30;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Setup the back button
+	position = DirectX::XMFLOAT2(220.0f, 610.0f);
+	color = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 24.0f;
+	mCreditsBackText = creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
+
+	// Add the menu to the scene
+	_sceneToAddTo->addEntity(mCreditsMenu);
+
+	ToggleCanvas(mCreditsMenu->getComponent<Odyssey::UICanvas>(), false);
+}
+
 void GameUIManager::ShowStatsMenu()
 {
 	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
@@ -548,6 +700,20 @@ void GameUIManager::ShowStatsMenu()
 	//mStatsNextButtonRound->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuNextRound);
 	//mStatsPrevButtonRound->registerCallback("onMouseClick", this, &GameUIManager::StatsMenuPrevRound);
 	UpdateStatsMenu();
+}
+
+void GameUIManager::ShowCreditsMenu()
+{
+	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mCreditsMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	mCreditsBackText->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::HideCreditsMenu);
+}
+
+void GameUIManager::HideCreditsMenu()
+{
+	mMainMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	mCreditsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mCreditsBackText->unregisterCallback("onMouseClick");
 }
 
 void GameUIManager::StatsMenuPrevTurn()
@@ -916,7 +1082,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		// Create the character's level number text next to the XP bar
 		position.x += barWidth;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		newHUD->pLevelNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties);
 
 		// Add the text elements for Attack, Defense, and Speed;
@@ -925,7 +1091,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		position.y += 22.0f;
 		properties.fontSize = 12.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		// Attack number
 		newHUD->pAttackNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk())), properties);
@@ -996,7 +1162,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		properties.italic = false;
 		properties.fontSize = 14.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		properties.fontName = L"Tw Cen MT Condensed";
 
 		// Get the position of the anchor points
@@ -1073,7 +1239,7 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 		position.x += 5.0f;
 		properties.fontSize = 14.0f;
 		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		// Assign the character's turn order text
 		newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 	}
@@ -1197,7 +1363,7 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, std::wstring char
 	properties.italic = false;
 	properties.fontSize = 14.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Background and Separators
@@ -1300,7 +1466,7 @@ void GameUIManager::UpdateCharacterBars(float _deltaTime)
 	for (int i = 0; i < mUpdateCharacterBarsList.size(); i++)
 	{
 		// Set the speed varibale 
-		float speed = 25.0f;
+		float speed = 45.0f;
 
 		// Get the max amount of bar value
 		float maxValue = mUpdateCharacterBarsList[i]->pMaxValue;
@@ -1468,7 +1634,7 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 	properties.italic = false;
 	properties.fontSize = 16.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	Odyssey::UICanvas* canvas = entity->addComponent<Odyssey::UICanvas>();

@@ -89,7 +89,16 @@ public: // Functions
 	// Creation of the stats menu
 	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
 
+	// TODO: M3B1 ONLY REFACTOR LATER
+	void CreateCreditsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	// TODO: M3B1 ONLY END
+
 	void ShowStatsMenu();
+
+	// TODO: M3B1 ONLY REFACTOR LATER
+	void ShowCreditsMenu();
+	void HideCreditsMenu();
+	// TODO: M3B1 ONLY END
 
 	void StatsMenuPrevTurn();
 
@@ -141,6 +150,10 @@ public: // Functions
 	Odyssey::Sprite2D* GetAnimatedLaser() { return mAnimatedLaser; }
 	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
 	Odyssey::Text2D* GetStatsText() { return mStatsText; }
+	// TODO: M3B1 ONLY REFACTOR LATER
+	Odyssey::Text2D* GetCreditsText() { return mCreditsText; }
+	Odyssey::Text2D* GetExitGameText() { return mExitGameText; }
+	// TODO: M3B1 ONLY END
 
 	// Get the tower select menu
 	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
@@ -148,8 +161,6 @@ public: // Functions
 	std::vector<Odyssey::Sprite2D*> GetDoorSprites() { return mDoorImages; }
 	// Get the tower info canvas
 	Odyssey::UICanvas* GetTowerInfoCanvas() { return mTowerInfoCanvas; }
-
-	
 
 	// Get the team select menu
 	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
@@ -159,7 +170,6 @@ public: // Functions
 	std::vector<Odyssey::Text2D*> GetNameSlots() { return mNameSlots; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
-
 
 	// Get the pause menu
 	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
@@ -212,12 +222,18 @@ private: // Varibales
 	std::shared_ptr<Odyssey::Entity> mPauseMenu;
 	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
 	std::shared_ptr<Odyssey::Entity> mStatsMenu;
+	std::shared_ptr<Odyssey::Entity> mCreditsMenu;
 
 	// Main Menu Items
 	Odyssey::Sprite2D* mApeBackground;
 	Odyssey::Sprite2D* mAnimatedLaser;
 	Odyssey::Text2D* mNewGameText;
 	Odyssey::Text2D* mStatsText;
+	// TODO: M3B1 ONLY REFACTOR LATER
+	Odyssey::Text2D* mCreditsText;
+	Odyssey::Text2D* mExitGameText;
+	Odyssey::Text2D* mCreditsBackText;
+	// TODO: M3B1 ONLY END
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle;

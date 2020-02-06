@@ -1163,6 +1163,9 @@ void HeroComponent::BeginAttack(EntityList targets)
 		// If its an attack loop through all enemies to get an avg position, else loop though all the players
 		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
+			// TODO: REFACTOR LATER
+			int counter = 0;
+
 			// For each entity
 			for (std::shared_ptr<Odyssey::Entity> t : targets)
 			{
@@ -1177,15 +1180,16 @@ void HeroComponent::BeginAttack(EntityList targets)
 					aoeSpawn.x += tempTransform.x;
 					aoeSpawn.y += tempTransform.y;
 					aoeSpawn.z += tempTransform.z;
+					counter++;
 					///////////////////////////////////////////////
 				}
 			}
 
 			// Divid by party size to get the average position //
 			/////////////////////////////////////////////////////
-			aoeSpawn.x /= static_cast<float>(targets.size());
-			aoeSpawn.y /= static_cast<float>(targets.size());
-			aoeSpawn.z /= static_cast<float>(targets.size());
+			aoeSpawn.x /= static_cast<float>(counter);
+			aoeSpawn.y /= static_cast<float>(counter);
+			aoeSpawn.z /= static_cast<float>(counter);
 			/////////////////////////////////////////////////////
 		}
 

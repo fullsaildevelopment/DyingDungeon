@@ -65,6 +65,8 @@ namespace Odyssey
 		// Subscribe to the engine shutdown event
 		EventManager::getInstance().subscribe(this, &Application::onShutdown);
 
+		EventManager::getInstance().subscribe(this, &Application::onShutdownApplication);
+
 		EventManager::getInstance().subscribe(this, &Application::onUIScale);
 	}
 
@@ -109,6 +111,12 @@ namespace Odyssey
 	void Application::onShutdown(EngineShutdownEvent* evnt)
 	{
 		mIsShutdown = true;
+		mIsRunning = false;
+	}
+
+	void Application::onShutdownApplication(ShutdownApplicationEvent* evnt)
+	{
+		EventManager::getInstance().publish(new EngineShutdownEvent());
 	}
 
 	void Application::onUIScale(UIScaleEvent* evnt)

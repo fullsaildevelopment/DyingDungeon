@@ -14,6 +14,9 @@ public:
 	virtual void onDestroy();
 private:
 	void EnterTowerSelectScreen();
+	// TODO: M3B1 ONLY REFACTOR LATER
+	void ExitGame();
+	// TODO: M3B1 ONLY END
 public:
 	Odyssey::Rectangle2D* mRect;
 private:

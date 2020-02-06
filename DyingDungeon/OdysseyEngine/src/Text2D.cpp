@@ -180,7 +180,7 @@ namespace Odyssey
 		// Convert the paragraph alignment
 		switch (textProperties.paragraphAlignment)
 		{
-			case ParagraphAlignment::Left:
+			case ParagraphAlignment::Top:
 			{
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 				break;
@@ -190,7 +190,7 @@ namespace Odyssey
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 				break;
 			}
-			case ParagraphAlignment::Right:
+			case ParagraphAlignment::Bottom:
 			{
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_FAR;
 				break;

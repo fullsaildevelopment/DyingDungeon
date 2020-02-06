@@ -69,6 +69,10 @@ namespace Odyssey
 		template<typename EventType>
 		void publish(EventType* evnt)
 		{
+			// Don't accept new events if shutting down.
+			if (mIsShutdown)
+				return;
+
 			// Check if the event is a command and if we are not currently publishing commands
 			if (mPublishCommands == false && isCommand(evnt))
 			{

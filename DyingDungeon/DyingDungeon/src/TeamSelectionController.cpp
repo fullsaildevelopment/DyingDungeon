@@ -215,7 +215,7 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	titleText.italic = false;
 	titleText.fontSize = 20.0f;
 	titleText.textAlignment = Odyssey::TextAlignment::Left;
-	titleText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	titleText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	titleText.fontName = L"Tw Cen MT Condensed";
 
 	Odyssey::TextProperties properties;
@@ -223,7 +223,7 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	properties.italic = true;
 	properties.fontSize = 16.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	if (character == L"Paladin")
