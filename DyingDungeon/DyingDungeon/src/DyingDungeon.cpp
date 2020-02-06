@@ -123,7 +123,7 @@ int playGame()
 	gDefaultText.italic = false;
 	gDefaultText.fontSize = 25.0f;
 	gDefaultText.textAlignment = Odyssey::TextAlignment::Left;
-	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	gDefaultText.fontName = L"Constantia";
 
 	// Create the main scene
@@ -157,6 +157,10 @@ int playGame()
 	setupTeamSelectMenu(application.get());
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
+
+	// TODO: M3B1 ONLY REFACTOR LATER
+	GameUIManager::getInstance().CreateCreditsMenuCanvas(gMainMenu);
+	// TODO: M3B1 ONLY END
 
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
@@ -687,7 +691,7 @@ void setupSceneOne()
 	// Set up the directional light
 	Odyssey::Light* light = gScene1Lights[0]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Directional);
-	light->setColor(0.65f, 0.2f, 0.1f);
+	light->setColor(0.65f, 0.3f, 0.15f);
 	light->setIntensity(1.0f);
 	light->setRange(0.0f);
 	light->setSpotAngle(0.0f);
@@ -695,33 +699,29 @@ void setupSceneOne()
 	// Set the light's position and direction
 	gScene1Lights[1] = std::make_shared<Odyssey::Entity>();
 	gScene1Lights[1]->addComponent<Odyssey::Transform>();
-	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setPosition(5.0f, 10.0f, 0.0f);
+	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setPosition(-3.5f, 3.0f, 4.5f);
 	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 
-	// Set up the directional light
+	// Set up the ambient light
 	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	//light->setColor(1.0f, 1.0f, 1.0f);
-	light->setColor(0.65f, 0.2f, 0.1f);
-	//light->setIntensity(2.0f);
-	light->setIntensity(0.85f);
-	light->setRange(25.0f);
+	light->setColor(0.65f, 0.3f, 0.15f);
+	light->setIntensity(0.55f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
 	// Set the light's position and direction
 	gScene1Lights[2] = std::make_shared<Odyssey::Entity>();
 	gScene1Lights[2]->addComponent<Odyssey::Transform>();
-	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setPosition(5.0f, 10.0f, 25.0f);
+	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setPosition(-3.5f, 4.0f, 25.0f);
 	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 
 	// Set up the directional light
 	light = gScene1Lights[2]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	//light->setColor(1.0f, 1.0f, 1.0f);
-	light->setColor(0.65f, 0.2f, 0.1f);
-	//light->setIntensity(2.0f);
-	light->setIntensity(0.85f);
-	light->setRange(25.0f);
+	light->setColor(0.65f, 0.3f, 0.15f);
+	light->setIntensity(0.55f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
 	gSceneOne->addEntity(gScene1Lights[0]);
@@ -740,8 +740,8 @@ void setupSceneOne()
 	light = fire1->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.5f);
-	light->setRange(15.0f);
+	light->setIntensity(0.2f);
+	light->setRange(10.0f);
 	light->setSpotAngle(0.0f);
 
 	// Create the particle system
@@ -770,8 +770,8 @@ void setupSceneOne()
 	light = fire2->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.5f);
-	light->setRange(15.0f);
+	light->setIntensity(0.2f);
+	light->setRange(10.0f);
 	light->setSpotAngle(0.0f);
 
 	// Create the particle system
@@ -800,7 +800,7 @@ void setupSceneOne()
 	light = fire3->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.5f);
+	light->setIntensity(0.28f);
 	light->setRange(15.0f);
 	light->setSpotAngle(0.0f);
 
@@ -830,7 +830,7 @@ void setupSceneOne()
 	light = fire4->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.5f);
+	light->setIntensity(0.28f);
 	light->setRange(15.0f);
 	light->setSpotAngle(0.0f);
 
@@ -853,7 +853,7 @@ void setupSceneOne()
 	fog->getComponent<Odyssey::Transform>()->setPosition(0, 0, 0);
 	fog->addComponent<Odyssey::ParticleSystem>(*gRenderDevice);
 	fog->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Smoke.jpg");
-	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.15f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.075f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
 	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
 	fog->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(60);

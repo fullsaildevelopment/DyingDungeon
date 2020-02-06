@@ -72,6 +72,8 @@ namespace Odyssey
 			// Don't accept new events if shutting down.
 			if (mIsShutdown)
 				return;
+			// Check if the event is a command and if we are not currently publishing commands
+			bool isSceneChange = (typeid(EventType) == typeid(SceneChangeEvent));
 
 			// Check if the event is a command and if we are not currently publishing commands
 			if (mPublishCommands == false && isCommand(evnt))
