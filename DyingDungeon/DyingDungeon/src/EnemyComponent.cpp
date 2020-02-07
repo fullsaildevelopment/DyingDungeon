@@ -32,7 +32,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	case GameplayTypes::ENEMYID::Skeleton:
 	{
 		// Set the character Model path
-		mModel = "assets/models/Summoner.dxm";
+		mModel = "assets/models/Skeleton.dxm";
 
 		// Set the character name
 		mName = L"Skeleton";
@@ -64,7 +64,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
@@ -210,16 +210,16 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/SummonerPortrait.jpg";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 300.0f;
+		mBaseMaxHP = mCurrentHP = 100.0f;
 
 		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 300.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 35.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 45.0f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -288,16 +288,16 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/MeleeDemonPortrait.jpg";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 300.0f;
+		mBaseMaxHP = mCurrentHP = 100.0f;
 
 		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 300.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 35.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 45.0f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -366,16 +366,16 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/CasterDemonPortrait.jpg";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 300.0f;
+		mBaseMaxHP = mCurrentHP = 100.0f;
 
 		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 300.0f;
+		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 35.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 45.0f;
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
