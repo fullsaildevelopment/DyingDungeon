@@ -32,7 +32,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	case GameplayTypes::ENEMYID::Skeleton:
 	{
 		// Set the character Model path
-		mModel = "assets/models/Skeleton.dxm";
+		mModel = "assets/models/Summoner.dxm";
 
 		// Set the character name
 		mName = L"Skeleton";
@@ -64,7 +64,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
