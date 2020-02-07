@@ -108,6 +108,11 @@ void TeamSelectionController::onDestroy()
 	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->unregisterCallback("onMouseClick");
+
+	// Unregister the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
 }
 
 void TeamSelectionController::setupHovers()
@@ -400,6 +405,9 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 // Change the slot 1 character
 void TeamSelectionController::DecreaseSlot1Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot1InfoPopupIndex, false, mSlot1CharacterInfoPopupList);
+	
 	// Disable the current character that is visible in scene
 	mSlot1CharacterList[mSlot1Index]->setVisible(false);
 
@@ -420,6 +428,9 @@ void TeamSelectionController::DecreaseSlot1Index()
 // Change the slot 1 character
 void TeamSelectionController::IncreaseSlot1Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot1InfoPopupIndex, true, mSlot1CharacterInfoPopupList);
+
 	// Disable the current character that is visible in scene
 	mSlot1CharacterList[mSlot1Index]->setVisible(false);
 
@@ -440,6 +451,9 @@ void TeamSelectionController::IncreaseSlot1Index()
 // Change the slot 2 character
 void TeamSelectionController::DecreaseSlot2Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot2InfoPopupIndex, false, mSlot2CharacterInfoPopupList);
+
 	// Disable the current character that is visible in scene
 	mSlot2CharacterList[mSlot2Index]->setVisible(false);
 
@@ -460,6 +474,9 @@ void TeamSelectionController::DecreaseSlot2Index()
 // Change the slot 2 character
 void TeamSelectionController::IncreaseSlot2Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot2InfoPopupIndex, true, mSlot2CharacterInfoPopupList);
+
 	// Disable the current character that is visible in scene
 	mSlot2CharacterList[mSlot2Index]->setVisible(false);
 
@@ -480,6 +497,9 @@ void TeamSelectionController::IncreaseSlot2Index()
 // Change the slot 3 character
 void TeamSelectionController::DecreaseSlot3Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot3InfoPopupIndex, false, mSlot3CharacterInfoPopupList);
+
 	// Disable the current character that is visible in scene
 	mSlot3CharacterList[mSlot3Index]->setVisible(false);
 
@@ -500,6 +520,9 @@ void TeamSelectionController::DecreaseSlot3Index()
 // Change the slot 3 character
 void TeamSelectionController::IncreaseSlot3Index()
 {
+	// Change the info popups
+	ChangeInfoPopup(mSlot3InfoPopupIndex, true, mSlot3CharacterInfoPopupList);
+
 	// Disable the current character that is visible in scene
 	mSlot3CharacterList[mSlot3Index]->setVisible(false);
 
@@ -526,7 +549,8 @@ void TeamSelectionController::ToggleShowInfoPopup1()
 		// Check if the character is visible
 		if (mSlot1CharacterList[i]->isVisible())
 		{
-			mCharacterSlot1InfoPopupList[i]->set
+			mSlot1CharacterInfoPopupList[i]->setActive(!mSlot1CharacterInfoPopupList[i]->isActive());
+			break;
 		}
 	}
 }
@@ -534,17 +558,67 @@ void TeamSelectionController::ToggleShowInfoPopup1()
 // Toggle slot 2 stat popup
 void TeamSelectionController::ToggleShowInfoPopup2()
 {
-
+	// Find which character is visiable
+	for (int i = 0; i < mSlot2CharacterList.size(); i++)
+	{
+		// Check if the character is visible
+		if (mSlot2CharacterList[i]->isVisible())
+		{
+			mSlot2CharacterInfoPopupList[i]->setActive(!mSlot2CharacterInfoPopupList[i]->isActive());
+			break;
+		}
+	}
 }
 
 // Toggle slot 2 stat popup
 void TeamSelectionController::ToggleShowInfoPopup3()
 {
-
+	// Find which character is visiable
+	for (int i = 0; i < mSlot3CharacterList.size(); i++)
+	{
+		// Check if the character is visible
+		if (mSlot3CharacterList[i]->isVisible())
+		{
+			mSlot3CharacterInfoPopupList[i]->setActive(!mSlot3CharacterInfoPopupList[i]->isActive());
+			break;
+		}
+	}
 }
 
 // Change the name of the new character displaying
 void TeamSelectionController::ChangeSlotName(int _slotIndex, std::wstring _newName)
 {
 	GameUIManager::getInstance().GetNameSlots()[_slotIndex]->setText(_newName);
+}
+
+void TeamSelectionController::ChangeInfoPopup(int& _indexCounter, bool _indexUp, std::vector<Odyssey::UICanvas*> _canvasList)
+{
+	// Check if the previous popup is on or not
+	bool popupWasOn = false;
+	if (_canvasList[_indexCounter]->isActive())
+		popupWasOn = true;
+	// Make sure the old popup is turned off
+	_canvasList[_indexCounter]->setActive(false);
+
+	// Check if we are going up or down
+	if (_indexUp)
+	{
+		// Increase the index
+		_indexCounter++;
+		// If this go above size of a list - 1, set it 0
+		if (_indexCounter > _canvasList.size() - 1)
+			_indexCounter = 0;
+	}
+	else
+	{
+		// Decrease the index
+		_indexCounter--;
+		// If this go above size of a list - 1, set it 0
+		if (_indexCounter < 0)
+			_indexCounter = _canvasList.size() - 1;
+	}
+
+	// Turn on new popup if the previos one was showing
+	if (popupWasOn)
+		_canvasList[_indexCounter]->setActive(true);
 }

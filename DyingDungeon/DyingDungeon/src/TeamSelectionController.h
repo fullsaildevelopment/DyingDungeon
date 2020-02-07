@@ -82,6 +82,11 @@ private:
 	int mSlot2Index = 0;
 	int mSlot3Index = 0;
 
+	// Character Info Popup Indexes
+	int mSlot1InfoPopupIndex = 0;
+	int mSlot2InfoPopupIndex = 0;
+	int mSlot3InfoPopupIndex = 0;
+
 private: // Functions
 	// TODO: REFACTOR THIS LATER
 	void onPaladinEnter();
@@ -109,4 +114,7 @@ private: // Functions
 
 	// Change the name in the slots
 	void ChangeSlotName(int _slotIndex, std::wstring _name);
+
+	// Change info popup
+	void ChangeInfoPopup(int& _indexCounter, bool _indexUp, std::vector<Odyssey::UICanvas*> _canvasList);
 };

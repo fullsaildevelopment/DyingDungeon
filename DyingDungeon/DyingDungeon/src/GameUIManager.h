@@ -121,6 +121,9 @@ public: // Functions
 	// Create The UI portraits for the characters
 	Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
+	// Character info popup for team selection screen
+	Odyssey::UICanvas* SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition);
+
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
@@ -172,6 +175,8 @@ public: // Functions
 	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
 	// Get the text slots for the names
 	std::vector<Odyssey::Text2D*> GetNameSlots() { return mNameSlots; }
+	// Get the show info button sprites
+	std::vector<Odyssey::Sprite2D*> GetShowInfoButtons() { return mShowInfoButtons; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
 
@@ -251,6 +256,8 @@ private: // Varibales
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots
 	std::vector<Odyssey::Text2D*> mNameSlots;
+	// The show info buttons
+	std::vector<Odyssey::Sprite2D*> mShowInfoButtons;
 
 	// Pause Menu Items
 	Odyssey::Rectangle2D* mBlackBackground;
@@ -290,6 +297,7 @@ private: // Varibales
 	DirectX::XMFLOAT4 mTurnOrderColor = { 255.0f, 210.0f, 0.0f, 1.0f };
 
 	// Vectors
+	// List of the HUDs
 	std::vector<std::shared_ptr<CharacterHUD>> mCharacterHudList;
 	std::vector<Odyssey::Text2D*> mCharacterHpPopupList;
 	std::vector<Odyssey::Rectangle2D*> mCharacterBarsList;
