@@ -112,7 +112,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"One Skelly boi, who wants to rattle your bones";
+		mDescription = L"";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -152,7 +152,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The Big Bad Evil Guy who wants to kill your chickens";
+		mDescription = L"";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the animation paths //
@@ -183,6 +183,240 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
 		tempAnimationData.mAnimationPath = "assets/animations/Ganfaul/Ganfaul_Attack.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::Summoner:
+	{
+		// Set the character Model path
+		mModel = "assets/models/Summoner.dxm";
+
+		// Set the character name
+		mName = L"Della";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/SummonerPortrait.jpg";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 300.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 300.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 35.0f;
+		mBaseDefense = mDefense = 50.0f;
+		mBaseSpeed = mSpeed = 45.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::MeleeDemon:
+	{
+		// Set the character Model path
+		mModel = "assets/models/MeleeDemon.dxm";
+
+		// Set the character name
+		mName = L"MeleeDemon";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/MeleeDemonPortrait.jpg";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 300.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 300.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 35.0f;
+		mBaseDefense = mDefense = 50.0f;
+		mBaseSpeed = mSpeed = 45.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::CasterDemon:
+	{
+		// Set the character Model path
+		mModel = "assets/models/CasterDemon.dxm";
+
+		// Set the character name
+		mName = L"CasterDemon";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/CasterDemonPortrait.jpg";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 300.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 300.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 35.0f;
+		mBaseDefense = mDefense = 50.0f;
+		mBaseSpeed = mSpeed = 45.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
