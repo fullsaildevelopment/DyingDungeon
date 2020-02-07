@@ -167,8 +167,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			tempEnemy->SetPSBlood(setupBlood());
 
 			// Set up particle effects for skills
-			tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
-			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);
+			/*tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
+			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);*/
 
 			break;
 		}

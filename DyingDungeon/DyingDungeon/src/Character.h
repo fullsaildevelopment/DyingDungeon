@@ -11,9 +11,9 @@
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 // #defines for doing the stats math
-#define BASEATK 20.0f
-#define BASEDEF 20.0f
-#define BASESPD 20.0f
+#define BASEATK 40.0f
+#define BASEDEF 40.0f
+#define BASESPD 40.0f
 
 class Character : public Odyssey::Component
 {

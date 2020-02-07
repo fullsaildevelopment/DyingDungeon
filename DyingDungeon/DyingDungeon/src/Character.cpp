@@ -208,7 +208,7 @@ float Character::GetBaseAtk()
 
 float Character::GetAtkMod()
 {
-	return (mAttack - BASEATK) / 500.0f;
+	return (mAttack - BASEATK) / 100.0f;
 }
 
 // Increases the Attack stat of the character
@@ -237,7 +237,7 @@ float Character::GetBaseDef()
 
 float Character::GetDefMod()
 {
-	return (mBaseDefense - BASEDEF) / 200.0f;
+	return (mDefense - BASEDEF) / 200.0f;
 }
 
 // Increases the current Defense stat of the character
@@ -266,7 +266,7 @@ float Character::GetBaseSpeed()
 
 float Character::GetSpdMod()
 {
-	return (mSpeed - BASESPD) / 100.0f;
+	return (mSpeed - BASESPD) / 50.0f;
 }
 
 // Increases the current Speed stat of the character
