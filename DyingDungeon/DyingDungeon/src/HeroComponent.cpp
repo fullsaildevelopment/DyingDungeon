@@ -130,7 +130,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
 		mBaseSpeed = mSpeed = 20.0f;
 		////////////////////////////////////
 
@@ -138,9 +138,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic Attack, Provoke
 		temp = std::make_shared<Provoked>(2, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -5.0f, 15.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 15.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 15 damage provoking him to hit you. Restores 5 mana.");
+		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 15 damage provoking him to hit you. Restores 20 mana.");
 		// Skill 1 Judgement (deal damage and heal self)
 		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 15.0f, 50.0f, 20.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_2.png");
