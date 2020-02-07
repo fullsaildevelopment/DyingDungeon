@@ -464,101 +464,101 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
+		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage, healing for 10 hp. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
+		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
 		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/Warrior_Skill_3.png");
+		mSkillList[2]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit. Cost 15 mana.");
 		// Skill 4 TODO: Add in mechanic for hitting a random target, possiably the selfbuff
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 25.0f, 55.0f));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
+		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack while hitting a random target for 55 damage. Cost 25 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
-	case GameplayTypes::HEROID::Rogue:
+	case GameplayTypes::HEROID::Monk:
 	{
 		// Set the character Model path
-		mModel = "assets/models/Rogue.dxm";
+		mModel = "assets/models/Monk.dxm";
 
 		// Set the character name
-		mName = L"Rogue";
+		mName = L"Monk";
 
 		// Set the character subname
-		mSubName = L"Assassin";
+		mSubName = L"Dps";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/RoguePortrait.jpg";
+		mPortrait = L"assets/images/MonkPortrait.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Stun.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
 		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Taunt.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Taunt.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_1.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
 		tempAnimationData.mAnimationNickName = "Skill_2";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_2.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_2.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_3.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_3.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
 		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_4.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The rogue works to cripple the enemy through multiple types of debuffs including poison, bleed and sundering. The rogue has a high damage and speed but low defensive stats allowing for damage output and team utility.";
+		mDescription = L"The monk works to cripple the enemy through multiple types of debuffs. The Monk has a high damage and speed but low defensive stats, excelling at damage output and team utility.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -578,23 +578,23 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Locked-Up Racoon Girl", "Skill_1", 0.5f, -15.0f, 10.0f,temp));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/Rogue_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Strikes the enemy in a weak point dealing 10 damage with 50% chance to inflict Slow. Refunds 15 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 1", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
+		mSkillList[0]->SetSkillIconPath(L"assets/images/Monk_Skill_1.png");
+		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Six Point Strike", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/Rogue_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Exposes the target’s weak points dealing 45 damage and inflicting attack down. Cost 20 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holer 2", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
+		mSkillList[1]->SetSkillIconPath(L"assets/images/Monk_Skill_2.png");
+		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Poison Blade", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/Rogue_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Strike the enemy with a poisoned blade, lowering their attack for 3 turns. Cost 15 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 3", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
+		mSkillList[2]->SetSkillIconPath(L"assets/images/Monke_Skill_3.png");
+		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
-		mSkillList.push_back(std::make_shared<Attack>(L"Stabidy you", "Skill_4", 0.5f, 30.0f, 90.0f));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/Rogue_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Viciously attack the target dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f));
+		mSkillList[3]->SetSkillIconPath(L"assets/images/Monk_Skill_4.png");
+		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
@@ -605,11 +605,12 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	}
 	}
 
-	if (true)
-	{
+#ifdef _DEBUG
 		mSkillList.push_back(std::make_shared<Attack>(L"The Funny Move", "Skill_1", 0.5f, 0.0f, 1000.0f, temp));
 		mSkillList.push_back(std::make_shared<Heal>(L"The other funny move", "Skill_2", 0.5f, 0.0f, -1000.0f));
-	}
+#endif // _DEBUG
+
+	
 
 }
 
