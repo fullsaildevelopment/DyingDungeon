@@ -12,6 +12,7 @@ namespace Odyssey
 		RECT mainWinRect;
 		GetClientRect(hWnd, &mainWinRect);
 		mProperties.setBounds(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom);
+		mBaseProperties = mProperties;
 
 		Microsoft::WRL::ComPtr<IDXGIFactory2> factory;
 
@@ -99,8 +100,8 @@ namespace Odyssey
 		// Resize the swapchain buffers
 		mSwapChain->ResizeBuffers(0, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
 
-		mProperties.screenScaleX = (float)evnt->width / (float)mProperties.width;
-		mProperties.screenScaleY = (float)evnt->height / (float)mProperties.height;
+		mProperties.screenScaleX = (float)evnt->width / (float)mBaseProperties.width;
+		mProperties.screenScaleY = (float)evnt->height / (float)mBaseProperties.height;
 
 		EventManager::getInstance().publish(new UIElementResizeEvent(mProperties.screenScaleX, mProperties.screenScaleY));
 

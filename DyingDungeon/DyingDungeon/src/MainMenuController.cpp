@@ -20,6 +20,10 @@ void MainMenuController::initialize()
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
 	GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+	// TODO: M3B1 ONLY REFACTOR LATER
+	GameUIManager::getInstance().GetCreditsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowCreditsMenu);
+	GameUIManager::getInstance().GetExitGameText()->registerCallback("onMouseClick", this, &MainMenuController::ExitGame);
+	// TODO: M3B1 ONLY END
 
 	// Animating bool
 	mAnimatingLaser = true;
@@ -70,14 +74,23 @@ void MainMenuController::update(double deltaTime)
 	}
 }
 
-void MainMenuController::onDestory()
+void MainMenuController::onDestroy()
 {
 	// unregister callbacks
 	GameUIManager::getInstance().GetNewGameText()->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetStatsText()->unregisterCallback("onMouseClick");
+	// TODO: M3B1 ONLY REFACTOR LATER
+	GameUIManager::getInstance().GetCreditsText()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetExitGameText()->unregisterCallback("onMouseClick");
+	// TODO: M3B1 ONLY END
 }
 
 void MainMenuController::EnterTowerSelectScreen()
 {
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
+}
+
+void MainMenuController::ExitGame()
+{
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ShutdownApplicationEvent());
 }

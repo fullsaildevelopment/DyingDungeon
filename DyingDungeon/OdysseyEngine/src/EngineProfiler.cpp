@@ -111,7 +111,7 @@ namespace Odyssey
 		defaultText.italic = false;
 		defaultText.fontSize = (height) / 15.0f;
 		defaultText.textAlignment = Odyssey::TextAlignment::Left;
-		defaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		defaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		defaultText.fontName = L"Verdana";
 
 		// Create the canvas

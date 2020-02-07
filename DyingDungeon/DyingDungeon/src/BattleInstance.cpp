@@ -13,8 +13,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
-	mPlayerTeam.resize(4);
-	mEnemyTeam.resize(4);
+	mPlayerTeam.resize(3);
+	mEnemyTeam.resize(3);
 
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;
@@ -45,10 +45,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 		{
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
-			mEnemyTeam[i]->getComponent<Character>()->SetHP(1000);
-			mEnemyTeam[i]->getComponent<Character>()->SetMana(1000);
-			mEnemyTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
-			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mEnemyTeam[i]->getComponent<Character>()->ResetMe();
 			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
 			mAllCharacters.push_back(mEnemyTeam[i]);

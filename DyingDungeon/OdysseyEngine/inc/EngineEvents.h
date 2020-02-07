@@ -108,6 +108,16 @@ namespace Odyssey
 		}
 	};
 
+	class ShutdownApplicationEvent : public Event
+	{
+	public:
+		ShutdownApplicationEvent()
+		{
+			priority = EventPriority::Immediate;
+		}
+
+	};
+
 	class EngineShutdownEvent : public Event
 	{
 	public:

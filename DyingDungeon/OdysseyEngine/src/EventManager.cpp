@@ -47,6 +47,18 @@ namespace Odyssey
 	void EventManager::onShutdown(EngineShutdownEvent* evnt)
 	{
 		mIsShutdown = true;
+
+		// Iterate through the commands map
+		for (std::pair<std::type_index, std::vector<Event*>> pair : mCommands)
+		{
+			// Process the commands as events
+			for (Event* e : pair.second)
+			{
+				delete e;
+				e = nullptr;
+			}
+		}
+		mCommands.clear();
 	}
 
 	bool EventManager::isCommand(Event* evnt)

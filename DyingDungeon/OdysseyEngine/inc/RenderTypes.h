@@ -132,9 +132,9 @@ namespace Odyssey
 
 	enum class ParagraphAlignment
 	{
-		Left,
+		Top,
 		Center,
-		Right
+		Bottom
 	};
 
 	struct TextProperties

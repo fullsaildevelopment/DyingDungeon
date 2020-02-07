@@ -27,6 +27,7 @@ void TowerManager::initialize()
 
 	// Don't show the boos character
 	mBossCharacter->setActive(false);
+	GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
 	// Reset the enemy team to the skely bois
 	if (mSkeletonTeam.size() != 0)
@@ -38,6 +39,7 @@ void TowerManager::initialize()
 		for (int i = 0; i < mSkeletonTeam.size(); i++)
 		{
 			mSkeletonTeam[i]->setActive(true);
+			GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 			mEnemyTeam.push_back(mSkeletonTeam[i]);
 		}
 	}
@@ -98,6 +100,8 @@ void TowerManager::update(double deltaTime)
 	{
 		// Update the health popups
 		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+		// Update the UI bars
+		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
@@ -165,6 +169,7 @@ void TowerManager::update(double deltaTime)
 						for (int i = 0; i < mEnemyTeam.size(); i++)
 						{
 							mEnemyTeam[i]->setActive(false);
+							GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 							mSkeletonTeam.push_back(mEnemyTeam[i]);
 						}
 						// Clear all enemies from the current enemy list
@@ -172,6 +177,8 @@ void TowerManager::update(double deltaTime)
 
 						// Now active the boos and only add the boss to the enemy list
 						mBossCharacter->setActive(true);
+						// Turn on Ganny's UI
+						GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
 						mEnemyTeam.push_back(mBossCharacter);
 					}
 
@@ -241,6 +248,9 @@ void TowerManager::CreateBattleInstance()
 	// TODO: REMOVE POST BUILD 02
 	if (mCurrentLevel == 1)
 		system("CLS");
+
+	// Clear the combat at the start of each battle log
+	GameUIManager::getInstance().ClearCombatLog();
 
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
@@ -320,25 +330,25 @@ void TowerManager::GoToMainMenu()
 		{
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
-			mPlayerTeam[i]->getComponent<Character>()->SetHP(1000);
-			mPlayerTeam[i]->getComponent<Character>()->SetMana(1000);
-			mPlayerTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
-			mPlayerTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mPlayerTeam[i]->getComponent<Character>()->ResetMe();
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
-		}
 
-		// TODO: REFACTOR LATER
-		scene->removeEntity(mPlayerTeam[i].get());
-	}
+			// Turn off the previous canvases
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
-	// TODO: REFACTOR LATER
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		if (mEnemyTeam[i])
-		{
-			scene->removeEntity(mEnemyTeam[i].get());
+			// TODO: REFACTOR LATER
+			scene->removeEntity(mPlayerTeam[i].get());
 		}
 	}
+
+	//// TODO: REFACTOR LATER
+	//for (int i = 0; i < mEnemyTeam.size(); i++)
+	//{
+	//	if (mEnemyTeam[i])
+	//	{
+	//		scene->removeEntity(mEnemyTeam[i].get());
+	//	}
+	//}
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);

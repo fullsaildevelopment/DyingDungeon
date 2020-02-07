@@ -38,7 +38,14 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Set rotation
 	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
 	// Set the character's scale
-	newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	if (_characterToCreate == Warrior)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.023f, 0.023f, 0.023f);
+	else if (_characterToCreate == Mage)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.55f, 0.55f, 0.55f);
+	else if (_characterToCreate == Paladin)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.028f, 0.028f, 0.028f);
+	else
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 
 	switch (_characterToCreate)
 	{
@@ -49,6 +56,10 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter,tempHero->GetModel().c_str() , true);
+			newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
@@ -80,15 +91,15 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up particle effects for skills
 			tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter());
-			tempHero->GetSkills()[0]->SetParticleFiringTime(0.23f);
-			tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.47f);
+			tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(1.5f, 3.1f, 1.3f));
 			tempHero->GetSkills()[1]->SetParticleSystem(setUpFireStorm());
-			tempHero->GetSkills()[1]->SetParticleFiringTime(0.57f);
+			tempHero->GetSkills()[1]->SetParticleFiringTime(0.29f);
 			tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
 			tempHero->GetSkills()[2]->SetParticleFiringTime(0.57f);
 			tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter());
-			tempHero->GetSkills()[3]->SetParticleFiringTime(0.23f);
-			tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(-2.0f, 3.1f, 0.9f));
+			tempHero->GetSkills()[3]->SetParticleFiringTime(0.45f);
+			tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 3.1f, 1.7f));
 
 			break;
 		}
@@ -96,6 +107,30 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 		{
 			// Set up hero component
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Bard);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			newCharacter->getChildren()[4]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			// Set up blood particle effect
+			tempHero->SetPSBlood(setupBlood());
+
+			break;
+		}
+		case Warrior:
+		{
+			// Set up hero component
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Warrior);
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
@@ -109,6 +144,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			// Set up blood particle effect
 			tempHero->SetPSBlood(setupBlood());
 
+
 			break;
 		}
 		case Skeleton:
@@ -118,6 +154,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			// Set up its model
 			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			newCharacter->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
@@ -254,16 +292,17 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	std::shared_ptr<Odyssey::Entity> gFireStorm = std::make_shared<Odyssey::Entity>();
 	gFireStorm->addComponent<Odyssey::Transform>();
 	Odyssey::ParticleSystem* fireStorm = gFireStorm->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
-	fireStorm->setTexture(Odyssey::TextureType::Diffuse, "Guy.png");
-	fireStorm->setColor(DirectX::XMFLOAT3(0.75f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fireStorm->setLifetime(1.5f, 2.5f);
-	fireStorm->setParticleCount(25, 50);
-	fireStorm->setRateOverTime(0.0f);
-	fireStorm->setDuration(5.0f);
-	fireStorm->setSpeed(2.5f, 5.0f);
-	fireStorm->setSize(1.0f, 1.5f);
-	fireStorm->setLooping(true);
-	fireStorm->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.1f, 180.0f, 180.0f));
+	fireStorm->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
+	fireStorm->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fireStorm->setLifetime(1.0f, 1.5f);
+	fireStorm->setParticleCount(100, 350);
+	fireStorm->setRateOverTime(150);
+	fireStorm->setDuration(2.0f);
+	fireStorm->setSpeed(2.5f, 3.5f);
+	fireStorm->setSize(4.0f, 4.0f);
+	fireStorm->setLooping(false);
+	fireStorm->setGravity(5.0f);
+	fireStorm->setShape(Odyssey::BoxPS(-1.0f, 0.5f, 0.0f, 13.5f, 1.0f, 5.0f));
 	fireStorm->stop();
 	mCurrentScene->addEntity(gFireStorm);
 	return fireStorm;

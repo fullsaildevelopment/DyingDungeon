@@ -21,6 +21,7 @@ void TeamSelectionController::initialize()
 {
 	//RedAudioManager::Instance().Loop("BackgroundMenu");
 	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
+
 	// Reset bools and ints
 	changedTheScene = false;
 	mEnterBattle = false;
@@ -40,9 +41,9 @@ void TeamSelectionController::initialize()
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
-	mPlayerPositions[0] = DirectX::XMVectorSet(4.0f, 0.0f, 4.5f, 1.0f); // First Character Selected
-	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, -0.6f, 4.5f, 1.0f); // Second Character Selected
-	mPlayerPositions[2] = DirectX::XMVectorSet(-4.0f, 0.0f, 4.5f, 1.0f); // Third Character Selected
+	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
 
 	// Set the HUD positions
 	mHudPositions.clear();
@@ -54,12 +55,12 @@ void TeamSelectionController::initialize()
 	// Set the HP positions
 	mHpPopupPositions.clear();
 	mHpPopupPositions.resize(3);
-	mHpPopupPositions[0] = DirectX::XMFLOAT2(350.0f, 400.0f); // First Character HP popup
-	mHpPopupPositions[1] = DirectX::XMFLOAT2(640.0f, 400.0f); // Second Character HP popup
-	mHpPopupPositions[2] = DirectX::XMFLOAT2(930.0f, 400.0f); // Third Character HP popup
+	mHpPopupPositions[0] = DirectX::XMFLOAT2(325.0f, 350.0f); // First Character HP popup
+	mHpPopupPositions[1] = DirectX::XMFLOAT2(615.0f, 350.0f); // Second Character HP popup
+	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
-	TeamManager::getInstance().GetPlayerTeam().clear();
+	TeamManager::getInstance().ClearPlayerTeam();
 }
 
 void TeamSelectionController::update(double deltaTime)
@@ -75,10 +76,9 @@ void TeamSelectionController::update(double deltaTime)
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), TeamManager::getInstance().GetEnemyTeam(), 2, mTurnIndicatorModel);
 
 		// Change the scene to the game
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Game"));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene1"));
 	}
-  
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
+	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
@@ -215,7 +215,7 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	titleText.italic = false;
 	titleText.fontSize = 20.0f;
 	titleText.textAlignment = Odyssey::TextAlignment::Left;
-	titleText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	titleText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	titleText.fontName = L"Tw Cen MT Condensed";
 
 	Odyssey::TextProperties properties;
@@ -223,7 +223,7 @@ void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std
 	properties.italic = true;
 	properties.fontSize = 16.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	if (character == L"Paladin")
@@ -320,7 +320,7 @@ void TeamSelectionController::EnterBattle()
 	RedAudioManager::Instance().Loop("BackgroundBattle");
 	// Make a list of enums to hold based what character it is
 	std::vector<CharacterFactory::CharacterOptions> enumList;
-
+  
 	// Check what characters are shown on the screen for the slot 1
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{
@@ -361,26 +361,23 @@ void TeamSelectionController::EnterBattle()
 void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 {
 	CharacterFactory::CharacterOptions heroType;
+
 	if (_name == L"Paladin")
-	{
 		heroType = CharacterFactory::CharacterOptions::Paladin;
-	}
 	else if (_name == L"Mage")
-	{
 		heroType = CharacterFactory::CharacterOptions::Mage;
-	}
 	else if (_name == L"Bard")
-	{
 		heroType = CharacterFactory::CharacterOptions::Bard;
-	}
+	else if (_name == L"Warrior")
+		heroType = CharacterFactory::CharacterOptions::Warrior;
 
 	// This is the gGameScene from DyingDungeon.cpp
 	std::shared_ptr<Odyssey::Scene> gameScene = mListOfGameScenes[0];
 
 	// Create the paladin and add it to the game scene
 	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, L"Paladin", position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
 
 	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
 	for (int i = 1; i < mListOfGameScenes.size(); i++)
@@ -409,6 +406,9 @@ void TeamSelectionController::DecreaseSlot1Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot1CharacterList[mSlot1Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
 }
 
 void TeamSelectionController::IncreaseSlot1Index()
@@ -425,6 +425,9 @@ void TeamSelectionController::IncreaseSlot1Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot1CharacterList[mSlot1Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
 }
 
 void TeamSelectionController::DecreaseSlot2Index()
@@ -441,6 +444,9 @@ void TeamSelectionController::DecreaseSlot2Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot2CharacterList[mSlot2Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 }
 
 void TeamSelectionController::IncreaseSlot2Index()
@@ -457,6 +463,9 @@ void TeamSelectionController::IncreaseSlot2Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot2CharacterList[mSlot2Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 }
 
 void TeamSelectionController::DecreaseSlot3Index()
@@ -473,6 +482,9 @@ void TeamSelectionController::DecreaseSlot3Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot3CharacterList[mSlot3Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
 }
 
 void TeamSelectionController::IncreaseSlot3Index()
@@ -489,4 +501,12 @@ void TeamSelectionController::IncreaseSlot3Index()
 
 	// Enable the new current character that will need to be visible in scene
 	mSlot3CharacterList[mSlot3Index]->setVisible(true);
+
+	// Change the slot name for the character that is now on the screen
+	ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+}
+
+void TeamSelectionController::ChangeSlotName(int _slotIndex, std::wstring _newName)
+{
+	GameUIManager::getInstance().GetNameSlots()[_slotIndex]->setText(_newName);
 }

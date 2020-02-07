@@ -42,6 +42,8 @@ namespace Odyssey
 		 */
 		void onShutdown(EngineShutdownEvent* evnt);
 
+		void onShutdownApplication(ShutdownApplicationEvent* evnt);
+
 		void onUIScale(UIScaleEvent* evnt);
 
 		/**

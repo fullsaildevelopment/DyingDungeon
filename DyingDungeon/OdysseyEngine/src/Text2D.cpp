@@ -12,19 +12,8 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create the text format resource
-		mProperties.fontSize *= ((mScreenScale.x + mScreenScale.y) / 2.0f);
-		createTextFormat(mProperties);
-
-		// Subscribe to the element resize event
-		EventManager::getInstance().subscribe(this, &Text2D::onTextResize);
-	}
-
-	void Text2D::onTextResize(UIElementResizeEvent* evnt)
-	{
-		mLock.lock(LockState::Write);
-		mProperties.fontSize *= ((evnt->xScale + evnt->yScale) / 2.0f);
-		mLock.unlock(LockState::Write);
-
+		baseSize = mProperties.fontSize;
+		mProperties.fontSize = baseSize * ((mScreenScale.x + mScreenScale.y) / 2.0f);
 		createTextFormat(mProperties);
 	}
 
@@ -115,6 +104,15 @@ namespace Odyssey
 		createTextFormat(mProperties);
 	}
 
+	void Text2D::createResource()
+	{
+		mLock.lock(LockState::Write);
+		mProperties.fontSize = baseSize * ((mScreenScale.x + mScreenScale.y) / 2.0f);
+		mLock.unlock(LockState::Write);
+
+		createTextFormat(mProperties);
+	}
+
 	void Text2D::createTextFormat(TextProperties textProperties)
 	{
 		DWRITE_FONT_WEIGHT fontWeight;
@@ -180,7 +178,7 @@ namespace Odyssey
 		// Convert the paragraph alignment
 		switch (textProperties.paragraphAlignment)
 		{
-			case ParagraphAlignment::Left:
+			case ParagraphAlignment::Top:
 			{
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 				break;
@@ -190,7 +188,7 @@ namespace Odyssey
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 				break;
 			}
-			case ParagraphAlignment::Right:
+			case ParagraphAlignment::Bottom:
 			{
 				paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_FAR;
 				break;

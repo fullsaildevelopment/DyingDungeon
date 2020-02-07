@@ -133,7 +133,8 @@ public:
 	// Sets the characters name 
 	void SetName(std::wstring newName);
 
-
+	// Resets the characters
+	void ResetMe();
 
 	// Returns the pointer to the character that has provoked this character 
 	Character* GetProvoked();
