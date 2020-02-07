@@ -36,6 +36,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mID = id;
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
+	mIsCheating = false;
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -667,8 +668,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
+		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::C))
+			mIsCheating = !mIsCheating;
+
 		// Cheat code to instakill a target
-		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
+		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[4].get();
@@ -677,7 +681,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentState = STATE::SELECTTARGET;
 		}
 
-		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
+		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[5].get();
@@ -922,8 +926,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			animeTrigger = false;
 			particleTrigger = false;
 
-			// Set this characters state to finished
-			mCurrentState = STATE::FINISHED;			
+			// Set this characters state to finished unless im cheating
+			if (!mIsCheating)
+				mCurrentState = STATE::FINISHED;
+			else
+				ResetToSelection();
 		}
 		break;
 	}

@@ -118,7 +118,9 @@ void Character::ReceiveHealing(float healing)
 
 	// TODO: Update Combat Log Text Here
 
-
+	// If they run out of Health kill the character
+	if (mCurrentHP <= 0.0f)
+		Die();
 }
 
 // Called whenever this character needs to reduce its current mana
