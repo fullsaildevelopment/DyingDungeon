@@ -10,6 +10,7 @@
 #include "StatusEvents.h"
 #include "UICanvas.h"
 #include "Rectangle2D.h"
+#include "Character.h"
 class StatTracker
 {
 public:
@@ -17,6 +18,7 @@ public:
 	struct Turn
 	{
 		std::string characterName = "";
+		unsigned int unique_id = 0;
 		float attackModifier = 0.0f;
 		//std::vector<std::string> targetNames;
 		std::vector <std::pair<std::string, float>> targets;
@@ -35,6 +37,8 @@ public:
 		uint32_t rounds = 1;
 		std::vector<StatTracker::Turn> turns;
 		std::pair<std::string, std::wstring> characters[3];
+		Character* character_pointers[3];
+		unsigned int unique_id[3];
 	};
 
 private:
@@ -236,6 +240,7 @@ private:
 	/// <param name="stat">he stat of which the count is requested</param>
 	/// <returns></returns>
 	unsigned int GetStatCount(std::string name, Action stat);
+	unsigned int GetStatCount(unsigned int id, Action stat);
 	/// <summary>
 	/// Getter for a vector of player names found in the logged statistics
 	/// </summary>
@@ -266,6 +271,8 @@ private:
 	/// <param name="level">The level of which the damage output should be retreaved from</param>
 	/// <returns>The amount of damage output by a character</returns>
 	float CalculateDamageDealt(std::string name, unsigned int level);
+
+	float CalculateDamageDealt(unsigned int id, unsigned int level, bool a);
 
 	//Calculation functinos to see how much damage a character landed
 	/// <summary>
@@ -328,6 +335,8 @@ private:
 	/// <param name="level">The level from which the percentage is being requested from</param>
 	/// <returns>The percentage of damage landed from a specific character in a specific level</returns>
 	float CalculatePercentDamageSuccess(std::string name, unsigned int level);
+
+	float CalculatePercentDamageSuccess(unsigned int id, unsigned int level);
 
 	//Calculate the amount of damage a character mitigated
 	/// <summary>
@@ -413,6 +422,7 @@ private:
 	/// <param name="level">The specified level from which the use percentage is being requested</param>
 	/// <returns>The percentage of the use of the specified Action in a specified character in a specified level</returns>
 	float CalculatePercentageStat(std::string name, Action stat, unsigned int level);
+	float CalculatePercentageStat(unsigned int id, Action stat, unsigned int level);
 	/// <summary>
 	/// Calculation of the percentage of the use of a specific Action for a specified character in a specified level and round
 	/// </summary>

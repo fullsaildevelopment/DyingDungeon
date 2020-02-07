@@ -109,7 +109,8 @@ public:
 	unsigned int levelNumber;
 	std::string playerCharacters[3];
 	std::wstring playerPortaits[3];
-	LevelStartEvent(unsigned int level, std::wstring player_character_1, std::wstring player_character_2, std::wstring player_character_3, std::wstring player_portrait_1, std::wstring player_portrait_2, std::wstring player_portrait_3)
+	Character* playerPointers[3];
+	LevelStartEvent(unsigned int level, std::wstring player_character_1, std::wstring player_character_2, std::wstring player_character_3, std::wstring player_portrait_1, std::wstring player_portrait_2, std::wstring player_portrait_3, Character* player_character_pointer_1, Character* player_character_pointer_2, Character* player_character_pointer_3)
 	{
 		levelNumber = level;
 		playerCharacters[0] = Converter::ConvertWStrToStr(player_character_1.c_str());
@@ -118,6 +119,9 @@ public:
 		playerPortaits[0] = player_portrait_1;
 		playerPortaits[1] = player_portrait_2;
 		playerPortaits[2] = player_portrait_3;
+		playerPointers[0] = player_character_pointer_1;
+		playerPointers[1] = player_character_pointer_2;
+		playerPointers[2] = player_character_pointer_3;
 	}
 };
 
@@ -128,12 +132,14 @@ public:
 	unsigned int turn;
 	unsigned int round;
 	bool isPlayer;
-	TurnStartEvent(std::wstring character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
+	Character* playerPointer;
+	TurnStartEvent(std::wstring character, Character* player_character, unsigned int turnNumber, unsigned int roundNumber, bool isAPlayer)
 	{
 		characterName = Converter::ConvertWStrToStr(character.c_str());
 		turn = turnNumber;
 		round = roundNumber;
 		isPlayer = isAPlayer;
+		playerPointer = player_character;
 	}
 };
 

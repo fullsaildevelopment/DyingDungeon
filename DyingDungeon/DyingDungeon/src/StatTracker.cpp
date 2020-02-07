@@ -105,22 +105,22 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 			std::wstring rewardsText;
 			if (txt < 6)
 			{
-				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Attack, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
-								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
-								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"%");
+				rewardsText.append(L"Attack: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().unique_id[j], Action::Attack, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+								   L"Damage Dealt: "+ FormatToPercentageW(CalculateDamageDealt(m_levels.back().unique_id[j], static_cast<unsigned int>(m_levels.size()), true),2) + L"\n" +
+								   L"Damage Success: " + FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().unique_id[j], static_cast<unsigned int>(m_levels.size())),2) + L"%");
 			}
 			else if (txt < 9)
 			{
-				rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Defend, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+				/*rewardsText.append(L"Defend: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Defend, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
 								   L"Damage Taken: " + FormatToPercentageW(CalculateDamageTaken(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
 								   L"Damage Blocked: " + FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
-								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));
+								   L"Health Gained: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));*/
 			}
 			else if (txt < 12)
 			{
-				rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Aid, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
+				/*rewardsText.append(L"Aid: " + FormatToPercentageW(CalculatePercentageStat(m_levels.back().characters[j].first, Action::Aid, static_cast<unsigned int>(m_levels.size())),2) + L"%\n" +
 								   L"Heal: " + FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2) + L"\n" +
-								   L"Defense Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));
+								   L"Defense Buff: " + FormatToPercentageW(CalculateShieldGiven(m_levels.back().characters[j].first, static_cast<unsigned int>(m_levels.size())),2));*/
 			}
 			m_p_canvas->getElements<Odyssey::Text2D>()[txt]->setText(rewardsText);
 			txt++;
@@ -201,15 +201,25 @@ void StatTracker::LogDebuffingEvent(CharacterDebuffsEvent* cdEvent)
 
 void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 {
+	srand(time(NULL));
 	StatTracker::Level newLevel;
 	newLevel.levelNumber = lsEvent->levelNumber;
-	newLevel.characters[0].first = lsEvent->playerCharacters[0];
-	newLevel.characters[1].first = lsEvent->playerCharacters[1];
-	newLevel.characters[2].first = lsEvent->playerCharacters[2];
 
-	newLevel.characters[0].second = lsEvent->playerPortaits[0];
-	newLevel.characters[1].second = lsEvent->playerPortaits[1];
-	newLevel.characters[2].second = lsEvent->playerPortaits[2];
+	for(int i = 0; i < 3; i++)
+	{
+		newLevel.characters[i].first = lsEvent->playerCharacters[i];
+		newLevel.characters[i].second = lsEvent->playerPortaits[i];
+		newLevel.character_pointers[i] = lsEvent->playerPointers[i];
+		if (m_levels.empty() || newLevel.character_pointers[i] != m_levels.back().character_pointers[i])
+		{
+			newLevel.unique_id[i] = (rand() % (9999999 - 1000000 + 1) + 1000000);
+		}
+		else
+		{
+			newLevel.unique_id[0] = m_levels.back().unique_id[0];
+		}
+		
+	}
 
 	m_levels.push_back(newLevel);
 	m_currentLevel = newLevel.levelNumber;
@@ -219,6 +229,14 @@ void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 {
 	StatTracker::Turn newTurn;
+	for (int i = 0; i < 3; i++)
+	{
+		if (m_levels.back().character_pointers[i] == tsEvent->playerPointer)
+		{
+			newTurn.unique_id = m_levels.back().unique_id[i];
+			break;
+		}
+	}
 	m_levels.back().turnCount = tsEvent->turn;
 	newTurn.characterName = tsEvent->characterName;
 	newTurn.round = tsEvent->round;
@@ -279,6 +297,23 @@ unsigned int StatTracker::GetStatCount(std::string name, Action stat)
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
 			if (m_levels[i].turns[j].characterName == name && m_levels[i].turns[j].actionType == stat)
+			{
+				count++;
+			}
+		}
+	}
+
+	return count;
+}
+
+unsigned int StatTracker::GetStatCount(unsigned int id, Action stat)
+{
+	unsigned int count = 0;
+	for (unsigned int i = 0; i < m_levels.size(); i++)
+	{
+		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
+		{
+			if (m_levels[i].turns[j].unique_id == id && m_levels[i].turns[j].actionType == stat)
 			{
 				count++;
 			}
@@ -413,6 +448,24 @@ float StatTracker::CalculateDamageDealt(std::string name, unsigned int level)
 	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
 		if (name == m_levels[index].turns[j].characterName && m_levels[index].turns[j].actionType == Action::Attack)
+		{
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
+				if ((m_levels[index].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[index].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
+					total += m_levels[index].turns[j].value + (m_levels[index].turns[j].value * m_levels[index].turns[j].attackModifier);
+				}
+			}
+		}
+	}
+	return total;
+}
+
+float StatTracker::CalculateDamageDealt(unsigned int id, unsigned int level, bool a)
+{
+	float total = 0.0f;
+	unsigned int index = level - 1;
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if (id == m_levels[index].turns[j].unique_id && m_levels[index].turns[j].actionType == Action::Attack)
 		{
 			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
 				if ((m_levels[index].turns[j].targets[k].first.substr(0, 6) != "DEBUFF") && (m_levels[index].turns[j].targets[k].first.substr(0, 4) != "HEAL")) {
@@ -741,10 +794,37 @@ float StatTracker::CalculatePercentDamageSuccess(std::string name, unsigned int 
 			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++)
 			{
 				totalDmg += m_levels[index].turns[j].value;
-				total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+				total += m_levels[index].turns[j].value - ((m_levels[index].turns[j].targets[k].second/100.0f) * m_levels[index].turns[j].value);
 			}
 		}
 	
+	}
+	//}
+	if (totalDmg == 0.0f)
+	{
+		return 0.0f;
+	}
+	return (total / totalDmg) * 100.0f;
+}
+
+float StatTracker::CalculatePercentDamageSuccess(unsigned int id, unsigned int level)
+{
+	float total = 0.0f;
+	float totalDmg = 0.0f;
+	unsigned int index = level - 1;
+	/*for (unsigned int i = 0; i < m_levels.size(); i++)
+	{*/
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if (m_levels[index].turns[j].actionType == Action::Attack && m_levels[index].turns[j].unique_id == id)
+		{
+			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++)
+			{
+				totalDmg += m_levels[index].turns[j].value;
+				total += m_levels[index].turns[j].value - (m_levels[index].turns[j].targets[k].second * m_levels[index].turns[j].value);
+			}
+		}
+
 	}
 	//}
 	if (totalDmg == 0.0f)
@@ -1044,6 +1124,30 @@ float StatTracker::CalculatePercentageStat(std::string name, Action stat, unsign
 	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
 		if (m_levels[index].turns[j].characterName == name)
+		{
+			toatalTurns++;
+			if (m_levels[index].turns[j].actionType == stat)
+			{
+				totalStat++;
+			}
+		}
+	}
+
+	if (toatalTurns == 0.0f) {
+		return 0.00f;
+	}
+	return (totalStat / toatalTurns) * 100.0f;
+}
+
+float StatTracker::CalculatePercentageStat(unsigned int id, Action stat, unsigned int level)
+{
+	float toatalTurns = 0.0f;
+	float totalStat = 0.0f;
+	unsigned int index = level - 1;
+
+	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+	{
+		if (m_levels[index].turns[j].unique_id == id)
 		{
 			toatalTurns++;
 			if (m_levels[index].turns[j].actionType == stat)
