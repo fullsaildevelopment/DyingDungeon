@@ -379,7 +379,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	teamSelectionController->SetSlot1OfCharacters(pListOfCharactersCreated);
 	// Clear the list before making the new characters for the next slot
 	pListOfCharactersCreated.clear();
-
+	
 	// Create the character's for the second slot
 	xOffset = 0.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
@@ -441,6 +441,9 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	teamSelectionController->SetSlot3OfCharacters(pListOfCharactersCreated);
 	// Clear the list before making the new characters for the next slot
 	pListOfCharactersCreated.clear();
+
+	//Create all of the character popups
+
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);

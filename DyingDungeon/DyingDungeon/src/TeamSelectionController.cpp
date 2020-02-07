@@ -38,6 +38,11 @@ void TeamSelectionController::initialize()
 	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot3Index);
 	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot3Index);
 
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup1);
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup2);
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup3);
+
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
@@ -392,6 +397,7 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 	mBuildIndex++;
 }
 
+// Change the slot 1 character
 void TeamSelectionController::DecreaseSlot1Index()
 {
 	// Disable the current character that is visible in scene
@@ -411,6 +417,7 @@ void TeamSelectionController::DecreaseSlot1Index()
 	ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
 }
 
+// Change the slot 1 character
 void TeamSelectionController::IncreaseSlot1Index()
 {
 	// Disable the current character that is visible in scene
@@ -430,6 +437,7 @@ void TeamSelectionController::IncreaseSlot1Index()
 	ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
 }
 
+// Change the slot 2 character
 void TeamSelectionController::DecreaseSlot2Index()
 {
 	// Disable the current character that is visible in scene
@@ -449,6 +457,7 @@ void TeamSelectionController::DecreaseSlot2Index()
 	ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 }
 
+// Change the slot 2 character
 void TeamSelectionController::IncreaseSlot2Index()
 {
 	// Disable the current character that is visible in scene
@@ -468,6 +477,7 @@ void TeamSelectionController::IncreaseSlot2Index()
 	ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 }
 
+// Change the slot 3 character
 void TeamSelectionController::DecreaseSlot3Index()
 {
 	// Disable the current character that is visible in scene
@@ -487,6 +497,7 @@ void TeamSelectionController::DecreaseSlot3Index()
 	ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
 }
 
+// Change the slot 3 character
 void TeamSelectionController::IncreaseSlot3Index()
 {
 	// Disable the current character that is visible in scene
@@ -506,6 +517,33 @@ void TeamSelectionController::IncreaseSlot3Index()
 	ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
 }
 
+// Toggle slot 1 stat popup
+void TeamSelectionController::ToggleShowInfoPopup1()
+{
+	// Find which character is visiable
+	for (int i = 0; i < mSlot1CharacterList.size(); i++)
+	{
+		// Check if the character is visible
+		if (mSlot1CharacterList[i]->isVisible())
+		{
+			mCharacterSlot1InfoPopupList[i]->set
+		}
+	}
+}
+
+// Toggle slot 2 stat popup
+void TeamSelectionController::ToggleShowInfoPopup2()
+{
+
+}
+
+// Toggle slot 2 stat popup
+void TeamSelectionController::ToggleShowInfoPopup3()
+{
+
+}
+
+// Change the name of the new character displaying
 void TeamSelectionController::ChangeSlotName(int _slotIndex, std::wstring _newName)
 {
 	GameUIManager::getInstance().GetNameSlots()[_slotIndex]->setText(_newName);
