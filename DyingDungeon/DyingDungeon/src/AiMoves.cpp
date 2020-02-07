@@ -94,6 +94,45 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			mSkillList[4]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_5.png");
 			break;
 		}
+		// Summoner
+		case 2:
+		{
+			// Skill 1
+
+			// Skill 2
+
+			// Skill 3
+
+			// Skill 4
+
+			break;
+		}
+		// MeleeDemon
+		case 3:
+		{
+			// Skill 1
+
+			// Skill 2
+
+			// Skill 3
+
+			// Skill 4
+
+			break;
+		}
+		// CasterDemon
+		case 4:
+		{
+			// Skill 1
+
+			// Skill 2
+
+			// Skill 3
+
+			// Skill 4
+
+			break;
+		}
 		default:
 		{
 			// What did you do to break this?
