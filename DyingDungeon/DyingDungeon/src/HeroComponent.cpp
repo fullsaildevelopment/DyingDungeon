@@ -137,7 +137,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		temp = std::make_shared<Provoked>(2, this, nullptr);
+		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 15.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
 		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 15 damage provoking him to hit you. Restores 15 mana.");
@@ -639,6 +639,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				mEnemyList[i] = enemies[i].get();
 		}
 		mCurrentState = STATE::NONE;
+		ManageCastedEffects();
 		ManageAllEffects();
 		return true;
 	}
@@ -657,6 +658,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (enemies[i] != nullptr)
 				mEnemyList[i] = enemies[i].get();
 		}
+		ManageCastedEffects();
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)

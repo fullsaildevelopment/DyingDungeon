@@ -35,7 +35,7 @@ void Heal::Use(Character& caster, Character& target)
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
-		mStatusEffect->Apply(target);
+		mStatusEffect->Apply(caster, target);
 		//Alert Reds stuff for stat tracking?
 		switch (mStatusEffect->GetTypeId())
 		{

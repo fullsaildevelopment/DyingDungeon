@@ -14,11 +14,12 @@ Bleed::~Bleed()
 {
 	mRecipient = nullptr;
 }
-void Bleed::Apply(Character& target)
+void Bleed::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect;
 	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
+	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }
 

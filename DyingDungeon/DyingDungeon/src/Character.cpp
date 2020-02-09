@@ -489,97 +489,60 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 
 	for (it = effectList.begin(); it != effectList.end();)
 	{
-		(*it)->Use();
+		if ((*it)->GetDuration() <= 0)
+		{
+			it = effectList.erase(it);
+			continue;
+		}
+		else
+			(*it)->Use();
 		if (mCurrentState == STATE::DEAD)
 			return;
+		it++;
+	}
+}
+
+void Character::ManageCastedEffects()
+{
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
+	std::vector<StatusEffect*>::iterator it;
+
+	// Casted Effects
+	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
+	{
+		if ((*it))
+		{
+			(*it) = nullptr;
+			it = mCastedEffects.erase(it);
+			continue;
+		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
 			(*it)->Remove();
-			it = effectList.erase(it);
+			(*it) = nullptr;
+			it = mCastedEffects.erase(it);
 		}
 		else
 			it++;
 	}
 }
 
+void Character::AddCastedEffect(StatusEffect* newCastedEffect)
+{
+	mCastedEffects.push_back(newCastedEffect);
+}
+
 // Manages all status effects, appling effects and removing expired ones
 bool Character::ManageAllEffects()
 {
-	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-
-	//Regens
-	for (it = mRegens.begin(); it != mRegens.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mRegens.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Bleeds
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		(*it)->Use();
-		if (mCurrentState == STATE::DEAD)
-			return false;
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Buffs
-	for (it = mBuffs.begin(); it != mBuffs.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBuffs.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Debuffs
-	for (it = mDebuffs.begin(); it != mDebuffs.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mDebuffs.erase(it);
-		}
-		else
-			it++;
-	}
-	 
-	// Shields
-	for (it = mSheilds.begin(); it != mSheilds.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mSheilds.erase(it);
-		}
-		else
-			it++;
-	}
+	ManageStatusEffects(mRegens);
+	ManageStatusEffects(mBleeds);
+	if (mCurrentState == STATE::DEAD)
+		return false;
+	ManageStatusEffects(mBuffs);
+	ManageStatusEffects(mDebuffs);
+	ManageStatusEffects(mSheilds);
 	return true;
 }
 

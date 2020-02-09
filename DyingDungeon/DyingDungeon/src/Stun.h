@@ -14,7 +14,7 @@ public:
 	Stun(int duration, Character * target);
 	~Stun();
 	// Application functions
-	void Apply(Character & target);
+	void Apply(Character& caster, Character & target);
 	void Remove();
 	void Use();
 private:

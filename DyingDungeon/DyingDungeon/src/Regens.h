@@ -14,7 +14,7 @@ public:
 	Regens(float ammountOfEffect, int duration, Character* target);
 	~Regens();
 	// Application functions
-	void Apply(Character& target);
+	void Apply(Character& caster, Character& target);
 	void Remove();
 	void Use();
 private:

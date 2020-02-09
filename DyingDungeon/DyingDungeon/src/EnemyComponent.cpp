@@ -449,6 +449,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	case STATE::STUNNED:
 	{
 		mCurrentState = STATE::NONE;
+		ManageCastedEffects();
 		ManageAllEffects();
 		return true;
 	}
@@ -459,6 +460,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		// If i have an additional mechanic do it
 		if(mMechPtr)
 			(this->*mMechPtr)();
+		ManageCastedEffects();
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)

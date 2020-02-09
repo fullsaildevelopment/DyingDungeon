@@ -160,6 +160,12 @@ public:
 	// Manages the passed in status effect, appling effects and removing expired ones
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
 
+	// Manage status effects I casted
+	void ManageCastedEffects();
+
+	// Add a status effect I cast to the Casted list
+	void AddCastedEffect(StatusEffect* newCastedEffect);
+
 	// Manages all status effects, appling effects and removing expired ones
 	bool ManageAllEffects();
 
@@ -283,6 +289,9 @@ protected:
 
 	// Vector of shared pointers that point to the Sheilds the character has
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
+
+	// Vector of raw pointer I casted 
+	std::vector<StatusEffect*> mCastedEffects;
 
 	// Pointer to the animator the character uses
 	Odyssey::Animator* mAnimator;

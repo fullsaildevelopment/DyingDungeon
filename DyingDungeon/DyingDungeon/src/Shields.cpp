@@ -15,11 +15,12 @@ Shields::~Shields()
 	mRecipient = nullptr;
 }
 
-void Shields::Apply(Character& target)
+void Shields::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Shields>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
+	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }
 
