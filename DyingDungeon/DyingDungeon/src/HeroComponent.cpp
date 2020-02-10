@@ -574,9 +574,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 90.0f;
-		mBaseDefense = mDefense = 30.0f;
-		mBaseSpeed = mSpeed = 50.0f;
+		mBaseAttack = mAttack = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
 		// Make the character skills //
@@ -585,6 +585,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 1", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/Monk_Skill_1.png");
+		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
@@ -597,7 +598,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[2]->SetSkillIconPath(L"assets/images/Monke_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
-		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f));
+		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/Monk_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
