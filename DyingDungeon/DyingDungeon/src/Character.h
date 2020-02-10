@@ -172,6 +172,9 @@ public:
 	// Removes all status effects from characters
 	void ClearStatusEffects();
 
+	// Remove all harmful status effects
+	void ClearBadStatusEffects();
+
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 

@@ -17,7 +17,7 @@ Clense::~Clense()
 
 void Clense::Apply(Character& caster, Character& target)
 {
-	target.ClearStatusEffects();
+	target.ClearBadStatusEffects();
 }
 
 void Clense::Remove()

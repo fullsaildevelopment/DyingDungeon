@@ -556,6 +556,33 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
+void Character::ClearBadStatusEffects()
+{
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	{
+		if ((*it))
+		{
+			(*it)->Remove();
+			it = mDebuffs.erase(it);
+		}
+		else
+			it++;
+	}
+
+	for (it = mBleeds.begin(); it != mBleeds.end();)
+	{
+		if ((*it))
+		{
+			(*it)->Remove();
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
+	}
+}
+
 // Sets the Particle system pointer to a "Hit effect"
 void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
 {
