@@ -153,7 +153,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Monk);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), false);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)

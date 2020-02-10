@@ -1354,6 +1354,8 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
 	else if (character == L"Warrior")
 		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
+	else if (character == L"Monk")
+		themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
 	else
 		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 

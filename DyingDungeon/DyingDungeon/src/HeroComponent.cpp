@@ -501,7 +501,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Dps";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/MonkPortrait.jpg";
+		mPortrait = L"assets/images/Gordon.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,10 +531,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
-		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Taunt.dxanim";
-		tempAnimationData.mIsLooping = true;
-		mAnimations.push_back(tempAnimationData);
+		//tempAnimationData.mAnimationNickName = "GotBuffed";
+		//tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Taunt.dxanim";
+		//tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -555,10 +555,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
-		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
-		tempAnimationData.mIsLooping = true;
-		mAnimations.push_back(tempAnimationData);
+		//tempAnimationData.mAnimationNickName = "Skill_4";
+		//tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
+		//tempAnimationData.mIsLooping = true;
+		//mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
@@ -584,23 +584,23 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 1", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/Monk_Skill_1.png");
+		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Place Holer 2", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/Monk_Skill_2.png");
+		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
 		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 3", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/Monke_Skill_3.png");
+		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/Monk_Skill_4.png");
+		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;

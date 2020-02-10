@@ -389,6 +389,8 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 		heroType = CharacterFactory::CharacterOptions::Bard;
 	else if (_name == L"Warrior")
 		heroType = CharacterFactory::CharacterOptions::Warrior;
+	else if (_name == L"Monk")
+		heroType = CharacterFactory::CharacterOptions::Monk;
 
 	// This is the gGameScene from DyingDungeon.cpp
 	std::shared_ptr<Odyssey::Scene> gameScene = mListOfGameScenes[0];

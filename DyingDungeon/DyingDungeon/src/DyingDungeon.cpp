@@ -395,6 +395,16 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
 	// Add canvas to list of created canvases
 	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Set the 1st slot of characters
 	teamSelectionController->SetSlot1OfCharacters(pListOfCharactersCreated);
 	// Set the 1st slot of info popups
@@ -438,6 +448,16 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Add canvas to list of created canvases
 	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
@@ -471,6 +491,16 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
