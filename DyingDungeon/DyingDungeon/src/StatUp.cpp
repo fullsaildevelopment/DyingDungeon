@@ -15,7 +15,7 @@ StatUp::~StatUp()
 {
 }
 
-void StatUp::Apply(Character& target)
+void StatUp::Apply(Character& caster,Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<StatUp>(mAmountOfEffect, mDuration,mStatId, &target);
@@ -45,6 +45,7 @@ void StatUp::Apply(Character& target)
 	default:
 		break;
 	}
+	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }
 

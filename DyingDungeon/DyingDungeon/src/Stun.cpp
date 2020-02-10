@@ -13,13 +13,14 @@ Stun::~Stun()
 {
 	mRecipient = nullptr;
 }
-void Stun::Apply(Character& target)
+void Stun::Apply(Character& caster, Character& target)
 {
 	if (target.GetState() != STATE::STUNNED)
 	{
 		std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 		newStatusEffect = std::make_shared<Stun>(mDuration, &target);
 		target.AddStatusEffect(newStatusEffect);
+		caster.AddCastedEffect(newStatusEffect.get());
 		target.SetState(STATE::STUNNED);
 	}
 	return;

@@ -88,7 +88,7 @@ void Attack::Use(Character& caster, Character& target)
 	target.TakeDamage(totalDps);
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
-		mStatusEffect->Apply(target);
+		mStatusEffect->Apply(caster, target);
 		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtkMod(), mStatusEffect->GetTypeId()));
 		//Switch stament for reds evvents
 		switch (mStatusEffect->GetTypeId())
@@ -122,7 +122,7 @@ void Attack::Use(Character& caster, Character& target)
 		}
 	}
 	else
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtkMod(), EFFECTTYPE::None));
 	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mSkillName, target.GetDefMod()));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);

@@ -44,7 +44,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 	mCaster = _caster;
 	
 	mCurrMoveCheck = 0;
-	std::shared_ptr<StatusEffect> debuff;
+	std::shared_ptr<StatusEffect> StatusEffect;
 
 	// Setup the enemy type
 	switch (_enemyID)
@@ -52,46 +52,91 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		// Skeleton
 		case 0:
 		{
-			////Setup Moves
-			// Debuff to slow speed
-			debuff = std::make_shared<StatDown>(10.0f,2,STATS::Spd,nullptr);
-			// Basic attack. mod dps, spd down
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, debuff));
+			// Skill 1
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 15.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
-			//Bleed for dot
-			debuff = std::make_shared<Bleed>(0.15f,2,nullptr);
-			// Skelator slash for big dps, inflicts bleed
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, debuff));
-			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Debuff to lower attack
-			debuff = std::make_shared<StatDown>(0.10f, 2, STATS::Atk, nullptr);
-			// Necrotic Infection big aoe dps, atk dwn
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 20.0f, debuff, true));
-			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			// Skill 2
+			//StatusEffect = std::make_shared<Bleed>(0.15f,2,nullptr);
+			//mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			//mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			//// Skill 3
+			//StatusEffect = std::make_shared < StatDown>(0.5f, 3, STATS::Atk, nullptr);
+			//mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			//mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
 		// Ganfaul
 		case 1:
 		{
-			// Basic Attack, good dps, stun
-			debuff = std::make_shared<Stun>(1,nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 25.0f, debuff));
+			// Skill 1
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 25.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_1.png");
 			//  good dps, spd down ,aoe
-			debuff = std::make_shared<StatDown>(0.25f, 4, STATS::Spd, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"AOE Slow", "Skill_1", 0.25f, 20.0f, 15.0f, debuff, true));
+			StatusEffect = std::make_shared<StatDown>(0.5f, 4, STATS::Spd, nullptr);
+			mSkillList.push_back(std::make_shared<Attack>(L"AOE Slow", "Skill_1", 0.25f, 20.0f, 20.0f, StatusEffect, true));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_2.png");
 			//  Big smack
 			mSkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Skill_1", 0.25f, 50.0f, 45.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_3.png");
 			// Attack buff
-			debuff = std::make_shared<StatUp>(0.30f,3,STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Skill_1", 0.25f, 20.0f, debuff, true));
+			StatusEffect = std::make_shared<StatUp>(0.50f,3,STATS::Atk, nullptr);
+			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Skill_1", 0.25f, 20.0f, StatusEffect, true));
 			mSkillList[3]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_4.png");
 			// Regen
-			debuff = std::make_shared<Regens>(0.15f, 5, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Skill_1",0.15f, 10.0f, debuff,true));
+			StatusEffect = std::make_shared<Regens>(0.15f, 5, nullptr);
+			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Skill_1",0.15f, 10.0f, StatusEffect,true));
 			mSkillList[4]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_5.png");
+			break;
+		}
+		// Summoner
+		case 2:
+		{
+			// TODO MAKE REAL MOVES
+			// Skill 1
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			//Bleed for dot
+			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
+			// Skelator slash for big dps, inflicts bleed
+			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			// Necrotic Infection big aoe dps
+			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			break;
+		}
+		// MeleeDemon
+		case 3:
+		{
+			// TODO MAKE REAL MOVES
+			// Skill 1
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			//Bleed for dot
+			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
+			// Skelator slash for big dps, inflicts bleed
+			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			// Necrotic Infection big aoe dps
+			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			break;
+		}
+		// CasterDemon
+		case 4:
+		{
+			// TODO MAKE REAL MOVES
+			// Skill 1
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			//Bleed for dot
+			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
+			// Skelator slash for big dps, inflicts bleed
+			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			// Necrotic Infection big aoe dps
+			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
 		default:

@@ -14,7 +14,7 @@ public:
 	StatUp(float ammountOfEffect, int duration, STATS stat, Character* target);
 	~StatUp();
 	// Application functions
-	void Apply(Character & target);
+	void Apply(Character& caster, Character & target);
 	void Remove();
 	void Use();
 	// Getter for Stat id

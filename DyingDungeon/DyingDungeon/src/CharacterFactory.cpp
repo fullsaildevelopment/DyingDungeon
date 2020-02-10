@@ -147,6 +147,26 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 
 			break;
 		}
+		case Monk:
+		{
+			// Set up hero component
+			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Monk);
+
+			// Set up its model
+			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			// Set up blood particle effect
+			tempHero->SetPSBlood(setupBlood());
+
+
+			break;
+		}
 		case Skeleton:
 		{
 			// Set up enemy component
@@ -167,8 +187,8 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			tempEnemy->SetPSBlood(setupBlood());
 
 			// Set up particle effects for skills
-			tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
-			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);
+			/*tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
+			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.57f);*/
 
 			break;
 		}

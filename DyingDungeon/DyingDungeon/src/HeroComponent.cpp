@@ -36,6 +36,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mID = id;
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
+	mIsCheating = false;
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -128,28 +129,28 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 80.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 65.0f; // High
+		mBaseDefense = mDefense = 80.0f; // Very High
+		mBaseSpeed = mSpeed = 20.0f; // Slow
 		////////////////////////////////////
 
-		// Make the character skills //
+		// Make the character skills // 7 basics to kill a skeleton, can take 11 hits before death
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Basic Attack, Provoke
-		temp = std::make_shared<Provoked>(2, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -5.0f, 15.0f, temp));
+		// Skill 1
+		temp = std::make_shared<Provoked>(1, this, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 12.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 15 damage provoking him to hit you. Restores 5 mana.");
-		// Skill 1 Judgement (deal damage and heal self)
-		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 15.0f, 50.0f, 20.0f));
+		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 12 damage provoking him to hit you. Restores 15 mana.");
+		// Skill 2
+		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 30.0f, 35.0f, 10.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 50 damage and healing the paladin for 20 health. Costs 20 mana.");
-		// Skill 2 Shield of Light (Gives the team 25 temp hp with a shield)
+		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
+		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
-		// Skill 3 Blessing of light (Gives the team 50% damage reduction for 2 turns)
+		// Skill 4
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_4.png");
@@ -183,7 +184,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 80.0f;
 		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 40.0f;
+		mBaseSpeed = mSpeed = 60.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
@@ -241,28 +242,29 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mDescription = L"The mage possesses an ancient knowledge of the elemental forces. These skills can be used to inflict tremendous damage on all enemies in your path.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Make the character skills //
+		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic attack
-		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -10.0f, 10.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 10 damage. Refunds 10 mana.");
+		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
 		// Wind Slash, aoe dps, speed down 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 15.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_2.png");
 		mSkillList[1]->SetStatusChance(0.5f);
-		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 10 mana.");
+		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 15 mana.");
 		// Fire sTrom BIIIIGGGGG DPS with bleed
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 50.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 30.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 50 damage to all enemies and inflicting burn. Costs 30 mana.");
+		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Lighting Bolt BIGGGGG siongle target dps
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 35.0f, 60.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 60 damage to a single enemy inflicting a stun. Costs 35 mana.");
+		mSkillList[3]->SetStatusChance(0.33f);
+		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 30 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -290,9 +292,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 40.0f;
-		mBaseSpeed = mSpeed = 70.0f;
+		mBaseAttack = mAttack = 30.0f;
+		mBaseDefense = mDefense = 30.0f;
+		mBaseSpeed = mSpeed = 60.0f;
 		////////////////////////////////////
 
 		// Set the animation paths //
@@ -346,20 +348,23 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f));
+		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Spd, nullptr); 
+		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage. Returns 10 mana.");
+		mSkillList[0]->SetStatusChance(0.25f);
+		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage, with a 25% chance to inflict a 50% speed down. Returns 10 mana.");
 		// Skill 2
-		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
+		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a speed down. Costs 10 mana.");
+		mSkillList[1]->SetStatusChance(0.5f);
+		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 15 mana.");
 		// Skill 3
-		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 50.0f, true));
+		temp = std::make_shared<StatUp>(0.33f, 3, STATS::Atk, nullptr);
+		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 35.0f));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving allies hope, healing all allies for 50 health, and giving a 50% attack up. Costs 30 mana.");
+		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving a ally hope, healing for 35 health, and giving a 30% attack up. Costs 20 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
@@ -455,109 +460,110 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 40.0f;
-		mBaseDefense = mDefense = 40.0f;
-		mBaseSpeed = mSpeed = 40.0f;
+		mBaseDefense = mDefense = 50.0f;
+		mBaseSpeed = mSpeed = 30.0f;
 		////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f, 10.0f));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/Warrior_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage, healing for 10 hp. Returns 10 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 17.0f));
+		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
+		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 35.0f,temp, false));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/Warrior_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense and dealing 35 damage. Cost 20 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 25.0f,temp, false));
+		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
+		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense 50% and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/Warrior_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit. Cost 15 mana.");
-		// Skill 4 TODO: Add in mechanic for hitting a random target, possiably the selfbuff
+		mSkillList[2]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_3.png");
+		mSkillList[2]->SetStatusChance(0.75f);
+		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit with a 75% chance to provoke. Cost 15 mana.");
+		// Skill 4 
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 25.0f, 55.0f));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/Warrior_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack while hitting a random target for 55 damage. Cost 25 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 45.0f));
+		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
+		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack by 33%, hitting target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
-	case GameplayTypes::HEROID::Rogue:
+	case GameplayTypes::HEROID::Monk:
 	{
 		// Set the character Model path
-		mModel = "assets/models/Rogue.dxm";
+		mModel = "assets/models/Monk.dxm";
 
 		// Set the character name
-		mName = L"Rogue";
+		mName = L"Monk";
 
 		// Set the character subname
-		mSubName = L"Assassin";
+		mSubName = L"Dps";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/RoguePortrait.jpg";
+		mPortrait = L"assets/images/MonkPortrait.jpg";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Dead
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Death.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Death.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
 		tempAnimationData.mAnimationNickName = "Dead";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Stun.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Hit.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Hit.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
 		tempAnimationData.mAnimationNickName = "GotBuffed";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Taunt.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Taunt.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_1.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_1.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
 		tempAnimationData.mAnimationNickName = "Skill_2";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_2.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_2.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_3.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_3.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
 		tempAnimationData.mAnimationNickName = "Skill_4";
-		tempAnimationData.mAnimationPath = "assets/animations/Rogue/Rogue_Skill_4.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The rogue works to cripple the enemy through multiple types of debuffs including poison, bleed and sundering. The rogue has a high damage and speed but low defensive stats allowing for damage output and team utility.";
+		mDescription = L"The monk works to cripple the enemy through multiple types of debuffs. The Monk has a high damage and speed but low defensive stats, excelling at damage output and team utility.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -568,32 +574,34 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 90.0f;
-		mBaseDefense = mDefense = 30.0f;
-		mBaseSpeed = mSpeed = 50.0f;
+		mBaseAttack = mAttack = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 70.0f;
 		////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Locked-Up Racoon Girl", "Skill_1", 0.5f, -15.0f, 10.0f,temp));
-		mSkillList[0]->SetSkillIconPath(L"assets/images/Rogue_Skill_1.png");
-		mSkillList[0]->SetSkillDescription(L"Strikes the enemy in a weak point dealing 10 damage with 50% chance to inflict Slow. Refunds 15 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 1", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
+		mSkillList[0]->SetSkillIconPath(L"assets/images/Monk_Skill_1.png");
+		mSkillList[0]->SetStatusChance(0.5f);
+		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Six Point Strike", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
-		mSkillList[1]->SetSkillIconPath(L"assets/images/Rogue_Skill_2.png");
-		mSkillList[1]->SetSkillDescription(L"Exposes the target’s weak points dealing 45 damage and inflicting attack down. Cost 20 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holer 2", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
+		mSkillList[1]->SetSkillIconPath(L"assets/images/Monk_Skill_2.png");
+		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Poison Blade", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
-		mSkillList[2]->SetSkillIconPath(L"assets/images/Rogue_Skill_3.png");
-		mSkillList[2]->SetSkillDescription(L"Strike the enemy with a poisoned blade, lowering their attack for 3 turns. Cost 15 mana.");
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 3", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
+		mSkillList[2]->SetSkillIconPath(L"assets/images/Monke_Skill_3.png");
+		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
-		mSkillList.push_back(std::make_shared<Attack>(L"Stabidy you", "Skill_4", 0.5f, 30.0f, 90.0f));
-		mSkillList[3]->SetSkillIconPath(L"assets/images/Rogue_Skill_4.png");
-		mSkillList[3]->SetSkillDescription(L"Viciously attack the target dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
+		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
+		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
+		mSkillList[3]->SetSkillIconPath(L"assets/images/Monk_Skill_4.png");
+		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
@@ -604,11 +612,12 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	}
 	}
 
-	if (true)
-	{
+#ifdef _DEBUG
 		mSkillList.push_back(std::make_shared<Attack>(L"The Funny Move", "Skill_1", 0.5f, 0.0f, 1000.0f, temp));
 		mSkillList.push_back(std::make_shared<Heal>(L"The other funny move", "Skill_2", 0.5f, 0.0f, -1000.0f));
-	}
+#endif // _DEBUG
+
+	
 
 }
 
@@ -637,6 +646,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				mEnemyList[i] = enemies[i].get();
 		}
 		mCurrentState = STATE::NONE;
+		ManageCastedEffects();
 		ManageAllEffects();
 		return true;
 	}
@@ -655,6 +665,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (enemies[i] != nullptr)
 				mEnemyList[i] = enemies[i].get();
 		}
+		ManageCastedEffects();
 		ManageStatusEffects(mRegens);
 		ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
@@ -667,8 +678,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
+		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::C))
+			mIsCheating = !mIsCheating;
+
 		// Cheat code to instakill a target
-		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
+		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[4].get();
@@ -677,7 +691,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			mCurrentState = STATE::SELECTTARGET;
 		}
 
-		if (true && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
+		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
 		{
 			// Set temp variable to the selected move
 			mCurrentSkill = mSkillList[5].get();
@@ -922,8 +936,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			animeTrigger = false;
 			particleTrigger = false;
 
-			// Set this characters state to finished
-			mCurrentState = STATE::FINISHED;			
+			// Set this characters state to finished unless im cheating
+			if (!mIsCheating)
+				mCurrentState = STATE::FINISHED;
+			else
+				ResetToSelection();
 		}
 		break;
 	}
