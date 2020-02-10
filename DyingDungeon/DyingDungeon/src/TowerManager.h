@@ -32,7 +32,7 @@ public: // Functions
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	
-	void SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
+	void SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
 	void CreateBattleInstance();
 	
 	//Getters

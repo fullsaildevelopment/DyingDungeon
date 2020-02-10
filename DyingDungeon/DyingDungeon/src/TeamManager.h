@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Entity.h"
-
+#include "Scene.h"
 
 class TeamManager
 {
@@ -23,7 +23,7 @@ public:
 		DirectX::XMVECTOR pRotation;
 		DirectX::XMFLOAT2 pHudPosition;
 		DirectX::XMFLOAT2 pHpPopupPosition;
-		bool pIsBool;
+		bool pIsBoss;
 	};
 
 public: // Singleton pattern
@@ -40,7 +40,9 @@ private: // Singleton pattern
 public: // Functions
 
 	// Create Enemy Team based on the index passed in
-	void CreateEnemyTeam(int _index);
+	std::vector<std::shared_ptr<Odyssey::Entity>> CreateEnemyTeam(int _index);
+	// Add a list of enemies to index through
+	void AddEnemiesListToCreate(std::vector<TeamManager::EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
 
 	// Add player to the player team
 	void AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
@@ -57,7 +59,10 @@ public: // Functions
 	std::vector<std::shared_ptr<Odyssey::Entity>> GetEnemyTeam() { return mEnemyTeam; }
 
 	// Setters
-	void SetTheListOfEnemiesToCreate(std::vector<TeamManager::EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
+	// Set the current tower
+	void SetTheCurrentTower(std::shared_ptr<Odyssey::Entity> _tower) { mCurrentTower = _tower; }
+	// Set the first scene
+	void SetTheFirstScene(std::shared_ptr<Odyssey::Scene> _scene) { mSceneOne = _scene; }
 
 private: // Variables
 
@@ -68,6 +73,12 @@ private: // Variables
 	std::vector<std::shared_ptr<Odyssey::Entity>> mPlayerTeam;
 	// Holds the enemy characters to add into the Tower Manager
 	std::vector<std::shared_ptr<Odyssey::Entity>> mEnemyTeam;
+
+	// Holds the tower manager entity
+	std::shared_ptr<Odyssey::Entity> mCurrentTower;
+
+	// Hold the first scene
+	std::shared_ptr<Odyssey::Scene> mSceneOne;
 
 private: // Functions
 	

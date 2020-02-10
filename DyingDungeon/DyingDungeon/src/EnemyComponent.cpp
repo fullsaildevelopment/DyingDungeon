@@ -690,7 +690,7 @@ void EnemyComponent::Die()
 	ClearStatusEffects();
 
 	// Play the death animation
-	mAnimator->playClip("Dead");
+	mEntity->getComponent<Odyssey::Animator>()->playClip("Dead");
 
 	// Stop all active particle effects
 	StopParticleEffects();
@@ -812,3 +812,8 @@ void EnemyComponent::GanfaulPhaseMechanic()
 	}
 }
 
+// Init function called when object loads into scene
+void EnemyComponent::initialize()
+{
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
+}

@@ -156,6 +156,8 @@ int playGame()
 	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
 	setupTowerManager();
 	setupTeamSelectMenu(application.get());
+	// Set up the enemies that the player will battle
+	setupEnemiesToCreate();
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
 
@@ -670,40 +672,45 @@ void setupTowerManager()
 	// Add the turn indicator to the game scene
 	gSceneOne->addEntity(gTurnIndicatorModel);
 
-	// Skeleton #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 hudPosition = { 200.0f, 10.0f };
-	DirectX::XMFLOAT2 hpPopupPosition = { 425.0f, 150.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
-	hpPopupPosition.x += 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Skeleton #3
-	charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
-
-	// Ganfaul
-	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
-	hpPopupPosition.x -= 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	characterToAdd->setActive(false);
-	// Assign the boss character for the tower
-	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+	//// Skeleton #1
+	//DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
+	//DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	//DirectX::XMFLOAT2 hudPosition = { 200.0f, 10.0f };
+	//DirectX::XMFLOAT2 hpPopupPosition = { 425.0f, 150.0f };
+	//std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Skeleton #2
+	//charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	//hpPopupPosition.x += 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Skeleton #3
+	//charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x += 329.7f;
+	//hpPopupPosition.x += 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Ganfaul
+	//charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	//hpPopupPosition.x -= 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//characterToAdd->setActive(false);
+	//// Assign the boss character for the tower
+	//gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
 }
 
 void setupEnemiesToCreate()
 {
+	//Set the current tower in the TeamManager 
+	TeamManager::getInstance().SetTheCurrentTower(gCurrentTower);
+	// Set the first scene in the TeamManager
+	TeamManager::getInstance().SetTheFirstScene(gSceneOne);
+
 	// Some varibale to setup the enemies easier
 	// Left character
 	DirectX::XMVECTOR leftPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
@@ -735,6 +742,7 @@ void setupEnemiesToCreate()
 		levelOneEnemy.pRotation = leftRotation;
 		levelOneEnemy.pHudPosition = leftHudPosition;
 		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
@@ -743,6 +751,7 @@ void setupEnemiesToCreate()
 		levelOneEnemy.pRotation = middleRotation;
 		levelOneEnemy.pHudPosition = middleHudPosition;
 		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
@@ -751,10 +760,34 @@ void setupEnemiesToCreate()
 		levelOneEnemy.pRotation = rightRotation;
 		levelOneEnemy.pHudPosition = rightHudPosition;
 		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
 	}
-	
+
+	// LEVEL TWO ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelTwoEnemy;
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelTwoEnemy.pPosition = middlePosition;
+		levelTwoEnemy.pRotation = middleRotation;
+		levelTwoEnemy.pHudPosition = middleHudPosition;
+		levelTwoEnemy.pHpPopupPosition = middleHpPopupPosition;
+		levelTwoEnemy.pIsBoss = true;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
 }
 
 void setupAudio()

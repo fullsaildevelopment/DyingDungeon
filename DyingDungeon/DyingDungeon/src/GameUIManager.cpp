@@ -1445,6 +1445,8 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
 	else if (_character->GetName() == L"Warrior")
 		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
+	else if (_character->GetName() == L"Monk")
+		themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
 	else
 		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 

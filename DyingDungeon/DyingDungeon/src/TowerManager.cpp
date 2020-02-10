@@ -9,6 +9,7 @@
 #include "StatusEvents.h"
 #include "UICanvas.h"
 #include "RedAudioManager.h"
+#include "TeamManager.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -26,23 +27,23 @@ void TowerManager::initialize()
 	mIsPaused = false;
 
 	// Don't show the boos character
-	mBossCharacter->setActive(false);
-	GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+	//mBossCharacter->setActive(false);
+	//GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
-	// Reset the enemy team to the skely bois
-	if (mSkeletonTeam.size() != 0)
-	{
-		// Clear enemy team
-		mEnemyTeam.clear();
-
-		// Set the enemy team to be the skeleton team on start
-		for (int i = 0; i < mSkeletonTeam.size(); i++)
-		{
-			mSkeletonTeam[i]->setActive(true);
-			GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
-			mEnemyTeam.push_back(mSkeletonTeam[i]);
-		}
-	}
+	//// Reset the enemy team to the skely bois
+	//if (mSkeletonTeam.size() != 0)
+	//{
+	//	// Clear enemy team
+	//	mEnemyTeam.clear();
+	//
+	//	// Set the enemy team to be the skeleton team on start
+	//	for (int i = 0; i < mSkeletonTeam.size(); i++)
+	//	{
+	//		mSkeletonTeam[i]->setActive(true);
+	//		GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
+	//		mEnemyTeam.push_back(mSkeletonTeam[i]);
+	//	}
+	//}
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	CreateBattleInstance();
@@ -70,18 +71,18 @@ void TowerManager::update(double deltaTime)
 		GameUIManager::getInstance().ToggleCanvas(combatCanvas, !combatCanvas->isActive());
 	}
 
-	// Go straight to the BOSS when F3 is hit
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
-	{
-		// Destroy the current battle instance
-		DestroyBattleInstance();
-		// Set the game to in rewards 
-		mTowerState = IN_REWARDS;
-		// Set the tower level to the last level which is the boss
-		mCurrentLevel = mNumberOfLevels;
-		// Set the cheat code bool
-		mUsedBossCheatCode = true;
-	}
+	//// Go straight to the BOSS when F3 is hit
+	//if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	//{
+	//	// Destroy the current battle instance
+	//	DestroyBattleInstance();
+	//	// Set the game to in rewards 
+	//	mTowerState = IN_REWARDS;
+	//	// Set the tower level to the last level which is the boss
+	//	mCurrentLevel = mNumberOfLevels;
+	//	// Set the cheat code bool
+	//	mUsedBossCheatCode = true;
+	//}
 
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -162,25 +163,23 @@ void TowerManager::update(double deltaTime)
 				}
 				else
 				{
-					// If this is the last level of the tower, spawn the boss
-					if (mCurrentLevel == mNumberOfLevels)
-					{
-						// Turn off the other enemies
-						for (int i = 0; i < mEnemyTeam.size(); i++)
-						{
-							mEnemyTeam[i]->setActive(false);
-							GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
-							mSkeletonTeam.push_back(mEnemyTeam[i]);
-						}
-						// Clear all enemies from the current enemy list
-						mEnemyTeam.clear();
-
-						// Now active the boos and only add the boss to the enemy list
-						mBossCharacter->setActive(true);
-						// Turn on Ganny's UI
-						GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
-						mEnemyTeam.push_back(mBossCharacter);
-					}
+					//// If this is the last level of the tower, spawn the boss
+					//if (mCurrentLevel == mNumberOfLevels)
+					//{
+					//	// Turn off the other enemies
+					//	for (int i = 0; i < mEnemyTeam.size(); i++)
+					//	{
+					//		mEnemyTeam[i]->setActive(false);
+					//		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+					//		mSkeletonTeam.push_back(mEnemyTeam[i]);
+					//	}
+					//
+					//	// Now active the boos and only add the boss to the enemy list
+					//	mBossCharacter->setActive(true);
+					//	// Turn on Ganny's UI
+					//	GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
+					//	mEnemyTeam.push_back(mBossCharacter);
+					//}
 
 					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
 
@@ -215,22 +214,17 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, EntityList _enemyTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
+void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
 {
-	// Assign the player team and the enemy team
+	// Assign the player team 
 	mPlayerTeam = _playerTeam;
-	mEnemyTeam = _enemyTeam;
 
 	// Add all of the characters from the player's team to the allCharacters vector
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 		mAllCharacters.push_back(mPlayerTeam[i]);
 
-	// Add all of the characters from the enemy's team to the allCharacters vector
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-		mAllCharacters.push_back(mEnemyTeam[i]);
-
 	// Add Boss to the mAllCharacters
-	mAllCharacters.push_back(mBossCharacter);
+	//mAllCharacters.push_back(mBossCharacter);
 
 	// Set the current level to 1
 	mCurrentLevel = 1;
@@ -255,6 +249,14 @@ void TowerManager::CreateBattleInstance()
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
 																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath()));
+
+	
+	// Create the new enemy team before creating the battle
+	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(mCurrentLevel - 1);
+
+	// Add all of the new characters from the enemy team to the allCharacters vector
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
