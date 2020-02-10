@@ -339,6 +339,9 @@ void TeamSelectionController::EnterBattle()
 		{
 			// Get the visible character type
 			CreateCharacterBasedOnName(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
+
+			// Turn off the info popup before entering battle
+			mSlot1CharacterInfoPopupList[mSlot1InfoPopupIndex]->setActive(false);
 		}
 	}
 
@@ -350,6 +353,9 @@ void TeamSelectionController::EnterBattle()
 		{
 			// Get the visible character type
 			CreateCharacterBasedOnName(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
+
+			// Turn off the info popup before entering battle
+			mSlot2CharacterInfoPopupList[mSlot2InfoPopupIndex]->setActive(false);
 		}
 	}
 
@@ -361,6 +367,9 @@ void TeamSelectionController::EnterBattle()
 		{
 			// Get the visible character type
 			CreateCharacterBasedOnName(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
+
+			// Turn off the info popup before entering battle
+			mSlot3CharacterInfoPopupList[mSlot3InfoPopupIndex]->setActive(false);
 		}
 	}
 

@@ -92,6 +92,7 @@ void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
 void setupGameInterface();
 void setupTowerManager();
+void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
@@ -669,6 +670,36 @@ void setupTowerManager()
 	characterToAdd->setActive(false);
 	// Assign the boss character for the tower
 	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+}
+
+void setupEnemiesToCreate()
+{
+	// Some varibale to setup the enemies easier
+	// Left character
+	DirectX::XMVECTOR leftPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR leftRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 leftHudPosition = { 200.0f, 10.0f };
+	DirectX::XMFLOAT2 leftHpPopupPosition = { 425.0f, 150.0f };
+	// Middle character
+	DirectX::XMVECTOR middlePosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR middleRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 middleHudPosition = { 533.0f, 10.0f };
+	DirectX::XMFLOAT2 middleHpPopupPosition = { 575.0f, 150.0f };
+	// Right character
+	DirectX::XMVECTOR rightPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR rightRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 rightHudPosition = { 863.0f, 10.0f };
+	DirectX::XMFLOAT2 rightHpPopupPosition = { 725.0f, 150.0f };
+
+
+	// Level One Enemies
+	TeamManager::EnemySetups levelOneEnemy;
+	levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+	levelOneEnemy.pPosition = leftPosition;
+	levelOneEnemy.pRotation = leftRotation;
+	levelOneEnemy.pHudPosition = leftHudPosition;
+	levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
+	
 }
 
 void setupAudio()
