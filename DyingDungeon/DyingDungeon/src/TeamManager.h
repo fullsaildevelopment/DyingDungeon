@@ -8,12 +8,21 @@ class TeamManager
 public:
 	enum class HeroType
 	{
-		Paladin, Mage
+		Paladin, Mage, Bard, Warrior
 	};
 
 	enum class EnemyType
 	{
 		Skeleton, Ganfaul
+	};
+
+	struct EnemySetups
+	{
+		EnemyType pEnemyType;
+		DirectX::XMVECTOR pPosition;
+		DirectX::XMVECTOR pRotation;
+		DirectX::XMFLOAT2 pHudPosition;
+		DirectX::XMFLOAT2 pHpPopupPosition;
 	};
 
 public: // Singleton pattern
@@ -29,6 +38,9 @@ private: // Singleton pattern
 
 public: // Functions
 
+	// Create Enemy Team based on the index passed in
+	void CreateEnemyTeam(int _index);
+
 	// Add player to the player team
 	void AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
 	// Add player to the enemy team
@@ -43,15 +55,13 @@ public: // Functions
 	// Get the enemies that were created
 	std::vector<std::shared_ptr<Odyssey::Entity>> GetEnemyTeam() { return mEnemyTeam; }
 
-	// Get the enemy team enums to determine what charcters we need to create
-	std::vector<TeamManager::EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
-
 	// Setters
+	void SetTheListOfEnemiesToCreate(std::vector<TeamManager::EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
 
 private: // Variables
 
-	// Holds the enum types of the characters we need to create for the enemy team
-	std::vector<TeamManager::EnemyType> mEnemyTeamToCreate;
+	// Hold the multiple list of enums that will need to be created;
+	std::vector<std::vector<TeamManager::EnemySetups>> mEnemiesToCreate;
 
 	// Holds the player characters to add into the Tower Manager
 	std::vector<std::shared_ptr<Odyssey::Entity>> mPlayerTeam;
@@ -59,6 +69,6 @@ private: // Variables
 	std::vector<std::shared_ptr<Odyssey::Entity>> mEnemyTeam;
 
 private: // Functions
-
+	
 };
 

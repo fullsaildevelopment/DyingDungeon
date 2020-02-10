@@ -6,6 +6,13 @@ TeamManager& TeamManager::getInstance()
 	return instance;
 }
 
+void TeamManager::CreateEnemyTeam(int _index)
+{
+	mEnemyTeam.clear();
+	
+
+}
+
 void TeamManager::AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd)
 {
 	mPlayerTeam.push_back(_characterToAdd);
