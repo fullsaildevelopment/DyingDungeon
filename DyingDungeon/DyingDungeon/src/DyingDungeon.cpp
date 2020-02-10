@@ -580,11 +580,11 @@ void setupTowerManager()
 	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
-	hpPopupPosition.x += 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	//hpPopupPosition.x += 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
 
 	// Skeleton #3
 	charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);

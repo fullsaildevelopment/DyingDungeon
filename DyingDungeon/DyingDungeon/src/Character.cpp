@@ -510,7 +510,7 @@ void Character::ManageCastedEffects()
 	// Casted Effects
 	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
 	{
-		if ((*it))
+		if (static_cast<int>((*it)->GetTypeId()) < 0  || static_cast<int>((*it)->GetTypeId()) > 8)
 		{
 			(*it) = nullptr;
 			it = mCastedEffects.erase(it);
