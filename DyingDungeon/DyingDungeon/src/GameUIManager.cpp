@@ -392,17 +392,17 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	height = 32;
 	properties.fontSize = 17.5f;
 	// Create the background of the text
-	position = { 220.0f, static_cast<float>(screenHeight) - 128.0f };
+	position = { 220.0f, static_cast<float>(screenHeight) - 135.0f };
 	mShowInfoButtons.push_back(teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height));
 	// Create the Show Info text
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Show Info", properties);
 	// Create the background of the text
-	position = { (static_cast<float>(screenWidth) / 2.0f) - (static_cast<float>(width) / 2.0f), static_cast<float>(screenHeight) - 128.0f };
+	position = { (static_cast<float>(screenWidth) / 2.0f) - (static_cast<float>(width) / 2.0f), static_cast<float>(screenHeight) - 135.0f };
 	mShowInfoButtons.push_back(teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height));
 	// Create the Show Info text
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Show Info", properties);
 	// Create the background of the text
-	position = { 960.0f, static_cast<float>(screenHeight) - 128.0f };
+	position = { 960.0f, static_cast<float>(screenHeight) - 135.0f };
 	mShowInfoButtons.push_back(teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height));
 	// Create the Show Info text
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Show Info", properties);
@@ -1468,8 +1468,10 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 	float x = _popupPosition.x;
 	float y = _popupPosition.y;
 	UINT width = 300;
-	UINT height = 260;
+	UINT height = 400;
 	UINT pad = 7;
+	UINT imageWidth = 0;
+	UINT imageHeight = 0;
 
 	Odyssey::TextProperties titleText;
 	titleText.bold = true;
@@ -1488,9 +1490,9 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 	properties.fontName = L"Tw Cen MT Condensed";
 
 	// Background and separators
-	popupCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	popupCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(35.0f, 35.0f, 35.0f, 1.0f), width, height);
 	popupCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 45), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-	popupCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 110), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
+	popupCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 175), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
 
 	// Title
 	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), portrait, 45, 45);
@@ -1499,35 +1501,38 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 240 + pad, y + pad), themeColor, 150, 50, level, titleText);
 
 	// Description
-	properties.fontSize = 12.0f;
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, description, properties);
+	properties.fontSize = 16.0f;
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 120, description, properties);
 
 	// Skills block
 	properties.fontSize = 14.0f;
 	properties.italic = false;
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 110 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Skills: ", properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 130 + pad), skill1Icon, 25, 25);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 130 + pad), themeColor, width - (2 * pad), 100, skill1Name, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 160 + pad), skill2Icon, 25, 25);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 160 + pad), themeColor, width - (2 * pad), 100, skill2Name, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 190 + pad), skill3Icon, 25, 25);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 190 + pad), themeColor, width - (2 * pad), 100, skill3Name, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 220 + pad), skill4Icon, 25, 25);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 220 + pad), themeColor, width - (2 * pad), 100, skill4Name, properties);
+	imageWidth = 40;
+	imageHeight = 40;
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 180 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Skills: ", properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 200 + pad), skill1Icon, imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 45, y + 210 + pad), themeColor, width - (2 * pad), 100, skill1Name, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 245 + pad), skill2Icon, imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 45, y + 255 + pad), themeColor, width - (2 * pad), 100, skill2Name, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 290 + pad), skill3Icon, imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 45, y + 300 + pad), themeColor, width - (2 * pad), 100, skill3Name, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad, y + 335 + pad), skill4Icon, imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 45, y + 345 + pad), themeColor, width - (2 * pad), 100, skill4Name, properties);
 
 	// Stats block
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 175, y + 110 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Stats: ", properties);
-	properties.fontSize = 12.0f;
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 130 + pad), L"assets/images/Meat.png", 20, 20);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 130 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, health, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 155 + pad), L"assets/images/mp.png", 20, 20);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 155 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, mana, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 180 + pad), L"assets/images/Sword.png", 20, 20);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 180 + pad), DirectX::XMFLOAT4(255.0f, 50.0f, 50.0f, 1.0f), width - (2 * pad), 100, attack, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 205 + pad), L"assets/images/Shield.png", 20, 20);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 205 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, defense, properties);
-	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 230 + pad), L"assets/images/Speed.png", 20, 20);
-	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 230 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, speed, properties);
+	imageWidth = 30;
+	imageHeight = 30;
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 175, y + 180 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Stats: ", properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 200 + pad), L"assets/images/Meat.png", imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 200 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, health, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 225 + pad), L"assets/images/mp.png", imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 225 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, mana, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 250 + pad), L"assets/images/Sword.png", imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 250 + pad), DirectX::XMFLOAT4(255.0f, 50.0f, 50.0f, 1.0f), width - (2 * pad), 100, attack, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 275 + pad), L"assets/images/Shield.png", imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 275 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, defense, properties);
+	popupCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 300 + pad), L"assets/images/Speed.png", imageWidth, imageHeight);
+	popupCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 300 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, speed, properties);
 	popupCanvas->setActive(false);
 
 	// Return the created canvas

@@ -355,7 +355,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	Odyssey::UICanvas* popupCanvas = nullptr;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 uiPosition = { 100.0f, 100.0f };
+	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
@@ -407,7 +407,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	xOffset = 0.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
-	uiPosition = { 490.0f, 100.0f };
+	uiPosition = { 490.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
@@ -459,7 +459,7 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	xOffset = 5.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
-	uiPosition = { 890.0f, 100.0f };
+	uiPosition = { 860.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
