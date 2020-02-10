@@ -32,7 +32,7 @@ void Heal::Use(Character& caster, Character& target)
 {
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	target.ReceiveHealing(mHealing);
-	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
+	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(target);
@@ -45,17 +45,17 @@ void Heal::Use(Character& caster, Character& target)
 		}
 		case EFFECTTYPE::Regen:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
+			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
 			break;
 		}
 		case EFFECTTYPE::StatUp:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Shield:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		default:

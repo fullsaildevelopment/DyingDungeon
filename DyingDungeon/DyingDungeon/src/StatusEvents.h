@@ -14,13 +14,15 @@ public:
 	float damageAmount;
 	float atkMod;
 	EFFECTTYPE actionEffect;
-	CharacterDealtDamageEvent(std::wstring attacker, std::wstring action, float damage, float attackMod, EFFECTTYPE effect)
+	Character* characterPointer;
+	CharacterDealtDamageEvent(std::wstring attacker, Character* attacker_character,std::wstring action, float damage, float attackMod, EFFECTTYPE effect)
 	{
 		attackerName = Converter::ConvertWStrToStr(attacker.c_str());
 		actionName = Converter::ConvertWStrToStr(action.c_str());
 		damageAmount = damage;
 		atkMod = attackMod;
 		actionEffect = effect;
+		characterPointer = attacker_character;
 	}
 };
 
@@ -30,12 +32,14 @@ public:
 	std::string targetName;
 	std::string actionName;
 	float mitigationAmount;
+	Character* targetPointer;
 	
-	CharacterTakeDamage(std::wstring target, std::wstring action, float mitigation)
+	CharacterTakeDamage(std::wstring target, Character* target_character, std::wstring action, float mitigation)
 	{
 		targetName = Converter::ConvertWStrToStr(target.c_str());
 		actionName = Converter::ConvertWStrToStr(action.c_str());
 		mitigationAmount = mitigation;
+		targetPointer = target_character;
 	}
 };
 
@@ -46,12 +50,14 @@ public:
 	std::string actionName;
 	EFFECTTYPE actionEffect;
 	float health;
-	CharacterHealsEvent(std::wstring healer, std::wstring action, EFFECTTYPE effect, float healthAmount)
+	Character* characterPointer;
+	CharacterHealsEvent(std::wstring healer, Character* healer_character, std::wstring action, EFFECTTYPE effect, float healthAmount)
 	{
 		healerName = Converter::ConvertWStrToStr(healer.c_str());
 		actionName = Converter::ConvertWStrToStr(action.c_str());
 		actionEffect = effect;
 		health = healthAmount;
+		characterPointer = healer_character;
 	}
 };
 
@@ -60,10 +66,12 @@ class CharacterRecivesHealingEvent : public Odyssey::Event
 public:
 	std::string targetName;
 	float healingAmount;
-	CharacterRecivesHealingEvent(std::wstring target, float healing)
+	Character* targetPointer;
+	CharacterRecivesHealingEvent(std::wstring target, Character* target_character, float healing)
 	{
 		targetName = Converter::ConvertWStrToStr(target.c_str());
 		healingAmount = healing;
+		targetPointer = target_character;
 	}
 };
 
@@ -75,13 +83,17 @@ public:
 	std::string targetName;
 	EFFECTTYPE buffType;
 	float buffValue;
-	CharacterBuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE buff, float buffAmount)
+	Character* attackerPointer;
+	Character* targetPointer;
+	CharacterBuffsEvent(std::wstring character, Character* attaker_character, std::wstring target, Character* target_character, std::wstring action, EFFECTTYPE buff, float buffAmount)
 	{
 		chracterName = Converter::ConvertWStrToStr(character.c_str());
 		targetName = Converter::ConvertWStrToStr(target.c_str());
 		actionName = Converter::ConvertWStrToStr(action.c_str());
 		buffType = buff;
 		buffValue = buffAmount;
+		attackerPointer = attaker_character;
+		targetPointer = target_character;
 	}
 };
 
@@ -93,13 +105,17 @@ public:
 	std::string targetName;
 	EFFECTTYPE debuffType;
 	float debuffValue;
-	CharacterDebuffsEvent(std::wstring character, std::wstring target, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
+	Character* attackerPointer;
+	Character* targetPointer;
+	CharacterDebuffsEvent(std::wstring character, Character* attaker_character, std::wstring target, Character* target_character, std::wstring action, EFFECTTYPE debuff, float debuff_Value)
 	{
 		characterName = Converter::ConvertWStrToStr(character.c_str());
 		actionName = Converter::ConvertWStrToStr(action.c_str());
 		targetName = Converter::ConvertWStrToStr(target.c_str());
 		debuffType = debuff;
 		debuffValue = debuff_Value;
+		attackerPointer = attaker_character;
+		targetPointer = target_character;
 	}
 };
 

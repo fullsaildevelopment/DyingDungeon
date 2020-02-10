@@ -89,7 +89,7 @@ void Attack::Use(Character& caster, Character& target)
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(target);
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtkMod(), mStatusEffect->GetTypeId()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), &caster, mSkillName, mDamage, caster.GetAtkMod(), mStatusEffect->GetTypeId()));
 		//Switch stament for reds evvents
 		switch (mStatusEffect->GetTypeId())
 		{
@@ -99,22 +99,22 @@ void Attack::Use(Character& caster, Character& target)
 		}
 		case EFFECTTYPE::Bleed:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::Bleed, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::StatDown:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::StatDown, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Stun:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::Stun, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Provoke:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterDebuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::Provoke, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		default:
@@ -122,8 +122,8 @@ void Attack::Use(Character& caster, Character& target)
 		}
 	}
 	else
-		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), mSkillName, mDamage, caster.GetAtk(), EFFECTTYPE::None));
-	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), mSkillName, target.GetDefMod()));
+		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), &caster, mSkillName, mDamage, caster.GetAtkMod(), EFFECTTYPE::None));
+	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), &target, mSkillName, target.GetDefMod()));
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }
