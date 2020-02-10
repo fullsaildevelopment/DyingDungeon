@@ -23,6 +23,7 @@ public:
 		DirectX::XMVECTOR pRotation;
 		DirectX::XMFLOAT2 pHudPosition;
 		DirectX::XMFLOAT2 pHpPopupPosition;
+		bool pIsBool;
 	};
 
 public: // Singleton pattern

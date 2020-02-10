@@ -691,14 +691,39 @@ void setupEnemiesToCreate()
 	DirectX::XMFLOAT2 rightHudPosition = { 863.0f, 10.0f };
 	DirectX::XMFLOAT2 rightHpPopupPosition = { 725.0f, 150.0f };
 
+	// The list of enemies to add to the list of enemies to create in Team Manager
+	std::vector<TeamManager::EnemySetups> newEnemies;
 
-	// Level One Enemies
-	TeamManager::EnemySetups levelOneEnemy;
-	levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
-	levelOneEnemy.pPosition = leftPosition;
-	levelOneEnemy.pRotation = leftRotation;
-	levelOneEnemy.pHudPosition = leftHudPosition;
-	levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
+	// LEVEL ONE ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelOneEnemy;
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = leftPosition;
+		levelOneEnemy.pRotation = leftRotation;
+		levelOneEnemy.pHudPosition = leftHudPosition;
+		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = middlePosition;
+		levelOneEnemy.pRotation = middleRotation;
+		levelOneEnemy.pHudPosition = middleHudPosition;
+		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = rightPosition;
+		levelOneEnemy.pRotation = rightRotation;
+		levelOneEnemy.pHudPosition = rightHudPosition;
+		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+	}
 	
 }
 
