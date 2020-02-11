@@ -239,11 +239,13 @@ namespace Odyssey
 
 	class AABB;
 	class AnimatorDX11;
+	class Entity;
 	class MeshRenderer;
 	class Transform;
 
 	struct RenderObject
 	{
+		Entity* entity;
 		AABB* aabb;
 		MeshRenderer* meshRenderer;
 		Transform* transform;

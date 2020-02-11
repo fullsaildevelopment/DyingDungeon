@@ -71,6 +71,7 @@ namespace Odyssey
 
 		// The imported clip is the new current clip
 		mCurrentClip = clip;
+		mCurrentClip.currentFrame = clip.keyframes[0];
 		mCurrentClip.currentFrame.jointTransforms.resize(mCurrentClip.keyframes[0].jointTransforms.size());
 
 		// Set the animator to active and playing

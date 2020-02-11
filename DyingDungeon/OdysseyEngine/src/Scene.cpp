@@ -34,16 +34,117 @@ namespace Odyssey
 		mComponentList.push_back(component);
 		mComponentMap[entity].push_back(component);
 
-		if (component->isClassType(AABB::Type))
+		if (component->isClassType(Animator::Type))
 		{
-			RenderObject renderObject;
-			renderObject.aabb = entity->getComponent<AABB>();
-			renderObject.meshRenderer = entity->getComponent<MeshRenderer>();
-			renderObject.transform = entity->getComponent<Transform>();
-			renderObject.animator = entity->getRootComponent<AnimatorDX11>();
-			mRenderPackage.renderObjects.push_back(renderObject);
+			for (Entity* child : entity->getChildren())
+			{
+				// Check if we have added this entity as a render object before
+				for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+				{
+					if (mRenderPackage.renderObjects[i].entity == child)
+					{
+						// Update the contents of the render object
+						mRenderPackage.renderObjects[i].animator = child->getRootComponent<AnimatorDX11>();
+					}
+				}
+			}
 		}
+		if (entity->getComponent<MeshRenderer>())
+		{
+			if (component->isClassType(Animator::Type))
+			{
+				static bool found = false;
+				// Check if we have added this entity as a render object before
+				for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+				{
+					if (mRenderPackage.renderObjects[i].entity == entity)
+					{
+						// Update the contents of the render object
+						mRenderPackage.renderObjects[i].entity = entity;
+						mRenderPackage.renderObjects[i].aabb = entity->getComponent<AABB>();
+						mRenderPackage.renderObjects[i].meshRenderer = entity->getComponent<MeshRenderer>();
+						mRenderPackage.renderObjects[i].transform = entity->getComponent<Transform>();
+						mRenderPackage.renderObjects[i].animator = entity->getRootComponent<AnimatorDX11>();
+						found = true;
+					}
+				}
 
+				// The entity is not in the render package so add a new render object
+				if (found == false)
+				{
+					RenderObject renderObject;
+					renderObject.entity = entity;
+					renderObject.aabb = entity->getComponent<AABB>();
+					renderObject.meshRenderer = entity->getComponent<MeshRenderer>();
+					renderObject.transform = entity->getComponent<Transform>();
+					renderObject.animator = entity->getRootComponent<AnimatorDX11>();
+					mRenderPackage.renderObjects.push_back(renderObject);
+				}
+			}
+
+			if (component->isClassType(AABB::Type))
+			{
+				static bool found = false;
+				// Check if we have added this entity as a render object before
+				for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+				{
+					if (mRenderPackage.renderObjects[i].entity == entity)
+					{
+						// Update the contents of the render object
+						mRenderPackage.renderObjects[i].entity = entity;
+						mRenderPackage.renderObjects[i].aabb = entity->getComponent<AABB>();
+						mRenderPackage.renderObjects[i].meshRenderer = entity->getComponent<MeshRenderer>();
+						mRenderPackage.renderObjects[i].transform = entity->getComponent<Transform>();
+						mRenderPackage.renderObjects[i].animator = entity->getRootComponent<AnimatorDX11>();
+						found = true;
+					}
+				}
+
+				// The entity is not in the render package so add a new render object
+				if (found == false)
+				{
+					RenderObject renderObject;
+					renderObject.entity = entity;
+					renderObject.aabb = entity->getComponent<AABB>();
+					renderObject.meshRenderer = entity->getComponent<MeshRenderer>();
+					renderObject.transform = entity->getComponent<Transform>();
+					renderObject.animator = entity->getRootComponent<AnimatorDX11>();
+					mRenderPackage.renderObjects.push_back(renderObject);
+				}
+			}
+
+			if (component->isClassType(MeshRenderer::Type))
+			{
+				static bool found = false;
+				// Check if we have added this entity as a render object before
+				for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+				{
+					if (mRenderPackage.renderObjects[i].entity == entity)
+					{
+						// Update the contents of the render object
+						mRenderPackage.renderObjects[i].entity = entity;
+						mRenderPackage.renderObjects[i].aabb = entity->getComponent<AABB>();
+						mRenderPackage.renderObjects[i].meshRenderer = entity->getComponent<MeshRenderer>();
+						mRenderPackage.renderObjects[i].transform = entity->getComponent<Transform>();
+						mRenderPackage.renderObjects[i].animator = entity->getRootComponent<AnimatorDX11>();
+						found = true;
+					}
+				}
+
+				// The entity is not in the render package so add a new render object
+				if (found == false)
+				{
+					RenderObject renderObject;
+					renderObject.entity = entity;
+					renderObject.aabb = entity->getComponent<AABB>();
+					renderObject.meshRenderer = entity->getComponent<MeshRenderer>();
+					renderObject.transform = entity->getComponent<Transform>();
+					renderObject.animator = entity->getRootComponent<AnimatorDX11>();
+					mRenderPackage.renderObjects.push_back(renderObject);
+				}
+			}
+		}
+		
 		if (component->isClassType(UICanvas::Type))
 		{
 			// Add it to the vector of UI canvas objects
@@ -84,6 +185,17 @@ namespace Odyssey
 			// Set this as the main camera
 			mMainCamera = entity;
 			mRenderPackage.camera = camera;
+		}
+	}
+
+	void Scene::addElement(UIElement* element)
+	{
+		for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
+		{
+			if (element->getCanvas() == mRenderPackage.canvasObjects[i].canvas)
+			{
+				mRenderPackage.canvasObjects[i].elements.push_back(element);
+			}
 		}
 	}
 
@@ -315,7 +427,8 @@ namespace Odyssey
 		int mesh = RenderManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 		int material = RenderManager::getInstance().createMaterial(TextureType::Skybox, texture);
 
-		mSkybox = std::make_shared<Entity>();
+		mSkybox = createEntity();
+		mSkybox->setScene(nullptr);
 		mSkybox->addComponent<MeshRenderer>(mesh, material);
 		mSkybox->addComponent<Transform>();
 		mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);

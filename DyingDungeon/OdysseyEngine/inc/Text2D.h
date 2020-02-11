@@ -14,7 +14,6 @@ namespace Odyssey
 		Text2D(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height, std::wstring text, TextProperties textProperties);
 
 	public: // Interface
-		virtual std::shared_ptr<UIElement> clone() const;
 		/**
 		 *	Render the 2D text to the parameter render target.
 		 *	@param[in] renderTarget The 2D render target to render the text to.
