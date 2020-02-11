@@ -164,6 +164,17 @@ int playGame()
 	gSceneTwo = application->createScene("Scene Two", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
 	gSceneTwo->setSkybox("Skybox.dds");
 	setupSceneTwo();
+
+	// Create vector of all game scene
+	std::vector<Odyssey::Scene*> pListOfGameScenes;
+	pListOfGameScenes.push_back(gSceneOne);
+	pListOfGameScenes.push_back(gSceneTwo);
+	// Set the list of scenes in team select controller
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
+	// Set the game's current tower
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
+	// Set the game's turn indicator model
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTurnIndicator(gTurnIndicatorModel);
 	
 	// Set up multithreading
 	application->setMultithreading(true);
@@ -257,18 +268,6 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 
 	// Get the team selection controller
 	TeamSelectionController* teamSelectionController = gTeamSelectMenu->getComponent<TeamSelectionController>();
-
-	// Create vector of all game scene
-	std::vector<Odyssey::Scene*> pListOfGameScenes;
-	pListOfGameScenes.push_back(gSceneOne);
-	pListOfGameScenes.push_back(gSceneTwo);
-	// Set the list of scenes in team select controller
-	teamSelectionController->SetGameScenes(pListOfGameScenes);
-
-	// Set the game's current tower
-	teamSelectionController->SetTowerManager(gCurrentTower);
-	// Set the game's turn indicator model
-	teamSelectionController->SetTurnIndicator(gTurnIndicatorModel);
 
 	// Set up a directional light
 	gMenuLights[2] = gTeamSelectScene->createEntity();

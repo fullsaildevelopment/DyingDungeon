@@ -36,7 +36,6 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 				break;
 			case EnemyType::Ganfaul:
 				newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-				//return mEnemyTeam;
 				break;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;
