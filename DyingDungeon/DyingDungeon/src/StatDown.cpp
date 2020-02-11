@@ -15,7 +15,7 @@ StatDown::~StatDown()
 {
 }
 
-void StatDown::Apply(Character& target)
+void StatDown::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<StatDown>(mAmountOfEffect, mDuration, mStatId, &target);
@@ -45,6 +45,7 @@ void StatDown::Apply(Character& target)
 	default:
 		break;
 	}
+	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }
 

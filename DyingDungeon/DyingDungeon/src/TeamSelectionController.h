@@ -30,12 +30,16 @@ public:
 	void SetTurnIndicator(std::shared_ptr<Odyssey::Entity> _turnIndicatorModel) { mTurnIndicatorModel = _turnIndicatorModel; }
 
 	// Set the slot 1 of characters for team selection
-	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) {
-		mSlot1CharacterList = _listOfCharacters;
-		int debug = 0;
-	}
+	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
+	// Set the slot 2 of characters for team selection
 	void SetSlot2OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
+	// Set the slot 3 of characters for team selection
 	void SetSlot3OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
+
+	// Set the slot 
+	void SetSlot1CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot1CharacterInfoPopupList = _listOfPopupCanvases; }
+	void SetSlot2CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot2CharacterInfoPopupList = _listOfPopupCanvases; }
+	void SetSlot3CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot3CharacterInfoPopupList = _listOfPopupCanvases; }
 
 private:
 	Odyssey::Application* mApplication;
@@ -68,10 +72,20 @@ private:
 	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot2CharacterList;
 	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot3CharacterList;
 
+	// These vectors will hold the characters info popup
+	std::vector<Odyssey::UICanvas*> mSlot1CharacterInfoPopupList;
+	std::vector<Odyssey::UICanvas*> mSlot2CharacterInfoPopupList;
+	std::vector<Odyssey::UICanvas*> mSlot3CharacterInfoPopupList;
+
 	// Character Slot Indexes
 	int mSlot1Index = 0;
 	int mSlot2Index = 0;
 	int mSlot3Index = 0;
+
+	// Character Info Popup Indexes
+	int mSlot1InfoPopupIndex = 0;
+	int mSlot2InfoPopupIndex = 0;
+	int mSlot3InfoPopupIndex = 0;
 
 private: // Functions
 	// TODO: REFACTOR THIS LATER
@@ -93,6 +107,14 @@ private: // Functions
 	void DecreaseSlot3Index();
 	void IncreaseSlot3Index();
 
+	// Callback functions for the show info buttons
+	void ToggleShowInfoPopup1();
+	void ToggleShowInfoPopup2();
+	void ToggleShowInfoPopup3();
+
 	// Change the name in the slots
 	void ChangeSlotName(int _slotIndex, std::wstring _name);
+
+	// Change info popup
+	void ChangeInfoPopup(int& _indexCounter, bool _indexUp, std::vector<Odyssey::UICanvas*> _canvasList);
 };

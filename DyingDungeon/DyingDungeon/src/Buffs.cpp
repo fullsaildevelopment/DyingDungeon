@@ -36,7 +36,7 @@ void Buffs::Use(Character& caster, Character& target)
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	if (mStatusEffect != nullptr)
 	{
-		mStatusEffect->Apply(target);
+		mStatusEffect->Apply(caster, target);
 		//Alert Reds stuff for stat tracking?
 		switch (mStatusEffect->GetTypeId())
 		{

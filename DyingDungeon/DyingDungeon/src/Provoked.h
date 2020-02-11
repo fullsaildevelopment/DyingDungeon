@@ -14,7 +14,7 @@ public:
 	Provoked(int duration, Character* provoker, Character* target);
 	~Provoked();
 	// Application functions
-	void Apply(Character& target);
+	void Apply(Character& caster, Character& target);
 	void Remove();
 	void Use();
 	// mProvoker functions

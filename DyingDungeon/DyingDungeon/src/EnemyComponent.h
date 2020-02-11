@@ -10,6 +10,7 @@ class EnemyComponent : public Character
 public:
 	// Constructors
 	EnemyComponent() = default;
+	virtual void initialize();
 
 	// Pass in Enemy identifcation to get a specific Enemy class	
 	EnemyComponent(GameplayTypes::ENEMYID _enemyID);
