@@ -64,7 +64,7 @@ namespace
 	Odyssey::Entity* gMenu;
 	Odyssey::Entity* gTowerSelectMenu;
 	Odyssey::Entity* gTeamSelectMenu;
-	Odyssey::Entity* gGameMenu;
+	Odyssey::Entity* gRewardsScreen;
 	Odyssey::Entity* gPaladin;
 	Odyssey::Entity* gSkeleton;
 	Odyssey::Entity* gCurrentTower;
@@ -89,13 +89,14 @@ void setupSceneTwo();
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
-void setupGameInterface(Odyssey::Application* application);
+void setupRewardsPrefab(Odyssey::Application* application);
 void setupTowerManager();
 void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
 void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
+
 
 //void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
 //void setupPaladinSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
@@ -123,7 +124,8 @@ int playGame()
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	gDefaultText.fontName = L"Constantia";
 
-
+	// Setup the application pointer
+	CharacterFactory::getInstance().initialize(application.get());
 	// Assign the width and height for the UI Manager
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
 
@@ -140,8 +142,6 @@ int playGame()
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
-	// Set up the game user interface
-	setupGameInterface(application.get());
 
 	// Set up the team selection screen
 	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
@@ -151,10 +151,13 @@ int playGame()
 	gSceneOne = application->createScene("Scene One", DirectX::XMFLOAT3(0.0f, 0.0f, 25.0f), 45.0f);
 	gSceneOne->setSkybox("Dusk.dds");
 	setupSceneOne();
+	// Set up the rewards screen prefab
+	setupRewardsPrefab(application.get());
 	// Set up the tower manager
 	setupTowerManager();
 	// Set up the enemies that the player will battle
 	setupEnemiesToCreate();
+	TeamManager::getInstance().initialize();
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
 	// Create Pause Menu
@@ -490,27 +493,22 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
 }
 
-void setupGameInterface(Odyssey::Application* application)
+void setupRewardsPrefab(Odyssey::Application* application)
 {
 	// TODO: spawn prefab in a scene
 	// Create the rewards prefab
-	gGameMenu = application->createPrefab();
-
-	// Add a UI Canvas for the 1v1 combat
-	gGameMenu->addComponent<Odyssey::UICanvas>(); // The player's icons and health bars
+	gRewardsScreen = gSceneOne->createEntity();
 
 	// Add a UI Canvas for the rewards screen
-	gGameMenu->addComponent<Odyssey::UICanvas>(); // The rewards screen
-
-	// Get a reference to the UI canvas and get the width/height of the screen
-	Odyssey::UICanvas* canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
+	gRewardsScreen->addComponent<Odyssey::UICanvas>(); // The rewards screen
 
 	// Get the width and height of the window
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
 
+	// Get a reference to the UI canvas and get the width/height of the screen
+	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
-	canvas = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
 	UINT rewardsImageWidth = width*0.6;
 	UINT rewardsImageHeight = height*0.6;
@@ -572,7 +570,7 @@ void setupGameInterface(Odyssey::Application* application)
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 
 	canvas->setActive(false); // The rewards screen won't show up at the start
-	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4, rewardsImageHeight / 4);
+	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4.0f, rewardsImageHeight / 4.0f);
 }
 
 void setupTowerManager()
@@ -581,8 +579,7 @@ void setupTowerManager()
 	// Create the current tower entity
 	gCurrentTower = gSceneOne->createEntity();
 	gCurrentTower->addComponent<TowerManager>();
-	gCurrentTower->getComponent<TowerManager>()->UI = gGameMenu->getComponents<Odyssey::UICanvas>()[0];
-	gCurrentTower->getComponent<TowerManager>()->Rewards = gGameMenu->getComponents<Odyssey::UICanvas>()[1];
+	gCurrentTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// TODO: REFACTOR LATER
 	gCurrentTower->getComponent<TowerManager>()->scene = gSceneOne;
 

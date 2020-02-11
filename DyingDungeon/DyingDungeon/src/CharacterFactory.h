@@ -2,6 +2,8 @@
 #include "OdysseyEngine.h"
 #include "RenderManager.h"
 #include "Scene.h"
+#include "Application.h"
+#include <map>
 
 
 class CharacterFactory
@@ -16,7 +18,7 @@ public:
 	static CharacterFactory& getInstance();
 	~CharacterFactory() { }
 private: // Singleton pattern
-	CharacterFactory() { }
+	CharacterFactory() {}
 
 public:
 	enum CharacterOptions
@@ -35,9 +37,12 @@ public:
 
 public: // Functions
 
-	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene);
+	void initialize(Odyssey::Application* _application);
+
+	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
 
 	//Getters
+	Odyssey::Entity* GetPrefab(CharacterOptions _characterType);
 
 	//Setters
 
@@ -66,5 +71,11 @@ private: // Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setupBlood(Odyssey::Scene* _sceneToAddTo);
+
+	// Dora's Map
+	std::map<CharacterOptions, Odyssey::Entity*> mPrefabMap;
+
+	// Application
+	Odyssey::Application* mApplication;
 };
 

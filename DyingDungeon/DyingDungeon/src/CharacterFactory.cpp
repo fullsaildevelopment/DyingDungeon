@@ -14,10 +14,28 @@ CharacterFactory& CharacterFactory::getInstance()
 	return instance;
 }
 
+void CharacterFactory::initialize(Odyssey::Application* _application)
+{
+	// Set application
+	mApplication = _application;
+
+	// Create Ganfaul Prefab
+	Odyssey::Entity* ganfaulPrefab = mApplication->createPrefab();
+}
+
 Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the new pointer for the character we are creating
-	Odyssey::Entity* newCharacter = _sceneToAddTo->createEntity();
+	Odyssey::Entity* newCharacter = nullptr;
+
+	if (_sceneToAddTo)
+	{
+		newCharacter = _sceneToAddTo->createEntity();
+	}
+	else
+	{
+		newCharacter = mApplication->createPrefab();
+	}
 
 	// Get Position values
 	float xPos = DirectX::XMVectorGetX(_position);
@@ -205,7 +223,7 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 			}
 
 			// Set up blood particle effect
-			tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
+			//tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			break;
 		}
@@ -219,25 +237,33 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 	// Allow the character to recieve shadows
 	newCharacter->setStatic(false);
 	// Have the animator be displayed in debug mode
-	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
+	//newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 
-	// Create entity to add the HUD to
-	Odyssey::Entity* hudEntity = _sceneToAddTo->createEntity();
-	//Create the character's HUD UI
-	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity, newCharacter->getComponent<Character>());
-	// Set the character's hud index number
-	// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
-	newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
-	// Increase the character index
-	characterHudIndex++;
-	// Set the canvas to active depending on the bool passed in
-	hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
+	if (_sceneToAddTo)
+	{
+		// Create entity to add the HUD to
+		Odyssey::Entity* hudEntity = _sceneToAddTo->createEntity();
+		//Create the character's HUD UI
+		GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity, newCharacter->getComponent<Character>());
+		// Set the character's hud index number
+		// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
+		newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
+		// Increase the character index
+		characterHudIndex++;
+		// Set the canvas to active depending on the bool passed in
+		hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
 
-	// Create the impact indicator for each character
-	CreateCharacterImpactIndicator(newCharacter, _sceneToAddTo);
+		// Create the impact indicator for each character
+		CreateCharacterImpactIndicator(newCharacter, _sceneToAddTo);
+	}
 
 	// Return the brand new charcter that was created
 	return newCharacter;
+}
+
+Odyssey::Entity* CharacterFactory::GetPrefab(CharacterOptions _characterType)
+{
+	return mPrefabMap[_characterType];
 }
 
 void CharacterFactory::CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo)
