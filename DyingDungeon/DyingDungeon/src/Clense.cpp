@@ -13,7 +13,6 @@ Clense::Clense(int duration, Character* target)
 
 Clense::~Clense()
 {
-	Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
 	mDuration = -1;

@@ -13,7 +13,8 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 
 Provoked::~Provoked()
 {
-	Remove();
+	if(mRecipient != nullptr)
+		Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
 	mDuration = -1;

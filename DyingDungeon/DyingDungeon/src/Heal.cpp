@@ -1,6 +1,9 @@
 #include "Heal.h"
 #include "Character.h"
-// Constructor
+
+
+// Constructors for the diffrent cases of attacks //
+//////////////////////////////////////////////////////////////
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
@@ -13,7 +16,6 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
-
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
@@ -26,17 +28,29 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mStatusEffect = nullptr;
 	mIsAOE = isAoe;
 }
+//////////////////////////////////////////////////////////////
 
-// Use the heal on the target
+// Function that applies the heal to the passed in target
 void Heal::Use(Character& caster, Character& target)
 {
-	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	// Apply the heal to the target
 	target.ReceiveHealing(mHealing);
+
+	// Update the combat log
+	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+
+	// Fire off reds event
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));
+
+	// Play audio "heal" sound effect
+	RedAudioManager::Instance().PlaySFX("Forward Aerial");
+
+	// If i have a status effect to apply, then apply it
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
 		mStatusEffect->Apply(caster, target);
-		//Alert Reds stuff for stat tracking?
+
+		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())
 		{
 		case EFFECTTYPE::None:
