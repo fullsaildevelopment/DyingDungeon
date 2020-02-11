@@ -44,9 +44,10 @@ namespace Odyssey
 	public: // Type identifers
 		static const std::size_t Type;
 		virtual bool isClassType(const std::size_t classType) const;
-
+		virtual std::shared_ptr<Component> clone() const = 0;
 	public: // Rule of 3
 		Component();
+		Component(const Component& copy);
 		~Component();
 
 	public: // Interface

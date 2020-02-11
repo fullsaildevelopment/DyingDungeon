@@ -1,13 +1,13 @@
 #include "RenderState.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
-	RenderState::RenderState(std::shared_ptr<RenderDevice> renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
+	RenderState::RenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW, bool depthClipping, bool isShadowMap) :
 		mFrontCCW(frontCCW), mDepthClipping(depthClipping)
 	{
 		// Get the device and immediate context from the render manager
-		mDevice = renderDevice->getDevice();
+		mDevice = RenderManager::getInstance().getDX11Device();
 
 		// Convert the custom enums to directX enums
 		convertToDirectX(topology, cullMode, fillMode);
@@ -17,7 +17,7 @@ namespace Odyssey
 		ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
 		rasterizerDesc.FrontCounterClockwise = mFrontCCW;
 		rasterizerDesc.DepthClipEnable = mDepthClipping;
-		rasterizerDesc.CullMode = mCullMode;
+		rasterizerDesc.CullMode = D3D11_CULL_NONE;
 		rasterizerDesc.FillMode = mFillMode;
 		rasterizerDesc.AntialiasedLineEnable = true;
 		rasterizerDesc.MultisampleEnable = true;
@@ -31,6 +31,7 @@ namespace Odyssey
 			rasterizerDesc.DepthBiasClamp = 0.0f;
 			rasterizerDesc.SlopeScaledDepthBias = 1.0f;
 		}
+
 		HRESULT hr = mDevice->CreateRasterizerState(&rasterizerDesc, mRasterizerState.GetAddressOf());
 		assert(!FAILED(hr));
 	}
@@ -93,16 +94,16 @@ namespace Odyssey
 
 		switch (fillMode)
 		{
-		case FillMode::FILL_SOLID:
-		{
-			mFillMode = D3D11_FILL_SOLID;
-			break;
-		}
-		case FillMode::FILL_WIREFRAME:
-		{
-			mFillMode = D3D11_FILL_WIREFRAME;
-			break;
-		}
+			case FillMode::FILL_SOLID:
+			{
+				mFillMode = D3D11_FILL_SOLID;
+				break;
+			}
+			case FillMode::FILL_WIREFRAME:
+			{
+				mFillMode = D3D11_FILL_WIREFRAME;
+				break;
+			}
 		}
 	}
 
@@ -111,26 +112,26 @@ namespace Odyssey
 		Topology retTopology;
 		switch (topology)
 		{
-		case D3D11_PRIMITIVE_TOPOLOGY_POINTLIST:
-		{
-			retTopology = Topology::PointList;
-			break;
-		}
-		case D3D11_PRIMITIVE_TOPOLOGY_LINELIST:
-		{
-			retTopology = Topology::LineList;
-			break;
-		}
-		case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP:
-		{
-			retTopology = Topology::LineStrip;
-			break;
-		}
-		case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
-		{
-			retTopology = Topology::TriangleList;
-			break;
-		}
+			case D3D11_PRIMITIVE_TOPOLOGY_POINTLIST:
+			{
+				retTopology = Topology::PointList;
+				break;
+			}
+			case D3D11_PRIMITIVE_TOPOLOGY_LINELIST:
+			{
+				retTopology = Topology::LineList;
+				break;
+			}
+			case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP:
+			{
+				retTopology = Topology::LineStrip;
+				break;
+			}
+			case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+			{
+				retTopology = Topology::TriangleList;
+				break;
+			}
 		}
 		return retTopology;
 	}

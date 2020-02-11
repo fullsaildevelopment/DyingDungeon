@@ -11,7 +11,7 @@ namespace Odyssey
 	class Entity;
 	class MeshRenderer;
 	class ParticleSystem;
-	class RenderWindow;
+	class RenderWindowDX11;
 	class UICanvas;
 	class UIElement;
 
@@ -21,6 +21,9 @@ namespace Odyssey
 		Buffer* perFrameBuffer;
 		PerObjectBuffer perObject;
 		Buffer* perObjectBuffer;
+		RenderWindowDX11* activeWindow;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
+		Microsoft::WRL::ComPtr< ID2D1DeviceContext> context2D;
 	};
 
 	class RenderPass

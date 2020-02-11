@@ -1,13 +1,18 @@
 #include "AnimatorDX11.h"
 #include "Buffer.h"
 #include "DebugManager.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
 	CLASS_DEFINITION(Animator, AnimatorDX11)
 
-	AnimatorDX11::AnimatorDX11(RenderDevice& renderDevice)
+	std::shared_ptr<Component> AnimatorDX11::clone() const
+	{
+		return std::make_shared<AnimatorDX11>(*this);
+	}
+
+	AnimatorDX11::AnimatorDX11()
 	{
 		// Set default values
 		mCurrentClip.nextFrame = 0;
@@ -20,7 +25,7 @@ namespace Odyssey
 		mDebugEnabled = false;
 
 		// Create the constant buffer for skinned animation
-		mAnimationBuffer = renderDevice.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mAnimationBuffer = RenderManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(AnimationBuffer)), nullptr);
 
 		// No animation data to process for skinned rendering
@@ -60,14 +65,14 @@ namespace Odyssey
 	void AnimatorDX11::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Update the constant buffer and bind it to slot 1 of the vertex shader
-		mAnimationBuffer->updateData(context , &mAnimationData);
-		mAnimationBuffer->bind(context, 2, ShaderType::VertexShader);
+		RenderManager::getInstance().getBuffer(mAnimationBuffer)->updateData(context , &mAnimationData);
+		RenderManager::getInstance().getBuffer(mAnimationBuffer)->bind(context, 2, ShaderType::VertexShader);
 	}
 
 	void AnimatorDX11::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Ubbind the constant buffer from slot 1 of the vertex shader
-		mAnimationBuffer->unbind(context, 2, ShaderType::VertexShader);
+		RenderManager::getInstance().getBuffer(mAnimationBuffer)->unbind(context, 2, ShaderType::VertexShader);
 	}
 
 	void AnimatorDX11::debugDraw(DirectX::XMFLOAT4X4& globalTransform, DirectX::XMFLOAT3 color)
@@ -94,11 +99,11 @@ namespace Odyssey
 				DirectX::XMStoreFloat3(&parentPos, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&parentPos), DirectX::XMLoadFloat4x4(&globalTransform)));
 
 				// Draw a line from the joint to it's parent
-				DebugManager::getInstance().addLine(jointPos, parentPos, color, color);
+				//DebugManager::getInstance().addLine(jointPos, parentPos, color, color);
 			}
 
 			// Draw a debug sphere at the joint
-			DebugManager::getInstance().addSphere(jointPos, 0.025f, { 0,1,0 });
+			//DebugManager::getInstance().addSphere(jointPos, 0.025f, { 0,1,0 });
 		}
 	}
 

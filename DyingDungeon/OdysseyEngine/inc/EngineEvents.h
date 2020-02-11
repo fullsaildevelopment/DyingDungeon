@@ -151,29 +151,6 @@ namespace Odyssey
 		}
 	};
 
-	class Component;
-	class ComponentAddEvent : public Event
-	{
-	public:
-		Component* component;
-
-		ComponentAddEvent(Component* componentAdded) : component(componentAdded)
-		{
-			priority = EventPriority::Immediate;
-		}
-	};
-
-	class ComponentRemoveEvent : public Event
-	{
-	public:
-		Component* component;
-
-		ComponentRemoveEvent(Component* componentRemoved) : component(componentRemoved)
-		{
-			priority = EventPriority::Immediate;
-		}
-	};
-
 	class UIScaleEvent : public Event
 	{
 	public:
@@ -181,6 +158,31 @@ namespace Odyssey
 		float* yScale;
 
 		UIScaleEvent(float* screenX, float* screenY) : xScale(screenX), yScale(screenY)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class Entity;
+
+	class SpawnEntityEvent : public Event
+	{
+	public:
+		Entity* prefab;
+		Entity** entity;
+
+		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity) : prefab(spawnPrefab), entity(outEntity)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class DestroyEntityEvent : public Event
+	{
+	public:
+		Entity* entity;
+
+		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
 		{
 			priority = EventPriority::Immediate;
 		}

@@ -13,12 +13,12 @@ namespace Odyssey
 	class RenderTarget
 	{
 	public: // Constructors
-		RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled);
-		RenderTarget(std::shared_ptr<RenderDevice> renderDevice, int width, int height, bool depthEnabled, RenderWindow* renderWindow);
+		RenderTarget(int width, int height, bool depthEnabled);
+		RenderTarget(RenderWindow* renderWindow, bool depthEnabled);
 		~RenderTarget() = default;
 	public: // Creation Functions
 		void createDepthTarget(UINT bindFlags, int width, int height);
-		void setViewport(std::shared_ptr<Viewport> viewport);
+		void setViewport(int viewport);
 		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		void bindDepthTexture(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, int slot);
 		void unBind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
@@ -28,17 +28,16 @@ namespace Odyssey
 		Texture* getDepthTexture();
 		void clearRenderView(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		void clearDepth(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
+		void resize(RenderWindow* renderWindow);
 	private:
 		void createRenderTargetView(int width, int height);
 		void createDepthStencilView(int width, int height);
 	private: // DirectX Resources
-		std::shared_ptr<RenderDevice> mRenderDevice;
-		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
 	private: // Rendering Resources
-		std::shared_ptr<Texture> mRTVTexture;
-		std::shared_ptr<Texture> mDSVTexture;
-		std::shared_ptr<Viewport> mViewport;
+		int mRenderTexture;
+		int mDepthTexture;
+		int mViewport;
 	};
 }

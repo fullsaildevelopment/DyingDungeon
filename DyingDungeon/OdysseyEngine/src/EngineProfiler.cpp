@@ -70,16 +70,22 @@ namespace Odyssey
 
 	void EngineProfiler::onDebugInput(KeypressEvent* evnt)
 	{
+		static bool create = true;
 		if (evnt->keyCode == KeyCode::F7)
 		{
-			if (mDebugCanvas == nullptr)
+			if (create)
 			{
+				// Don't recreate the canvas again
+				create = false;
+
+				// Create the canvas
 				createDebugCanvas();
+
+				// Notify the sprite2d pass to render this debug canvas
+				EventManager::getInstance().publish(new DebugEngine(mDebugCanvas));
 			}
-			else
-			{
-				mDebugCanvas->setActive(!mDebugCanvas->isActive());
-			}
+			
+			mDebugCanvas->setActive(!mDebugCanvas->isActive());
 			mOutputStats = mDebugCanvas->isActive();
 		}
 	}
@@ -146,9 +152,6 @@ namespace Odyssey
 
 		// Initialize the canvas
 		mDebugCanvas->initialize();
-
-		// Notify the sprite2d pass to render this debug canvas
-		EventManager::getInstance().publish(new DebugEngine(mDebugCanvas));
 	}
 
 	void EngineProfiler::updateDebugCanvas()

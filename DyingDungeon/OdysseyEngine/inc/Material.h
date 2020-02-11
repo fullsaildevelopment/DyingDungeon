@@ -23,7 +23,8 @@ namespace Odyssey
 		//------------------------------- ( 16 bytes )
 		uint32_t mHasEmissiveTexture;
 		uint32_t mHasNormalTexture;
-		DirectX::XMFLOAT2 pad;
+		uint32_t mReceivesShadows;
+		float pad;
 	};  //------------------------------- ( 16 * 5 = 80 bytes )
 
 	class Buffer;
@@ -34,28 +35,28 @@ namespace Odyssey
 	class Material
 	{
 	public:
-		Material(std::shared_ptr<RenderDevice> renderDevice);
-		Material(std::shared_ptr<RenderDevice> renderDevice, TextureType textureType, std::shared_ptr<Texture> texture);
+		Material();
+		Material(TextureType textureType, int textureID);
 		~Material() = default;
 	public:
 		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		void unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 	public: // Mutators
-		void setTexture(TextureType textureType, std::shared_ptr<Texture> texture);
+		void setTexture(TextureType textureType, int textureID);
 		void setGlobalAmbient(DirectX::XMFLOAT4 globalAmbient);
 		void setSpecularPower(float specularPower);
 		void setReflectance(float reflectance);
 		void setDiffuseColor(DirectX::XMFLOAT4 color);
-		void setShader(std::shared_ptr<Shader> pixelShader);
+		void setReceiveShadow(bool receiveShadow);
+		void setShader(int pixelShader);
 		Shader* getShader();
 	private:
 		void setDefaultMaterialProperties();
 		MaterialProperties mProperties;
 	private:
-		std::shared_ptr<RenderDevice> mRenderDevice;
-		std::map<TextureType, std::shared_ptr<Texture>> mTextureMap;
-		std::shared_ptr<Buffer> mMaterialBuffer;
-		std::shared_ptr<Shader> mPixelShader;
+		std::map<TextureType, int> mTextureMap;
+		int mMaterialBuffer;
+		int mPixelShader;
 		ReadWriteLock mLock;
 	};
 }

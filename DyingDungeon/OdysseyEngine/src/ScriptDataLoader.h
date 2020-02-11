@@ -8,7 +8,6 @@ namespace Odyssey
 	class Entity;
 	class Material;
 	class Mesh;
-	class RenderDevice;
 	class Scene;
 	class Texture;
 	class Transform;
@@ -39,20 +38,20 @@ namespace Odyssey
 		};
 
 	public:
-		ScriptDataLoader(std::shared_ptr<RenderDevice> renderDevice);
-		void importScene(std::shared_ptr<Scene> scene, const char* filename);
-		void importModel(std::shared_ptr<Entity> entity, const char* filename, bool isMultiMesh);
-		void onShutdown(EngineShutdownEvent* evnt);
+		ScriptDataLoader();
+		void importScene(Scene* scene, const char* filename);
+		void importModel(Entity*& entity, const char* filename, bool isMultiMesh);
 	private:
-		void constructEntity(std::fstream& file, std::shared_ptr<Entity> entity);
+		void constructEntity(std::fstream& file, Entity*& entity);
 		void readMeshData(std::fstream& file, MeshData& meshData);
 		void readMaterialData(std::fstream& file, MaterialData& materialData);
 		void readSkeletonData(std::fstream& file, SkeletonData& skeletonData);
-		void processMeshData(MeshData& meshData, std::shared_ptr<Mesh>& mesh);
-		void processMaterialData(MaterialData& materialData, std::shared_ptr<Material>& material);
+		void processMeshData(MeshData& meshData, int& mesh);
+		void processMaterialData(MaterialData& materialData, int& material);
 	private:
-		std::shared_ptr<RenderDevice> mRenderDevice;
-		std::map<size_t, std::shared_ptr<Mesh>> meshHashMap;
-		std::map<std::string, std::shared_ptr<Texture>> textureFileMap;
+		typedef std::map<size_t, int> MeshHashMap;
+		MeshHashMap mMeshMap;
+		typedef std::map<std::string, int> TextureFileMap;
+		TextureFileMap mTextureMap;
 	};
 }

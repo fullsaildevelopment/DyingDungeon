@@ -5,6 +5,7 @@
 #include "ReadWriteLock.h"
 #include "EngineEvents.h"
 #include "EventManager.h"
+#include "Scene.h"
 
 namespace Odyssey
 {
@@ -12,8 +13,13 @@ namespace Odyssey
 	{
 	public: // Rule of 3
 		Entity();
-
+		Entity(Scene* scene);
+		Entity(const Entity& copy);
+		Entity& operator=(const Entity& copy);
 	public: // Interface
+		void setScene(Scene* scene);
+		Scene* getScene();
+
 		/**
 		 *	Set the entity's parent entity.
 		 *	@param[in] parent The entity's parent entity.
@@ -33,14 +39,14 @@ namespace Odyssey
 		 *	@param[in] child The child to add.
 		 *	@return void
 		 */
-		void addChild(std::shared_ptr<Entity> child);
+		void addChild(Entity* child);
 
 		/**
 		 *	Get the entity's children.
 		 *	@param[in] void
 		 *	@return vector<shared_ptr<Entity>> Vector containing the entity's children.
 		 */
-		const std::vector<std::shared_ptr<Entity>> getChildren();
+		const std::vector<Entity*> getChildren();
 
 		/**
 		 *	Get the entity's number of children.
@@ -107,7 +113,8 @@ namespace Odyssey
 
 	private: // Members
 		std::vector<std::shared_ptr<Component>> mComponents;
-		std::vector<std::shared_ptr<Entity>> mChildren;
+		std::vector<Entity*> mChildren;
+		Scene* mScene;
 		Entity* mParent;
 		bool mDebugEnabled;
 		bool mIsStatic;
@@ -132,6 +139,11 @@ namespace Odyssey
 
 			// Return a raw pointer to the created component
 			ComponentType* component = static_cast<ComponentType*>(mComponents[mComponents.size() - 1].get());
+
+			if (mScene)
+			{
+				mScene->addComponent(component);
+			}
 			return component;
 		}
 
@@ -237,7 +249,7 @@ namespace Odyssey
 			// A component type pointer was found so remove it
 			if (success)
 			{
-				EventManager::getInstance().publish(new ComponentRemoveEvent(index->get()));
+				mScene->removeComponent(index->get());
 				mComponents.erase(index);
 			}
 
@@ -263,7 +275,7 @@ namespace Odyssey
 				if (mComponents[i]->isClassType(ComponentType::Type) && mComponents[i].get() == searchTarget)
 				{
 					// Erase the component and return true
-					EventManager::getInstance().publish(new ComponentRemoveEvent((mComponents.begin() + i)->get()));
+					mScene->removeComponent(mComponents[i].get());
 					mComponents.erase(mComponents.begin() + i);
 					return true;
 				}
@@ -293,7 +305,7 @@ namespace Odyssey
 				if (mComponents[i]->isClassType(ComponentType::Type))
 				{
 					// Erase the component and increment the tracker
-					EventManager::getInstance().publish(new ComponentRemoveEvent((mComponents.begin() + i)->get()));
+					mScene->removeComponent(mComponents[i].get());
 					mComponents.erase(mComponents.begin() + i);
 					return numRemoved++;
 				}

@@ -1,42 +1,52 @@
-#include "MeshRenderer.h"
-#include <fstream>
 #include "Material.h"
 #include "Mesh.h"
+#include "RenderManager.h"
+#include "MeshRenderer.h"
 
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, MeshRenderer)
+
+	std::shared_ptr<Component> MeshRenderer::clone() const
+	{
+		return std::make_shared<MeshRenderer>(*this);
+	}
 
 	MeshRenderer::MeshRenderer()
 	{
 		// Set default values
 		mDebugEnabled = false;
 		mIsActive = false;
+		mMaterial = -1;
+		mMesh = -1;
 	}
 
-	MeshRenderer::MeshRenderer(std::shared_ptr<Mesh> meshID, std::shared_ptr<Material> material)
+	MeshRenderer::MeshRenderer(int meshID, int materialID)
 	{
+		// Set default values
+		mDebugEnabled = false;
+
 		// The MeshRenderer is now active
 		mIsActive = true;
 
 		// Store the new Mesh and Material
 		mMesh = meshID;
-		mMaterial = material;
+		mMaterial = materialID;
 	}
 
-	void MeshRenderer::setMesh(std::shared_ptr<Mesh> mesh)
+	void MeshRenderer::setMesh(int meshID)
 	{
 		// Set the new Mesh
 		mLock.lock(LockState::Write);
-		mMesh = mesh;
+		mMesh = meshID;
 		mLock.unlock(LockState::Write);
 	}
 
-	void MeshRenderer::setMaterial(std::shared_ptr<Material> material)
+	void MeshRenderer::setMaterial(int materialID)
 	{
 		// Set the new Material
 		mLock.lock(LockState::Write);
-		mMaterial = material;
+		mMaterial = materialID;
 		mLock.unlock(LockState::Write);
 	}
 
@@ -62,7 +72,7 @@ namespace Odyssey
 	{
 		// Return a raw pointer to the Mesh
 		mLock.lock(LockState::Read);
-		Mesh* mesh = mMesh.get();
+		Mesh* mesh = RenderManager::getInstance().getMesh(mMesh);
 		mLock.unlock(LockState::Read);
 
 		return mesh;
@@ -72,7 +82,7 @@ namespace Odyssey
 	{
 		// Return a raw pointer to the Material
 		mLock.lock(LockState::Read);
-		Material* material = mMaterial.get();
+		Material* material = RenderManager::getInstance().getMaterial(mMaterial);
 		mLock.unlock(LockState::Read);
 
 		return material;
@@ -81,14 +91,14 @@ namespace Odyssey
 	void MeshRenderer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind the mesh and material to the rendering pipeline
-		mMesh->bind(context);
-		mMaterial->bind(context);
+		RenderManager::getInstance().getMesh(mMesh)->bind(context);
+		RenderManager::getInstance().getMaterial(mMaterial)->bind(context);
 	}
 
 	void MeshRenderer::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Unbind the mesh and material from the rendering pipeline
-		mMesh->unbind(context);
-		mMaterial->unbind(context);
+		RenderManager::getInstance().getMesh(mMesh)->unbind(context);
+		RenderManager::getInstance().getMaterial(mMaterial)->unbind(context);
 	}
 }

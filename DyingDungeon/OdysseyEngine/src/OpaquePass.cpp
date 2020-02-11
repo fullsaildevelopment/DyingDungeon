@@ -13,7 +13,7 @@
 #include "Shader.h"
 #include "Buffer.h"
 #include "Camera.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "AnimatorDX11.h"
 #include "RenderWindow.h"
 #include "RenderWindowDX11.h"
@@ -22,20 +22,15 @@
 
 namespace Odyssey
 {
-	OpaquePass::OpaquePass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
+	OpaquePass::OpaquePass()
 	{
-		// Get the device and context
-		mDeviceContext = context;
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
-
-		// Get and store the render target
-		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
+		// Store a reference to the render manager
+		RenderManager& renderManager = RenderManager::getInstance();
 
 		// Create the render state for opaque objects
-		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
+		mRenderState = renderManager.createRenderState(Topology::TriangleList, CullMode::CULL_BACK, FillMode::FILL_SOLID, false, true, false);
 
-		mLightingBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mLightingBuffer = renderManager.createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
 
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
@@ -50,30 +45,33 @@ namespace Odyssey
 		};
 
 		// Create the default pixel shader
-		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/LitPixelShader.cso", nullptr);
+		mPixelShader = renderManager.createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/LitPixelShader.cso", nullptr);
 
 		// Create the default vertex shader
-		mVertexShader = renderDevice->createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/VertexShader.cso", vShaderLayout, 7);
+		mVertexShader = renderManager.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/VertexShader.cso", vShaderLayout, 7);
 		mFrustumCull = true;
 
 		// Create the per object lighting buffer
-		mLightingBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
-			static_cast<UINT>(sizeof(SceneLighting)), nullptr);
+		mLightingBuffer = renderManager.createBuffer(BufferBindFlag::ConstantBuffer, 1, sizeof(SceneLighting), nullptr);
 	}
 
 	void OpaquePass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
+		// Store a reference to the render manager
+		RenderManager& renderManager = RenderManager::getInstance();
+
 		// Update the buffer
-		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
+		updatePerFrameBuffer(args.context, args.perFrame, args.perFrameBuffer);
 
 		// Bind the render target
-		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
+		args.activeWindow->get3DRenderTarget()->bind(args.context);
 
 		// Bind the render state
-		mRenderState->bind(mDeviceContext);
+		renderManager.getRenderState(mRenderState)->bind(args.context);
 
-		mVertexShader->bind(mDeviceContext);
-		mPixelShader->bind(mDeviceContext);
+		// Bind the vertex/pixel shader
+		renderManager.getShader(mVertexShader)->bind(args.context);
+		renderManager.getShader(mPixelShader)->bind(args.context);
 	}
 
 	void OpaquePass::render(RenderArgs& args, RenderPackage& renderPackage)
@@ -85,7 +83,7 @@ namespace Odyssey
 		DirectX::XMFLOAT4X4 globalTransform;
 
 		Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation> performance;
-		mDeviceContext->QueryInterface(__uuidof(performance), &performance);
+		args.context->QueryInterface(__uuidof(performance), &performance);
 		performance->BeginEvent(L"Opaque Pass");
 
 		// Iterate over each object in the render list
@@ -124,14 +122,14 @@ namespace Odyssey
 
 				if (itr->second->animator)
 				{
-					itr->second->animator->bind(mDeviceContext);
+					itr->second->animator->bind(args.context);
 				}
 
 				renderSceneObject(itr->second, args);
 
 				if (itr->second->animator)
 				{
-					itr->second->animator->unbind(mDeviceContext);
+					itr->second->animator->unbind(args.context);
 				}
 			}
 		}
@@ -196,20 +194,21 @@ namespace Odyssey
 		}
 
 		// Set the lighting constant buffer
-		mLightingBuffer->updateData(mDeviceContext, &sceneLighting);
-		mLightingBuffer->bind(mDeviceContext, 1, ShaderType::PixelShader);
+		RenderManager::getInstance().getBuffer(mLightingBuffer)->updateData(args.context, &sceneLighting);
+		RenderManager::getInstance().getBuffer(mLightingBuffer)->bind(args.context, 1, ShaderType::PixelShader);
 	}
 
 	void OpaquePass::renderSceneObject(RenderObject* renderObject, RenderArgs& args)
 	{
 		// Set the global transform for the mesh and update the shader matrix buffer
 		args.perObject.world = renderObject->transform->getGlobalTransform();
-		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
+		updatePerObjectBuffer(args.context, args.perObject, args.perObjectBuffer);
 
 		// Bind the mesh renderer
-		renderObject->meshRenderer->bind(mDeviceContext);
+		RenderManager::getInstance().getShader(mPixelShader)->bind(args.context);
+		renderObject->meshRenderer->bind(args.context);
 
 		// Draw the mesh
-		mDeviceContext->DrawIndexed(renderObject->meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
+		args.context->DrawIndexed(renderObject->meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
 	}
 }

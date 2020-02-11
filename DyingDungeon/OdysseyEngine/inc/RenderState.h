@@ -10,7 +10,7 @@ namespace Odyssey
 	class RenderState
 	{
 	public:
-		RenderState(std::shared_ptr<RenderDevice> renderDevice, Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW = false, bool depthClipping = true, bool isShadowMap = false);
+		RenderState(Topology topology, CullMode cullMode, FillMode fillMode, bool frontCCW = false, bool depthClipping = true, bool isShadowMap = false);
 		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		~RenderState() = default;
 	public:
@@ -19,7 +19,6 @@ namespace Odyssey
 		void convertToDirectX(Topology topology, CullMode cullMode, FillMode fillMode);
 		Topology convertToCustom(D3D11_PRIMITIVE_TOPOLOGY topology);
 	private:
-		std::shared_ptr<RenderDevice> mRenderDevice;
 		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRasterizerState;
 		D3D11_CULL_MODE mCullMode;

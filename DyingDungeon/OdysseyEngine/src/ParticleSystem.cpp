@@ -2,35 +2,88 @@
 #include "Buffer.h"
 #include "Material.h"
 #include "RenderState.h"
-#include "RenderDevice.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Entity.h"
+#include "DepthState.h"
+#include "BlendState.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
 	CLASS_DEFINITION(Component, ParticleSystem)
 
-		ParticleSystem::ParticleSystem(RenderDevice& renderDevice) : mRenderDevice(renderDevice)
+	ParticleSystem::ParticleSystem(const ParticleSystem& copy)
 	{
-		// Transfer the direct3d device
-		// TODO: REFACTOR THIS LATER BY MAKING A CUSTOM DEPTH AND BLEND STATE CLASS
-		mDevice = renderDevice.getDevice();
+		mShape = copy.mShape;
+		mStartColor = copy.mStartColor;
+		mEndColor = copy.mEndColor;
+		mMinLife = copy.mMinLife;
+		mMaxLife = copy.mMaxLife;
+		mMinSpeed = copy.mMinSpeed;
+		mMaxSpeed = copy.mMaxSpeed;
+		mMinSize = copy.mMinSize;
+		mMaxSize = copy.mMaxSize;
+		mGravity = copy.mGravity;
+		mCurrentGravity = copy.mCurrentGravity;
+		mStartCount = copy.mStartCount;
+		mMaxCount = copy.mMaxCount;
+		mEmissionRate = copy.mEmissionRate;
+		mIsLooping = copy.mIsLooping;
+		mIsPlaying = copy.mIsPlaying;
+		mDuration = copy.mDuration;
+		mCurrentTime = copy.mCurrentTime;
+		mGravityEnabled = copy.mGravityEnabled;
+		time = copy.time;
+		numSpawn = copy.numSpawn;
+		totalTime = copy.totalTime;
+		mCurrentEmission = copy.mCurrentEmission;
+		mVertexShader = copy.mVertexShader;
+		mGeometryShader = copy.mGeometryShader;
+		mPixelShader = copy.mPixelShader;
+		mRenderState = copy.mRenderState;
+		mDepthState = copy.mDepthState;
+		mBlendState = copy.mBlendState;
+		mTexture = copy.mTexture;
+		mParticleBuffer = copy.mParticleBuffer;
+		mParticleData = copy.mParticleData;
+		mEntity = copy.mEntity;
+		mIsActive = copy.mIsActive;
+	}
 
+	std::shared_ptr<Component> ParticleSystem::clone() const
+	{
+		return std::make_shared<ParticleSystem>(*this);
+	}
+
+	ParticleSystem::ParticleSystem()
+	{
 		// Create the shaders
-		mVertexShader = renderDevice.createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/ParticleVertexShader.cso", nullptr, 0);
-		mGeometryShader = renderDevice.createShader(ShaderType::GeometryShader, "../OdysseyEngine/shaders/ParticleGeometryShader.cso", nullptr);
-		mPixelShader = renderDevice.createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/ParticlePixelShader.cso", nullptr);
+		mVertexShader = RenderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/ParticleVertexShader.cso", nullptr, 0);
+		mGeometryShader = RenderManager::getInstance().createShader(ShaderType::GeometryShader, "../OdysseyEngine/shaders/ParticleGeometryShader.cso", nullptr);
+		mPixelShader = RenderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/ParticlePixelShader.cso", nullptr);
 
 		// Create the render state
-		mRenderState = renderDevice.createRenderState(Topology::PointList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, false, false);
+		mRenderState = RenderManager::getInstance().createRenderState(Topology::PointList, CullMode::CULL_NONE, FillMode::FILL_SOLID, false, false, false);
 
-		// Create the depth and blend states
-		createDepthState();
-		createBlendState();
+		// Create the depth
+		mDepthState = RenderManager::getInstance().createDepthState(false, true, ComparisonFunc::COMPARISON_LESS);
+
+		// Create the blend state
+		float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		BlendDesc blendDesc;
+		blendDesc.mSrcBlend = Blend::BLEND_SRC_ALPHA;
+		blendDesc.mDestBlend = Blend::BLEND_ONE;
+		blendDesc.mBlendOp = BlendOperation::BLEND_OP_ADD;
+		blendDesc.mSrcAlphaBlend = Blend::BLEND_ZERO;
+		blendDesc.mDestAlphaBlend = Blend::BLEND_ONE;
+		blendDesc.mAlphaBlendOp = BlendOperation::BLEND_OP_ADD;
+		blendDesc.mAlphaToCoverage = true;
+		blendDesc.mIndependentBlendEnable = false;
+		mBlendState = RenderManager::getInstance().createBlendState(blendDesc, blendFactor);
 
 		// Default to the fire texture
-		mTexture = renderDevice.createTexture(TextureType::Diffuse, "Particle.png");
+		mTexture = RenderManager::getInstance().createTexture(TextureType::Diffuse, "Particle.png");
 
 		// Create the particle data buffer
 		mStartCount = 10;
@@ -64,44 +117,45 @@ namespace Odyssey
 		UINT offset = 0;
 		context->IASetVertexBuffers(0, 1, nBuffs, &stride, &offset);
 
+		RenderManager& renderManager = RenderManager::getInstance();
+
 		// Bind the depth state
-		context->OMSetDepthStencilState(mDepthDisabled.Get(), 0);
+		renderManager.getDepthState(mDepthState)->bind(context);
 
 		// Update the particle buffer
-		mParticleBuffer->updateData(context, mParticleData.data());
+		renderManager.getBuffer(mParticleBuffer)->updateData(context, mParticleData.data());
 
 		// Bind the geometry shader
-		mGeometryShader->bind(context);
+		renderManager.getShader(mGeometryShader)->bind(context);
 
 		// Bind the particle buffer
-		mParticleBuffer->bind(context, 0, ShaderType::GeometryShader);
+		renderManager.getBuffer(mParticleBuffer)->bind(context, 0, ShaderType::GeometryShader);
 
 		// Bind the render state
-		mRenderState->bind(context);
+		renderManager.getRenderState(mRenderState)->bind(context);
 
 		// Bind the vertex shader and material properties
-		mVertexShader->bind(context);
-		mPixelShader->bind(context);
+		renderManager.getShader(mVertexShader)->bind(context);
+		renderManager.getShader(mPixelShader)->bind(context);
 
 		// Bind the particle texture
-		mTexture->bind(context);
+		renderManager.getTexture(mTexture)->bind(context);
 
 		// Bind the blend state
-		float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xffffffff);
+		renderManager.getBlendState(mBlendState)->bind(context);
 
 		// Draw the particles
 		context->Draw(mMaxCount, 0);
 
 		// Unbind the depth and blend state
-		context->OMSetDepthStencilState(nullptr, 0);
-		context->OMSetBlendState(0, 0, 0xffffffff);
+		renderManager.getDepthState(mDepthState)->unbind(context);
+		renderManager.getBlendState(mBlendState)->unbind(context);
 
 		// Unbind the shaders and buffers
-		mParticleBuffer->unbind(context, 0, ShaderType::GeometryShader);
-		mGeometryShader->unbind(context);
-		mPixelShader->unbind(context);
-		mVertexShader->unbind(context);
+		renderManager.getBuffer(mParticleBuffer)->unbind(context, 0, ShaderType::GeometryShader);
+		renderManager.getShader(mGeometryShader)->unbind(context);
+		renderManager.getShader(mPixelShader)->unbind(context);
+		renderManager.getShader(mVertexShader)->unbind(context);
 
 		mLock.unlock(LockState::Read);
 	}
@@ -113,7 +167,7 @@ namespace Odyssey
 
 	void ParticleSystem::setTexture(TextureType textureType, const char* filename)
 	{
-		mTexture = mRenderDevice.createTexture(textureType, filename);
+		mTexture = RenderManager::getInstance().createTexture(textureType, filename);
 	}
 
 	void ParticleSystem::setColor(DirectX::XMFLOAT3 startColor, DirectX::XMFLOAT3 endColor)
@@ -203,55 +257,6 @@ namespace Odyssey
 		mCurrentTime = 0.0f;
 	}
 
-	void ParticleSystem::createDepthState()
-	{
-		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		depthStencilDesc.StencilEnable = false;
-		depthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
-		depthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-
-		// Stencil operations if pixel is front-facing
-		depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-		// Stencil operations if pixel is back-facing
-		depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-		HRESULT hr = mDevice->CreateDepthStencilState(&depthStencilDesc, &mDepthDisabled);
-	}
-
-	void ParticleSystem::createBlendState()
-	{
-		D3D11_BLEND_DESC blendDesc;
-		ZeroMemory(&blendDesc, sizeof(blendDesc));
-
-		D3D11_RENDER_TARGET_BLEND_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
-		desc.BlendEnable = true;
-		desc.BlendEnable = true;
-		desc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		desc.DestBlend = D3D11_BLEND_ONE;
-		desc.BlendOp = D3D11_BLEND_OP_ADD;
-		desc.SrcBlendAlpha = D3D11_BLEND_ZERO;
-		desc.DestBlendAlpha = D3D11_BLEND_ONE;
-		desc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		desc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		blendDesc.AlphaToCoverageEnable = true;
-		blendDesc.IndependentBlendEnable = false;
-		blendDesc.RenderTarget[0] = desc;
-
-		mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
-	}
-
 	void ParticleSystem::setInitialData()
 	{
 		for (int i = 0; i < mStartCount; i++)
@@ -265,12 +270,12 @@ namespace Odyssey
 	void ParticleSystem::createParticleBuffer()
 	{
 		if (mParticleData.size() != mMaxCount)
+		{
 			mParticleData.resize(mMaxCount);
+		}
+			
 
-		if (mParticleBuffer)
-			mParticleBuffer = nullptr;
-
-		mParticleBuffer = mRenderDevice.createBuffer(BufferBindFlag::StructuredBuffer, size_t(mMaxCount),
+		mParticleBuffer = RenderManager::getInstance().createBuffer(BufferBindFlag::StructuredBuffer, size_t(mMaxCount),
 			static_cast<UINT>(sizeof(Particle)), mParticleData.data());
 	}
 
@@ -331,6 +336,7 @@ namespace Odyssey
 		finalColor.y = (1.0f - ratio) * startColor.y + (ratio * endColor.y);
 		finalColor.z = (1.0f - ratio) * startColor.z + (ratio * endColor.z);
 		finalColor.w = 1.0f - ratio;
+
 		// Return the resulting lerped color
 		return finalColor;
 	}

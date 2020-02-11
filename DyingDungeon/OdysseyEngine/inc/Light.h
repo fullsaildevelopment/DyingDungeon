@@ -8,6 +8,8 @@ namespace Odyssey
 	class Light : public Component
 	{
 		CLASS_DECLARATION(Light)
+	public:
+		virtual std::shared_ptr<Component> clone() const;
 
 	public: // Rule of 3
 		Light();

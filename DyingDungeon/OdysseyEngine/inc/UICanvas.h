@@ -11,6 +11,10 @@ namespace Odyssey
 	{
 		CLASS_DECLARATION(UICanvas)
 
+	public:
+		UICanvas() = default;
+		virtual std::shared_ptr<Component> clone() const;
+		//UICanvas(const UICanvas& copy);
 	public: // Rule of 3
 		virtual void initialize();
 

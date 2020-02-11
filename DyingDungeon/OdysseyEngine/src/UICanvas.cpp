@@ -7,6 +7,18 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, UICanvas)
 
+	std::shared_ptr<Component> UICanvas::clone() const
+	{
+		return std::make_shared<UICanvas>(*this);
+	}
+	//UICanvas::UICanvas(const UICanvas& copy)
+	//{
+	//	for (std::shared_ptr<UIElement> element : copy.mElements)
+	//	{
+	//		mElements.push_back(element->clone());
+	//	}
+	//}
+
 	void UICanvas::initialize()
 	{
 		for (std::shared_ptr<UIElement> element : mElements)

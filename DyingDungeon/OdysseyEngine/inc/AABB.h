@@ -21,7 +21,8 @@ namespace Odyssey
 	class AABB : public Component
 	{
 		CLASS_DECLARATION(AABB)
-
+	public:
+		virtual std::shared_ptr<Component> clone() const;
 	public:
 		/**
 		 *	Construct an AABB based on the input vertices transformed by the input world matrix.

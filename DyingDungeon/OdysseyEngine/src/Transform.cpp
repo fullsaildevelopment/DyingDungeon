@@ -5,6 +5,11 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Transform)
 
+	std::shared_ptr<Component> Transform::clone() const
+	{
+		return std::make_shared<Transform>(*this);
+	}
+
 	Transform::Transform()
 	{
 		// Set default values for the transform
@@ -12,6 +17,7 @@ namespace Odyssey
 		mRotation = DirectX::XMFLOAT3(0, 0, 0);
 		mScale = DirectX::XMFLOAT3(1, 1, 1);
 		recalculateWorldMatrix();
+		mEntity = nullptr;
 	}
 
 	Transform::Transform(DirectX::XMFLOAT4X4 worldMatrix)

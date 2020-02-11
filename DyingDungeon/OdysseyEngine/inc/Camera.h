@@ -11,6 +11,8 @@ namespace Odyssey
 		CLASS_DECLARATION(Camera)
 
 	public:
+		virtual std::shared_ptr<Component> clone() const;
+	public:
 		Camera();
 
 	public: // Interface

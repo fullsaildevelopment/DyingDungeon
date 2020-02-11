@@ -4,29 +4,29 @@
 #include "MeshRenderer.h"
 #include "UIElement.h"
 #include "EventManager.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Texture.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "Light.h"
+#include "UICanvas.h"
+#include "ParticleSystem.h"
 
 namespace Odyssey
 {
-	SceneDX11::SceneDX11(std::shared_ptr<RenderDevice> renderDevice)
+	SceneDX11::SceneDX11()
 	{
 		mSceneCenter = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 		mSceneRadius = 0.0f;
-		mRenderDevice = renderDevice;
 		mShadowLight = nullptr;
 		mRenderPackage.shadowLight = nullptr;
 		setSkybox("Skybox.dds");
 	}
 
-	SceneDX11::SceneDX11(std::shared_ptr<RenderDevice> renderDevice, DirectX::XMFLOAT3 center, float radius)
+	SceneDX11::SceneDX11(DirectX::XMFLOAT3 center, float radius)
 	{
 		mSceneCenter = center;
 		mSceneRadius = radius;
-		mRenderDevice = renderDevice;
 		mShadowLight = nullptr;
 		setSkybox("Skybox.dds");
 	}
@@ -45,6 +45,17 @@ namespace Odyssey
 
 		for (Light* light : mRenderPackage.sceneLights)
 		{
+			if (light->getLightType() == LightType::Directional)
+			{
+				mShadowLight = light;
+				mRenderPackage.shadowLight = mShadowLight;
+
+				if (mSceneRadius == 0.0f)
+				{
+					mSceneRadius = 100.0f;
+				}
+			}
+
 			light->initialize();
 		}
 	}
@@ -71,6 +82,7 @@ namespace Odyssey
 		//		}
 		//	}
 		//}
+
 		for (auto* component : mComponentList)
 		{
 			if (component->isActive() && component->getEntity()->isActive())
@@ -105,11 +117,11 @@ namespace Odyssey
 	{
 		if (mSkybox == nullptr)
 		{
-			std::shared_ptr<Texture> texture = mRenderDevice->createTexture(TextureType::Skybox, "Skybox.dds");
-			std::shared_ptr<Mesh> mesh = mRenderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-			std::shared_ptr<Material> material = mRenderDevice->createMaterial(TextureType::Skybox, texture);
+			int texture = RenderManager::getInstance().createTexture(TextureType::Skybox, "Skybox.dds");
+			int mesh = RenderManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+			int material = RenderManager::getInstance().createMaterial(TextureType::Skybox, texture);
 
-			mSkybox = std::make_shared<Entity>();
+			mSkybox = std::make_shared<Entity>(this);
 			mSkybox->addComponent<MeshRenderer>(mesh, material);
 			mSkybox->addComponent<Transform>();
 			mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);

@@ -8,7 +8,7 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Animator)
 
-		void Animator::importAnimation(std::string animationName, const char* filename, bool isLooping)
+	void Animator::importAnimation(std::string animationName, const char* filename, bool isLooping)
 	{
 		// Open/Create the mesh file
 		std::fstream animFile(filename, std::ios_base::in | std::ios_base::binary);

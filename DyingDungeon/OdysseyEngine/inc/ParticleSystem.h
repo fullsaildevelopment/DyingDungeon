@@ -12,7 +12,8 @@ namespace Odyssey
 	class Material;
 	class Shader;
 	class Texture;
-	class RenderDevice;
+	class DepthState;
+	class BlendState;
 
 	enum class EmissionType
 	{
@@ -116,13 +117,15 @@ namespace Odyssey
 			maxZDirection = 1.0f;
 		}
 	};
+
 	class ParticleSystem : public Component
 	{
 		CLASS_DECLARATION(ParticleSystem)
-
+	public:
+		ParticleSystem(const ParticleSystem& copy);
+		virtual std::shared_ptr<Component> clone() const;
 	public: // Rule of 3
-		ParticleSystem(RenderDevice& renderDevice);
-
+		ParticleSystem();
 	public: // Interface
 		virtual void initialize();
 		virtual void update(double deltaTime);
@@ -145,8 +148,6 @@ namespace Odyssey
 		void pause();
 		void stop();
 	private:
-		void createDepthState();
-		void createBlendState();
 		void setInitialData();
 		void createParticleBuffer();
 		void createParticle(Particle& particle);
@@ -173,18 +174,16 @@ namespace Odyssey
 		double totalTime;
 		int mCurrentEmission;
 	private: // Rendering
-		std::shared_ptr<Shader> mVertexShader;
-		std::shared_ptr<Shader> mGeometryShader;
-		std::shared_ptr<Shader> mPixelShader;
-		std::shared_ptr<RenderState> mRenderState;
+		int mVertexShader;
+		int mGeometryShader;
+		int mPixelShader;
+		int mRenderState;
+		int mDepthState;
+		int mBlendState;
+		int mTexture;
+		int mParticleBuffer;
 		std::vector<Particle> mParticleData;
-		std::shared_ptr<Buffer> mParticleBuffer;
-		std::shared_ptr<Texture> mTexture;
 	private:
-		RenderDevice& mRenderDevice;
-		Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
-		Microsoft::WRL::ComPtr<ID3D11BlendState> mBlendState;
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDepthDisabled;
 		std::random_device rnd;
 		ReadWriteLock mLock;
 	};
