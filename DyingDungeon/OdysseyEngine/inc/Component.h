@@ -36,7 +36,6 @@ bool childclass::isClassType( const std::size_t classType ) const {             
 
 namespace Odyssey
 {
-	// Forward declarations
 	class Entity;
 
 	class Component

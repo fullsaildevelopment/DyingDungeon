@@ -85,10 +85,10 @@ namespace Odyssey
 
 		for (int i = 0; i < mComponentList.size(); i++)
 		{
-			if (mComponentList[i]->isActive() && mComponentList[i]->getEntity()->isActive())
+			Component* component = mComponentList[i];
+			if (component->isActive() && component->getEntity()->isActive())
 			{
-				// Update the component
-				mComponentList[i]->update(mDeltaTime);
+				component->update(mDeltaTime);
 			}
 		}
 	}
@@ -115,18 +115,7 @@ namespace Odyssey
 
 	Entity* SceneDX11::getSkybox()
 	{
-		if (mSkybox == nullptr)
-		{
-			int texture = RenderManager::getInstance().createTexture(TextureType::Skybox, "Skybox.dds");
-			int mesh = RenderManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-			int material = RenderManager::getInstance().createMaterial(TextureType::Skybox, texture);
-
-			mSkybox = std::make_shared<Entity>(this);
-			mSkybox->addComponent<MeshRenderer>(mesh, material);
-			mSkybox->addComponent<Transform>();
-			mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
-		}
-		return mSkybox.get();
+		return mSkybox;
 	}
 
 	DirectX::XMFLOAT3 SceneDX11::getSceneCenter()

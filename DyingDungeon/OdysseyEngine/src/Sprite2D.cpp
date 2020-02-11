@@ -18,11 +18,6 @@ namespace Odyssey
 		createShape();
 	}
 
-	std::shared_ptr<UIElement> Sprite2D::clone() const
-	{
-		return std::make_shared<Sprite2D>(*this);
-	}
-
 	void Sprite2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		mLock.lock(LockState::Write);

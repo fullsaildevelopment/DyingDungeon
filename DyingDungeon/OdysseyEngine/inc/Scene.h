@@ -29,6 +29,8 @@ namespace Odyssey
 
 		void addComponent(Component* component);
 
+		void addElement(UIElement* element);
+
 		void removeComponent(Component* component);
 
 		void removeEntity(Entity* entity);
@@ -61,7 +63,7 @@ namespace Odyssey
 		Entity* mMainCamera;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
 		std::vector<Component*> mComponentList;
-		std::shared_ptr<Entity> mSkybox;
+		Entity* mSkybox;
 		Light* mShadowLight;
 		DirectX::XMFLOAT3 mSceneCenter;
 		float mSceneRadius;
