@@ -68,7 +68,7 @@ namespace Odyssey
 		 *	@param[in] windowHeight The desired height of the window.
 		 *	@return shared_ptr<RenderWindow> The pointer to the created RenderWindow object.
 		 */
-		std::shared_ptr<RenderWindow> createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight);
+		RenderWindow* createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight);
 
 		Entity* createPrefab();
 

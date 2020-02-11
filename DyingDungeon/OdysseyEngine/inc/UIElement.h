@@ -91,7 +91,7 @@ namespace Odyssey
 
 	public: // Interface
 		virtual void initialize();
-
+		virtual std::shared_ptr<UIElement> clone() const = 0;
 		/**
 		 *	Render the 2D UI element to the parameter render target.
 		 *	@param[in] renderTarget The 2D render target to render the UI element to.

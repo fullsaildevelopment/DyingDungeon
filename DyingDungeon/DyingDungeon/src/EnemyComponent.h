@@ -10,6 +10,7 @@ class EnemyComponent : public Character
 public:
 	// Constructors
 	EnemyComponent() = default;
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 
 	// Pass in Enemy identifcation to get a specific Enemy class	
@@ -19,13 +20,13 @@ public:
 	~EnemyComponent();
 
 	// Function that allows the AI to take thier turn, Character Controler
-	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+	virtual bool TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam);
 
 	// Function that gets called to set the character state to dead, along with all other necessary variables
 	virtual void Die();
 
 	// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
-	void BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets);
+	void BeginAttack(std::vector<Odyssey::Entity*> targets);
 
 	// Returns the characters skill list
 	virtual std::vector<std::shared_ptr<Skills>> GetSkills();

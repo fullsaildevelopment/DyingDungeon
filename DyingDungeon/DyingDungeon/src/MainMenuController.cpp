@@ -11,6 +11,11 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 	mRect = nullptr;
 }
 
+std::shared_ptr<Odyssey::Component> MainMenuController::clone() const
+{
+	return std::make_shared<MainMenuController>(*this);
+}
+
 void MainMenuController::initialize()
 {
 	RedAudioManager::Instance().Stop("BackgroundBattle");

@@ -13,6 +13,7 @@ namespace Odyssey
 		Rectangle2D(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height);
 
 	public: // Interface
+		virtual std::shared_ptr<UIElement> clone() const;
 		/**
 		 *	Render the 2D rectangle to the parameter render target.
 		 *	@param[in] renderTarget The 2D render target to render the rectangle to.

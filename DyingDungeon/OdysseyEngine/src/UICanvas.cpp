@@ -11,13 +11,26 @@ namespace Odyssey
 	{
 		return std::make_shared<UICanvas>(*this);
 	}
-	//UICanvas::UICanvas(const UICanvas& copy)
-	//{
-	//	for (std::shared_ptr<UIElement> element : copy.mElements)
-	//	{
-	//		mElements.push_back(element->clone());
-	//	}
-	//}
+
+	UICanvas::UICanvas(const UICanvas& copy)
+	{
+		for (std::shared_ptr<UIElement> element : copy.mElements)
+		{
+			mElements.push_back(element->clone());
+			mElements[mElements.size() - 1]->setCanvas(this);
+		}
+	}
+
+	UICanvas& UICanvas::operator=(const UICanvas& copy)
+	{
+		for (std::shared_ptr<UIElement> element : copy.mElements)
+		{
+			mElements.push_back(element->clone());
+			mElements[mElements.size() - 1]->setCanvas(this);
+		}
+
+		return *(this);
+	}
 
 	void UICanvas::initialize()
 	{

@@ -17,6 +17,11 @@ namespace Odyssey
 		createTextFormat(mProperties);
 	}
 
+	std::shared_ptr<UIElement> Text2D::clone() const
+	{
+		return std::make_shared<Text2D>(*this);
+	}
+
 	void Text2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if we have a valid brush

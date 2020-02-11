@@ -1,6 +1,6 @@
 #pragma once
 #include "OdysseyEngine.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Scene.h"
 
 
@@ -18,8 +18,7 @@ public:
 private: // Singleton pattern
 	CharacterFactory() { }
 
-public: 
-	Odyssey::RenderDevice* mRenderRefrence;
+public:
 	enum CharacterOptions
 	{
 		Paladin,
@@ -36,7 +35,7 @@ public:
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, std::shared_ptr<Odyssey::Scene> _gameScene);
+	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene);
 
 	//Getters
 
@@ -45,7 +44,6 @@ public: // Functions
 private: // Varibales
 
 	// Scene
-	std::shared_ptr<Odyssey::Scene> mCurrentScene;
 
 	// Vectors
 
@@ -62,11 +60,11 @@ private: // Varibales
 
 
 private: // Functions
-	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
+	void CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo);
 
 	// Particle Creation Functions
-	Odyssey::ParticleSystem* setUpFireButBetter();
-	Odyssey::ParticleSystem* setUpFireStorm();
-	Odyssey::ParticleSystem* setupBlood();
+	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
+	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
+	Odyssey::ParticleSystem* setupBlood(Odyssey::Scene* _sceneToAddTo);
 };
 

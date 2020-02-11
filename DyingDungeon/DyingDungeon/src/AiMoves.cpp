@@ -148,7 +148,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 }
 
 //Find the best move depending on what enemy you are
-bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	// Our priority can be overriden here
 	mPriorityMove = priorityOverride;
@@ -186,7 +186,7 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<st
 
 // Iterrate through all the skills one at a time then break
 // once done decide the best move among the best moves found.
-bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool AIMoves::SkillCheck(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	bool finished = false;
 
@@ -254,7 +254,7 @@ bool AIMoves::SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTea
 	return finished;
 }
 
-void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {	
 	//Do we have enough mana to actually use the skill
 	if (skill->GetManaCost() > mCaster->GetMana())
@@ -290,7 +290,7 @@ void AIMoves::ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_p
 	}
 }
 
-void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam)
+void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam)
 {
 	float attackScore = 0.0f;
 	Character* target = nullptr;
@@ -302,7 +302,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 	{
 		// If we are not provoked then continue
 		if (mCaster->GetProvoked() == nullptr)
-		for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
+		for (Odyssey::Entity* t : playerTeam)
 		{
 			if (t)
 			{
@@ -379,7 +379,7 @@ void AIMoves::ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::sh
 }
 
 // Score aoe attacks
-void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam)
+void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam)
 {
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
@@ -392,7 +392,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 		attackAOEScore += 100.0f;
 	
 	// loop through all targets
-	for (std::shared_ptr<Odyssey::Entity> t : playerTeam)
+	for (Odyssey::Entity* t : playerTeam)
 	{
 		if (t)
 		{
@@ -428,7 +428,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std:
 }
 
 // Score single target buffs
-void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	float buffScore = 0.0f;
 	Character* target = nullptr;
@@ -437,7 +437,7 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::BUFF)
 		buffScore += 50.0f;
 
-	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
+	for (Odyssey::Entity* t : enemyTeam)
 	{
 		if (t)
 		{
@@ -474,7 +474,7 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shar
 }
 
 // Score aoe buffs
-void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	float buffAOEScore = 0.0f;
 	Character* target = nullptr;
@@ -484,7 +484,7 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::s
 		buffAOEScore += 50.0f;
 
 	// Loop through all friendlies
-	for (std::shared_ptr<Odyssey::Entity> t : enemyTeam)
+	for (Odyssey::Entity* t : enemyTeam)
 	{
 		if (t)
 		{

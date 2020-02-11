@@ -13,6 +13,11 @@ namespace Odyssey
 		mZeroFillColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
+	std::shared_ptr<UIElement> Rectangle2D::clone() const
+	{
+		return std::make_shared<Rectangle2D>(*this);
+	}
+
 	void Rectangle2D::draw(Microsoft::WRL::ComPtr<ID2D1DeviceContext> context)
 	{
 		// Check if color lerp is enabled

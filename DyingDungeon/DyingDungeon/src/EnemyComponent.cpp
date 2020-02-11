@@ -440,7 +440,7 @@ EnemyComponent::~EnemyComponent()
 }
 
 // Function that allows the player to take thier turn, Character Controler
-bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	// State machine to navigate while its the AI takes its turn.
 	switch (mCurrentState)
@@ -514,20 +514,20 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+					for (Odyssey::Entity* c : playerTeam)
 					{
 						// If they arnt dead play thier animations and particle effects
 						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
 							// Play "Hit" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
+							c->getComponent<Odyssey::Animator>()->playClip("Hit");
 
 							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
+							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
 
 							// Play particle effect
-							c.get()->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
@@ -550,13 +550,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+					for (Odyssey::Entity* c : enemyTeam)
 					{
 						// If the target is not dead, and not the caster
-						if (c != nullptr && c.get()->getComponent<EnemyComponent>() != this && c->getComponent<Character>()->GetState() != STATE::DEAD)
+						if (c != nullptr && c->getComponent<EnemyComponent>() != this && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
 							// Play "GotBuffed" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 						}
 					}
 				}
@@ -586,13 +586,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+					for (Odyssey::Entity* c : playerTeam)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -612,13 +612,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+					for (Odyssey::Entity* c : enemyTeam)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -700,7 +700,7 @@ void EnemyComponent::Die()
 }
 
 // Function that sends the state into the inprogress state, queing animations, and setting variables for particle effect locations
-void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
+void EnemyComponent::BeginAttack(std::vector<Odyssey::Entity*> targets)
 {
 	// Play the skills animation
 	mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
@@ -716,7 +716,7 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			// For each entity
-			for (std::shared_ptr<Odyssey::Entity> t : targets)
+			for (Odyssey::Entity* t : targets)
 			{
 				// If valid
 				if (t)
@@ -810,6 +810,11 @@ void EnemyComponent::GanfaulPhaseMechanic()
 		CURRENTPHASE = 1;
 		mSpeed += mBaseSpeed;
 	}
+}
+
+std::shared_ptr<Odyssey::Component> EnemyComponent::clone() const
+{
+	return std::make_shared<EnemyComponent>(*this);
 }
 
 // Init function called when object loads into scene

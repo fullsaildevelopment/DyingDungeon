@@ -13,6 +13,7 @@ namespace Odyssey
 		Sprite2D(DirectX::XMFLOAT2 position, std::wstring filename, UINT width = 0, UINT height = 0);
 
 	public: // Interface
+		virtual std::shared_ptr<UIElement> clone() const;
 		/**
 		 *	Render the 2D sprite to the parameter render target.
 		 *	@param[in] renderTarget The 2D render target to render the sprite to.
