@@ -549,6 +549,8 @@ bool Character::ManageAllEffects()
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
+	//std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	mCastedEffects.clear();
 	mDebuffs.clear();
 	mBuffs.clear();
 	mBleeds.clear();

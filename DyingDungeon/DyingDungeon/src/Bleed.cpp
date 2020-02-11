@@ -12,7 +12,11 @@ Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 
 Bleed::~Bleed()
 {
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
 void Bleed::Apply(Character& caster, Character& target)
 {
