@@ -1268,6 +1268,8 @@ Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hud
 	{
 		// Create the skill icons for the character's hud
 		SetupSkillIcons(_gameObjectToAddTo, owner, _hudPosition, newHUD);
+		// Create status effects
+		SetupStatusEffects(_gameObjectToAddTo, owner, _hudPosition, newHUD);
 	}
 
 	// Create the health popup for the character
@@ -1428,6 +1430,26 @@ void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2
 	newPopup->setOpacity(0.0f);
 	// Add new popup to the list
 	mCharacterHpPopupList.push_back(newPopup);
+}
+
+void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud)
+{
+	// Set some variables
+	DirectX::XMFLOAT2 position = _hudPosition;
+	UINT imageWidth = 32;
+	UINT imageHeight = 32;
+	
+	// Move the image up above the bar
+	position.y -= static_cast<float>(imageHeight) + 5.0f;
+	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
@@ -1651,6 +1673,12 @@ void GameUIManager::UpdateCharacterBars(float _deltaTime)
 			// Update the bar's currValue
 			mUpdateCharacterBarsList[i]->pCurrValue += (speed * _deltaTime);
 		}
+
+		// Clamp the pCurrBalue to the maxValue or 0
+		if (mUpdateCharacterBarsList[i]->pCurrValue > maxValue)
+			mUpdateCharacterBarsList[i]->pCurrValue = maxValue;
+		else if (mUpdateCharacterBarsList[i]->pCurrValue < 0.0f)
+			mUpdateCharacterBarsList[i]->pCurrValue = 0.0f;
 
 		// Get the new ratio and set the fill and set the text
 		float newRatio = mUpdateCharacterBarsList[i]->pCurrValue / maxValue;

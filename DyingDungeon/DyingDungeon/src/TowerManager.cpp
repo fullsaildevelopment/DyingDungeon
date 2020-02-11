@@ -71,18 +71,28 @@ void TowerManager::update(double deltaTime)
 		GameUIManager::getInstance().ToggleCanvas(combatCanvas, !combatCanvas->isActive());
 	}
 
-	//// Go straight to the BOSS when F3 is hit
-	//if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
-	//{
-	//	// Destroy the current battle instance
-	//	DestroyBattleInstance();
-	//	// Set the game to in rewards 
-	//	mTowerState = IN_REWARDS;
-	//	// Set the tower level to the last level which is the boss
-	//	mCurrentLevel = mNumberOfLevels;
-	//	// Set the cheat code bool
-	//	mUsedBossCheatCode = true;
-	//}
+	// Go straight to the BOSS when F3 is hit
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F3))
+	{
+		// Destroy the current battle instance
+		DestroyBattleInstance();
+		// Set the game to in rewards 
+		mTowerState = IN_REWARDS;
+
+		// Remove the current enemy team from the scene
+		for (int i = 0; i < mEnemyTeam.size(); i++)
+		{
+			// Turn off model
+			mEnemyTeam[i]->setActive(false);
+			// Turn off the HUD UI
+			GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+		}
+
+		// Set the tower level to the last level which is the boss
+		mCurrentLevel = mNumberOfLevels;
+		// Set the cheat code bool
+		mUsedBossCheatCode = true;
+	}
 
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -250,6 +260,14 @@ void TowerManager::CreateBattleInstance()
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
 																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath()));
 
+	// Remove the current enemy team from the scene
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		// Turn off model
+		mEnemyTeam[i]->setActive(false);
+		// Turn off the HUD UI
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+	}
 	
 	// Create the new enemy team before creating the battle
 	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(mCurrentLevel - 1);

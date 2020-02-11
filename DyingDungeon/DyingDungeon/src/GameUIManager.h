@@ -43,6 +43,14 @@ public:
 		Odyssey::UICanvas* pSkill3Canvas;
 		Odyssey::Sprite2D* pSkill4;
 		Odyssey::UICanvas* pSkill4Canvas;
+
+		// Status Effects
+		//Odyssey::Sprite2D* pAttackUp;
+		//Odyssey::Sprite2D* pAttackUp;
+		//Odyssey::Sprite2D* pAttackUp;
+		//Odyssey::Sprite2D* pAttackUp;
+		//Odyssey::Sprite2D* pAttackUp;
+		//Odyssey::Sprite2D* pAttackUp;
 	};
 
 	// This struct will hold the elements needed in order to animate the health and mana bars
@@ -332,6 +340,7 @@ private: // Functions
 	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
 	void SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2 _position, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
 	void SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition);
+	void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
