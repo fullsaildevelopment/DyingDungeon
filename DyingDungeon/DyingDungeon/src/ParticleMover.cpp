@@ -3,6 +3,11 @@
 
 CLASS_DEFINITION(Component, ParticleMover)
 
+std::shared_ptr<Odyssey::Component> ParticleMover::clone() const
+{
+	return std::make_shared<ParticleMover>(*this);
+}
+
 void ParticleMover::initialize()
 {
 	mFuckYouMax = mEntity->getComponent<Odyssey::Transform>();

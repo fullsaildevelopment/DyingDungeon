@@ -12,11 +12,16 @@ TowerSelectController::TowerSelectController(Odyssey::Application* application)
 	mRect = nullptr;
 }
 
+std::shared_ptr<Odyssey::Component> TowerSelectController::clone() const
+{
+	return std::make_shared<TowerSelectController>(*this);
+}
+
 void TowerSelectController::initialize()
 {
 	//RedAudioManager::Instance().Play("BackgroundMenu");
 	// Turn on the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), true);
 
 	// Don't show the tower info canvas
@@ -113,7 +118,7 @@ void TowerSelectController::onDestroy()
 void TowerSelectController::GoToTeamSelection()
 {
 	// Turn off the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	// Switch to the team select scene
@@ -123,7 +128,7 @@ void TowerSelectController::GoToTeamSelection()
 void TowerSelectController::GoToScene2()
 {
 	// Turn off the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	// Switch to the team select scene

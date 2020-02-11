@@ -13,6 +13,11 @@
 
 CLASS_DEFINITION(Component, TowerManager)
 
+std::shared_ptr<Odyssey::Component> TowerManager::clone() const
+{
+	return std::make_shared<TowerManager>(*this);
+}
+
 TowerManager::~TowerManager()
 {
 	DestroyBattleInstance();
@@ -224,7 +229,7 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
+void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, Odyssey::Entity* _turnIndicatorModel)
 {
 	// Assign the player team 
 	mPlayerTeam = _playerTeam;
@@ -361,7 +366,7 @@ void TowerManager::GoToMainMenu()
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill3Canvas->setActive(false);
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill4Canvas->setActive(false);
 			// TODO: REFACTOR LATER
-			scene->removeEntity(mPlayerTeam[i].get());
+			scene->removeEntity(mPlayerTeam[i]);
 		}
 	}
 
@@ -370,14 +375,14 @@ void TowerManager::GoToMainMenu()
 	//{
 	//	if (mEnemyTeam[i])
 	//	{
-	//		scene->removeEntity(mEnemyTeam[i].get());
+	//		scene->removeEntity(mEnemyTeam[i]);
 	//	}
 	//}
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);
 	// Deactivate the pause menu
-	std::shared_ptr<Odyssey::Entity> pauseMenu = GameUIManager::getInstance().GetPauseMenu();
+	Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	// Set the current level back to 1

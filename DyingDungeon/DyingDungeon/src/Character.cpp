@@ -56,7 +56,7 @@ void Character::update(double deltaTime)
 }
 
 // Called by battle instance whenever its time for this character to take its turn
-bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool Character::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	return false;
 }

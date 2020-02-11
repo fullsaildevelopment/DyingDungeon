@@ -4,6 +4,7 @@ class ParticleMover : public Odyssey::Component
 {
 	CLASS_DECLARATION(ParticleMover)
 public:
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 private:
 	Odyssey::ParticleSystem* mPS;
 	DirectX::XMFLOAT3 mTargetPos;

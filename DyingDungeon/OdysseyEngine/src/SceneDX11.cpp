@@ -37,10 +37,10 @@ namespace Odyssey
 		mXTimer.Restart();
 
 		// Iterate through each component of the entity
-		for (Component* component : mComponentList)
+		for (int i = 0; i < mComponentList.size(); i++)
 		{
 			// Initialize the component
-			component->initialize();
+			mComponentList[i]->initialize();
 		}
 
 		for (Light* light : mRenderPackage.sceneLights)
@@ -83,22 +83,22 @@ namespace Odyssey
 		//	}
 		//}
 
-		for (auto* component : mComponentList)
+		for (int i = 0; i < mComponentList.size(); i++)
 		{
-			if (component->isActive() && component->getEntity()->isActive())
+			if (mComponentList[i]->isActive() && mComponentList[i]->getEntity()->isActive())
 			{
 				// Update the component
-				component->update(mDeltaTime);
+				mComponentList[i]->update(mDeltaTime);
 			}
 		}
 	}
 
 	void SceneDX11::onDestroy()
 	{
-		for (auto* component : mComponentList)
+		for (int i = 0; i < mComponentList.size(); i++)
 		{
 			// Update the component
-			component->onDestroy();
+			mComponentList[i]->onDestroy();
 		}
 	}
 

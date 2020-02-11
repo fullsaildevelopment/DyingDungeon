@@ -19,6 +19,11 @@ TeamSelectionController::TeamSelectionController(Odyssey::Application* applicati
 	mRect = nullptr;
 }
 
+std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
+{
+	return std::make_shared<TeamSelectionController>(*this);
+}
+
 void TeamSelectionController::initialize()
 {
 	//RedAudioManager::Instance().Loop("BackgroundMenu");
@@ -428,18 +433,18 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 		heroType = CharacterFactory::CharacterOptions::Monk;
 
 	// This is the gGameScene from DyingDungeon.cpp
-	std::shared_ptr<Odyssey::Scene> gameScene = mListOfGameScenes[0];
+	Odyssey::Scene* gameScene = mListOfGameScenes[0];
 
 	// Create the paladin and add it to the game scene
 	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
 	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	std::shared_ptr<Odyssey::Entity> newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
+	Odyssey::Entity* newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
 
-	// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
-	for (int i = 1; i < mListOfGameScenes.size(); i++)
-	{
-		mListOfGameScenes[i]->addEntity(newCharacter);
-	}
+	//// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
+	//for (int i = 1; i < mListOfGameScenes.size(); i++)
+	//{
+	//	mListOfGameScenes[i]->addEntity(newCharacter);
+	//}
 
 	// Add the new character to the player list in Team Manager
 	TeamManager::getInstance().AddCharacterToPlayerTeam(newCharacter);

@@ -210,7 +210,7 @@ namespace Odyssey
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 
-	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight)
+	RenderWindow* Application::createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight)
 	{
 		// Get the width and height of the screen
 		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -265,7 +265,7 @@ namespace Odyssey
 		ShowWindow(hWindow, SW_SHOWDEFAULT);
 
 		// Return the RenderWindow
-		return window;
+		return window.get();
 	}
 
 	Entity* Application::createPrefab()

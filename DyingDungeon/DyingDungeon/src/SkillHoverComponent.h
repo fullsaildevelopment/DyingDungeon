@@ -5,6 +5,7 @@ class SkillHoverComponent : public Odyssey::Component
 {
 	CLASS_DECLARATION(SkillHoverComponent)
 public:
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 	void registerSprite(Odyssey::Sprite2D* sprite, Odyssey::UICanvas* canvas);
 	void callback1();
