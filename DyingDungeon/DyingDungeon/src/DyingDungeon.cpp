@@ -611,6 +611,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3", "SkeletonAttack", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3", "PaladinAttack", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3", "PaladinHit", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_1.mp3", "FemaleHitReaction1", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_2.mp3", "FemaleHitReaction2", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/losing.mp3", "Loss", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/medieval_parade.mp3", "Win", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3", "NoManaCritical", RedAudioManager::AudioType::SFX);
@@ -632,8 +634,10 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3", "SpellCasting", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3", "Healing", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt2-death-pain.mp3", "Death", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3", "MaleHitReaction", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3", "TorchBurning", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3", "TorchBurningQuietly", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3", "TorchBurningWind", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3", "TorchBurningWind", RedAudioManager::AudioType::SFX);
 
 	// Tower select screen door sounds
