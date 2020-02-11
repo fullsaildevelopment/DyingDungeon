@@ -81,28 +81,28 @@ private: // Singleton pattern
 public: // Functions
 
 	// Create the battle log UI 
-	void CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateBattleLog(Odyssey::Scene* _sceneToAddTo);
 
 	// Toggle canvases on and off
 	void ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive);
 
 	// Creation of the main menu
-	void CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Creation of the tower select menu
-	void CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Creation of the team select menu
-	void CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Creation of the pause menu
-	void CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Creation of the stats menu
-	void CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// TODO: M3B1 ONLY REFACTOR LATER
-	void CreateCreditsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 	// TODO: M3B1 ONLY END
 
 	void ShowStatsMenu();
@@ -160,7 +160,7 @@ public: // Functions
 	Odyssey::UICanvas* GetCombatLogCanvas() { return mCombatLogCanvas; }
 
 	// Get the main menu
-	std::shared_ptr<Odyssey::Entity> GetMainMenu() { return mMainMenu; }
+	Odyssey::Entity* GetMainMenu() { return mMainMenu; }
 	Odyssey::Sprite2D* GetApeBackground() { return mApeBackground; }
 	Odyssey::Sprite2D* GetAnimatedLaser() { return mAnimatedLaser; }
 	Odyssey::Text2D* GetNewGameText() { return mNewGameText; }
@@ -171,14 +171,14 @@ public: // Functions
 	// TODO: M3B1 ONLY END
 
 	// Get the tower select menu
-	std::shared_ptr<Odyssey::Entity> GetTowerSelectMenu() { return mTowerSelectMenu; }
+	Odyssey::Entity* GetTowerSelectMenu() { return mTowerSelectMenu; }
 	// Get the sprite buttons from the tower select menu
 	std::vector<Odyssey::Sprite2D*> GetDoorSprites() { return mDoorImages; }
 	// Get the tower info canvas
 	Odyssey::UICanvas* GetTowerInfoCanvas() { return mTowerInfoCanvas; }
 
 	// Get the team select menu
-	std::shared_ptr<Odyssey::Entity> GetTeamSelectMenu() { return mTeamSelectMenu; }
+	Odyssey::Entity* GetTeamSelectMenu() { return mTeamSelectMenu; }
 	// Get the arrow sprite when selecting a team
 	std::vector<Odyssey::Sprite2D*> GetTeamSelectionArrows() { return mTeamSelectionArrows; }
 	// Get the text slots for the names
@@ -189,11 +189,11 @@ public: // Functions
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
 
 	// Get the pause menu
-	std::shared_ptr<Odyssey::Entity> GetPauseMenu() { return mPauseMenu; }
-	// Get the options menu
-	std::shared_ptr<Odyssey::Entity> GetOptionsMenu() { return mOptionsMenu; }
-	// Get the stats menu
-	std::shared_ptr<Odyssey::Entity> GetStatsMenu() { return mStatsMenu; }
+	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
+	// Get the options menu		   
+	Odyssey::Entity* GetOptionsMenu() { return mOptionsMenu; }
+	// Get the stats menu		   
+	Odyssey::Entity* GetStatsMenu() { return mStatsMenu; }
 	// Get the rectangle buttons from the pause menu
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
@@ -203,11 +203,11 @@ public: // Functions
 	std::vector<std::shared_ptr<CharacterHUD>> GetCharacterHuds() { return mCharacterHudList; }
 
 	//Setters
-	void SetPauseMenu(std::shared_ptr<Odyssey::Entity> _pauseMenu) { mPauseMenu = _pauseMenu; }
+	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }
 
-	void SetOptionsMenu(std::shared_ptr<Odyssey::Entity> _optionsMenu) { mOptionsMenu = _optionsMenu; }
+	void SetOptionsMenu(Odyssey::Entity* _optionsMenu) { mOptionsMenu = _optionsMenu; }
 
-	void SetStatsMenu(std::shared_ptr<Odyssey::Entity> _statsMenu) { mStatsMenu = _statsMenu; }
+	void SetStatsMenu(Odyssey::Entity* _statsMenu) { mStatsMenu = _statsMenu; }
 
 	void SetScreenWidthAndHeight(UINT _width, UINT _height) { screenWidth = _width; screenHeight = _height; }
 
@@ -223,7 +223,7 @@ private: // Varibales
 	// Battle Log Object
 	Odyssey::UICanvas* mCombatLogCanvas;
 	Odyssey::Text2D* mBattleLogText;
-	std::shared_ptr<Odyssey::Entity> mBattleLog;
+	Odyssey::Entity* mBattleLog;
 	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	std::vector<Odyssey::Sprite2D*> mCombatCasterIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatSkillIcons;
@@ -233,13 +233,13 @@ private: // Varibales
 	DirectX::XMFLOAT3 newCombatLogColor;
 
 	// Menu Entities
-	std::shared_ptr<Odyssey::Entity> mMainMenu;
-	std::shared_ptr<Odyssey::Entity> mTowerSelectMenu;
-	std::shared_ptr<Odyssey::Entity> mTeamSelectMenu;
-	std::shared_ptr<Odyssey::Entity> mPauseMenu;
-	std::shared_ptr<Odyssey::Entity> mOptionsMenu;
-	std::shared_ptr<Odyssey::Entity> mStatsMenu;
-	std::shared_ptr<Odyssey::Entity> mCreditsMenu;
+	Odyssey::Entity* mMainMenu;
+	Odyssey::Entity* mTowerSelectMenu;
+	Odyssey::Entity* mTeamSelectMenu;
+	Odyssey::Entity* mPauseMenu;
+	Odyssey::Entity* mOptionsMenu;
+	Odyssey::Entity* mStatsMenu;
+	Odyssey::Entity* mCreditsMenu;
 
 	// Main Menu Items
 	Odyssey::Sprite2D* mApeBackground;
@@ -331,7 +331,7 @@ private: // Varibales
 	// Bools
 
 private: // Functions
-	void CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo);
+	void CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo);
 	void OptionsBackButton();
 	void DecreaseVolume();
 	void IncreaseVolume();

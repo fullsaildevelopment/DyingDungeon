@@ -279,6 +279,18 @@
     <ClInclude Include="inc\ReadWriteLock.h">
       <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
     </ClInclude>
+    <ClInclude Include="inc\RenderManager.h">
+      <Filter>Header Files\Render Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\BlendState.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DepthState.h">
+      <Filter>Header Files\Render Engine\Render Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptDataLoader.h">
+      <Filter>Header Files\Game Engine\Helpers/Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -423,6 +435,18 @@
       <Filter>Source Files\Render Engine\Interfaces</Filter>
     </ClCompile>
     <ClCompile Include="src\ReadWriteLock.cpp">
+      <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderManager.cpp">
+      <Filter>Source Files\Render Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlendState.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DepthState.cpp">
+      <Filter>Source Files\Render Engine\Render Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptDataLoader.cpp">
       <Filter>Source Files\Game Engine\Helpers/Loaders</Filter>
     </ClCompile>
   </ItemGroup>

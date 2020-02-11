@@ -3,7 +3,7 @@
 #include "InputManager.h"
 
 // Tristance dumbass typeDef
-typedef std::vector<std::shared_ptr<Odyssey::Entity>> EntityList;
+typedef std::vector<Odyssey::Entity*> EntityList;
 
 class HeroComponent : public Character
 {
@@ -57,6 +57,7 @@ private:
 	void BeginAttack(EntityList targets);
 
 public:
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 private:
 	// List that contains the list ofheros and enemies

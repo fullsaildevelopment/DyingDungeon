@@ -8,6 +8,7 @@ class TeamSelectionController : public Odyssey::Component
 	CLASS_DECLARATION(TeamSelectionController)
 public:
 	TeamSelectionController(Odyssey::Application* application);
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	virtual void onDestroy();
@@ -21,20 +22,20 @@ public:
 	// Setters
 
 	// Set the list of scenes that the characters will need to be added to
-	void SetGameScenes(std::vector<std::shared_ptr<Odyssey::Scene>> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
+	void SetGameScenes(std::vector<Odyssey::Scene*> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
 
 	// Set current tower manager
-	void SetTowerManager(std::shared_ptr<Odyssey::Entity> _towerManager) {mCurrentTower = _towerManager; }
+	void SetTowerManager(Odyssey::Entity* _towerManager) {mCurrentTower = _towerManager; }
 
 	// Set turn indicator model
-	void SetTurnIndicator(std::shared_ptr<Odyssey::Entity> _turnIndicatorModel) { mTurnIndicatorModel = _turnIndicatorModel; }
+	void SetTurnIndicator(Odyssey::Entity* _turnIndicatorModel) { mTurnIndicatorModel = _turnIndicatorModel; }
 
 	// Set the slot 1 of characters for team selection
-	void SetSlot1OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
+	void SetSlot1OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
 	// Set the slot 2 of characters for team selection
-	void SetSlot2OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
+	void SetSlot2OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
 	// Set the slot 3 of characters for team selection
-	void SetSlot3OfCharacters(std::vector<std::shared_ptr<Odyssey::Entity>> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
+	void SetSlot3OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
 
 	// Set the slot 
 	void SetSlot1CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot1CharacterInfoPopupList = _listOfPopupCanvases; }
@@ -53,7 +54,7 @@ private:
 	int mBuildIndex = 0;
 
 	// Game scenes that the players will need to get added to
-	std::vector<std::shared_ptr<Odyssey::Scene>> mListOfGameScenes;
+	std::vector<Odyssey::Scene*> mListOfGameScenes;
 
 	// List of all of the positions that the character's will spawn at in battle
 	std::vector<DirectX::XMVECTOR> mPlayerPositions;
@@ -63,14 +64,14 @@ private:
 	std::vector<DirectX::XMFLOAT2> mHpPopupPositions;
 
 	// Hold the tower manager object
-	std::shared_ptr<Odyssey::Entity> mCurrentTower;
+	Odyssey::Entity* mCurrentTower;
 	// Hold the turn indicator model
-	std::shared_ptr<Odyssey::Entity> mTurnIndicatorModel;
+	Odyssey::Entity* mTurnIndicatorModel;
 
 	// These vectors will hold the character list for each slot
-	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot1CharacterList;
-	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot2CharacterList;
-	std::vector<std::shared_ptr<Odyssey::Entity>> mSlot3CharacterList;
+	std::vector<Odyssey::Entity*> mSlot1CharacterList;
+	std::vector<Odyssey::Entity*> mSlot2CharacterList;
+	std::vector<Odyssey::Entity*> mSlot3CharacterList;
 
 	// These vectors will hold the characters info popup
 	std::vector<Odyssey::UICanvas*> mSlot1CharacterInfoPopupList;

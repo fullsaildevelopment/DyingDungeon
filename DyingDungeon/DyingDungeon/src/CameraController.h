@@ -8,6 +8,7 @@ class CameraController : public Odyssey::Component
 
 public:
 	CameraController();
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	~CameraController() = default;

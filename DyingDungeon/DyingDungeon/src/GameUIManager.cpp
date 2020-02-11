@@ -14,10 +14,10 @@ GameUIManager& GameUIManager::getInstance()
 	return instance;
 }
 
-void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateBattleLog(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the battle log object
-	mBattleLog = std::make_shared<Odyssey::Entity>();
+	mBattleLog = _sceneToAddTo->createEntity();
 	mBattleLog->addComponent<Odyssey::UICanvas>();
 	// Get the canvas
 	mCombatLogCanvas = mBattleLog->getComponent<Odyssey::UICanvas>();
@@ -99,9 +99,6 @@ void GameUIManager::CreateBattleLog(std::shared_ptr<Odyssey::Scene> _sceneToAddT
 	mBattleLogVec.push_back(mBattleLogText);
 
 	mCombatLogCanvas->setActive(false);
-
-	// Add the entity to the game scene
-	_sceneToAddTo->addEntity(mBattleLog);
 }
 
 void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
@@ -130,10 +127,10 @@ void GameUIManager::ToggleCanvas(Odyssey::UICanvas* _canvas, bool _isActive)
 }
 
 // This is where I will design and add all the elements into the main menu screen
-void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	//Create the pause menu pointer
-	mMainMenu = std::make_shared<Odyssey::Entity>();
+	mMainMenu = _sceneToAddTo->createEntity();
 	mMainMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the main menu
 	Odyssey::UICanvas* mainMenuCanvas = mMainMenu->getComponent<Odyssey::UICanvas>();
@@ -187,16 +184,13 @@ void GameUIManager::CreateMainMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneT
 	mApeBackground = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudios_Background_Head.png", screenWidth, screenHeight);
 	// Set the laser image to animate
 	mAnimatedLaser = mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/GreatApeStudiosBlast.png", screenWidth, screenHeight);
-
-	// Add the pause menu to the main scene
-	_sceneToAddTo->addEntity(mMainMenu);
 }
 
 // This is where I will design and add all the elements into the tower select screen
-void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the tower select menu pointer
-	mTowerSelectMenu = std::make_shared<Odyssey::Entity>();
+	mTowerSelectMenu = _sceneToAddTo->createEntity();
 	mTowerSelectMenu->addComponent<Odyssey::UICanvas>();
 	mTowerInfoCanvas = mTowerSelectMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the pause menu
@@ -301,15 +295,12 @@ void GameUIManager::CreateTowerSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> 
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
 	// Disable the tower info canvas
 	mTowerInfoCanvas->setActive(false);
-
-	// Add the pause menu to the game scene most likely
-	_sceneToAddTo->addEntity(mTowerSelectMenu);
 }
 
-void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the tower select menu pointer
-	mTeamSelectMenu = std::make_shared<Odyssey::Entity>();
+	mTeamSelectMenu = _sceneToAddTo->createEntity();
 	mTeamSelectMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the pause menu
 	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
@@ -406,16 +397,13 @@ void GameUIManager::CreateTeamSelectMenuCanvas(std::shared_ptr<Odyssey::Scene> _
 	mShowInfoButtons.push_back(teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height));
 	// Create the Show Info text
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Show Info", properties);
-
-	// Add the mTeamSelectMenu object to the team selection scene
-	_sceneToAddTo->addEntity(mTeamSelectMenu);
 }
 
 // This is where I will design and add all elements into the pause menu canvas
-void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	//Create the pause menu pointer
-	mPauseMenu = std::make_shared<Odyssey::Entity>();
+	mPauseMenu = _sceneToAddTo->createEntity();
 	mPauseMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the pause menu
 	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->getComponent<Odyssey::UICanvas>();
@@ -481,8 +469,6 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
-	// Add the pause menu to the game scene most likely
-	_sceneToAddTo->addEntity(mPauseMenu);
 	// Turn off the canvas when creating it
 	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
 
@@ -490,10 +476,10 @@ void GameUIManager::CreatePauseMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	CreateOptionsMenu(_sceneToAddTo);
 }
 
-void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	//Create the pause menu pointer
-	mStatsMenu = std::make_shared<Odyssey::Entity>();
+	mStatsMenu = _sceneToAddTo->createEntity();
 	mStatsMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the main menu
 	Odyssey::UICanvas* statsMenuCanvas = mStatsMenu->getComponent<Odyssey::UICanvas>();
@@ -556,17 +542,15 @@ void GameUIManager::CreateStatsMenuCanvas(std::shared_ptr<Odyssey::Scene> _scene
 	mStatsPrevButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_L.png", graphBackgroundWidth/6, graphBackgroundWidth / 6);
 	position.x += static_cast<float>(graphBackgroundWidth) + 120.0f;
 	mStatsNextButtonTurn = statsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Arrow_R.png", graphBackgroundWidth / 6, graphBackgroundWidth / 6);*/
-
-	_sceneToAddTo->addEntity(mStatsMenu);
 	
 	ToggleCanvas(mStatsMenu->getComponent<Odyssey::UICanvas>(), false);
 
 }
 
-void GameUIManager::CreateCreditsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the credits menu entity and add a canvas to it
-	mCreditsMenu = std::make_shared<Odyssey::Entity>();
+	mCreditsMenu = _sceneToAddTo->createEntity();
 	Odyssey::UICanvas* creditsCanvas = mCreditsMenu->addComponent<Odyssey::UICanvas>();
 
 	// Set up text properties
@@ -697,9 +681,6 @@ void GameUIManager::CreateCreditsMenuCanvas(std::shared_ptr<Odyssey::Scene> _sce
 	properties.italic = false;
 	properties.fontSize = 24.0f;
 	mCreditsBackText = creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
-
-	// Add the menu to the scene
-	_sceneToAddTo->addEntity(mCreditsMenu);
 
 	ToggleCanvas(mCreditsMenu->getComponent<Odyssey::UICanvas>(), false);
 }
@@ -936,10 +917,10 @@ void GameUIManager::UpdateStatsMenu()
 }
 
 // This is where I will design and add all elements into the options menu canvas
-void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 {
 	// Set options menu pointer and add a canvas
-	mOptionsMenu = std::make_shared<Odyssey::Entity>();
+	mOptionsMenu = _sceneToAddTo->createEntity();
 	mOptionsMenu->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the options menu
 	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenu->getComponent<Odyssey::UICanvas>();
@@ -1024,8 +1005,6 @@ void GameUIManager::CreateOptionsMenu(std::shared_ptr<Odyssey::Scene> _sceneToAd
 	// Have the back button go to the pause menu
 	mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
 
-	// Add the options menu to the game scene most likely
-	_sceneToAddTo->addEntity(mOptionsMenu);
 	// Turn off the canvas when creating it
 	ToggleCanvas(mOptionsMenu->getComponent<Odyssey::UICanvas>(), false);
 }
