@@ -275,7 +275,8 @@ namespace Odyssey
 				if (mComponents[i]->isClassType(ComponentType::Type) && mComponents[i].get() == searchTarget)
 				{
 					// Erase the component and return true
-					mScene->removeComponent(mComponents[i].get());
+					if (mScene)
+						mScene->removeComponent(mComponents[i].get());
 					mComponents.erase(mComponents.begin() + i);
 					return true;
 				}

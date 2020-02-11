@@ -12,7 +12,6 @@ Shields::Shields(float amountOfAffect, int duration, Character* target)
 
 Shields::~Shields()
 {
-	Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
 	mDuration = -1;
