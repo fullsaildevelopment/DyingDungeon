@@ -11,7 +11,12 @@ Regens::Regens(float ammountOfEffect, int duration, Character* target)
 }
 Regens::~Regens()
 {
+	Remove();
+	mTypeId = EFFECTTYPE::Regen;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
 void Regens::Apply(Character& caster, Character& target)
 {

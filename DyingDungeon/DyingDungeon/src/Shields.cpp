@@ -12,7 +12,12 @@ Shields::Shields(float amountOfAffect, int duration, Character* target)
 
 Shields::~Shields()
 {
+	Remove();
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
 
 void Shields::Apply(Character& caster, Character& target)
