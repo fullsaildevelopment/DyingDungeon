@@ -719,6 +719,7 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3", "TorchBurningQuietly", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3", "TorchBurningWind", RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3", "TorchBurningWind", RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3", "ForwardAerial", RedAudioManager::AudioType::SFX);
 
 	// Tower select screen door sounds
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3", "DoorOpen", RedAudioManager::AudioType::SFX);
