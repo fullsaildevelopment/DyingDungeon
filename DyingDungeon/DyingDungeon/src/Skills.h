@@ -3,6 +3,7 @@
 #include "StatusEffect.h"
 #include "StatusEvents.h"
 #include "GameplayTypes.h"
+#include "RedAudioManager.h"
 #include <memory>
 //forward declare charater class
 class Character;

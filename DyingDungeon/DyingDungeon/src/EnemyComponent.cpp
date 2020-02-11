@@ -139,9 +139,9 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 35.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 45.0f;
+		mBaseAttack = mAttack = 60.0f;
+		mBaseDefense = mDefense = 60.0f;
+		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI

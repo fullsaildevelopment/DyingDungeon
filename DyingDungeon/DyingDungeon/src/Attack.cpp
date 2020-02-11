@@ -1,6 +1,8 @@
 #include "Attack.h"
 #include "Character.h"
 
+// Constructors for the diffrent cases of attacks //
+//////////////////////////////////////////////////////////////
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
@@ -14,7 +16,6 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
-
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, float healing)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
@@ -28,7 +29,6 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
-
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
@@ -42,7 +42,6 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mStatusEffect = debuff;
 	mIsAOE = false;
 }
-
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, bool AOE)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
@@ -56,7 +55,6 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mStatusEffect = nullptr;
 	mIsAOE = AOE;
 }
-
 Attack::Attack(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float damage, std::shared_ptr<StatusEffect> debuff, bool AOE)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::ATTACK;
@@ -70,25 +68,44 @@ Attack::Attack(std::wstring skillName, std::string animationId, float animationT
 	mStatusEffect = debuff;
 	mIsAOE = AOE;
 }
+//////////////////////////////////////////////////////////////
 
+// Destructor
 Attack::~Attack()
 {
 }
 
+// Function that applies the attack to the passed in target
 void Attack::Use(Character& caster, Character& target)
 {
+	// Float used for total dps calculations
 	float totalDps = 0.0f;
+
+	// Damage calculation
 	totalDps = mDamage + (mDamage * caster.GetAtkMod());
-	//UI battle log
+
+	// Apply total damage to character
+	target.TakeDamage(totalDps);
+
+	// UI battle log //
+	//////////////////////////////////////////////
 	std::wstring battleText = caster.GetName();
 	std::wstring skillName = mSkillName;
 	std::wstring targetName = target.GetName();
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
-	target.TakeDamage(totalDps);
+	//////////////////////////////////////////////
+
+	// Play audio "hit" sound effect
+	//RedAudioManager::Instance().PlaySFX("Forward Aerial");
+
+	// If i have a status effect to apply, then apply it 
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
+		// Application of status effect
 		mStatusEffect->Apply(caster, target);
+
+		// Publish event for reds shit
 		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), &caster, mSkillName, mDamage, caster.GetAtkMod(), mStatusEffect->GetTypeId()));
     
 		//Switch stament for reds evvents
@@ -126,10 +143,12 @@ void Attack::Use(Character& caster, Character& target)
 		Odyssey::EventManager::getInstance().publish(new CharacterDealtDamageEvent(caster.GetName(), &caster, mSkillName, mDamage, caster.GetAtkMod(), EFFECTTYPE::None));
 	Odyssey::EventManager::getInstance().publish(new CharacterTakeDamage(target.GetName(), &target, mSkillName, target.GetDefMod()));
   
+	// If this move returns me health gib it
 	if (mHealing > 0.0f)
 		caster.ReceiveHealing(mHealing);
 }
 
+// Get the damage this skill does
 float Attack::GetDamage()
 {
 	return mDamage;
