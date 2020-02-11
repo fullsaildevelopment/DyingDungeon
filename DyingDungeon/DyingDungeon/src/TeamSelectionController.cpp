@@ -5,8 +5,10 @@
 #include "GameUIManager.h"
 #include "TeamManager.h"
 #include "CharacterFactory.h"
+#include "HeroComponent.h"
 #include "Material.h"
 #include "TowerManager.h"
+#include "SaveLoad.h"
 
 CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
@@ -66,6 +68,24 @@ void TeamSelectionController::initialize()
 
 	// Clear the player team from Team Manager before adding in new characters
 	TeamManager::getInstance().ClearPlayerTeam();
+	if (SaveLoad::Instance().LoadLoadOut("LoadOut_Test"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+		
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+	}
+	//SaveLoad::Instance().LoadLoadOut();
 }
 
 void TeamSelectionController::update(double deltaTime)
@@ -75,6 +95,7 @@ void TeamSelectionController::update(double deltaTime)
 		changedTheScene = true;
 		RedAudioManager::Instance().Stop("BackgroundMenu");
 		RedAudioManager::Instance().Loop("TorchBurningQuietly");
+		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
 		// Set up the tower manager with the enemy and player teams
@@ -93,6 +114,13 @@ void TeamSelectionController::update(double deltaTime)
 		{
 			RedAudioManager::Instance().Unmute();
 		}
+	}
+	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::A) && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::S))
+	{
+		GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+		unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+		SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+		SaveLoad::Instance().SaveLoadOut();
 	}
 }
 
@@ -327,7 +355,14 @@ void TeamSelectionController::EnterBattle()
 {
 	RedAudioManager::Instance().StopGroup("BackgroundMenu");
 	RedAudioManager::Instance().Loop("TorchBurningQuietly");
+	RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
 	RedAudioManager::Instance().Loop("BackgroundBattle");
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
 	// Make a list of enums to hold based what character it is
 	std::vector<CharacterFactory::CharacterOptions> enumList;
   

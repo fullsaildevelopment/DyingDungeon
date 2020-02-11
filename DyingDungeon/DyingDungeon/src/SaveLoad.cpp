@@ -2,7 +2,7 @@
 
 SaveLoad::SaveLoad()
 {
-	m_saveProfile = "Profile_0";
+	m_saveProfile = "Profile_0/";
 }
 
 SaveLoad& SaveLoad::Instance()
@@ -28,6 +28,8 @@ bool SaveLoad::SaveStats(std::string saveName)
 		for (unsigned int i = 0; i < StatTracker::Instance().GetLevelCount(); i++)
 		{
 			file.write((const char*)&StatTracker::Instance().GetLevel(i).levelNumber, sizeof(uint32_t));
+			file.write((const char*)&StatTracker::Instance().GetLevel(i).turnCount, sizeof(uint32_t));
+			file.write((const char*)&StatTracker::Instance().GetLevel(i).rounds, sizeof(uint32_t));
 
 			uint32_t size_r = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns.size());
 			file.write((const char*)&size_r, sizeof(uint32_t));
@@ -37,13 +39,16 @@ bool SaveLoad::SaveStats(std::string saveName)
 				file.write((const char*)&size_c, sizeof(uint32_t));
 				file.write(StatTracker::Instance().GetLevel(i).turns[j].characterName.c_str(), size_c);
 
+				file.write((const char*)StatTracker::Instance().GetLevel(i).turns[j].unique_id, sizeof(unsigned int));
+
 				uint32_t size_t = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets.size());
 				file.write((const char*)&size_t, sizeof(uint32_t));
 
 				for (unsigned int k = 0; k < size_t; k++) {
-					uint32_t sizeName = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.size());
+					uint32_t sizeName = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.size());
 					file.write((const char*)&sizeName, sizeof(uint32_t));
-					file.write(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.c_str(), sizeName);
+					file.write(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.c_str(), sizeName);
+					file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.second, sizeof(unsigned int));
 					file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].second, sizeof(float));
 				}
 
@@ -74,6 +79,19 @@ bool SaveLoad::SaveStats(std::string saveName)
 				file.write(StatTracker::Instance().GetLevel(i).turns[j].actionName.c_str(), size_a);
 
 			}
+
+			for  (unsigned int l = 0; l < 3; l++) {
+				
+				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.first.size());
+				file.write((const char*)&size_cn,sizeof(uint32_t));
+				file.write(StatTracker::Instance().GetLevel(i).characters[l].first.first.c_str(), size_cn);
+				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.second, sizeof(unsigned int));
+				
+				/*uint32_t size_cp = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].second.size()) * 2;
+				file.write((const char*)&size_cp, sizeof(uint32_t));
+				file.write((const char*)StatTracker::Instance().GetLevel(i).characters[l].second.c_str(), size_cp);*/
+			}
+			
 		}
 		file.close();
 		return true;
@@ -82,7 +100,7 @@ bool SaveLoad::SaveStats(std::string saveName)
 	{
 		return false;
 	}
-
+	return false;
 }
 
 bool SaveLoad::LoadStats(std::string loadFileName)
@@ -103,6 +121,9 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 		{
 
 			file.read((char*)&StatTracker::Instance().GetLevel(i).levelNumber, sizeof(uint32_t));
+			file.read((char*)&StatTracker::Instance().GetLevel(i).turnCount, sizeof(uint32_t));
+			file.read((char*)&StatTracker::Instance().GetLevel(i).rounds, sizeof(uint32_t));
+
 			uint32_t size_r = 0;
 			file.read((char*)&size_r, sizeof(uint32_t));
 			StatTracker::Instance().GetLevel(i).turns.resize(size_r);
@@ -121,8 +142,9 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 				for (unsigned int k = 0; k < size_t; k++) {
 					uint32_t sizeName = 0;
 					file.read((char*)&sizeName, sizeof(uint32_t));
-					StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.resize(sizeName);
-					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first[0], sizeName);
+					StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.resize(sizeName);
+					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first[0], sizeName);
+					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.second, sizeof(unsigned int));
 					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].second, sizeof(float));
 				}
 
@@ -156,6 +178,19 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 				StatTracker::Instance().GetLevel(i).turns[j].actionName.resize(size_a);
 				file.read((char*)StatTracker::Instance().GetLevel(i).turns[j].actionName[0], size_a);
 			}
+			
+			for (unsigned int l = 0; l < 3; l++) {
+
+				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.first.size());
+				file.read((char*)&size_cn, sizeof(uint32_t));
+				file.read((char*)&StatTracker::Instance().GetLevel(i).characters[l].first.first[0], size_cn);
+				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.second, sizeof(unsigned int));
+
+				/*uint32_t size_cp = 0;
+				file.read((char*)&size_cp, sizeof(uint32_t));
+				file.read((char*)StatTracker::Instance().GetLevel(i).characters[l].second.c_str(), size_cp);*/
+			}
+
 		}
 		file.close();
 		return true;
@@ -163,12 +198,19 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 	else {
 		return false;
 	}
+	return false;
 }
 
-bool SaveLoad::SaveGame(std::string saveProfile)
+bool SaveLoad::SaveGame()
 {
 	//StatTracker::Instance().SaveStats(std::string("profiles/" + saveProfile));
-	SaveLoadOut();
+
+	//SaveLoadOut();
+	std::experimental::filesystem::v1::path dir = std::string("profiles/" + m_saveProfile);
+	if (std::experimental::filesystem::exists(dir))
+	{
+
+	}
 	return true;
 }
 
@@ -178,37 +220,53 @@ bool SaveLoad::LoadGame(std::string saveProfile)
 	return false;
 }
 
-void SaveLoad::AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2)
+void SaveLoad::AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID[3], unsigned int index[3])
 {
 	Loadout newLoadout;
-	newLoadout.characterIDs[0] = characterID_0;
-	newLoadout.characterIDs[1] = characterID_1;
-	newLoadout.characterIDs[2] = characterID_2;
+	newLoadout.characterIDs[0] = characterID[0];
+	newLoadout.characterIDs[1] = characterID[1];
+	newLoadout.characterIDs[2] = characterID[2];
+	newLoadout.index[0] = index[0];
+	newLoadout.index[1] = index[1];
+	newLoadout.index[2] = index[2];
 	newLoadout.name = loadoutName;
 	newLoadout.profile = m_saveProfile;
-	loadouts.push_back(newLoadout);
+	loadouts[loadoutName] = newLoadout;
+}
+
+void SaveLoad::OverrideLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID[3], unsigned int index[3]) {
+	loadouts[loadoutName].characterIDs[0] = characterID[0];
+	loadouts[loadoutName].characterIDs[1] = characterID[1];
+	loadouts[loadoutName].characterIDs[2] = characterID[2];
+	loadouts[loadoutName].index[0] = index[0];
+	loadouts[loadoutName].index[1] = index[1];
+	loadouts[loadoutName].index[2] = index[2];
+	loadouts[loadoutName].name = loadoutName;
+	loadouts[loadoutName].profile = m_saveProfile;
 }
 
 bool SaveLoad::SaveLoadOut()
 {
 	bool perperExport = true;
 	
-	for (int i = 0; i < loadouts.size(); i++) 
+	
+	for (std::map<std::string, Loadout>::iterator it = loadouts.begin(); it != loadouts.end(); it++)
 	{
-		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::out | std::ios::trunc | std::ios::binary);
+		std::fstream file(std::string("profiles/" + m_saveProfile + "loadouts/" + it->second.name), std::ios::out | std::ios::trunc | std::ios::binary);
 		if (file.is_open()) 
 		{
-			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
+			uint32_t nameSize = static_cast<uint32_t>(it->second.name.size());
 			file.write((const char*)&nameSize, sizeof(uint32_t));
-			file.write(loadouts[i].name.c_str(), nameSize);
+			file.write(it->second.name.c_str(), nameSize);
 
-			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
+			uint32_t profileNameSize = static_cast<uint32_t>(it->second.profile.size());
 			file.write((const char*)&profileNameSize, sizeof(uint32_t));
-			file.write(loadouts[i].profile.c_str(), nameSize);
+			file.write(it->second.profile.c_str(), profileNameSize);
 			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
 			{
-				unsigned int character = static_cast<unsigned int>(loadouts[i].characterIDs[j]);
+				unsigned int character = static_cast<unsigned int>(it->second.characterIDs[j]);
 				file.write((const char*)&character, sizeof(unsigned int));
+				file.write((const char*)&it->second.index[j], sizeof(int));
 			}
 			file.close();
 		}
@@ -226,34 +284,30 @@ bool SaveLoad::LoadLoadOut()
 
 	std::string loadout_path = "profiles/";
 	loadout_path.append(m_saveProfile);
+	loadout_path.append("loadouts/");
 
 	std::experimental::filesystem::v1::path dir = loadout_path;
 	
 	//create_directory();
 
-	unsigned int file_count = dir_file_count(std::string("loadouts/"));
-	for (unsigned int i = 0; i < file_count; i++)
+	unsigned int file_count = dir_file_count(loadout_path);
+	std::experimental::filesystem::directory_iterator end_itr;
+	for (std::experimental::filesystem::directory_iterator it(dir); it != end_itr; it++)
 	{
-		std::fstream file(std::string("loadouts/" + m_saveProfile + "_" + std::to_string(i)), std::ios::in | std::ios::trunc | std::ios::binary);
-		if (file.is_open())
+		std::string file;
+		std::string path = Converter::ConvertWStrToStr(it->path().c_str());
+		for (int i = 0; i < path.size(); i++)
 		{
-			uint32_t nameSize = static_cast<uint32_t>(loadouts[i].name.size());
-			file.write((const char*)&nameSize, sizeof(uint32_t));
-			file.write(loadouts[i].name.c_str(), nameSize);
-
-			uint32_t profileNameSize = static_cast<uint32_t>(loadouts[i].profile.size());
-			file.write((const char*)&profileNameSize, sizeof(uint32_t));
-			file.write(loadouts[i].profile.c_str(), nameSize);
-			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
+			file.append(std::string(1, path[i]));
+			if (path[i] == '\\')
 			{
-				unsigned int character = static_cast<unsigned int>(loadouts[i].characterIDs[j]);
-				file.write((const char*)&character, sizeof(unsigned int));
+				file.clear();
 			}
-			file.close();
 		}
-		else
+		perperExport = LoadLoadOut(file);
+		if (!perperExport)
 		{
-			perperExport = false;
+			break;
 		}
 	}
 	return perperExport;
@@ -261,7 +315,35 @@ bool SaveLoad::LoadLoadOut()
 
 bool SaveLoad::LoadLoadOut(std::string loadoutName)
 {
-	return false;
+	Loadout loadedLoadOut;
+	std::string path = std::string("profiles/" + m_saveProfile + "loadouts/" + loadoutName);
+	std::fstream file(path, std::ios::in | std::ios::binary);
+	if (file.is_open())
+	{
+		uint32_t nameSize = 0;
+		file.read((char*)&nameSize, sizeof(uint32_t));
+		loadedLoadOut.name.resize(nameSize);
+		file.read((char*)&loadedLoadOut.name[0], nameSize);
+
+		uint32_t profileNameSize = 0;
+		file.read((char*)&profileNameSize, sizeof(uint32_t));
+		loadedLoadOut.profile.resize(profileNameSize);
+		file.read((char*)&loadedLoadOut.profile[0], profileNameSize);
+		for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
+		{
+			unsigned int character = 0;
+			file.read((char*)&character, sizeof(unsigned int));
+			loadedLoadOut.characterIDs[j] = (GameplayTypes::HEROID)character;
+			file.read((char*)&loadedLoadOut.index[j], sizeof(int));
+		}
+		file.close();
+	}
+	else
+	{
+		return false;
+	}
+	loadouts[loadoutName] = loadedLoadOut;
+	return true;
 }
 
 unsigned int SaveLoad::dir_file_count(std::string path)
@@ -315,7 +397,20 @@ void SaveLoad::SetSaveProfile(std::string saveProfile)
 	m_saveProfile = saveProfile;
 }
 
+void SaveLoad::CreateProfileDirectory()
+{
+	std::string path = "profiles/" + m_saveProfile;
+	create_directory(path);
+	std::string loadout_path =  path + "loadouts/";
+	create_directory(loadout_path);
+}
+
 std::string SaveLoad::GetSaveProfile()
 {
 	return m_saveProfile;
+}
+
+SaveLoad::Loadout SaveLoad::GetLoadOut(std::string loadout_name)
+{
+	return loadouts[loadout_name];
 }

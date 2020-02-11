@@ -229,5 +229,5 @@ void BattleInstance::SetTurnIndicatorPosition()
 	// Send out event letting the stat tracker know a new player is taking a turn
 	std::wstring characterName = mCurrentCharacter->getComponent<Character>()->GetName();
 	bool isHero = mCurrentCharacter->getComponent<Character>()->IsHero();
-	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mTurnCounter, mCurrentRound, isHero));
+	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mCurrentCharacter->getComponent<Character>(), mTurnCounter, mCurrentRound, isHero));
 }
