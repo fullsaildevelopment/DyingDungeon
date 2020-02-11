@@ -118,7 +118,9 @@ void Character::ReceiveHealing(float healing)
 
 	// TODO: Update Combat Log Text Here
 
-
+	// If they run out of Health kill the character
+	if (mCurrentHP <= 0.0f)
+		Die();
 }
 
 // Called whenever this character needs to reduce its current mana
@@ -206,7 +208,7 @@ float Character::GetBaseAtk()
 
 float Character::GetAtkMod()
 {
-	return (mAttack - BASEATK) / 500.0f;
+	return (mAttack - BASEATK) / 100.0f;
 }
 
 // Increases the Attack stat of the character
@@ -235,7 +237,7 @@ float Character::GetBaseDef()
 
 float Character::GetDefMod()
 {
-	return (mBaseDefense - BASEDEF) / 200.0f;
+	return (mDefense - BASEDEF) / 200.0f;
 }
 
 // Increases the current Defense stat of the character
@@ -264,7 +266,7 @@ float Character::GetBaseSpeed()
 
 float Character::GetSpdMod()
 {
-	return (mSpeed - BASESPD) / 100.0f;
+	return (mSpeed - BASESPD) / 50.0f;
 }
 
 // Increases the current Speed stat of the character
@@ -487,97 +489,60 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 
 	for (it = effectList.begin(); it != effectList.end();)
 	{
-		(*it)->Use();
+		if ((*it)->GetDuration() <= 0)
+		{
+			it = effectList.erase(it);
+			continue;
+		}
+		else
+			(*it)->Use();
 		if (mCurrentState == STATE::DEAD)
 			return;
+		it++;
+	}
+}
+
+void Character::ManageCastedEffects()
+{
+	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
+	std::vector<StatusEffect*>::iterator it;
+
+	// Casted Effects
+	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
+	{
+		if (static_cast<int>((*it)->GetTypeId()) < 0  || static_cast<int>((*it)->GetTypeId()) > 8)
+		{
+			(*it) = nullptr;
+			it = mCastedEffects.erase(it);
+			continue;
+		}
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
 			(*it)->Remove();
-			it = effectList.erase(it);
+			(*it) = nullptr;
+			it = mCastedEffects.erase(it);
 		}
 		else
 			it++;
 	}
 }
 
+void Character::AddCastedEffect(StatusEffect* newCastedEffect)
+{
+	mCastedEffects.push_back(newCastedEffect);
+}
+
 // Manages all status effects, appling effects and removing expired ones
 bool Character::ManageAllEffects()
 {
-	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-
-	//Regens
-	for (it = mRegens.begin(); it != mRegens.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mRegens.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Bleeds
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		(*it)->Use();
-		if (mCurrentState == STATE::DEAD)
-			return false;
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Buffs
-	for (it = mBuffs.begin(); it != mBuffs.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBuffs.erase(it);
-		}
-		else
-			it++;
-	}
-
-	// Debuffs
-	for (it = mDebuffs.begin(); it != mDebuffs.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mDebuffs.erase(it);
-		}
-		else
-			it++;
-	}
-	 
-	// Shields
-	for (it = mSheilds.begin(); it != mSheilds.end();)
-	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mSheilds.erase(it);
-		}
-		else
-			it++;
-	}
+	ManageStatusEffects(mRegens);
+	ManageStatusEffects(mBleeds);
+	if (mCurrentState == STATE::DEAD)
+		return false;
+	ManageStatusEffects(mBuffs);
+	ManageStatusEffects(mDebuffs);
+	ManageStatusEffects(mSheilds);
 	return true;
 }
 
@@ -589,6 +554,33 @@ void Character::ClearStatusEffects()
 	mBleeds.clear();
 	mRegens.clear();
 	mSheilds.clear();
+}
+
+void Character::ClearBadStatusEffects()
+{
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+
+	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	{
+		if ((*it))
+		{
+			(*it)->Remove();
+			it = mDebuffs.erase(it);
+		}
+		else
+			it++;
+	}
+
+	for (it = mBleeds.begin(); it != mBleeds.end();)
+	{
+		if ((*it))
+		{
+			(*it)->Remove();
+			it = mBleeds.erase(it);
+		}
+		else
+			it++;
+	}
 }
 
 // Sets the Particle system pointer to a "Hit effect"

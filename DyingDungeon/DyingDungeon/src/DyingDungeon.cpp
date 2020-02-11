@@ -92,6 +92,7 @@ void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
 void setupGameInterface();
 void setupTowerManager();
+void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 // Factories
@@ -155,6 +156,8 @@ int playGame()
 	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
 	setupTowerManager();
 	setupTeamSelectMenu(application.get());
+	// Set up the enemies that the player will battle
+	setupEnemiesToCreate();
 
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
 
@@ -349,98 +352,196 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 
 	// Create the character's for the first slot
 	std::vector<std::shared_ptr<Odyssey::Entity>> pListOfCharactersCreated;
+	std::vector<Odyssey::UICanvas*> pListOfCanvasesCreated;
 	std::shared_ptr<Odyssey::Entity> characterToAdd;
+	std::shared_ptr<Odyssey::Entity> popupObject = std::make_shared<Odyssey::Entity>();
+	Odyssey::UICanvas* popupCanvas = nullptr;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
+	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Set the 1st slot of characters
 	teamSelectionController->SetSlot1OfCharacters(pListOfCharactersCreated);
+	// Set the 1st slot of info popups
+	teamSelectionController->SetSlot1CharacterInfoPopups(pListOfCanvasesCreated);
 	// Clear the list before making the new characters for the next slot
 	pListOfCharactersCreated.clear();
-
+	// Clear the list of canvases before making the new canvases for the next slot
+	pListOfCanvasesCreated.clear();
+	
 	// Create the character's for the second slot
 	xOffset = 0.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	uiPosition = { 490.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Set the 2nd slot of characters
 	teamSelectionController->SetSlot2OfCharacters(pListOfCharactersCreated);
+	// Set the 2nd slot of info popups
+	teamSelectionController->SetSlot2CharacterInfoPopups(pListOfCanvasesCreated);
 	// Clear the list before making the new characters for the next slot
 	pListOfCharactersCreated.clear();
+	// Clear the list of canvases before making the new canvases for the next slot
+	pListOfCanvasesCreated.clear();
 
 	// Create the character's for the third slot
 	xOffset = 5.0f;
 	charPosition = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	charRotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+	uiPosition = { 860.0f, 145.0f };
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Bard, L"Bard", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Warrior, L"Warrior", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
+	// Make character
+	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Monk, L"Monk", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
+	// Don't show the characters after creating the first one
+	characterToAdd->setVisible(false);
+	// Add character to created character list
+	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Make character
 	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Mage, L"Mage", charPosition, charRotation, uiPosition, false, uiPosition, gTeamSelectScene);
 	// Don't show the characters after creating the first one
 	characterToAdd->setVisible(false);
 	// Add character to created character list
 	pListOfCharactersCreated.push_back(characterToAdd);
+	//Create character info popup
+	popupCanvas = GameUIManager::getInstance().SetupInfoPopup(popupObject.get(), characterToAdd->getComponent<Character>(), uiPosition);
+	// Add canvas to list of created canvases
+	pListOfCanvasesCreated.push_back(popupCanvas);
 	// Set the 3rd slot of characters
 	teamSelectionController->SetSlot3OfCharacters(pListOfCharactersCreated);
+	// Set the 3rd slot of info popups
+	teamSelectionController->SetSlot3CharacterInfoPopups(pListOfCanvasesCreated);
 	// Clear the list before making the new characters for the next slot
 	pListOfCharactersCreated.clear();
+	// Clear the list of canvases before making the new canvases for the next slot
+	pListOfCanvasesCreated.clear();
+
+	// Add the popup object to the scene
+	gTeamSelectScene->addEntity(popupObject);
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
@@ -571,36 +672,122 @@ void setupTowerManager()
 	// Add the turn indicator to the game scene
 	gSceneOne->addEntity(gTurnIndicatorModel);
 
-	// Skeleton #1
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	DirectX::XMFLOAT2 hudPosition = { 200.0f, 10.0f };
-	DirectX::XMFLOAT2 hpPopupPosition = { 425.0f, 150.0f };
-	std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//// Skeleton #1
+	//DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
+	//DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	//DirectX::XMFLOAT2 hudPosition = { 200.0f, 10.0f };
+	//DirectX::XMFLOAT2 hpPopupPosition = { 425.0f, 150.0f };
+	//std::shared_ptr<Odyssey::Entity> characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Un", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Skeleton #2
+	//charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	//hpPopupPosition.x += 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Skeleton #3
+	//charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x += 329.7f;
+	//hpPopupPosition.x += 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	//
+	//// Ganfaul
+	//charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	//hudPosition.x = (1280.0f / 2.0f) - 107.0f;
+	//hpPopupPosition.x -= 150.0f;
+	//characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
+	//characterToAdd->setActive(false);
+	//// Assign the boss character for the tower
+	//gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+}
 
-	// Skeleton #2
-	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
-	hpPopupPosition.x += 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Deux", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+void setupEnemiesToCreate()
+{
+	//Set the current tower in the TeamManager 
+	TeamManager::getInstance().SetTheCurrentTower(gCurrentTower);
+	// Set the first scene in the TeamManager
+	TeamManager::getInstance().SetTheFirstScene(gSceneOne);
 
-	// Skeleton #3
-	charPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x += 329.7f;
-	hpPopupPosition.x += 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton Trois", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	TeamManager::getInstance().AddCharacterToEnemyTeam(characterToAdd);
+	// Some varibale to setup the enemies easier
+	// Left character
+	DirectX::XMVECTOR leftPosition = DirectX::XMVectorSet(-4.5f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR leftRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 leftHudPosition = { 200.0f, 10.0f };
+	DirectX::XMFLOAT2 leftHpPopupPosition = { 425.0f, 150.0f };
+	// Middle character
+	DirectX::XMVECTOR middlePosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR middleRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 middleHudPosition = { 533.0f, 10.0f };
+	DirectX::XMFLOAT2 middleHpPopupPosition = { 575.0f, 150.0f };
+	// Right character
+	DirectX::XMVECTOR rightPosition = DirectX::XMVectorSet(4.5f, 0.0f, 20.0f, 1.0f);
+	DirectX::XMVECTOR rightRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 rightHudPosition = { 863.0f, 10.0f };
+	DirectX::XMFLOAT2 rightHpPopupPosition = { 725.0f, 150.0f };
 
-	// Ganfaul
-	charPosition = DirectX::XMVectorSet(0.0f, 0.0f, 20.0f, 1.0f);
-	hudPosition.x = (1280.0f / 2.0f) - 107.0f;
-	hpPopupPosition.x -= 150.0f;
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", charPosition, charRotation, hudPosition, true, hpPopupPosition, gSceneOne);
-	characterToAdd->setActive(false);
-	// Assign the boss character for the tower
-	gCurrentTower->getComponent<TowerManager>()->SetBossCharacter(characterToAdd);
+	// The list of enemies to add to the list of enemies to create in Team Manager
+	std::vector<TeamManager::EnemySetups> newEnemies;
+
+	// LEVEL ONE ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelOneEnemy;
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = leftPosition;
+		levelOneEnemy.pRotation = leftRotation;
+		levelOneEnemy.pHudPosition = leftHudPosition;
+		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = middlePosition;
+		levelOneEnemy.pRotation = middleRotation;
+		levelOneEnemy.pHudPosition = middleHudPosition;
+		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+		// Set enemy properties
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pPosition = rightPosition;
+		levelOneEnemy.pRotation = rightRotation;
+		levelOneEnemy.pHudPosition = rightHudPosition;
+		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
+		levelOneEnemy.pIsBoss = false;
+		// Add enemy to list
+		newEnemies.push_back(levelOneEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL TWO ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelTwoEnemy;
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelTwoEnemy.pPosition = middlePosition;
+		levelTwoEnemy.pRotation = middleRotation;
+		levelTwoEnemy.pHudPosition = middleHudPosition;
+		levelTwoEnemy.pHpPopupPosition = middleHpPopupPosition;
+		levelTwoEnemy.pIsBoss = true;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
 }
 
 void setupAudio()

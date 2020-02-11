@@ -17,12 +17,13 @@ Provoked::~Provoked()
 	mProvoker = nullptr;
 }
 
-void Provoked::Apply(Character& target)
+void Provoked::Apply(Character& caster, Character& target)
 {
 	target.SetProvoked(mProvoker);
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Provoked>(mDuration, mProvoker, &target);
 	target.AddStatusEffect(newStatusEffect);
+	caster.AddCastedEffect(newStatusEffect.get());
 }
 
 void Provoked::Remove()

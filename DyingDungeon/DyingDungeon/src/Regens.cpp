@@ -13,11 +13,12 @@ Regens::~Regens()
 {
 	mRecipient = nullptr;
 }
-void Regens::Apply(Character& target)
+void Regens::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Regens>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
+	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }
 void Regens::Remove()

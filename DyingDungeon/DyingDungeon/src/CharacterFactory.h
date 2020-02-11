@@ -26,7 +26,11 @@ public:
 		Mage,
 		Bard,
 		Warrior,
+		Monk,
 		Skeleton,
+		Summoner,
+		MeleeDemon,
+		CasterDemon,
 		Ganfaul
 	};
 

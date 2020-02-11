@@ -11,9 +11,9 @@
 enum class STATE { NONE = 0, STUNNED, SELECTMOVE, SELECTTARGET, CONFIRM, INPROGRESS, FINISHED, DEAD };
 
 // #defines for doing the stats math
-#define BASEATK 20.0f
-#define BASEDEF 20.0f
-#define BASESPD 20.0f
+#define BASEATK 40.0f
+#define BASEDEF 40.0f
+#define BASESPD 40.0f
 
 class Character : public Odyssey::Component
 {
@@ -160,11 +160,20 @@ public:
 	// Manages the passed in status effect, appling effects and removing expired ones
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
 
+	// Manage status effects I casted
+	void ManageCastedEffects();
+
+	// Add a status effect I cast to the Casted list
+	void AddCastedEffect(StatusEffect* newCastedEffect);
+
 	// Manages all status effects, appling effects and removing expired ones
 	bool ManageAllEffects();
 
 	// Removes all status effects from characters
 	void ClearStatusEffects();
+
+	// Remove all harmful status effects
+	void ClearBadStatusEffects();
 
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
@@ -283,6 +292,9 @@ protected:
 
 	// Vector of shared pointers that point to the Sheilds the character has
 	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
+
+	// Vector of raw pointer I casted 
+	std::vector<StatusEffect*> mCastedEffects;
 
 	// Pointer to the animator the character uses
 	Odyssey::Animator* mAnimator;

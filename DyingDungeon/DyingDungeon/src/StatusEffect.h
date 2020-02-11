@@ -26,7 +26,7 @@ public:
 	StatusEffect() = default;
 	~StatusEffect() = default;
 	// Application functions
-	virtual void Apply(Character& target) = 0;
+	virtual void Apply(Character& caster, Character& target) = 0;
 	virtual void Remove() = 0;
 	virtual void Use() = 0;
 	// TypeId functions
