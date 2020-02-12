@@ -57,11 +57,6 @@ void RedAudioManager::Play(const char* alias)
 	FindAudio(alias)->Play();
 }
 
-void RedAudioManager::PlayEvent(AudioPlayEvent* apEvent)
-{
-
-}
-
 void RedAudioManager::StopEvent(AudioStopEvent* asEvent)
 {
 	//Stop(asEvent->alias.c_str());
