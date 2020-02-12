@@ -133,7 +133,7 @@ namespace Odyssey
 	void Application::onSpawnEntity(SpawnEntityEvent* evnt)
 	{
 		// Create a copy of the entity
-		*(evnt->entity) = (mActiveScene->spawnEntity(evnt->prefab));
+		*(evnt->entity) = mActiveScene->spawnEntity(evnt->prefab, evnt->position, evnt->rotation);
 	}
 
 	void Application::onDestroyEntity(DestroyEntityEvent* evnt)

@@ -27,7 +27,7 @@ namespace Odyssey
 		 */
 		void initialize();
 
-		Entity* spawnEntity(Entity* spawnPrefab);
+		Entity* spawnEntity(Entity* spawnPrefab, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
 
 		void destroyEntity(Entity* entity);
 		/**
