@@ -320,6 +320,18 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
+	
+	//Create the save loadout button
+	position.y += 60.0f;
+	position.x -= 140.0f;
+	properties.fontSize = 35.0f;
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width/4, height);
+	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
+	//Create the load loadout button
+	position.x += 280.0f;
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width/4, height);
+	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Load Loadout", properties);
+
 
 	// Create the confirm button to enter battle
 	width = 227;
@@ -330,7 +342,7 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mEnterBattleButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	// Create confrim text
 	color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	properties.fontSize = 35.0f;
+	
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Enter Battle", properties);
 
 	// Make the arrow sprites that the user will click to change characters
