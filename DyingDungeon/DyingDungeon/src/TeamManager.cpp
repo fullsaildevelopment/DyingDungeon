@@ -15,7 +15,7 @@ void TeamManager::initialize()
 	DirectX::XMVECTOR rotation = enemies[0].pRotation;
 	DirectX::XMFLOAT2 hudPosition = enemies[0].pHudPosition;
 	DirectX::XMFLOAT2 hpPopupPosition = enemies[0].pHpPopupPosition;
-	ganfaulPrefab = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, nullptr);
+	ganfaulPrefab = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
 }
 
 std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
@@ -46,9 +46,8 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 				break;
 			case EnemyType::Ganfaul:
 				//newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-				Odyssey::Entity* result;
-				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(ganfaulPrefab, &result));
-				return mEnemyTeam;
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(ganfaulPrefab, &newCharacter));
+				break;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;
 				break;

@@ -30,7 +30,12 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 
 	if (_sceneToAddTo)
 	{
-		newCharacter = _sceneToAddTo->createEntity();
+		if (_characterToCreate == CharacterOptions::Ganfaul)
+		{
+			newCharacter = mApplication->createPrefab();
+		}
+		else
+			newCharacter = _sceneToAddTo->createEntity();
 	}
 	else
 	{
@@ -223,7 +228,7 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 			}
 
 			// Set up blood particle effect
-			//tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
+			tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			break;
 		}
