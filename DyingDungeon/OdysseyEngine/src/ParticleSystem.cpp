@@ -187,7 +187,6 @@ namespace Odyssey
 		mStartCount = startingCount;
 		mMaxCount = maxCount;
 		mParticleData.resize(mMaxCount);
-		createParticleBuffer();
 	}
 
 	void ParticleSystem::setRateOverTime(int emissionRate)
@@ -273,7 +272,6 @@ namespace Odyssey
 		{
 			mParticleData.resize(mMaxCount);
 		}
-			
 
 		mParticleBuffer = RenderManager::getInstance().createBuffer(BufferBindFlag::StructuredBuffer, size_t(mMaxCount),
 			static_cast<UINT>(sizeof(Particle)), mParticleData.data());
@@ -349,7 +347,11 @@ namespace Odyssey
 	void ParticleSystem::initialize()
 	{
 		if (mIsPlaying)
+		{
 			setInitialData();
+		}
+
+		createParticleBuffer();
 	}
 
 	void ParticleSystem::update(double deltaTime)
@@ -409,5 +411,10 @@ namespace Odyssey
 		}
 
 		mLock.unlock(LockState::Write);
+	}
+
+	void ParticleSystem::onDestroy()
+	{
+		RenderManager::getInstance().destroyBuffer(mParticleBuffer);
 	}
 }

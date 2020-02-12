@@ -173,7 +173,7 @@ namespace Odyssey
 
 		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity) : prefab(spawnPrefab), entity(outEntity)
 		{
-			priority = EventPriority::Immediate;
+			priority = EventPriority::Deferred;
 		}
 	};
 
@@ -184,7 +184,7 @@ namespace Odyssey
 
 		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
 		{
-			priority = EventPriority::Immediate;
+			priority = EventPriority::Deferred;
 		}
 	};
 }

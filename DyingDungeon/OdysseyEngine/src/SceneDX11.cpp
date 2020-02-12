@@ -60,6 +60,77 @@ namespace Odyssey
 		}
 	}
 
+	Entity* SceneDX11::spawnEntity(Entity* spawnPrefab)
+	{
+		// Create the entity from the prefab copy and set the scene
+		std::shared_ptr<Entity> entity = std::make_shared<Entity>(*spawnPrefab);
+		entity->setScene(this);
+
+		// Initialize the entity's components
+		for (Component* component : entity->getComponents<Component>())
+		{
+			component->initialize();
+		}
+
+		// Add the entity to the list and return
+		mSceneEntities.push_back(entity);
+		return entity.get();
+	}
+
+	void SceneDX11::destroyEntity(Entity* entity)
+	{
+		// Remove from the entity list.
+		if (entity == nullptr)
+			return;
+
+		// Deactivate the entity and add it to the destroy list
+		entity->setActive(false);
+		entity->setVisible(false);
+		mDestroyList.push_back(entity);
+
+		// Get the MR
+		if (MeshRenderer* meshRenderer = entity->getComponent<MeshRenderer>())
+		{
+			// Iterate through render objects and compare the pointer, if they match remove that render object.
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				if (meshRenderer == mRenderPackage.renderObjects[i].meshRenderer)
+				{
+					mRenderPackage.renderObjects.erase(mRenderPackage.renderObjects.begin() + i);
+					break;
+				}
+			}
+		}
+
+		// Iterate through vfx objects and compare the pointer, if they match remove that system.
+		if (ParticleSystem* particleSystem = entity->getComponent<ParticleSystem>())
+		{
+			for (int i = 0; i < mRenderPackage.vfxObjects.size(); i++)
+			{
+				if (particleSystem == mRenderPackage.vfxObjects[i].system)
+				{
+					mRenderPackage.vfxObjects.erase(mRenderPackage.vfxObjects.begin() + i);
+					break;
+				}
+			}
+		}
+
+		// Iterate through the canvas objects and compare the entity pointer, if they match remove that object.
+		for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
+		{
+			if (entity == mRenderPackage.canvasObjects[i].entity)
+			{
+				mRenderPackage.canvasObjects.erase(mRenderPackage.canvasObjects.begin() + i);
+				break;
+			}
+		}
+
+		for (Entity* child : entity->getChildren())
+		{
+			destroyEntity(child);
+		}
+	}
+
 	void SceneDX11::update()
 	{
 		// Signal the timer
@@ -68,21 +139,10 @@ namespace Odyssey
 		// Recalculate delta time
 		mDeltaTime = mXTimer.SmoothDelta();
 
-		// Maybe an optimization for creation/destruction?
-		//for (std::pair<std::shared_ptr<Entity>, std::vector<Component*>> pair : mComponentMap)
-		//{
-		//	if (pair.first->isActive())
-		//	{
-		//		for (Component* component : pair.second)
-		//		{
-		//			if (component->isActive())
-		//			{
-		//				component->update(mDeltaTime);
-		//			}
-		//		}
-		//	}
-		//}
+		// Flush the destroy list
+		flushDestroyList();
 
+		// Update all components in the scene
 		for (int i = 0; i < mComponentList.size(); i++)
 		{
 			Component* component = mComponentList[i];
@@ -128,12 +188,27 @@ namespace Odyssey
 		return mSceneRadius;
 	}
 
-	void SceneDX11::getRenderPackage(RenderPackage& renderPackage)
+	RenderPackage SceneDX11::getRenderPackage()
 	{
+		RenderPackage returnPackage;
+		mLock.lock(LockState::Write);
 		mRenderPackage.sceneCenter = mSceneCenter;
 		mRenderPackage.sceneRadius = mSceneRadius;
 		mRenderPackage.cameraPosition = mMainCamera->getComponent<Transform>()->getPosition();
 		mRenderPackage.frustum = mMainCamera->getComponent<Camera>()->getFrustum();
-		renderPackage = mRenderPackage;
+		returnPackage = mRenderPackage;
+		mLock.unlock(LockState::Write);
+		return returnPackage;
+	}
+	void SceneDX11::flushDestroyList()
+	{
+		for (Entity* entity : mDestroyList)
+		{
+			for (Component* component : entity->getComponents<Component>())
+			{
+				removeComponent(component);
+			}
+		}
+		mDestroyList.clear();
 	}
 }

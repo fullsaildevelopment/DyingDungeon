@@ -9,7 +9,6 @@
 #include "Frustum.h"
 #include "AABB.h"
 #include "Transform.h"
-#include "RenderDevice.h"
 #include "Shader.h"
 #include "Buffer.h"
 #include "Camera.h"

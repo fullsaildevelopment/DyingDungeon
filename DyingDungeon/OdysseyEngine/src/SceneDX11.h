@@ -27,6 +27,9 @@ namespace Odyssey
 		 */
 		void initialize();
 
+		Entity* spawnEntity(Entity* spawnPrefab);
+
+		void destroyEntity(Entity* entity);
 		/**
 		 *	Update the components of each entity contained within the scene.
 		 *	@param[in] void
@@ -55,6 +58,12 @@ namespace Odyssey
 
 		float getSceneRadius();
 
-		void getRenderPackage(RenderPackage& renderPackage);
+		RenderPackage getRenderPackage();
+	private:
+		void flushDestroyList();
+
+	private:
+		std::vector<Entity*> mDestroyList;
+
 	};
 }

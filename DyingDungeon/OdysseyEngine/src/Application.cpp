@@ -133,12 +133,12 @@ namespace Odyssey
 	void Application::onSpawnEntity(SpawnEntityEvent* evnt)
 	{
 		// Create a copy of the entity
-		*(evnt->entity) = (mActiveScene->createEntity(evnt->prefab));
+		*(evnt->entity) = (mActiveScene->spawnEntity(evnt->prefab));
 	}
 
 	void Application::onDestroyEntity(DestroyEntityEvent* evnt)
 	{
-		mActiveScene->removeEntity(evnt->entity);
+		mActiveScene->destroyEntity(evnt->entity);
 	}
 
 	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

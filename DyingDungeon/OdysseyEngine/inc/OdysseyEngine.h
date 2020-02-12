@@ -32,8 +32,6 @@
 #include "SkyboxPass.h"
 #include "Sprite2DPass.h"
 #include "TransparentPass.h"
-// Render Engine Managers
-#include "FileManager.h"
 // Render Engine User Interface
 #include "UIElement.h"
 #include "Rectangle2D.h"
