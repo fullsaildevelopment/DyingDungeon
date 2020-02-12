@@ -686,6 +686,9 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void EnemyComponent::Die()
 {
+	// Play death sound effect
+	RedAudioManager::Instance().PlaySFX("DeathMeme");
+
 	// Clear all remaining status effects
 	ClearStatusEffects();
 
