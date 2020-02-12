@@ -991,6 +991,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void HeroComponent::Die()
 {
+	// Play death sound effect
+	RedAudioManager::Instance().PlaySFX("DeathMeme");
+
 	// Clear all remaining status effects
 	ClearStatusEffects();
 	
