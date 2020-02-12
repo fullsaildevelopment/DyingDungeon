@@ -38,9 +38,6 @@ private: // Singleton pattern
 	TeamManager() { }
 
 public: // Functions
-	// TODO: FIX LATER
-	Odyssey::Entity* ganfaulPrefab;
-	void initialize();
 
 	// Create Enemy Team based on the index passed in
 	std::vector<Odyssey::Entity*> CreateEnemyTeam(int _index);

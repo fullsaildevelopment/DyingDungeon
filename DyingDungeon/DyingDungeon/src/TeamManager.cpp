@@ -8,16 +8,6 @@ TeamManager& TeamManager::getInstance()
 	return instance;
 }
 
-void TeamManager::initialize()
-{
-	std::vector<EnemySetups> enemies = mEnemiesToCreate[0];
-	DirectX::XMVECTOR position = enemies[0].pPosition;
-	DirectX::XMVECTOR rotation = enemies[0].pRotation;
-	DirectX::XMFLOAT2 hudPosition = enemies[0].pHudPosition;
-	DirectX::XMFLOAT2 hpPopupPosition = enemies[0].pHpPopupPosition;
-	ganfaulPrefab = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-}
-
 std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 {
 	// Clear the enemy team
@@ -37,16 +27,19 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 
 		// Character we are about to create
 		Odyssey::Entity* newCharacter;
+		// Prefab we will need
+		Odyssey::Entity* prefab;
 
 		// Create the character based on the enum
 		switch (enemyType)
 		{
 			case EnemyType::Skeleton:
-				newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Skeleton);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
 				break;
 			case EnemyType::Ganfaul:
-				//newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(ganfaulPrefab, &newCharacter, position, rotation));
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Ganfaul);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
 				break;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;

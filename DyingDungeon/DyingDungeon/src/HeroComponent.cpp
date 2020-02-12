@@ -1261,7 +1261,7 @@ std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
-	SetupClickableUI();
+	//SetupClickableUI();
 }
 
 // Set up for clickable UI

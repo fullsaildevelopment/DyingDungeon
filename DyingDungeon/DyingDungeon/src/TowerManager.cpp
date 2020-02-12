@@ -280,7 +280,7 @@ void TowerManager::CreateBattleInstance()
 		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);

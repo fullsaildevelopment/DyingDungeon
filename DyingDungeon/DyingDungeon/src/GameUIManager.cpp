@@ -1055,7 +1055,7 @@ Odyssey::UICanvas* GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAd
 	imageHeight = 68;
 	position.x += 2;
 	position.y += 1;
-	newHUD->pPortrait = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"Gordon.jpg", imageWidth, imageHeight);
+	newHUD->pPortrait = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight);
 
 	// Create the xp/name bar
 	//TODO::Create XP Bars In The Character Class To Assign
@@ -1125,6 +1125,9 @@ Odyssey::UICanvas* GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAd
 	// Assign the character's turn order text
 	newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
 
+	// Create the health popup for the character
+	SetupHpPopup(_gameObjectToAddTo, DirectX::XMFLOAT2(0.0f, 0.0f));
+
 	// Add the canvas to the mHudCharacterList
 	mCharacterHudList.push_back(newHUD);
 	// Return the canvas we just created 
@@ -1167,7 +1170,7 @@ Odyssey::UICanvas* GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToA
 	// Only add the portrait image if there is one
 	position.x += 2.0f;
 	position.y += 2.0f;
-	newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"Gordon.jpg", imageWidth, imageHeight);
+	newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight);
 
 	// Add in the enemy's name bar
 	barWidth = 94;
@@ -1203,8 +1206,7 @@ Odyssey::UICanvas* GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToA
 	position.x += barWidth;
 	properties.fontSize = 25.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	// Create but don't show the mini hp text
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;\
 
 	// Add in the enemy's mana bar
 	newHUD->pManaBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
@@ -1221,6 +1223,13 @@ Odyssey::UICanvas* GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToA
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	// Assign the character's turn order text
 	newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
+
+	// Create the health popup for the character
+	SetupHpPopup(_gameObjectToAddTo, DirectX::XMFLOAT2(0.0f, 0.0f));
+
+	// Add the canvas to the mHudCharacterList
+	mCharacterHudList.push_back(newHUD);
+	return newHUD->pCanvas;
 }
 
 // Create the character's UI Portrait

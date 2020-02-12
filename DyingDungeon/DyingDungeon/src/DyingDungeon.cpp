@@ -157,7 +157,7 @@ int playGame()
 	setupTowerManager();
 	// Set up the enemies that the player will battle
 	setupEnemiesToCreate();
-	TeamManager::getInstance().initialize();
+	//TeamManager::getInstance().initialize();
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
 	// Create Pause Menu
