@@ -365,8 +365,7 @@ void TowerManager::GoToMainMenu()
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill2Canvas->setActive(false);
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill3Canvas->setActive(false);
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill4Canvas->setActive(false);
-			// TODO: REFACTOR LATER
-			scene->removeEntity(mPlayerTeam[i]);
+			Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 		}
 	}
 

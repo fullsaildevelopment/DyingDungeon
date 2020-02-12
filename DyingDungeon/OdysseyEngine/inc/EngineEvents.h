@@ -173,7 +173,7 @@ namespace Odyssey
 
 		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity) : prefab(spawnPrefab), entity(outEntity)
 		{
-			priority = EventPriority::Deferred;
+			priority = EventPriority::Immediate;
 		}
 	};
 

@@ -47,6 +47,11 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 	float yPos = DirectX::XMVectorGetY(_position);
 	float zPos = DirectX::XMVectorGetZ(_position);
 
+	if (_characterToCreate == CharacterOptions::Monk)
+	{
+		_rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	}
+
 	// Get Rotation values
 	float xRot = DirectX::XMVectorGetX(_rotation);
 	float yRot = DirectX::XMVectorGetY(_rotation);
