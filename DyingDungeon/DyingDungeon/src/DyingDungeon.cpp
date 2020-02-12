@@ -176,8 +176,6 @@ int playGame()
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
 	// Set the game's current tower
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
-	// Set the game's turn indicator model
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTurnIndicator(gTurnIndicatorModel);
 	
 	// Set up multithreading
 	application->setMultithreading(true);
@@ -582,16 +580,6 @@ void setupTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// TODO: REFACTOR LATER
 	gCurrentTower->getComponent<TowerManager>()->scene = gSceneOne;
-
-	// Create the turn indicator circle
-	gTurnIndicatorModel = gSceneOne->createEntity();
-	gTurnIndicatorModel->addComponent<Odyssey::Transform>();
-	gTurnIndicatorModel->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	gTurnIndicatorModel->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
-	Odyssey::RenderManager::getInstance().importModel(gTurnIndicatorModel, "assets/models/TurnIndicator.dxm", false);
-	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
-	gTurnIndicatorModel->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
-	gTurnIndicatorModel->setStatic(false);
 }
 
 void setupEnemiesToCreate()

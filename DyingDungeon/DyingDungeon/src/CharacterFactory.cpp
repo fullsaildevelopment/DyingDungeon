@@ -19,8 +19,59 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	// Set application
 	mApplication = _application;
 
-	// Create Ganfaul Prefab
-	Odyssey::Entity* ganfaulPrefab = mApplication->createPrefab();
+	// Get the entity that the new prefab will be added to
+	Odyssey::Entity* newCharacter;
+
+	// Create the paladin prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Paladin);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Paladin] = newCharacter;
+
+	// Create the mage prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Mage);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Mage] = newCharacter;
+
+	// Create the bard prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Bard);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Bard] = newCharacter;
+
+	// Create the warrior prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Warrior);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Warrior] = newCharacter;
+
+	// Create the monk prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Monk);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Monk] = newCharacter;
+
+	// Create the skeleton prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Skeleton);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Skeleton] = newCharacter;
+
+	// Create the skeleton prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Ganfaul);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Ganfaul] = newCharacter;
+
+	// Create the Hero HUD
+	Odyssey::Entity* heroHud = CreateHeroHudPrefab();
+	// Add the hero hud to the hud prefab map
+	mHudPrefabMap[CharacterType::Hero] = heroHud;
+
+	// Create the Enemy HUD
+	Odyssey::Entity* enemyHud = CreateEnemyHudPrefab();
+	// Add the enemy hud to the hud prefab map
+	mHudPrefabMap[CharacterType::Enemy] = enemyHud;
+
+	// Create the impact indicator 
+	mImpactIndicatorPrefab = CreateImpactIndicatorPrefab();
+
+	// Create the turn indicator
+	mTurnIndicatorPrefab = CreateTurnIndicatorPrefab();
 }
 
 Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _sceneToAddTo)
@@ -256,7 +307,6 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 		//Create the character's HUD UI
 		GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity, newCharacter->getComponent<Character>());
 		// Set the character's hud index number
-		// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
 		newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
 		// Increase the character index
 		characterHudIndex++;
@@ -264,42 +314,305 @@ Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterTo
 		hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
 
 		// Create the impact indicator for each character
-		CreateCharacterImpactIndicator(newCharacter, _sceneToAddTo);
+		//CreateCharacterImpactIndicator(newCharacter, _sceneToAddTo);
 	}
 
 	// Return the brand new charcter that was created
 	return newCharacter;
 }
 
-Odyssey::Entity* CharacterFactory::GetPrefab(CharacterOptions _characterType)
+Odyssey::Entity* CharacterFactory::GetCharacterPrefab(CharacterOptions _characterType)
 {
-	return mPrefabMap[_characterType];
+	return mCharacterPrefabMap[_characterType];
 }
 
-void CharacterFactory::CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo)
+Odyssey::Entity* CharacterFactory::GetHUDPrefab(bool isHero)
 {
-	// Create the shared pointer for the impact indicator
-	Odyssey::Entity* impactIndicator = _sceneToAddTo->createEntity();
+	// If I want the hero hud
+	if (isHero)
+		return mHudPrefabMap[CharacterType::Hero];
+
+	// Else give me enemy hud
+	return mHudPrefabMap[CharacterType::Enemy];
+}
+
+Odyssey::Entity* CharacterFactory::GetImpactIndicatorPrefab() 
+{ 
+	return mImpactIndicatorPrefab; 
+}
+
+Odyssey::Entity* CharacterFactory::GetTurnIndicatorPrefab() 
+{ 
+	return mTurnIndicatorPrefab; 
+}
+
+Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _characterToCreate)
+{
+	// Create the new pointer for the character we are creating
+	Odyssey::Entity* newCharacter = nullptr;
+	// Make the new character a prefab
+	newCharacter = mApplication->createPrefab();
+
+	std::wstring characterName = L"This player go no name, CharFactory.cpp";
+
+	// Get Position values
+	float xPos = 0.0f;
+	float yPos = 0.0f;
+	float zPos = 0.0f;
+	// Get Rotation values
+	float xRot = 0.0f;
+	float yRot = 0.0f;
+	float zRot = 0.0f;
+
+	if (_characterToCreate == CharacterOptions::Monk)
+		yRot = 180.0f;
+
+	// Add the transform
+	newCharacter->addComponent<Odyssey::Transform>();
+	// Set position
+	newCharacter->getComponent<Odyssey::Transform>()->setPosition(xPos, yPos, zPos);
+	// Set rotation
+	newCharacter->getComponent<Odyssey::Transform>()->setRotation(xRot, yRot, zRot);
+	// Set the character's scale
+	if (_characterToCreate == Warrior)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.023f, 0.023f, 0.023f);
+	else if (_characterToCreate == Mage)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.55f, 0.55f, 0.55f);
+	else if (_characterToCreate == Paladin)
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.028f, 0.028f, 0.028f);
+	else
+		newCharacter->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+
+	switch (_characterToCreate)
+	{
+	case Paladin:
+	{
+		// Add hero component to the entity
+		HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Paladin);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+		newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Paladin";
+		break;
+	}
+	case Mage:
+	{
+		// Set up hero component
+		HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Mage);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		//// Set up blood particle effect
+		//tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
+		//
+		//// Set up particle effects for skills
+		//tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter(_sceneToAddTo));
+		//tempHero->GetSkills()[0]->SetParticleFiringTime(0.47f);
+		//tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(1.5f, 3.1f, 1.3f));
+		//tempHero->GetSkills()[1]->SetParticleSystem(setUpFireStorm(_sceneToAddTo));
+		//tempHero->GetSkills()[1]->SetParticleFiringTime(0.29f);
+		//tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm(_sceneToAddTo));
+		//tempHero->GetSkills()[2]->SetParticleFiringTime(0.57f);
+		//tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter(_sceneToAddTo));
+		//tempHero->GetSkills()[3]->SetParticleFiringTime(0.45f);
+		//tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 3.1f, 1.7f));
+
+		characterName = L"Mage";
+		break;
+	}
+	case Bard:
+	{
+		// Set up hero component
+		HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Bard);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+		newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		newCharacter->getChildren()[4]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Bard";
+		break;
+	}
+	case Warrior:
+	{
+		// Set up hero component
+		HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Warrior);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Warrior";
+		break;
+	}
+	case Monk:
+	{
+		// Set up hero component
+		HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Monk);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), false);
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempHero->GetAnimationPaths()[i].mAnimationNickName, tempHero->GetAnimationPaths()[i].mAnimationPath.c_str(), tempHero->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Monk";
+		break;
+	}
+	case Skeleton:
+	{
+		// Set up enemy component
+		EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Skeleton);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+		newCharacter->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Skeleton";
+		break;
+	}
+	case Ganfaul:
+	{
+		// Set up enemy component
+		EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Ganfaul);
+
+		// Set up its model
+		Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+		// For each animation in its vector of animations path, import an animation
+		for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+		{
+			newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+		}
+
+		characterName = L"Ganfaul";
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+	// Set the character's name
+	newCharacter->getComponent<Character>()->SetName(characterName);
+	// Allow the character to recieve shadows
+	newCharacter->setStatic(false);
+
+	// Return the brand new charcter that was created
+	return newCharacter;
+}
+
+Odyssey::Entity* CharacterFactory::CreateHeroHudPrefab()
+{
+	// Create the new pointer for the hero hud
+	Odyssey::Entity* heroHud = nullptr;
+	// Make the new hero hud a prefab
+	heroHud = mApplication->createPrefab();
+
+	// Create the hero hud
+	GameUIManager::getInstance().CreateHeroHud(heroHud);
+
+	return heroHud;
+}
+
+Odyssey::Entity* CharacterFactory::CreateEnemyHudPrefab()
+{
+	// Create the new pointer for the enemy hud
+	Odyssey::Entity* enemyHud = nullptr;
+	// Make the new enemy hud a prefab
+	enemyHud = mApplication->createPrefab();
+
+	// Create the enemy hud
+	GameUIManager::getInstance().CreateEnemyHud(enemyHud);
+
+	return enemyHud;
+}
+
+Odyssey::Entity* CharacterFactory::CreateImpactIndicatorPrefab()
+{
+	// Create the new pointer for the enemy hud
+	Odyssey::Entity* impactIndicator = nullptr;
+	// Make the new enemy hud a prefab
+	impactIndicator = mApplication->createPrefab();
+
 	// Set the transform
 	impactIndicator->addComponent<Odyssey::Transform>();
-	// Get player's position
-	DirectX::XMFLOAT3 characterPos = _character->getComponent<Odyssey::Transform>()->getPosition();
 	// Position indicator over the head
-	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPos.x, characterPos.y + 4.0f, characterPos.z);
+	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(0.0f, 4.0f, 0.0f);
 	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
-	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.2f, 0.2f, 0.2f);
 	// Import Model
 	Odyssey::RenderManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
 	// Set the impact indicator's color
 	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
 	impactIndicator->setStatic(false);
-	// Assign the character's impact indicator
-	_character->getComponent<Character>()->SetImpactIndicator(impactIndicator);
-	// Don't show impact indicator when creating it
-	impactIndicator->setActive(false);
+
+	return impactIndicator;
 }
 
+Odyssey::Entity* CharacterFactory::CreateTurnIndicatorPrefab()
+{
+	// Create the new pointer for the enemy hud
+	Odyssey::Entity* turnIndicator = nullptr;
+	// Make the new enemy hud a prefab
+	turnIndicator = mApplication->createPrefab();
+
+	turnIndicator->addComponent<Odyssey::Transform>();
+	turnIndicator->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	turnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	Odyssey::RenderManager::getInstance().importModel(turnIndicator, "assets/models/TurnIndicator.dxm", false);
+	DirectX::XMFLOAT4 turnIndicatorColor = { 0.0f, 0.0f, 255.0f, 1.0f };
+	turnIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(turnIndicatorColor);
+	turnIndicator->setStatic(false);
+
+	return turnIndicator;
+}
+
+
+// TODO: THIS IS OTHER STUFF WE WILL MAKE INTO PREFABS
 Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)
 {
 	Odyssey::Entity* gFireBall = _sceneToAddTo->createEntity();

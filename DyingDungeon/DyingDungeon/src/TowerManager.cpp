@@ -229,7 +229,7 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, Odyssey::Entity* _turnIndicatorModel)
+void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles)
 {
 	// Assign the player team 
 	mPlayerTeam = _playerTeam;
@@ -247,9 +247,6 @@ void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattle
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
-
-	// Set the turn indicator model
-	tmTurnIndicator = _turnIndicatorModel;
 }
 
 void TowerManager::CreateBattleInstance()

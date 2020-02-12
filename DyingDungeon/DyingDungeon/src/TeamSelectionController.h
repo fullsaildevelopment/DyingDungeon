@@ -27,9 +27,6 @@ public:
 	// Set current tower manager
 	void SetTowerManager(Odyssey::Entity* _towerManager) {mCurrentTower = _towerManager; }
 
-	// Set turn indicator model
-	void SetTurnIndicator(Odyssey::Entity* _turnIndicatorModel) { mTurnIndicatorModel = _turnIndicatorModel; }
-
 	// Set the slot 1 of characters for team selection
 	void SetSlot1OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
 	// Set the slot 2 of characters for team selection
@@ -65,8 +62,6 @@ private:
 
 	// Hold the tower manager object
 	Odyssey::Entity* mCurrentTower;
-	// Hold the turn indicator model
-	Odyssey::Entity* mTurnIndicatorModel;
 
 	// These vectors will hold the character list for each slot
 	std::vector<Odyssey::Entity*> mSlot1CharacterList;

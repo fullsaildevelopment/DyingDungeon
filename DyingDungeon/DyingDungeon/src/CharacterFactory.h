@@ -35,6 +35,12 @@ public:
 		Ganfaul
 	};
 
+	enum CharacterType
+	{
+		Hero,
+		Enemy
+	};
+
 public: // Functions
 
 	void initialize(Odyssey::Application* _application);
@@ -42,7 +48,10 @@ public: // Functions
 	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
 
 	//Getters
-	Odyssey::Entity* GetPrefab(CharacterOptions _characterType);
+	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
+	Odyssey::Entity* GetHUDPrefab(bool isHero);
+	Odyssey::Entity* GetImpactIndicatorPrefab();
+	Odyssey::Entity* GetTurnIndicatorPrefab();
 
 	//Setters
 
@@ -65,15 +74,37 @@ private: // Varibales
 
 
 private: // Functions
-	void CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo);
+	// Create character prefabs
+	Odyssey::Entity* CreateCharacterPrefab(CharacterOptions _characterToCreate);
+
+	// Create hero hud
+	Odyssey::Entity* CreateHeroHudPrefab();
+
+	// Create enemy hud
+	Odyssey::Entity* CreateEnemyHudPrefab();
+
+	// Create impact indicator
+	Odyssey::Entity* CreateImpactIndicatorPrefab();
+
+	// Create turn indicator
+	Odyssey::Entity* CreateTurnIndicatorPrefab();
 
 	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setupBlood(Odyssey::Scene* _sceneToAddTo);
 
-	// Dora's Map
-	std::map<CharacterOptions, Odyssey::Entity*> mPrefabMap;
+	// Character Map
+	std::map<CharacterOptions, Odyssey::Entity*> mCharacterPrefabMap;
+
+	// HUD Map
+	std::map<CharacterType, Odyssey::Entity*> mHudPrefabMap;
+
+	// Impact Indicator
+	Odyssey::Entity* mImpactIndicatorPrefab;
+
+	// Turn Indicator
+	Odyssey::Entity* mTurnIndicatorPrefab;
 
 	// Application
 	Odyssey::Application* mApplication;

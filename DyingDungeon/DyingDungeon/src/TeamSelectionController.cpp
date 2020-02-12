@@ -104,7 +104,7 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
 		// Set up the tower manager with the enemy and player teams
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), 2, mTurnIndicatorModel);
+		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), 2);
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));

@@ -126,6 +126,12 @@ public: // Functions
 
 	void HideStatsMenu();
 	 
+	// Create hero character portrait
+	Odyssey::UICanvas* CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo);
+
+	// Create enemy character portrait
+	Odyssey::UICanvas* CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo);
+
 	// Create The UI portraits for the characters
 	Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
