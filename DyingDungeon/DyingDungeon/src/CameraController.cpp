@@ -14,6 +14,11 @@ CameraController::CameraController()
 	mLockCamera = true;
 }
 
+std::shared_ptr<Odyssey::Component> CameraController::clone() const
+{
+	return std::make_shared<CameraController>(*this);
+}
+
 void CameraController::initialize()
 {
 	mMainCamera = mEntity->getComponent<Odyssey::Camera>();

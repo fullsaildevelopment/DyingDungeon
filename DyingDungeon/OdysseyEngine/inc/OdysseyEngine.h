@@ -14,13 +14,15 @@
 // Game Engine Managers
 #include "EventManager.h"
 #include "InputManager.h"
+#include "RenderManager.h"
 // Render Engine Components
 #include "UICanvas.h"
 #include "MeshRenderer.h"
+#include "Mesh.h"
+#include "Material.h"
 #include "ParticleSystem.h"
 // Render Engine Interfaces
 #include "Light.h"
-#include "RenderDevice.h"
 #include "RenderWindow.h"
 // Render Engine Passes
 #include "DebugPass.h"

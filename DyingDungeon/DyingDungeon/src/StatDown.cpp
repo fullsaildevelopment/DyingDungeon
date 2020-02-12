@@ -13,6 +13,14 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 
 StatDown::~StatDown()
 {
+	if(mRecipient != nullptr)
+		Remove();
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
+	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
+	mStatId = STATS::None;
 }
 
 void StatDown::Apply(Character& caster, Character& target)

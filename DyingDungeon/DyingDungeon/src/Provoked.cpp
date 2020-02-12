@@ -13,8 +13,14 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 
 Provoked::~Provoked()
 {
+	if(mRecipient != nullptr)
+		Remove();
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
 	mProvoker = nullptr;
+	mAffectedStatId = STATS::None;
 }
 
 void Provoked::Apply(Character& caster, Character& target)

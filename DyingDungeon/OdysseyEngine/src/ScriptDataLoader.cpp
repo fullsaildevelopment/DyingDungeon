@@ -11,16 +11,16 @@
 #include <iostream>
 #include <fstream>
 #include "EventManager.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
-	ScriptDataLoader::ScriptDataLoader(std::shared_ptr<RenderDevice> renderDevice)
+	ScriptDataLoader::ScriptDataLoader()
 	{
-		mRenderDevice = renderDevice;
-		EventManager::getInstance().subscribe(this, &ScriptDataLoader::onShutdown);
+
 	}
 
-	void ScriptDataLoader::importScene(std::shared_ptr<Scene> scene, const char* filename)
+	void ScriptDataLoader::importScene(Scene* scene, const char* filename)
 	{
 		std::fstream file{ filename, std::ios_base::in | std::ios_base::binary };
 
@@ -37,18 +37,15 @@ namespace Odyssey
 		for (unsigned int i = 0; i < meshCount; i++)
 		{
 			// Create a base entity with no parent
-			std::shared_ptr<Entity> entity = std::make_shared<Entity>();
+			Entity* entity = scene->createEntity();
 			entity->setParent(nullptr);
 
 			// Construct the entity from it's entry in the file
 			constructEntity(file, entity);
-
-			// Add the entity to the scene
-			scene->addEntity(entity);
 		}
 	}
 
-	void ScriptDataLoader::importModel(std::shared_ptr<Entity> entity, const char* filename, bool isMultiMesh)
+	void ScriptDataLoader::importModel(Entity*& entity, const char* filename, bool isMultiMesh)
 	{
 		// Open the model file
 		std::fstream file{ filename, std::ios_base::in | std::ios_base::binary };
@@ -74,10 +71,10 @@ namespace Odyssey
 		for (int i = begin; i < numMeshes; i++)
 		{
 			// Each additional mesh in the file becomes a child to the first mesh
-			std::shared_ptr<Entity> child = std::make_shared<Entity>();
+			Entity* child = entity->getScene()->createEntity();
 
 			// Set the parent of the mesh to the first mesh Entity
-			child->setParent(entity.get());
+			child->setParent(entity);
 
 			// Add the child to the first mesh Entity
 			entity->addChild(child);
@@ -93,7 +90,7 @@ namespace Odyssey
 		// If a skeleton was read add an Animator component and set the skeleton
 		if (skeletonData.hasSkeleton)
 		{
-			entity->addComponent<AnimatorDX11>(*mRenderDevice);
+			entity->addComponent<AnimatorDX11>();
 			entity->getComponent<AnimatorDX11>()->setSkeleton(skeletonData.skeleton);
 		}
 
@@ -101,16 +98,11 @@ namespace Odyssey
 		file.close();
 	}
 
-	void ScriptDataLoader::onShutdown(EngineShutdownEvent* evnt)
-	{
-		mRenderDevice = nullptr;
-	}
-
-	void ScriptDataLoader::constructEntity(std::fstream& file, std::shared_ptr<Entity> entity)
+	void ScriptDataLoader::constructEntity(std::fstream& file, Entity*& entity)
 	{
 		DirectX::XMFLOAT4X4 transform;
-		std::shared_ptr<Mesh> mesh;
-		std::shared_ptr<Material> material;
+		int mesh = -1;
+		int material = -1;
 		MeshData meshData;
 		MaterialData materialData;
 
@@ -267,30 +259,33 @@ namespace Odyssey
 		}
 	}
 
-	void ScriptDataLoader::processMeshData(MeshData& meshData, std::shared_ptr<Mesh>& mesh)
+	void ScriptDataLoader::processMeshData(MeshData& meshData, int& mesh)
 	{
 		// Check if the mesh has already been imported
-		if (meshHashMap.count(meshData.hashID) != 0)
+		if (mMeshMap.count(meshData.hashID) != 0)
 		{
 			// This is a duplicate mesh, reference the same pointer
-			mesh = meshHashMap[meshData.hashID];
+			mesh = mMeshMap[meshData.hashID];
 		}
 		else
 		{
 			// This is a new mesh, allocate a new mesh pointer and put it in the map
-			mesh = std::make_shared<Mesh>(mRenderDevice, meshData.vertexList, meshData.indexList);
-			meshHashMap[meshData.hashID] = mesh;
+			mesh = RenderManager::getInstance().createMesh(meshData.vertexList, meshData.indexList);
+			mMeshMap[meshData.hashID] = mesh;
 		}
 	}
 
-	void ScriptDataLoader::processMaterialData(MaterialData& materialData, std::shared_ptr<Material>& material)
+	void ScriptDataLoader::processMaterialData(MaterialData& materialData, int& material)
 	{
 		// Create a blank material
-		material = mRenderDevice->createMaterial();
+		material = RenderManager::getInstance().createMaterial();
+
+		// Get the raw pointer of the material
+		Material* materialPtr = RenderManager::getInstance().getMaterial(material);
 
 		// Set the diffuse color of the material
 		DirectX::XMFLOAT4 diffuseColor = { materialData.texColors[0].x, materialData.texColors[0].y, materialData.texColors[0].z, 1.0f };
-		material->setDiffuseColor(diffuseColor);
+		materialPtr->setDiffuseColor(diffuseColor);
 
 		// Iterate over the possible imported textures
 		for (int i = 0; i < 4; i++)
@@ -302,19 +297,19 @@ namespace Odyssey
 				std::string fname = materialData.texFilenames[i];
 				
 				// Check the texture map for a duplicate import
-				if (textureFileMap.count(fname) != 0)
+				if (mTextureMap.count(fname) != 0)
 				{
 					// Duplicate found, assign the previously imported texture
-					material->setTexture((TextureType)i, textureFileMap[materialData.texFilenames[i]]);
+					materialPtr->setTexture((TextureType)i, mTextureMap[materialData.texFilenames[i]]);
 				}
 				else
 				{
 					// No duplicate found, create a new texture and set it in the material.
-					std::shared_ptr<Texture> texture = mRenderDevice->createTexture((TextureType)i, materialData.texFilenames[i]);
-					material->setTexture((TextureType)i, texture);
+					int texture = RenderManager::getInstance().createTexture((TextureType)i, materialData.texFilenames[i]);
+					materialPtr->setTexture((TextureType)i, texture);
 				
 					// Add the texture to the import map
-					textureFileMap[fname] = texture;
+					mTextureMap[fname] = texture;
 				}
 			}
 		}

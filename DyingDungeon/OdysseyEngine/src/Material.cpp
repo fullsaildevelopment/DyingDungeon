@@ -1,67 +1,71 @@
 #include "Material.h"
 #include "Buffer.h"
 #include "Shader.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Texture.h"
 
 namespace Odyssey
 {
-	Material::Material(std::shared_ptr<RenderDevice> renderDevice)
+	Material::Material()
 	{
-		mRenderDevice = renderDevice;
-		mMaterialBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mMaterialBuffer = RenderManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
 
 		setDefaultMaterialProperties();
+
+		mPixelShader = -1;
 	}
 
-	Material::Material(std::shared_ptr<RenderDevice> renderDevice, TextureType textureType, std::shared_ptr<Texture> texture)
+	Material::Material(TextureType textureType, int textureID)
 	{
-		mRenderDevice = renderDevice;
-		mMaterialBuffer = renderDevice->createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
+		mMaterialBuffer = RenderManager::getInstance().createBuffer(BufferBindFlag::ConstantBuffer, size_t(1),
 			static_cast<UINT>(sizeof(MaterialProperties)), &mProperties);
 
 		setDefaultMaterialProperties();
-		setTexture(textureType, texture);
+		setTexture(textureType, textureID);
+		mPixelShader = -1;
 	}
 
 	void Material::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		mLock.lock(LockState::Write);
 
-		if (mPixelShader)
-			mPixelShader->bind(context);
+		if (mPixelShader != -1)
+		{
+			RenderManager::getInstance().getShader(mPixelShader)->bind(context);
+		}
 
 		// Bind the material properties constant buffer to the pixel shader slot 0
-		mMaterialBuffer->updateData(context , &mProperties);
-		mMaterialBuffer->bind(context, 0, ShaderType::PixelShader);
+		Buffer* materialBuffer = RenderManager::getInstance().getBuffer(mMaterialBuffer);
+		materialBuffer->updateData(context , &mProperties);
+		materialBuffer->bind(context, 0, ShaderType::PixelShader);
 
 		// Bind the diffuse texture
 		if (mTextureMap.count(TextureType::Diffuse) != 0)
 		{
-			mTextureMap[TextureType::Diffuse]->bind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Diffuse])->bind(context);
 		}
 		// Bind the emissive texture
 		if (mTextureMap.count(TextureType::Emissive) != 0)
 		{
-			mTextureMap[TextureType::Emissive]->bind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Emissive])->bind(context);
 		}
 
 		// Bind the specular texture
 		if (mTextureMap.count(TextureType::Specular) != 0)
 		{
-			mTextureMap[TextureType::Specular]->bind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Specular])->bind(context);
 		}
 
 		// Bind the Normal texture
 		if (mTextureMap.count(TextureType::NormalMap) != 0)
 		{
-			mTextureMap[TextureType::NormalMap]->bind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::NormalMap])->bind(context);
 		}
 
 		if (mTextureMap.count(TextureType::Skybox) != 0)
 		{
-			mTextureMap[TextureType::Skybox]->bind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Skybox])->bind(context);
 		}
 		mLock.unlock(LockState::Write);
 	}
@@ -72,23 +76,23 @@ namespace Odyssey
 		// Bind the diffuse texture
 		if (mTextureMap.count(TextureType::Diffuse) != 0)
 		{
-			mTextureMap[TextureType::Diffuse]->unbind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Diffuse])->unbind(context);
 		}
 		// Bind the emissive texture
 		if (mTextureMap.count(TextureType::Emissive) != 0)
 		{
-			mTextureMap[TextureType::Emissive]->unbind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Emissive])->unbind(context);
 		}
 
 		// Bind the specular texture
 		if (mTextureMap.count(TextureType::Specular) != 0)
 		{
-			mTextureMap[TextureType::Specular]->unbind(context);
+			RenderManager::getInstance().getTexture(mTextureMap[TextureType::Specular])->unbind(context);
 		}
 		mLock.unlock(LockState::Read);
 	}
 
-	void Material::setTexture(TextureType textureType, std::shared_ptr<Texture> texture)
+	void Material::setTexture(TextureType textureType, int textureID)
 	{
 		mLock.lock(LockState::Write);
 		switch (textureType)
@@ -114,7 +118,7 @@ namespace Odyssey
 			break;
 		}
 		}
-		mTextureMap[textureType] = texture;
+		mTextureMap[textureType] = textureID;
 		mLock.unlock(LockState::Write);
 	}
 
@@ -148,7 +152,14 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
-	void Material::setShader(std::shared_ptr<Shader> pixelShader)
+	void Material::setReceiveShadow(bool receiveShadow)
+	{
+		mLock.lock(LockState::Write);
+		mProperties.mReceivesShadows = receiveShadow;
+		mLock.unlock(LockState::Write);
+	}
+
+	void Material::setShader(int pixelShader)
 	{
 		mLock.lock(LockState::Write);
 		mPixelShader = pixelShader;
@@ -158,7 +169,7 @@ namespace Odyssey
 	Shader* Material::getShader()
 	{
 		mLock.lock(LockState::Read);
-		Shader* shader = mPixelShader.get();
+		Shader* shader = RenderManager::getInstance().getShader(mPixelShader);
 		mLock.unlock(LockState::Read);
 		return shader;
 	}
@@ -176,6 +187,7 @@ namespace Odyssey
 		mProperties.mHasNormalTexture = 0;
 		mProperties.mSpecularPower = 256.0f;
 		mProperties.mReflectance = 0.1f;
+		mProperties.mReceivesShadows = 1;
 		mLock.unlock(LockState::Write);
 	}
 }

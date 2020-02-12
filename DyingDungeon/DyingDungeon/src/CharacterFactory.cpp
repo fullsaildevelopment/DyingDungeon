@@ -1,5 +1,5 @@
 #include "CharacterFactory.h"
-#include "FileManager.h"
+#include "RenderManager.h"
 #include "Animator.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
@@ -14,12 +14,28 @@ CharacterFactory& CharacterFactory::getInstance()
 	return instance;
 }
 
-std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, std::shared_ptr<Odyssey::Scene> _sceneToAddTo)
+void CharacterFactory::initialize(Odyssey::Application* _application)
+{
+	// Set application
+	mApplication = _application;
+
+	// Create Ganfaul Prefab
+	Odyssey::Entity* ganfaulPrefab = mApplication->createPrefab();
+}
+
+Odyssey::Entity* CharacterFactory::CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the new pointer for the character we are creating
-	std::shared_ptr<Odyssey::Entity> newCharacter = std::make_shared<Odyssey::Entity>();
-	// Set the mGameScene
-	mCurrentScene = _sceneToAddTo;
+	Odyssey::Entity* newCharacter = nullptr;
+
+	if (_sceneToAddTo)
+	{
+		newCharacter = _sceneToAddTo->createEntity();
+	}
+	else
+	{
+		newCharacter = mApplication->createPrefab();
+	}
 
 	// Get Position values
 	float xPos = DirectX::XMVectorGetX(_position);
@@ -55,7 +71,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Paladin);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter,tempHero->GetModel().c_str() , true);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter,tempHero->GetModel().c_str() , true);
 			newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 			newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 			newCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
@@ -68,7 +84,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
+			tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			break;
 		}
@@ -78,7 +94,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Mage);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
@@ -87,17 +103,17 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
+			tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			// Set up particle effects for skills
-			tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter());
+			tempHero->GetSkills()[0]->SetParticleSystem(setUpFireButBetter(_sceneToAddTo));
 			tempHero->GetSkills()[0]->SetParticleFiringTime(0.47f);
 			tempHero->GetSkills()[0]->SetParticleOffset(DirectX::XMFLOAT3(1.5f, 3.1f, 1.3f));
-			tempHero->GetSkills()[1]->SetParticleSystem(setUpFireStorm());
+			tempHero->GetSkills()[1]->SetParticleSystem(setUpFireStorm(_sceneToAddTo));
 			tempHero->GetSkills()[1]->SetParticleFiringTime(0.29f);
-			tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
+			tempHero->GetSkills()[2]->SetParticleSystem(setUpFireStorm(_sceneToAddTo));
 			tempHero->GetSkills()[2]->SetParticleFiringTime(0.57f);
-			tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter());
+			tempHero->GetSkills()[3]->SetParticleSystem(setUpFireButBetter(_sceneToAddTo));
 			tempHero->GetSkills()[3]->SetParticleFiringTime(0.45f);
 			tempHero->GetSkills()[3]->SetParticleOffset(DirectX::XMFLOAT3(0.0f, 3.1f, 1.7f));
 
@@ -109,7 +125,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Bard);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
 
 			newCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 			newCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
@@ -123,7 +139,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
+			tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			break;
 		}
@@ -133,7 +149,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Warrior);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
@@ -142,7 +158,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
+			tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
 
 
 			break;
@@ -153,7 +169,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Monk);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), false);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), false);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempHero->GetAnimationPaths().size(); ++i)
@@ -162,7 +178,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempHero->SetPSBlood(setupBlood());
+			tempHero->SetPSBlood(setupBlood(_sceneToAddTo));
 
 
 			break;
@@ -173,7 +189,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Skeleton);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
 
 			newCharacter->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 
@@ -184,7 +200,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempEnemy->SetPSBlood(setupBlood());
+			tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			// Set up particle effects for skills
 			/*tempEnemy->GetSkills()[2]->SetParticleSystem(setUpFireStorm());
@@ -198,7 +214,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Ganfaul);
 
 			// Set up its model
-			Odyssey::FileManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
@@ -207,7 +223,7 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 			}
 
 			// Set up blood particle effect
-			tempEnemy->SetPSBlood(setupBlood());
+			//tempEnemy->SetPSBlood(setupBlood(_sceneToAddTo));
 
 			break;
 		}
@@ -221,35 +237,39 @@ std::shared_ptr<Odyssey::Entity> CharacterFactory::CreateCharacter(CharacterOpti
 	// Allow the character to recieve shadows
 	newCharacter->setStatic(false);
 	// Have the animator be displayed in debug mode
-	newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
+	//newCharacter->getComponent<Odyssey::Animator>()->setDebugEnabled(true);
 
-	// Create entity to add the HUD to
-	std::shared_ptr<Odyssey::Entity> hudEntity = std::make_shared<Odyssey::Entity>();
-	//Create the character's HUD UI
-	GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity.get(), newCharacter->getComponent<Character>());
-	// Set the character's hud index number
-	// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
-	newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
-	// Increase the character index
-	characterHudIndex++;
-	// Set the canvas to active depending on the bool passed in
-	hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
-	// Add the hud to the scene
-	mCurrentScene->addEntity(hudEntity);
+	if (_sceneToAddTo)
+	{
+		// Create entity to add the HUD to
+		Odyssey::Entity* hudEntity = _sceneToAddTo->createEntity();
+		//Create the character's HUD UI
+		GameUIManager::getInstance().CreateCharacterPortrait(_hudPosition, _hpPopupPosition, newCharacter->getComponent<Character>()->GetPortraitPath(), hudEntity, newCharacter->getComponent<Character>());
+		// Set the character's hud index number
+		// TODO: CREATE THE SETHUDINDEX() IN CHARACTER
+		newCharacter->getComponent<Character>()->SetHudIndex(characterHudIndex);
+		// Increase the character index
+		characterHudIndex++;
+		// Set the canvas to active depending on the bool passed in
+		hudEntity->getComponent<Odyssey::UICanvas>()->setActive(_showHUD);
 
-	// Create the impact indicator for each character
-	CreateCharacterImpactIndicator(newCharacter);
+		// Create the impact indicator for each character
+		CreateCharacterImpactIndicator(newCharacter, _sceneToAddTo);
+	}
 
-	// Add the character to the current scene
-	mCurrentScene->addEntity(newCharacter);
 	// Return the brand new charcter that was created
 	return newCharacter;
 }
 
-void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character)
+Odyssey::Entity* CharacterFactory::GetPrefab(CharacterOptions _characterType)
+{
+	return mPrefabMap[_characterType];
+}
+
+void CharacterFactory::CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the shared pointer for the impact indicator
-	std::shared_ptr<Odyssey::Entity> impactIndicator = std::make_shared<Odyssey::Entity>();
+	Odyssey::Entity* impactIndicator = _sceneToAddTo->createEntity();
 	// Set the transform
 	impactIndicator->addComponent<Odyssey::Transform>();
 	// Get player's position
@@ -259,7 +279,7 @@ void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::E
 	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
 	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.1f, 0.1, 0.1f);
 	// Import Model
-	Odyssey::FileManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
+	Odyssey::RenderManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
 	// Set the impact indicator's color
 	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);
@@ -268,13 +288,11 @@ void CharacterFactory::CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::E
 	_character->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 	// Don't show impact indicator when creating it
 	impactIndicator->setActive(false);
-	// Add the impact indicator to the game scene
-	mCurrentScene->addEntity(impactIndicator);
 }
 
-Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
+Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)
 {
-	std::shared_ptr<Odyssey::Entity> gFireBall = std::make_shared<Odyssey::Entity>();
+	Odyssey::Entity* gFireBall = _sceneToAddTo->createEntity();
 	gFireBall->addComponent<Odyssey::Transform>();
 	Odyssey::Light* light = gFireBall->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
@@ -283,7 +301,7 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 	light->setRange(10.0f);
 	light->setSpotAngle(0.0f);
 
-	Odyssey::ParticleSystem* fireButBetter = gFireBall->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
+	Odyssey::ParticleSystem* fireButBetter = gFireBall->addComponent<Odyssey::ParticleSystem>();
 	fireButBetter->setTexture(Odyssey::TextureType::Diffuse, "Fire.jpg");
 	fireButBetter->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fireButBetter->setLifetime(0.5f, 1.0f);
@@ -302,16 +320,14 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter()
 	gFireBall->addComponent<ParticleMover>();
 	gFireBall->getComponent<ParticleMover>()->SetLifeTime(0.0f);
 	gFireBall->getComponent<ParticleMover>()->SetSpeed(1.0f);
-	mCurrentScene->addEntity(gFireBall);
-	mCurrentScene->addLight(gFireBall);
 	return fireButBetter;
 }
 
-Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
+Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm(Odyssey::Scene* _sceneToAddTo)
 {
-	std::shared_ptr<Odyssey::Entity> gFireStorm = std::make_shared<Odyssey::Entity>();
+	Odyssey::Entity* gFireStorm = _sceneToAddTo->createEntity();
 	gFireStorm->addComponent<Odyssey::Transform>();
-	Odyssey::ParticleSystem* fireStorm = gFireStorm->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
+	Odyssey::ParticleSystem* fireStorm = gFireStorm->addComponent<Odyssey::ParticleSystem>();
 	fireStorm->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
 	fireStorm->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fireStorm->setLifetime(1.0f, 1.5f);
@@ -324,15 +340,14 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm()
 	fireStorm->setGravity(5.0f);
 	fireStorm->setShape(Odyssey::BoxPS(-1.0f, 0.5f, 0.0f, 13.5f, 1.0f, 5.0f));
 	fireStorm->stop();
-	mCurrentScene->addEntity(gFireStorm);
 	return fireStorm;
 }
 
-Odyssey::ParticleSystem* CharacterFactory::setupBlood()
+Odyssey::ParticleSystem* CharacterFactory::setupBlood(Odyssey::Scene* _sceneToAddTo)
 {
-	std::shared_ptr<Odyssey::Entity> hitEffect = std::make_shared<Odyssey::Entity>();
+	Odyssey::Entity* hitEffect = _sceneToAddTo->createEntity();
 	hitEffect->addComponent<Odyssey::Transform>();
-	Odyssey::ParticleSystem* blood = hitEffect->addComponent<Odyssey::ParticleSystem>(*mRenderRefrence);
+	Odyssey::ParticleSystem* blood = hitEffect->addComponent<Odyssey::ParticleSystem>();
 	blood->setTexture(Odyssey::TextureType::Diffuse, "Particle.png");
 	blood->setColor(DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	blood->setLifetime(0.5f, 0.75f);
@@ -345,6 +360,5 @@ Odyssey::ParticleSystem* CharacterFactory::setupBlood()
 	blood->setLooping(false);
 	blood->setShape(Odyssey::SpherePS(0.0f, 2.5f, 0.0f, 0.2f));
 	blood->stop();
-	mCurrentScene->addEntity(hitEffect);
 	return blood;
 }

@@ -1,10 +1,12 @@
 #include "Entity.h"
+#include "Scene.h"
 
 namespace Odyssey
 {
 	Entity::Entity()
 	{
 		// Default state for scene objects is non-renderable without a parent or children
+		mScene = nullptr;
 		mParent = nullptr;
 		mIsStatic = true;
 		mDebugEnabled = false;
@@ -13,7 +15,70 @@ namespace Odyssey
 		mChildren.clear();
 	}
 
-	void Entity::addChild(std::shared_ptr<Entity> child)
+	Entity::Entity(Scene* scene)
+	{
+		// Default state for scene objects is non-renderable without a parent or children
+		mScene = scene;
+		mParent = nullptr;
+		mIsStatic = true;
+		mDebugEnabled = false;
+		mIsActive = true;
+		mIsVisible = true;
+		mChildren.clear();
+	}
+
+	Entity::Entity(const Entity& copy)
+	{
+		mScene = copy.mScene;
+		mParent = copy.mParent;
+		mIsStatic = copy.mIsStatic;
+		mDebugEnabled = copy.mDebugEnabled;
+		mIsActive = copy.mIsActive;
+		mIsVisible = copy.mIsVisible;
+		mChildren = copy.mChildren;
+
+		for (std::shared_ptr<Component> component : copy.mComponents)
+		{
+			mComponents.push_back(component->clone());
+			mComponents[mComponents.size() - 1]->setEntity(this);
+		}
+	}
+
+	Entity& Entity::operator=(const Entity& copy)
+	{
+		mScene = copy.mScene;
+		mParent = copy.mParent;
+		mIsStatic = copy.mIsStatic;
+		mDebugEnabled = copy.mDebugEnabled;
+		mIsActive = copy.mIsActive;
+		mIsVisible = copy.mIsVisible;
+		mChildren = copy.mChildren;
+
+		for (std::shared_ptr<Component> component : copy.mComponents)
+		{
+			mComponents.push_back(component->clone());
+			mComponents[mComponents.size() - 1]->setEntity(this);
+		}
+
+		return *(this);
+	}
+
+	void Entity::setScene(Scene* scene)
+	{
+		mScene = scene;
+
+		for (std::shared_ptr<Component> component : mComponents)
+		{
+			mScene->addComponent(component.get());
+		}
+	}
+
+	Scene* Entity::getScene()
+	{
+		return mScene;
+	}
+
+	void Entity::addChild(Entity* child)
 	{
 		child->setParent(this);
 		mChildren.push_back(child);
@@ -28,13 +93,13 @@ namespace Odyssey
 	{
 		mIsStatic = isStatic;
 
-		for (std::shared_ptr<Entity> child : mChildren)
+		for (Entity* child : mChildren)
 		{
 			child->setStatic(isStatic);
 		}
 	}
 
-	const std::vector<std::shared_ptr<Entity>> Entity::getChildren()
+	const std::vector<Entity*> Entity::getChildren()
 	{
 		return mChildren;
 	}
@@ -63,7 +128,7 @@ namespace Odyssey
 	{
 		mIsActive = active;
 		
-		for (std::shared_ptr<Entity> child : mChildren)
+		for (Entity* child : mChildren)
 		{
 			child->setActive(active);
 		}
@@ -78,7 +143,7 @@ namespace Odyssey
 	{
 		mIsVisible = active;
 
-		for (std::shared_ptr<Entity> child : mChildren)
+		for (Entity* child : mChildren)
 		{
 			child->setVisible(active);
 		}

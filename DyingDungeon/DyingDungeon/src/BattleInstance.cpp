@@ -5,7 +5,7 @@
 #include "StatusEvents.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, Odyssey::Entity* _turnIndicatorModel)
 {
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
@@ -141,7 +141,7 @@ void BattleInstance::GenerateBattleQueue()
 	// Setting Battle Order from highest speed to lowest speed
 	for (int i = 0; i < numOfCharacters; i++)
 	{
-		std::shared_ptr<Odyssey::Entity> highestSpeedCharacter;
+		Odyssey::Entity* highestSpeedCharacter;
 		int indexOfCharacter = -1;
 		float highestSpeed = -1.0f;
 	

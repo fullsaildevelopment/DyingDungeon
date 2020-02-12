@@ -583,23 +583,23 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 1", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Place Holer 2", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
 		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 3", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Place Holder 4", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
 		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,12 +638,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		for (int i = 0; i < heros.size(); ++i)
 		{
 			if (heros[i] != nullptr)
-				mHeroList[i] = heros[i].get();
+				mHeroList[i] = heros[i];
 		}
 		for (int i = 0; i < enemies.size(); ++i)
 		{
 			if (enemies[i] != nullptr)
-				mEnemyList[i] = enemies[i].get();
+				mEnemyList[i] = enemies[i];
 		}
 		mCurrentState = STATE::NONE;
 		ManageCastedEffects();
@@ -658,12 +658,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		for (int i = 0; i < heros.size(); ++i)
 		{
 			if(heros[i] != nullptr)
-				mHeroList[i] = heros[i].get();
+				mHeroList[i] = heros[i];
 		}
 		for (int i = 0; i < enemies.size(); ++i)
 		{
 			if (enemies[i] != nullptr)
-				mEnemyList[i] = enemies[i].get();
+				mEnemyList[i] = enemies[i];
 		}
 		ManageCastedEffects();
 		ManageStatusEffects(mRegens);
@@ -816,20 +816,20 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				if (mCurrentSkill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemies)
+					for (Odyssey::Entity* c : enemies)
 					{
 						// If they arnt dead play thier animations and particle effects
 						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
 							// Play "Hit" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit"); 
+							c->getComponent<Odyssey::Animator>()->playClip("Hit"); 
 
 							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
+							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
+							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
 
 							// Play particle effect
-							c.get()->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
@@ -852,13 +852,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				if (mCurrentSkill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : heros)
+					for (Odyssey::Entity* c : heros)
 					{
 						// If the target is not dead, and not the caster
-						if (c != nullptr && c.get()->getComponent<Character>()->GetState() != STATE::DEAD && c.get()->getComponent<HeroComponent>() != this)
+						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD && c->getComponent<HeroComponent>() != this)
 						{
 							// Play "GotBuffed" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 						}
 					}
 				}
@@ -888,13 +888,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemies)
+					for (Odyssey::Entity* c : enemies)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -914,13 +914,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : heros)
+					for (Odyssey::Entity* c : heros)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -991,6 +991,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void HeroComponent::Die()
 {
+	// Play death sound effect
+	RedAudioManager::Instance().PlaySFX("DeathMeme");
+
 	// Clear all remaining status effects
 	ClearStatusEffects();
 	
@@ -1102,7 +1105,7 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 	else if (mCurrentTarget == nullptr)
 	{
 		// If its an aoe skill then turn all applicable partys indicators on
-		for (std::shared_ptr<Odyssey::Entity> t : targets)
+		for (Odyssey::Entity* t : targets)
 		{
 			// If the entity is valid and  the character is not dead, turn on targeter
 			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
@@ -1120,7 +1123,7 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		prevChar = nullptr;
 
 		// For each applicable entity turn off targeters
-		for (std::shared_ptr<Odyssey::Entity> t : targets)
+		for (Odyssey::Entity* t : targets)
 		{
 			// If the entity if valid and the character is no dead, turn off targeter
 			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
@@ -1184,7 +1187,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 			int counter = 0;
 
 			// For each entity
-			for (std::shared_ptr<Odyssey::Entity> t : targets)
+			for (Odyssey::Entity* t : targets)
 			{
 				// If valid
 				if (t)
@@ -1247,6 +1250,11 @@ void HeroComponent::BeginAttack(EntityList targets)
 
 	// Set the current state to inprogress
 	mCurrentState = STATE::INPROGRESS;
+}
+
+std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
+{
+	return std::make_shared<HeroComponent>(*this);
 }
 
 // Init function called when object loads into scene

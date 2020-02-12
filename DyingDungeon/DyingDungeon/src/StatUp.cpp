@@ -13,6 +13,14 @@ StatUp::StatUp(float ammountOfEffect, int duration, STATS stat, Character* targe
 
 StatUp::~StatUp()
 {
+	if(mRecipient != nullptr)
+		Remove();
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
+	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
+	mStatId = STATS::None;
 }
 
 void StatUp::Apply(Character& caster,Character& target)

@@ -10,6 +10,7 @@ class TowerSelectController : public Odyssey::Component
 	CLASS_DECLARATION(TowerSelectController)
 public:
 	TowerSelectController(Odyssey::Application* application);
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	virtual void onDestroy();

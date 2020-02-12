@@ -18,6 +18,14 @@
 #include "Keycode.h"
 #include "SceneDX11.h"
 
+#include "ClearRenderTargetPass.h"
+#include "SkyboxPass.h"
+#include "ShadowPass.h"
+#include "OpaquePass.h"
+#include "TransparentPass.h"
+#include "DebugPass.h"
+#include "Sprite2DPass.h"
+
 #define RENDER_WINDOW_CLASS_NAME L"RenderWindowClass"
 
 namespace Odyssey
@@ -44,11 +52,7 @@ namespace Odyssey
 		RegisterClass(&renderWindowClass);
 
 		// Create the RenderDevice for this application
-		mRenderDevice = std::make_shared<RenderDevice>();
-		mRenderPipeline = std::make_shared<RenderPipeline>(*(mRenderDevice.get()));
-
-		// Initialize the debug renderer
-		DebugManager::getInstance().initialize(*mRenderDevice);
+		mRenderPipeline = std::make_shared<RenderPipeline>();
 
 		// Enable muli-threading by default
 		mIsMultithreading = true;
@@ -68,6 +72,9 @@ namespace Odyssey
 		EventManager::getInstance().subscribe(this, &Application::onShutdownApplication);
 
 		EventManager::getInstance().subscribe(this, &Application::onUIScale);
+
+		EventManager::getInstance().subscribe(this, &Application::onSpawnEntity);
+		EventManager::getInstance().subscribe(this, &Application::onDestroyEntity);
 	}
 
 	Application::~Application()
@@ -76,7 +83,6 @@ namespace Odyssey
 		{
 			mActiveScene = nullptr;
 		}
-		mRenderDevice = nullptr;
 	}
 
 	void Application::onSceneChange(SceneChangeEvent* evnt)
@@ -122,6 +128,17 @@ namespace Odyssey
 	void Application::onUIScale(UIScaleEvent* evnt)
 	{
 		mActiveWindow->getScreenScale(evnt->xScale, evnt->yScale);
+	}
+
+	void Application::onSpawnEntity(SpawnEntityEvent* evnt)
+	{
+		// Create a copy of the entity
+		*(evnt->entity) = (mActiveScene->createEntity(evnt->prefab));
+	}
+
+	void Application::onDestroyEntity(DestroyEntityEvent* evnt)
+	{
+		mActiveScene->removeEntity(evnt->entity);
 	}
 
 	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -193,13 +210,7 @@ namespace Odyssey
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 
-	RenderDevice* Application::getRenderDevice()
-	{
-		// Return a raw pointer to the RenderDevice
-		return mRenderDevice.get();
-	}
-
-	std::shared_ptr<RenderWindow> Application::createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight)
+	RenderWindow* Application::createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight)
 	{
 		// Get the width and height of the screen
 		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -238,7 +249,7 @@ namespace Odyssey
 		assert(!FAILED(hr));
 
 		// Create a new RenderWindow associated with the window
-		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindowDX11>(mRenderDevice, hWindow);
+		std::shared_ptr<RenderWindow> window = std::make_shared<RenderWindowDX11>(hWindow);
 
 		// Store the window in the list of windows
 		mWindows.emplace_back(std::static_pointer_cast<RenderWindowDX11>(window));
@@ -254,19 +265,40 @@ namespace Odyssey
 		ShowWindow(hWindow, SW_SHOWDEFAULT);
 
 		// Return the RenderWindow
-		return window;
+		return window.get();
 	}
 
-	void Application::addScene(std::string name, std::shared_ptr<Scene> scene)
+	Entity* Application::createPrefab()
 	{
-		// Add the scene to the scene map
-		mSceneMap[name] = std::static_pointer_cast<SceneDX11>(scene);
+		std::shared_ptr<Entity> prefab = std::make_shared<Entity>();
+		mPrefabs.push_back(prefab);
+		return prefab.get();
+	}
+
+	Scene* Application::createScene(std::string name)
+	{
+		mSceneMap[name] = std::make_shared<SceneDX11>();
 
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
 		{
-			mActiveScene = std::static_pointer_cast<SceneDX11>(scene);
+			mActiveScene = mSceneMap[name];
 		}
+
+		return std::static_pointer_cast<Scene>(mSceneMap[name]).get();
+	}
+
+	Scene* Application::createScene(std::string name, DirectX::XMFLOAT3 center, float radius)
+	{
+		mSceneMap[name] = std::make_shared<SceneDX11>(center, radius);
+
+		// Check if there is no active scene
+		if (mActiveScene == nullptr)
+		{
+			mActiveScene = mSceneMap[name];
+		}
+
+		return std::static_pointer_cast<Scene>(mSceneMap[name]).get();
 	}
 
 	void Application::addRenderPass(std::shared_ptr<RenderPass> renderPass)
@@ -313,6 +345,9 @@ namespace Odyssey
 		mIsRunning = true;
 
 		MSG msg;
+
+		// Set up the rendering pipeline
+		setupRenderPipeline();
 
 		// Check if we are flagged for multithreading
 		if (mIsMultithreading)
@@ -386,7 +421,7 @@ namespace Odyssey
 					if (mActiveScene)
 					{
 						// Render the scene
-						mRenderPipeline->render(mActiveScene);
+						mRenderPipeline->render(mActiveWindow.get(), mActiveScene.get());
 					}
 
 					// Fire a thread tick event for the main thread. This is for profiling purposes only.
@@ -406,5 +441,14 @@ namespace Odyssey
 	{
 		// Exit the application gracefully
 		PostQuitMessage(0);
+	}
+
+	void Application::setupRenderPipeline()
+	{
+		mRenderPipeline->addRenderPass(std::make_shared<SkyboxPass>());
+		mRenderPipeline->addRenderPass(std::make_shared<ShadowPass>(4096, 4096));
+		mRenderPipeline->addRenderPass(std::make_shared<OpaquePass>());
+		mRenderPipeline->addRenderPass(std::make_shared<TransparentPass>());
+		mRenderPipeline->addRenderPass(std::make_shared<Sprite2DPass>());
 	}
 }

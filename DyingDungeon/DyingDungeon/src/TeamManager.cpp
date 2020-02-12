@@ -8,7 +8,17 @@ TeamManager& TeamManager::getInstance()
 	return instance;
 }
 
-std::vector<std::shared_ptr<Odyssey::Entity>> TeamManager::CreateEnemyTeam(int _index)
+void TeamManager::initialize()
+{
+	std::vector<EnemySetups> enemies = mEnemiesToCreate[1];
+	DirectX::XMVECTOR position = enemies[0].pPosition;
+	DirectX::XMVECTOR rotation = enemies[0].pRotation;
+	DirectX::XMFLOAT2 hudPosition = enemies[0].pHudPosition;
+	DirectX::XMFLOAT2 hpPopupPosition = enemies[0].pHpPopupPosition;
+	ganfaulPrefab = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, nullptr);
+}
+
+std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 {
 	// Clear the enemy team
 	mEnemyTeam.clear();
@@ -26,7 +36,7 @@ std::vector<std::shared_ptr<Odyssey::Entity>> TeamManager::CreateEnemyTeam(int _
 		bool isBoss = enemies[i].pIsBoss;
 
 		// Character we are about to create
-		std::shared_ptr<Odyssey::Entity> newCharacter;
+		Odyssey::Entity* newCharacter;
 
 		// Create the character based on the enum
 		switch (enemyType)
@@ -35,9 +45,10 @@ std::vector<std::shared_ptr<Odyssey::Entity>> TeamManager::CreateEnemyTeam(int _
 				newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
 				break;
 			case EnemyType::Ganfaul:
-				newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-				//return mEnemyTeam;
-				break;
+				//newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
+				Odyssey::Entity* result;
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(ganfaulPrefab, &result));
+				return mEnemyTeam;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;
 				break;
@@ -58,12 +69,12 @@ std::vector<std::shared_ptr<Odyssey::Entity>> TeamManager::CreateEnemyTeam(int _
 	return mEnemyTeam;
 }
 
-void TeamManager::AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd)
+void TeamManager::AddCharacterToPlayerTeam(Odyssey::Entity* _characterToAdd)
 {
 	mPlayerTeam.push_back(_characterToAdd);
 }
 
-void TeamManager::AddCharacterToEnemyTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd)
+void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 {
 	mEnemyTeam.push_back(_characterToAdd);
 }

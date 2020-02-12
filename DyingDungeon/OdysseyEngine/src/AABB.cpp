@@ -5,6 +5,10 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, AABB)
 
+	std::shared_ptr<Component> AABB::clone() const
+	{
+		return std::make_shared<AABB>(*this);
+	}
 	AABB::AABB(DirectX::XMFLOAT4X4& transform, std::vector<Vertex> vertexList)
 	{
 		// Set he min
@@ -96,6 +100,6 @@ namespace Odyssey
 		calculateCenter(center);
 
 		// Debug draw the AABB in the debug renderer
-		DebugManager::getInstance().addAABB(extents, center, color);
+		//DebugManager::getInstance().addAABB(extents, center, color);
 	}
 }

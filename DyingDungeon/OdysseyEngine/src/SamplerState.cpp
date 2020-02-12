@@ -1,12 +1,11 @@
 #include "SamplerState.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
-	SamplerState::SamplerState(std::shared_ptr<RenderDevice> renderDevice, ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
+	SamplerState::SamplerState(ComparisonFunc comparisonFunc, D3D11_FILTER filter, int bindSlot)
 	{
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
+		mDevice = RenderManager::getInstance().getDX11Device();
 
 		mComparisonFunc = comparisonFunc;
 		mBindSlot = bindSlot;

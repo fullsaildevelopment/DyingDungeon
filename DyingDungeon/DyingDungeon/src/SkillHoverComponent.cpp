@@ -1,6 +1,12 @@
 #include "SkillHoverComponent.h"
 
 CLASS_DEFINITION(Odyssey::Component, SkillHoverComponent)
+
+std::shared_ptr<Odyssey::Component> SkillHoverComponent::clone() const 
+{
+	return std::make_shared<SkillHoverComponent>(*this);
+}
+
 void SkillHoverComponent::initialize()
 {
 	mSprites[0]->registerCallback("onMouseEnter", this, &SkillHoverComponent::callback1);

@@ -12,13 +12,12 @@ namespace Odyssey
 	class UICanvas;
 	class MeshRenderer;
 	class Light;
-	class RenderDevice;
 
 	class SceneDX11 : public Scene
 	{
 	public:
-		SceneDX11(std::shared_ptr<RenderDevice> renderDevice);
-		SceneDX11(std::shared_ptr<RenderDevice> renderDevice, DirectX::XMFLOAT3 center, float radius);
+		SceneDX11();
+		SceneDX11(DirectX::XMFLOAT3 center, float radius);
 		~SceneDX11() = default;
 	public:
 		/**
@@ -57,8 +56,5 @@ namespace Odyssey
 		float getSceneRadius();
 
 		void getRenderPackage(RenderPackage& renderPackage);
-
-	private:
-		ReadWriteLock mLock;
 	};
 }

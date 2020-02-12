@@ -1,6 +1,8 @@
 #include "Buffs.h"
 #include "Character.h"
 
+// Constructors for the diffrent cases of attacks //
+//////////////////////////////////////////////////////////////
 Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, std::shared_ptr<StatusEffect> buff, bool isBuff)
 {
 	if (isBuff)
@@ -29,15 +31,24 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 	mStatusEffectChance = 1.0f;
 	mIsAOE = isAOE;
 }
+//////////////////////////////////////////////////////////////
 
-// Applies buff to target
+
+// Function that applies the attack to the passed in target
 void Buffs::Use(Character& caster, Character& target)
 {
+	// Update combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+
+	// If i have a status effect to apply, apply it
 	if (mStatusEffect != nullptr)
 	{
 		mStatusEffect->Apply(caster, target);
-		//Alert Reds stuff for stat tracking?
+
+		// Play audio "heal" sound effect
+		RedAudioManager::Instance().PlaySFX("ForwardAerial");
+
+		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())
 		{
 		case EFFECTTYPE::None:

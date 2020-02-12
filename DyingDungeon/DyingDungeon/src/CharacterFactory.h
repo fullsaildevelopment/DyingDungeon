@@ -1,7 +1,9 @@
 #pragma once
 #include "OdysseyEngine.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Scene.h"
+#include "Application.h"
+#include <map>
 
 
 class CharacterFactory
@@ -16,10 +18,9 @@ public:
 	static CharacterFactory& getInstance();
 	~CharacterFactory() { }
 private: // Singleton pattern
-	CharacterFactory() { }
+	CharacterFactory() {}
 
-public: 
-	Odyssey::RenderDevice* mRenderRefrence;
+public:
 	enum CharacterOptions
 	{
 		Paladin,
@@ -36,16 +37,18 @@ public:
 
 public: // Functions
 
-	std::shared_ptr<Odyssey::Entity> CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, std::shared_ptr<Odyssey::Scene> _gameScene);
+	void initialize(Odyssey::Application* _application);
+
+	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
 
 	//Getters
+	Odyssey::Entity* GetPrefab(CharacterOptions _characterType);
 
 	//Setters
 
 private: // Varibales
 
 	// Scene
-	std::shared_ptr<Odyssey::Scene> mCurrentScene;
 
 	// Vectors
 
@@ -62,11 +65,17 @@ private: // Varibales
 
 
 private: // Functions
-	void CreateCharacterImpactIndicator(std::shared_ptr<Odyssey::Entity> _character);
+	void CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo);
 
 	// Particle Creation Functions
-	Odyssey::ParticleSystem* setUpFireButBetter();
-	Odyssey::ParticleSystem* setUpFireStorm();
-	Odyssey::ParticleSystem* setupBlood();
+	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
+	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
+	Odyssey::ParticleSystem* setupBlood(Odyssey::Scene* _sceneToAddTo);
+
+	// Dora's Map
+	std::map<CharacterOptions, Odyssey::Entity*> mPrefabMap;
+
+	// Application
+	Odyssey::Application* mApplication;
 };
 

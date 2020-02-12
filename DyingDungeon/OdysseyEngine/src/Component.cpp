@@ -17,6 +17,12 @@ namespace Odyssey
 		mEntity = nullptr;
 	}
 
+	Component::Component(const Component& copy)
+	{
+		mEntity = copy.mEntity;
+		mIsActive = copy.mIsActive;
+	}
+
 	Component::~Component()
 	{
 

@@ -11,7 +11,13 @@ Stun::Stun(int duration, Character* target)
 }
 Stun::~Stun()
 {
+	if(mRecipient != nullptr)
+		Remove();
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
 void Stun::Apply(Character& caster, Character& target)
 {

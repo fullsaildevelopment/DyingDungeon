@@ -2,6 +2,8 @@
 #include "EngineIncludes.h"
 #include "Component.h"
 #include "UIElement.h"
+#include "Scene.h"
+#include "Entity.h"
 
 namespace Odyssey
 {
@@ -11,6 +13,10 @@ namespace Odyssey
 	{
 		CLASS_DECLARATION(UICanvas)
 
+	public:
+		UICanvas() = default;
+		virtual std::shared_ptr<Component> clone() const;
+		//UICanvas(const UICanvas& copy);
 	public: // Rule of 3
 		virtual void initialize();
 
@@ -30,6 +36,12 @@ namespace Odyssey
 			mElements.emplace_back(std::make_shared<ElementType>(std::forward<Args>(params)...));
 
 			mElements[mElements.size() - 1]->setCanvas(this);
+
+			if (mEntity->getScene())
+			{
+				mEntity->getScene()->addElement(mElements[mElements.size() - 1].get());
+			}
+			
 			// Return a raw pointer to the created element type
 			return static_cast<ElementType*>(mElements[mElements.size() - 1].get());
 		}

@@ -8,18 +8,14 @@
 
 namespace Odyssey
 {
-	Sprite2DPass::Sprite2DPass(std::shared_ptr<RenderDevice> renderDevice, std::shared_ptr<RenderWindow> targetWindow)
+	Sprite2DPass::Sprite2DPass()
 	{
-		mRenderDevice = renderDevice;
-		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(targetWindow);
-		mContext = renderDevice->getDevice2DContext();
-
 		EventManager::getInstance().subscribe(this, &Sprite2DPass::onDebugEngine);
 	}
 
 	void Sprite2DPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		mContext->BeginDraw();
+		args.context2D->BeginDraw();
 	}
 
 	void Sprite2DPass::render(RenderArgs& args, RenderPackage& renderPackage)
@@ -32,7 +28,7 @@ namespace Odyssey
 				{
 					if (element->isVisible())
 					{
-						element->draw(mContext);
+						element->draw(args.context2D);
 					}
 				}
 			}
@@ -44,11 +40,11 @@ namespace Odyssey
 			{
 				if (element->getCanvas()->isActive())
 				{
-					element->draw(mContext);
+					element->draw(args.context2D);
 				}
 			}
 		}
-		mContext->EndDraw();
+		args.context2D->EndDraw();
 	}
 
 	void Sprite2DPass::onDebugEngine(DebugEngine* evnt)

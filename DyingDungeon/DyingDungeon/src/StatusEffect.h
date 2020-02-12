@@ -24,7 +24,7 @@ private:
 public:
 	// Constructors, Deconstructors
 	StatusEffect() = default;
-	~StatusEffect() = default;
+	// virtual ~StatusEffect() = default;
 	// Application functions
 	virtual void Apply(Character& caster, Character& target) = 0;
 	virtual void Remove() = 0;

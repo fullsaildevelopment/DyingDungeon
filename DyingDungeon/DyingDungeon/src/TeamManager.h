@@ -38,31 +38,34 @@ private: // Singleton pattern
 	TeamManager() { }
 
 public: // Functions
+	// TODO: FIX LATER
+	Odyssey::Entity* ganfaulPrefab;
+	void initialize();
 
 	// Create Enemy Team based on the index passed in
-	std::vector<std::shared_ptr<Odyssey::Entity>> CreateEnemyTeam(int _index);
+	std::vector<Odyssey::Entity*> CreateEnemyTeam(int _index);
 	// Add a list of enemies to index through
 	void AddEnemiesListToCreate(std::vector<TeamManager::EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
 
 	// Add player to the player team
-	void AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+	void AddCharacterToPlayerTeam(Odyssey::Entity* _characterToAdd);
 	// Add player to the enemy team
-	void AddCharacterToEnemyTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
 
 	// Clear the players from the player team
 	void ClearPlayerTeam();
 
 	// Getters
 	// Get the players that were created
-	std::vector<std::shared_ptr<Odyssey::Entity>> GetPlayerTeam() { return mPlayerTeam; }
+	std::vector<Odyssey::Entity*> GetPlayerTeam() { return mPlayerTeam; }
 	// Get the enemies that were created
-	std::vector<std::shared_ptr<Odyssey::Entity>> GetEnemyTeam() { return mEnemyTeam; }
+	std::vector<Odyssey::Entity*> GetEnemyTeam() { return mEnemyTeam; }
 
 	// Setters
 	// Set the current tower
-	void SetTheCurrentTower(std::shared_ptr<Odyssey::Entity> _tower) { mCurrentTower = _tower; }
+	void SetTheCurrentTower(Odyssey::Entity* _tower) { mCurrentTower = _tower; }
 	// Set the first scene
-	void SetTheFirstScene(std::shared_ptr<Odyssey::Scene> _scene) { mSceneOne = _scene; }
+	void SetTheFirstScene(Odyssey::Scene* _scene) { mSceneOne = _scene; }
 
 private: // Variables
 
@@ -70,15 +73,15 @@ private: // Variables
 	std::vector<std::vector<TeamManager::EnemySetups>> mEnemiesToCreate;
 
 	// Holds the player characters to add into the Tower Manager
-	std::vector<std::shared_ptr<Odyssey::Entity>> mPlayerTeam;
+	std::vector<Odyssey::Entity*> mPlayerTeam;
 	// Holds the enemy characters to add into the Tower Manager
-	std::vector<std::shared_ptr<Odyssey::Entity>> mEnemyTeam;
+	std::vector<Odyssey::Entity*> mEnemyTeam;
 
 	// Holds the tower manager entity
-	std::shared_ptr<Odyssey::Entity> mCurrentTower;
+	Odyssey::Entity* mCurrentTower;
 
 	// Hold the first scene
-	std::shared_ptr<Odyssey::Scene> mSceneOne;
+	Odyssey::Scene* mSceneOne;
 
 private: // Functions
 	

@@ -35,7 +35,7 @@ public:
 	virtual void update(double deltaTime);
 
 	// Function that gets called by battle instance to allow the character to take their turn
-	virtual bool TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+	virtual bool TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam);
 
 	// Function that gets called to set the character state to dead, along with all other necessary variables
 	virtual void Die();
@@ -149,10 +149,10 @@ public:
 	void SetState(STATE newState);
 
 	// Sets the impact indicator entity used for targeting 
-	void SetImpactIndicator(std::shared_ptr<Odyssey::Entity> _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
+	void SetImpactIndicator(Odyssey::Entity* _impactIndicatorModel) { mImpactIndicator = _impactIndicatorModel; }
 
 	// Gets the impact indicator entity used for targeting
-	std::shared_ptr<Odyssey::Entity> GetInpactIndicator() { return mImpactIndicator; }
+	Odyssey::Entity* GetInpactIndicator() { return mImpactIndicator; }
 
 	// Adds a status effect to the character and sorts it putting it in the correct vector
 	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
@@ -306,7 +306,7 @@ protected:
 	Odyssey::ParticleSystem* mBloodParticleEffect;
 
 	public:
-	// shared pointer to the entity used for targeting 
-	std::shared_ptr<Odyssey::Entity> mImpactIndicator;
+	// entity used for targeting 
+	Odyssey::Entity* mImpactIndicator;
 };
 
