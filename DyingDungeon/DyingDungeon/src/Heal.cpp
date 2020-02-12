@@ -44,7 +44,7 @@ void Heal::Use(Character& caster, Character& target)
 
 	// Play audio "heal" sound effect
 	RedAudioManager::Instance().PlaySFX("ForwardAerial");
-	RedAudioManager::Instance().PlaySFX("Forward Aerial");
+	RedAudioManager::Instance().PlaySFX("GokuSJJ3");
 
 	// If i have a status effect to apply, then apply it
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)

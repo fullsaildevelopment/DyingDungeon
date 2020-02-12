@@ -97,7 +97,7 @@ void Attack::Use(Character& caster, Character& target)
 	//////////////////////////////////////////////
 
 	// Play audio "hit" sound effect
-	RedAudioManager::Instance().PlaySFX("ForwardAerial");
+	RedAudioManager::Instance().PlaySFX("GokuSJJ3");
 
 	// If i have a status effect to apply, then apply it 
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
