@@ -45,6 +45,9 @@ void Buffs::Use(Character& caster, Character& target)
 	{
 		mStatusEffect->Apply(caster, target);
 
+		// Play audio "heal" sound effect
+		RedAudioManager::Instance().PlaySFX("ForwardAerial");
+
 		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())
 		{

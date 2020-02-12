@@ -43,6 +43,7 @@ void Heal::Use(Character& caster, Character& target)
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));
 
 	// Play audio "heal" sound effect
+	RedAudioManager::Instance().PlaySFX("ForwardAerial");
 	RedAudioManager::Instance().PlaySFX("Forward Aerial");
 
 	// If i have a status effect to apply, then apply it
