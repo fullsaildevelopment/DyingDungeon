@@ -57,6 +57,11 @@ void RedAudioManager::Play(const char* alias)
 	FindAudio(alias)->Play();
 }
 
+void RedAudioManager::PlayEvent(AudioPlayEvent* apEvent)
+{
+
+}
+
 void RedAudioManager::StopEvent(AudioStopEvent* asEvent)
 {
 	//Stop(asEvent->alias.c_str());
@@ -98,6 +103,18 @@ void RedAudioManager::LoopRandom(std::string group)
 	srand(time(NULL));
 	unsigned int index = rand() % (_temp.size());
 	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
+}
+
+void RedAudioManager::PlaySFXRandom(std::string group)
+{
+	std::vector<std::string> _temp = GetGroup(group);
+	if (_temp.size() > 0)
+	{
+		srand(time(NULL));
+		unsigned int index = rand() % (_temp.size());
+		//Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
+		FindAudio(_temp[index].c_str())->PlayInstance();
+	}
 }
 
 void RedAudioManager::LoopEvent(AudioLoopEvent* alEvent)
