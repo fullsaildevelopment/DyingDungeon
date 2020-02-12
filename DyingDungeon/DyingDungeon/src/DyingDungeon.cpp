@@ -713,9 +713,9 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3",					"MaleHitReaction",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",						"ForwardAerial",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",			"TorchBurning",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",	"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
 
 	// Tower select screen door sounds
