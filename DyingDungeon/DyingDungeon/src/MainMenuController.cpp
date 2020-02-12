@@ -20,8 +20,7 @@ void MainMenuController::initialize()
 {
 	RedAudioManager::Instance().Stop("BackgroundBattle");
 	RedAudioManager::Instance().Stop("TorchBurningQuietly");
-	//RedAudioManager::Instance().LoopRandom("BackgroundMenu");
-	RedAudioManager::Instance().Loop("DeathMeme");
+	RedAudioManager::Instance().LoopRandom("BackgroundMenu");
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
