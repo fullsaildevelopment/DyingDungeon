@@ -28,7 +28,6 @@ namespace Odyssey
 		Texture* getDepthTexture();
 		void clearRenderView(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		void clearDepth(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
-		void resize(RenderWindow* renderWindow);
 	private:
 		void createRenderTargetView(int width, int height);
 		void createDepthStencilView(int width, int height);

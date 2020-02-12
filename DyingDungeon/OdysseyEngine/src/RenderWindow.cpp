@@ -1,5 +1,4 @@
 #include "RenderWindow.h"
-#include "RenderDevice.h"
 #include "RenderTarget.h"
 #include "EventManager.h"
 

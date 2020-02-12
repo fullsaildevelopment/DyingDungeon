@@ -129,6 +129,7 @@ namespace Odyssey
 	public: // Interface
 		virtual void initialize();
 		virtual void update(double deltaTime);
+		virtual void onDestroy();
 	public: // Helpers
 		void run(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
 		void setShape(ParticleSystemShape shape);
