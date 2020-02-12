@@ -3,6 +3,7 @@
 #include "Keycode.h"
 #include <memory>
 #include <string>
+#include <DirectXMath.h>
 
 namespace Odyssey
 {
@@ -170,8 +171,11 @@ namespace Odyssey
 	public:
 		Entity* prefab;
 		Entity** entity;
+		DirectX::XMVECTOR position;
+		DirectX::XMVECTOR rotation;
 
-		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity) : prefab(spawnPrefab), entity(outEntity)
+		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity, DirectX::XMVECTOR spawnPosition, DirectX::XMVECTOR spawnRotation) 
+			: prefab(spawnPrefab), entity(outEntity), position(spawnPosition), rotation(spawnRotation)
 		{
 			priority = EventPriority::Immediate;
 		}
@@ -184,7 +188,7 @@ namespace Odyssey
 
 		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
 		{
-			priority = EventPriority::Immediate;
+			priority = EventPriority::Deferred;
 		}
 	};
 }

@@ -1,5 +1,4 @@
 #include "Sprite2DPass.h"
-#include "RenderDevice.h"
 #include "RenderWindow.h"
 #include "UICanvas.h"
 #include "Entity.h"

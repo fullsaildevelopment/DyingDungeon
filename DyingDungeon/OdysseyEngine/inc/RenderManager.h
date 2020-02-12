@@ -2,6 +2,7 @@
 #include "EngineIncludes.h"
 #include "RenderIncludes.h"
 #include "RenderTypes.h"
+#include <stack>
 
 namespace Odyssey
 {
@@ -72,6 +73,9 @@ namespace Odyssey
 		BlendState* getBlendState(int ID);
 		Shader* getShader(int ID);
 		RenderTarget* getRenderTarget(int ID);
+	public:
+		void destroyBuffer(int ID);
+		void destroyRenderTarget(int ID);
 	private:
 		RenderManager();
 		void createDX11Device();
@@ -103,6 +107,7 @@ namespace Odyssey
 		typedef std::vector<std::shared_ptr<Shader>> ShaderList;
 	private: // Rendering Resource Storage
 		BufferList mBuffers;
+		std::stack<unsigned int> mBufferIDs;
 		MaterialList mMaterials;
 		RenderStateList mRenderStates;
 		SamplerStateList mSamplerStates;
@@ -111,6 +116,7 @@ namespace Odyssey
 		TextureList mTextures;
 		ViewportList mViewports;
 		RenderTargetList mRenderTargets;
+		std::stack<unsigned int> mRenderTargetIDs;
 		MeshList mMeshes;
 		ShaderList mShaders;
 	};

@@ -135,11 +135,6 @@ namespace Odyssey
 		}
 	}
 
-	void RenderTarget::resize(RenderWindow* renderWindow)
-	{
-
-	}
-
 	void RenderTarget::createRenderTargetView(int width, int height)
 	{
 		UINT flag = D3D11_BIND_RENDER_TARGET;

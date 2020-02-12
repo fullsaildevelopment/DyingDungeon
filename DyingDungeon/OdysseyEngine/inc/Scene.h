@@ -4,6 +4,7 @@
 #include <vector>
 #include "EngineIncludes.h"
 #include "RenderTypes.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -25,15 +26,12 @@ namespace Odyssey
 	public: // Interface
 		Entity* createEntity();
 
-		Entity* createEntity(Entity* copyEntity);
-
 		void addComponent(Component* component);
 
 		void addElement(UIElement* element);
 
 		void removeComponent(Component* component);
 
-		void removeEntity(Entity* entity);
 		/**
 		 *	Get the delta time between frames.
 		 *	@param[in] void
@@ -70,7 +68,7 @@ namespace Odyssey
 		XTime mXTimer;
 		double mDeltaTime;
 		bool mActive;
+		ReadWriteLock mLock;
 		RenderPackage mRenderPackage;
-		std::map<Entity*, std::vector<Component*>> mComponentMap;
 	};
 }

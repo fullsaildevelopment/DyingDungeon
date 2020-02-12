@@ -38,7 +38,7 @@ namespace Odyssey
 		generateRenderArgs(activeWindow, scene);
 
 		// Get the render package from the scene
-		scene->getRenderPackage(mRenderPackage);
+		mRenderPackage = scene->getRenderPackage();
 
 		// Get the context
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = RenderManager::getInstance().getDX11Context();

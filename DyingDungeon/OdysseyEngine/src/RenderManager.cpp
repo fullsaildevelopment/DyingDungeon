@@ -30,6 +30,8 @@ namespace Odyssey
 		createDX11Device();
 		createD2DDevice();
 		mScriptLoader = std::make_shared<ScriptDataLoader>();
+		mBufferIDs.push(0);
+		mRenderTargetIDs.push(0);
 	}
 
 	RenderManager& RenderManager::getInstance()
@@ -73,12 +75,26 @@ namespace Odyssey
 	{
 		// Create the buffer
 		std::shared_ptr<Buffer> buffer = std::make_shared<Buffer>(bindFlag, size, stride, data);
-		// Store the ID of the buffer
-		int id = mBuffers.size();
-		// Add the buffer to the list
-		mBuffers.push_back(buffer);
+		
+		// Get the next render target ID and pop it off the top
+		int ID = mBufferIDs.top();
+		mBufferIDs.pop();
+
+		// Check if this is an already allocated slot
+		if (ID < mBuffers.size())
+		{
+			// Assign the render target
+			mBuffers[ID] = buffer;
+		}
+		else
+		{
+			// Allocate a slot for the render target and push the next slot onto the stack
+			mBuffers.push_back(buffer);
+			mBufferIDs.push(mBuffers.size());
+		}
+
 		// Return the ID
-		return id;
+		return ID;
 	}
 	
 	int RenderManager::createMaterial()
@@ -229,10 +245,24 @@ namespace Odyssey
 	{
 		// Create the render target
 		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(width, height, depthEnabled);
-		// Store the ID of the render target
-		int ID = mRenderTargets.size();
-		// Add the render target to the list
-		mRenderTargets.push_back(renderTarget);
+
+		// Get the next render target ID and pop it off the top
+		int ID = mRenderTargetIDs.top();
+		mRenderTargetIDs.pop();
+
+		// Check if this is an already allocated slot
+		if (ID < mRenderTargets.size())
+		{
+			// Assign the render target
+			mRenderTargets[ID] = renderTarget;
+		}
+		else
+		{
+			// Allocate a slot for the render target and push the next slot onto the stack
+			mRenderTargets.push_back(renderTarget);
+			mRenderTargetIDs.push(mRenderTargets.size());
+		}
+
 		// Return the ID
 		return ID;
 	}
@@ -241,10 +271,24 @@ namespace Odyssey
 	{
 		// Create the render target
 		std::shared_ptr<RenderTarget> renderTarget = std::make_shared<RenderTarget>(renderWindow, depthEnabled);
-		// Store the ID of the render target
-		int ID = mRenderTargets.size();
-		// Add the render target to the list
-		mRenderTargets.push_back(renderTarget);
+
+		// Get the next render target ID and pop it off the top
+		int ID = mRenderTargetIDs.top();
+		mRenderTargetIDs.pop();
+
+		// Check if this is an already allocated slot
+		if (ID < mRenderTargets.size())
+		{
+			// Assign the render target
+			mRenderTargets[ID] = renderTarget;
+		}
+		else
+		{
+			// Allocate a slot for the render target and push the next slot onto the stack
+			mRenderTargets.push_back(renderTarget);
+			mRenderTargetIDs.push(mRenderTargets.size());
+		}
+
 		// Return the ID
 		return ID;
 	}
@@ -423,6 +467,24 @@ namespace Odyssey
 
 		// Return the raw pointer stored at the ID index
 		return mRenderTargets[ID].get();
+	}
+
+	void RenderManager::destroyBuffer(int ID)
+	{
+		if (ID < mBuffers.size())
+		{
+			mBufferIDs.push(ID);
+			mBuffers[ID] = nullptr;
+		}
+	}
+
+	void RenderManager::destroyRenderTarget(int ID)
+	{
+		if (ID < mRenderTargets.size())
+		{
+			mRenderTargetIDs.push(ID);
+			mRenderTargets[ID] = nullptr;
+		}
 	}
 
 	void RenderManager::createDX11Device()

@@ -91,6 +91,7 @@ namespace Odyssey
 	{
 		// Reset the 2D and 3D render targets
 		mBackBuffer.Reset();
+		RenderManager::getInstance().destroyRenderTarget(mRenderTarget);
 
 		// Get the device context
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
@@ -111,7 +112,7 @@ namespace Odyssey
 		EventManager::getInstance().publish(new UIElementResizeEvent(mProperties.screenScaleX, mProperties.screenScaleY));
 
 		// Recreate the render targets
-		RenderManager::getInstance().getRenderTarget(mRenderTarget)->resize(this);
+		createRenderTarget3D();
 		createRenderTarget2D();
 	}
 
