@@ -35,21 +35,25 @@ public:
 		Ganfaul
 	};
 
-	enum CharacterType
+	enum HudID
 	{
-		Hero,
-		Enemy
+		HeroLeft,
+		HeroMiddle,
+		HeroRight,
+		EnemyLeft,
+		EnemyMiddle,
+		EnemyRight,
 	};
 
 public: // Functions
 
 	void initialize(Odyssey::Application* _application);
 
-	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
+	//Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
 
 	//Getters
 	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
-	Odyssey::Entity* GetHUDPrefab(bool isHero);
+	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
 	Odyssey::Entity* GetImpactIndicatorPrefab();
 	Odyssey::Entity* GetTurnIndicatorPrefab();
 
@@ -78,10 +82,13 @@ private: // Functions
 	Odyssey::Entity* CreateCharacterPrefab(CharacterOptions _characterToCreate);
 
 	// Create hero hud
-	Odyssey::Entity* CreateHeroHudPrefab();
+	Odyssey::Entity* CreateHeroHudPrefab(DirectX::XMFLOAT2 _hudPosition);
 
 	// Create enemy hud
-	Odyssey::Entity* CreateEnemyHudPrefab();
+	Odyssey::Entity* CreateEnemyHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
+	// Create hp popup
+	Odyssey::Entity* CreateHpPopupPrefab();
 
 	// Create impact indicator
 	Odyssey::Entity* CreateImpactIndicatorPrefab();
@@ -98,7 +105,10 @@ private: // Functions
 	std::map<CharacterOptions, Odyssey::Entity*> mCharacterPrefabMap;
 
 	// HUD Map
-	std::map<CharacterType, Odyssey::Entity*> mHudPrefabMap;
+	std::map<HudID, Odyssey::Entity*> mHudPrefabMap;
+
+	// Hp Popup 
+	Odyssey::Entity* mHpPopupPrefab;
 
 	// Impact Indicator
 	Odyssey::Entity* mImpactIndicatorPrefab;
