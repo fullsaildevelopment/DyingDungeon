@@ -8,7 +8,7 @@ class TeamManager
 public:
 	enum class HeroType
 	{
-		Paladin, Mage, Bard, Warrior
+		Paladin, Mage, Bard, Warrior, Monk
 	};
 
 	enum class EnemyType
@@ -42,10 +42,10 @@ public: // Functions
 	// Create Enemy Team based on the index passed in
 	std::vector<Odyssey::Entity*> CreateEnemyTeam(int _index);
 	// Add a list of enemies to index through
-	void AddEnemiesListToCreate(std::vector<TeamManager::EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
+	void AddEnemiesListToCreate(std::vector<EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
 
 	// Add player to the player team
-	void AddCharacterToPlayerTeam(Odyssey::Entity* _characterToAdd);
+	void AddCharacterToPlayerTeam(HeroType _characterHeroType);
 	// Add player to the enemy team
 	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
 
@@ -54,7 +54,7 @@ public: // Functions
 
 	// Getters
 	// Get the players that were created
-	std::vector<Odyssey::Entity*> GetPlayerTeam() { return mPlayerTeam; }
+	std::vector<HeroType> GetPlayerTeamToCreate() { return mPlayerTeamToCreate; }
 	// Get the enemies that were created
 	std::vector<Odyssey::Entity*> GetEnemyTeam() { return mEnemyTeam; }
 
@@ -70,7 +70,7 @@ private: // Variables
 	std::vector<std::vector<TeamManager::EnemySetups>> mEnemiesToCreate;
 
 	// Holds the player characters to add into the Tower Manager
-	std::vector<Odyssey::Entity*> mPlayerTeam;
+	std::vector<HeroType> mPlayerTeamToCreate;
 	// Holds the enemy characters to add into the Tower Manager
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 

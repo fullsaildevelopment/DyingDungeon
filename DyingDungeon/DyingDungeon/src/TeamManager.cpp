@@ -71,9 +71,9 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	return mEnemyTeam;
 }
 
-void TeamManager::AddCharacterToPlayerTeam(Odyssey::Entity* _characterToAdd)
+void TeamManager::AddCharacterToPlayerTeam(HeroType _characterHeroType)
 {
-	mPlayerTeam.push_back(_characterToAdd);
+	mPlayerTeamToCreate.push_back(_characterHeroType);
 }
 
 void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
@@ -83,11 +83,6 @@ void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 
 void TeamManager::ClearPlayerTeam()
 {
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		mPlayerTeam[i] = nullptr;
-	}
-
-	mPlayerTeam.clear();
-	mPlayerTeam.resize(0);
+	mPlayerTeamToCreate.clear();
+	mPlayerTeamToCreate.resize(0);
 }

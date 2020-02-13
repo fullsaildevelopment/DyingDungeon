@@ -229,15 +229,8 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles)
+void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
-	// Assign the player team 
-	mPlayerTeam = _playerTeam;
-
-	// Add all of the characters from the player's team to the allCharacters vector
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-		mAllCharacters.push_back(mPlayerTeam[i]);
-
 	// Add Boss to the mAllCharacters
 	//mAllCharacters.push_back(mBossCharacter);
 

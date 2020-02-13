@@ -100,8 +100,8 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
-		// Set up the tower manager with the enemy and player teams
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), 2);
+		// Set up the tower manager with how many levels we want
+		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(2);
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
@@ -380,6 +380,15 @@ void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
 	TeamManager::getInstance().AddCharacterToPlayerTeam(newCharacter);
 
 	// Increase build index
+	mBuildIndex++;
+}
+
+void TeamSelectionController::AddCharacterTypeToPlayerTeam(Character* _characterType)
+{
+	// TODO: Add enum to player to create list based on the name
+	if (_characterType->GetName() == L"Paladin")
+	
+	// Increase the build index fo rthe next player when adding him to the list
 	mBuildIndex++;
 }
 

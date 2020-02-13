@@ -65,6 +65,7 @@ private: // Functions
 	// Callback function for the enter battle button
 	void EnterBattle();
 	void CreateCharacterBasedOnName(std::wstring _name);
+	void AddCharacterTypeToPlayerTeam(Character* _characterType);
 
 	// Callback functions for the arrows
 	void DecreaseSlot1Index();
