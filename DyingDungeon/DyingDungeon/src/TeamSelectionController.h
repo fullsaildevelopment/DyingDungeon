@@ -12,37 +12,16 @@ public:
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	virtual void onDestroy();
-	// TODO: REFACTOR THIS LATER
-	void setupHovers();
 public:
-	Odyssey::Rectangle2D* mRect;
-
 	// Functions
 
 	// Setters
 
-	// Set the list of scenes that the characters will need to be added to
-	void SetGameScenes(std::vector<Odyssey::Scene*> _listOfScenes) { mListOfGameScenes = _listOfScenes; }
-
 	// Set current tower manager
 	void SetTowerManager(Odyssey::Entity* _towerManager) {mCurrentTower = _towerManager; }
 
-	// Set the slot 1 of characters for team selection
-	void SetSlot1OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot1CharacterList = _listOfCharacters; }
-	// Set the slot 2 of characters for team selection
-	void SetSlot2OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot2CharacterList = _listOfCharacters; }
-	// Set the slot 3 of characters for team selection
-	void SetSlot3OfCharacters(std::vector<Odyssey::Entity*> _listOfCharacters) { mSlot3CharacterList = _listOfCharacters; }
-
-	// Set the slot 
-	void SetSlot1CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot1CharacterInfoPopupList = _listOfPopupCanvases; }
-	void SetSlot2CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot2CharacterInfoPopupList = _listOfPopupCanvases; }
-	void SetSlot3CharacterInfoPopups(std::vector<Odyssey::UICanvas*> _listOfPopupCanvases) { mSlot3CharacterInfoPopupList = _listOfPopupCanvases; }
-
 private:
 	Odyssey::Application* mApplication;
-	Odyssey::UICanvas* mPaladin;
-	Odyssey::UICanvas* mMage;
 	// This will let us know when the user has a clicked the enter battle button
 	bool mEnterBattle = true;
 	// Only allow to change scene once
@@ -79,12 +58,9 @@ private:
 	int mSlot3Index = 0;
 
 private: // Functions
-	// TODO: REFACTOR THIS LATER
-	void onPaladinEnter();
-	void onPaladinExit();
-	void onMageEnter();
-	void onMageExit();
-	void setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character);
+
+	// Create the prefab models with the info popups
+	void CreateModelsAndPopups();
 
 	// Callback function for the enter battle button
 	void EnterBattle();
