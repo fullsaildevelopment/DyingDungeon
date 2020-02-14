@@ -51,6 +51,11 @@ public: // Functions
 
 	//Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
 
+	//Increase the character hud index
+	void IncreaseCharacterHUDIndex() { mCharacterHudIndex++; }
+	// Get the character hud index
+	unsigned int GetCharacterHudIndex() { return mCharacterHudIndex; }
+
 	//Getters
 	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
 	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
@@ -70,7 +75,7 @@ private: // Varibales
 	// Entitys
 
 	// Ints
-	unsigned int characterHudIndex = 0;
+	unsigned int mCharacterHudIndex = 0;
 
 	// Floats
 

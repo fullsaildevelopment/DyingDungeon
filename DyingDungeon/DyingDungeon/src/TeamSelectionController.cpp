@@ -69,7 +69,8 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
-	TeamManager::getInstance().ClearPlayerTeam();
+	TeamManager::getInstance().ClearPlayerTeamEnumList();
+
 	if (SaveLoad::Instance().LoadLoadOut("LoadOut_Test"))
 	{
 		mSlot1CharacterList[mSlot1Index]->setVisible(false);
@@ -303,9 +304,6 @@ void TeamSelectionController::EnterBattle()
 	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
-
-	// Make a list of enums to hold based what character it is
-	std::vector<CharacterFactory::CharacterOptions> enumList;
   
 	// Check what characters are shown on the screen for the slot 1
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
@@ -313,8 +311,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot1CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot1CharacterInfoPopupList[mSlot1Index]->setActive(false);
@@ -327,8 +325,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot2CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot2CharacterInfoPopupList[mSlot2Index]->setActive(false);
@@ -341,8 +339,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot3CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot3CharacterInfoPopupList[mSlot3Index]->setActive(false);
@@ -353,41 +351,28 @@ void TeamSelectionController::EnterBattle()
 	mEnterBattle = true;
 }
 
-void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
+void TeamSelectionController::AddCharacterTypeToPlayerTeam(std::wstring _characterName)
 {
-	CharacterFactory::CharacterOptions heroType;
+	// Define the new hero type
+	TeamManager::HeroType newHeroType = TeamManager::HeroType::Paladin;
 
-	if (_name == L"Paladin")
-		heroType = CharacterFactory::CharacterOptions::Paladin;
-	else if (_name == L"Mage")
-		heroType = CharacterFactory::CharacterOptions::Mage;
-	else if (_name == L"Bard")
-		heroType = CharacterFactory::CharacterOptions::Bard;
-	else if (_name == L"Warrior")
-		heroType = CharacterFactory::CharacterOptions::Warrior;
-	else if (_name == L"Monk")
-		heroType = CharacterFactory::CharacterOptions::Monk;
+	// Set the enum based on the name of the character
+	if (_characterName == L"Paladin")
+		newHeroType = TeamManager::HeroType::Paladin;
+	else if (_characterName == L"Mage")
+		newHeroType = TeamManager::HeroType::Mage;
+	else if (_characterName == L"Bard")
+		newHeroType = TeamManager::HeroType::Bard;
+	else if (_characterName == L"Warrior")
+		newHeroType = TeamManager::HeroType::Warrior;
+	else if (_characterName == L"Monk")
+		newHeroType = TeamManager::HeroType::Monk;
+	else
+		std::cout << "Not the correct name so we defaulted to Paladin in TeamSelectionController.cpp";
 
-	// This is the gGameScene from DyingDungeon.cpp
-	Odyssey::Scene* gameScene = mListOfGameScenes[0];
+	// Add the enum to the players to create list
+	TeamManager::getInstance().AddCharacterEnumToPlayerTeam(newHeroType);
 
-	// Create the character and add it to the game scene
-	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	Odyssey::Entity* newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
-
-	// Add the new character to the player list in Team Manager
-	TeamManager::getInstance().AddCharacterToPlayerTeam(newCharacter);
-
-	// Increase build index
-	mBuildIndex++;
-}
-
-void TeamSelectionController::AddCharacterTypeToPlayerTeam(Character* _characterType)
-{
-	// TODO: Add enum to player to create list based on the name
-	if (_characterType->GetName() == L"Paladin")
-	
 	// Increase the build index fo rthe next player when adding him to the list
 	mBuildIndex++;
 }

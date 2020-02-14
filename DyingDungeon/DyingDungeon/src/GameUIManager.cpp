@@ -1736,11 +1736,6 @@ void GameUIManager::AddHudToList(Odyssey::Entity* _newHud)
 	mCharacterHudList.push_back(_newHud);
 }
 
-void GameUIManager::AddHudToList(Odyssey::Entity* _newHud)
-{
-	
-}
-
 // Add character health bar to update list
 void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount)
 {

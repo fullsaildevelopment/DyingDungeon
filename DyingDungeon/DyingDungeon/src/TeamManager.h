@@ -45,12 +45,12 @@ public: // Functions
 	void AddEnemiesListToCreate(std::vector<EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
 
 	// Add player to the player team
-	void AddCharacterToPlayerTeam(HeroType _characterHeroType);
+	void AddCharacterEnumToPlayerTeam(HeroType _characterHeroType);
 	// Add player to the enemy team
 	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
 
 	// Clear the players from the player team
-	void ClearPlayerTeam();
+	void ClearPlayerTeamEnumList();
 
 	// Getters
 	// Get the players that were created

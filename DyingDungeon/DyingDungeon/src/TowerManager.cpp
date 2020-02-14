@@ -10,6 +10,7 @@
 #include "UICanvas.h"
 #include "RedAudioManager.h"
 #include "TeamManager.h"
+#include "CharacterFactory.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -30,6 +31,66 @@ void TowerManager::initialize()
 
 	// The tower will not be paused on start up
 	mIsPaused = false;
+
+	// Create the player characters
+	std::vector<DirectX::XMVECTOR> mPlayerPositions;
+	mPlayerPositions.resize(3);
+	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+	// Player Rotations
+	DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+	// Create each player
+	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
+	{
+		// Character we are about to create
+		Odyssey::Entity* newCharacter;
+		// Character's HUD
+		Odyssey::Entity* newHUD;
+		// Prefab
+		Odyssey::Entity* prefab;
+		// Hud Id type
+		CharacterFactory::HudID hudID;
+		// Define the character type we need to create
+		CharacterFactory::CharacterOptions characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		// Get the hero type
+		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
+
+		if (i == 0)
+			hudID = CharacterFactory::HudID::EnemyLeft;
+		else if (i == 1)
+			hudID = CharacterFactory::HudID::EnemyMiddle;
+		else
+			hudID = CharacterFactory::HudID::EnemyRight;
+
+		// Set the enum based on the name of the character
+		if (newHeroType == TeamManager::HeroType::Paladin)
+			characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		else if (newHeroType == TeamManager::HeroType::Mage)
+			characterToCreate = CharacterFactory::CharacterOptions::Mage;
+		else if (newHeroType == TeamManager::HeroType::Bard)
+			characterToCreate = CharacterFactory::CharacterOptions::Bard;
+		else if (newHeroType == TeamManager::HeroType::Warrior)
+			characterToCreate = CharacterFactory::CharacterOptions::Warrior;
+		else if (newHeroType == TeamManager::HeroType::Monk)
+			characterToCreate = CharacterFactory::CharacterOptions::Monk;
+		else
+			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
+
+		// Create the character prefab
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Skeleton);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, mPlayerPositions[i], mPlayerRotation));
+		// Create the hud prefab
+		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
+
+		// Set the character's hud index number
+		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
+		// Increase the character index
+		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
+	}
 
 	// Don't show the boos character
 	//mBossCharacter->setActive(false);

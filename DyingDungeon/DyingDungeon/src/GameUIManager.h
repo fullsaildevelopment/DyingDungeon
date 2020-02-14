@@ -142,6 +142,7 @@ public: // Functions
 	// Character info popup for team selection screen
 	Odyssey::UICanvas* SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition);
 
+	// Increase the char
 	// Add HUD to the character hud list
 	void AddHudToList(Odyssey::Entity* _newHud);
 	// Add character health and mana bars to update list in order for the bars to be animated
