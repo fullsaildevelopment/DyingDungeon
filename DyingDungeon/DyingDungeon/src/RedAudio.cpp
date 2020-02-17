@@ -438,6 +438,7 @@ void RedAudio::SetVolume(unsigned int volume)
 	cmd.append(m_alias);
 	cmd.append(" volume to ");
 	cmd.append(std::to_string(volume));
+	cmd.append(" wait");
 	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
 	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
@@ -447,6 +448,10 @@ void RedAudio::SetVolume(unsigned int volume)
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	if (m_alias == "BackgroundBattle") 
+	{
+		int i = 0;
+	}
 	cmd.clear();
 	delete[] in_cmd;
 	delete[] out_string;
