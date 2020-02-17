@@ -32,7 +32,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	case GameplayTypes::ENEMYID::Skeleton:
 	{
 		// Set the character Model path
-		mModel = "assets/models/Skeleton.dxm";
+		mModel = "assets/models/CasterDemon.dxm";
 
 		// Set the character name
 		mName = L"Skeleton";
@@ -64,7 +64,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Idle
 		tempAnimationData.mAnimationNickName = "Idle";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_Idle.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Idle.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
@@ -339,6 +339,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Stun";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Stun.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
@@ -347,6 +351,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "Buffed";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Buff.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -357,7 +365,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Skill 2
 
 		// Skill 3
-
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Skill_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 		// Skill 4
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,6 +428,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Stun";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Stun.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Hit
 		tempAnimationData.mAnimationNickName = "Hit";
@@ -425,6 +440,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "Buffed";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Buff.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -433,10 +452,22 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_4.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		break;
