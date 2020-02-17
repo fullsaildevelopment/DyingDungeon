@@ -351,7 +351,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
-		tempAnimationData.mAnimationNickName = "Buffed";
+		tempAnimationData.mAnimationNickName = "GotBuffed";
 		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Buff.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
@@ -440,7 +440,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mAnimations.push_back(tempAnimationData);
 
 		// Recieves Buff
-		tempAnimationData.mAnimationNickName = "Buffed";
+		tempAnimationData.mAnimationNickName = "GotBuffed";
 		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Buff.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
