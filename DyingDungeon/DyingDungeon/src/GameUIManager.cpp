@@ -301,9 +301,9 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the tower select menu pointer
 	mTeamSelectMenu = _sceneToAddTo->createEntity();
-	mTeamSelectMenu->addComponent<Odyssey::UICanvas>();
+	
 	// Get canvas component of the pause menu
-	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* teamSelectMenuCanvas = mTeamSelectMenu->addComponent<Odyssey::UICanvas>();// mTeamSelectMenu->getComponent<Odyssey::UICanvas>();
 
 	// Initialize variables
 	UINT width = screenWidth; // Width
@@ -322,16 +322,71 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
 	
 	//Create the save loadout button
-	position.y += 60.0f;
+	position.y += 65.0f;
 	position.x -= 140.0f;
 	properties.fontSize = 35.0f;
-	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width/4, height);
+	mSaveLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
+	
 	//Create the load loadout button
 	position.x += 280.0f;
-	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width/4, height);
+	mLoadLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Load Loadout", properties);
 
+	//Adding loadout pop-up menu
+	mLoadoutMenu = _sceneToAddTo->createEntity();
+	Odyssey::UICanvas* loadoutMenuCanvas = mLoadoutMenu->addComponent<Odyssey::UICanvas>();
+
+	loadoutMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), screenWidth, screenHeight)->setOpacity(0.5f);
+	position.y += 90.0f;
+	position.x += 370.0f;
+	loadoutMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width/5, height*7 + 10)->setOpacity(0.8f);
+
+	position.y += 40.0f;
+	position.x -= 510.0f;
+	for (int i = 0; i < 3; i++)
+	{
+		mLoadoutButtons[i] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 530.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 6, height);
+		loadoutMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, std::wstring(L"Loadout " + std::to_wstring(i + 1)), properties);
+		
+		mLoadoutPortraitBackground[i] = loadoutMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 780.0f, position.y - static_cast<float>(height / 8)), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 6, (height + height/4));
+		mLoadoutPortraitBackground[i]->setOpacity(0.8f);
+		mLoadoutPortraitBackground[i]->setVisible(false);
+
+		mLoadoutPortraits[i][0] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + static_cast<float>(width / 18), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][0]->setVisible(false);
+		
+		mLoadoutPortraits[i][1] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*2.0f), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][1]->setVisible(false);
+		
+		mLoadoutPortraits[i][2] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*3.0f), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][2]->setVisible(false);
+
+		position.y += 100.0f;
+	}
+	position.y -= 40.0f;
+	mCancelLoadoutButton = loadoutMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, L"Cancel", properties);
+
+	mLoadoutMenu->setActive(false);
+
+	//Adding confermation pop-up
+	mSaveLoadoutConfermation = _sceneToAddTo->createEntity();
+	Odyssey::UICanvas* saveLoadoutConfermationCanvas = mSaveLoadoutConfermation->addComponent<Odyssey::UICanvas>();
+
+	position = { (screenWidth / 2.0f) - (static_cast<float>(width/2) / 2.0f), (screenHeight / 2.0f) - (static_cast<float>(height*6) / 2.0f) };
+
+	saveLoadoutConfermationCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width/2, height*6)->setOpacity(1.0f);
+	/*position.y -= 50.0f;
+	position.x -= 320.0f;*/
+	position.y += 10.0f;
+	saveLoadoutConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width/2, height*2, L"Are you sure you want to override this loadout?", properties)->setFontSize(40.0f);
+	mSaveConfermationButtons[1] = saveLoadoutConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height*2);
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	saveLoadoutConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
+	mSaveConfermationButtons[0] = saveLoadoutConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height*2);
+	saveLoadoutConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
+
+	mSaveLoadoutConfermation->setActive(false);
 
 	// Create the confirm button to enter battle
 	width = 227;

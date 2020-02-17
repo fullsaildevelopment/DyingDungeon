@@ -315,34 +315,37 @@ bool SaveLoad::LoadLoadOut()
 
 bool SaveLoad::LoadLoadOut(std::string loadoutName)
 {
-	Loadout loadedLoadOut;
-	std::string path = std::string("profiles/" + m_saveProfile + "loadouts/" + loadoutName);
-	std::fstream file(path, std::ios::in | std::ios::binary);
-	if (file.is_open())
+	if (loadouts.find(loadoutName) == loadouts.end())
 	{
-		uint32_t nameSize = 0;
-		file.read((char*)&nameSize, sizeof(uint32_t));
-		loadedLoadOut.name.resize(nameSize);
-		file.read((char*)&loadedLoadOut.name[0], nameSize);
-
-		uint32_t profileNameSize = 0;
-		file.read((char*)&profileNameSize, sizeof(uint32_t));
-		loadedLoadOut.profile.resize(profileNameSize);
-		file.read((char*)&loadedLoadOut.profile[0], profileNameSize);
-		for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
+		Loadout loadedLoadOut;
+		std::string path = std::string("profiles/" + m_saveProfile + "loadouts/" + loadoutName);
+		std::fstream file(path, std::ios::in | std::ios::binary);
+		if (file.is_open())
 		{
-			unsigned int character = 0;
-			file.read((char*)&character, sizeof(unsigned int));
-			loadedLoadOut.characterIDs[j] = (GameplayTypes::HEROID)character;
-			file.read((char*)&loadedLoadOut.index[j], sizeof(int));
+			uint32_t nameSize = 0;
+			file.read((char*)&nameSize, sizeof(uint32_t));
+			loadedLoadOut.name.resize(nameSize);
+			file.read((char*)&loadedLoadOut.name[0], nameSize);
+
+			uint32_t profileNameSize = 0;
+			file.read((char*)&profileNameSize, sizeof(uint32_t));
+			loadedLoadOut.profile.resize(profileNameSize);
+			file.read((char*)&loadedLoadOut.profile[0], profileNameSize);
+			for (int j = 0; j < 3/*ARRAYSIZE(loadouts[i].characterIDs)*/; j++)
+			{
+				unsigned int character = 0;
+				file.read((char*)&character, sizeof(unsigned int));
+				loadedLoadOut.characterIDs[j] = (GameplayTypes::HEROID)character;
+				file.read((char*)&loadedLoadOut.index[j], sizeof(int));
+			}
+			file.close();
 		}
-		file.close();
+		else
+		{
+			return false;
+		}
+		loadouts[loadoutName] = loadedLoadOut;
 	}
-	else
-	{
-		return false;
-	}
-	loadouts[loadoutName] = loadedLoadOut;
 	return true;
 }
 

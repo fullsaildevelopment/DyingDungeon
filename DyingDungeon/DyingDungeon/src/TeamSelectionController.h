@@ -108,6 +108,33 @@ private: // Functions
 	void ToggleShowInfoPopup2();
 	void ToggleShowInfoPopup3();
 
+	//Callback functions for the loadout buttons
+	void ShowLoadLoadoutMenu();
+	void HideLoadLoadoutMenu();
+
+	void SaveLoadout1();
+	void SaveLoadout2();
+	void SaveLoadout3();
+
+	void LoadLoadout1();
+	void LoadLoadout2();
+	void LoadLoadout3();
+
+	void ConfermationSave1();
+
+	void ConfermationSave2();
+
+	void ConfermationSave3();
+
+	void ConfermationNo();
+
 	// Change the name in the slots
 	void ChangeSlotName(int _slotIndex, std::wstring _name);
+	void onHoverLoadout1();
+	void onExitHoverLoadout1();
+	void onHoverLoadout2();
+	void onExitHoverLoadout2();
+	void onHoverLoadout3();
+	void onExitHoverLoadout3();
+	void ShowSaveLoadoutMenu();
 };
