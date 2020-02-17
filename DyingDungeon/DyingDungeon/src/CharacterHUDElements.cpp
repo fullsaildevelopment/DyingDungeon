@@ -25,27 +25,27 @@ void CharacterHUDElements::ChangeSkill(Skills* _skill, int _numOfSkill)
 	{
 		case 1:
 			// Set the new sprite image
-			pSkill1->setSprite(_skill->GetSkillIconPath());
+			pSkill1->setSprite(_skill->GetSkillIconPath(), pSkill1->getDimensions().x, pSkill1->getDimensions().y);
 			// Set up the skill's popup canvas
-			SetupSkillHover(pSkill1Popup, _skill);
+			//SetupSkillHover(pSkill1Popup, _skill);
 			break;
 		case 2:
 			// Set the new sprite image
-			pSkill2->setSprite(_skill->GetSkillIconPath());
+			pSkill2->setSprite(_skill->GetSkillIconPath(), pSkill2->getDimensions().x, pSkill2->getDimensions().y);
 			// Set up the skill's popup canvas
-			SetupSkillHover(pSkill2Popup, _skill);
+			//SetupSkillHover(pSkill2Popup, _skill);
 			break;
 		case 3:
 			// Set the new sprite image
-			pSkill3->setSprite(_skill->GetSkillIconPath());
+			pSkill3->setSprite(_skill->GetSkillIconPath(), pSkill3->getDimensions().x, pSkill3->getDimensions().y);
 			// Set up the skill's popup canvas
-			SetupSkillHover(pSkill3Popup, _skill);
+			//SetupSkillHover(pSkill3Popup, _skill);
 			break;
 		case 4:
 			// Set the new sprite image
-			pSkill4->setSprite(_skill->GetSkillIconPath());
+			pSkill4->setSprite(_skill->GetSkillIconPath(), pSkill4->getDimensions().x, pSkill4->getDimensions().y);
 			// Set up the skill's popup canvas
-			SetupSkillHover(pSkill4Popup, _skill);
+			//SetupSkillHover(pSkill4Popup, _skill);
 			break;
 		default:
 			break;

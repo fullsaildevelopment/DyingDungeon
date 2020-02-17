@@ -61,6 +61,8 @@ private: // Functions
 
 	// Create the prefab models with the info popups
 	void CreateModelsAndPopups();
+	// Don't display some of the character
+	void TurnOffOtherModels();
 
 	// Callback function for the enter battle button
 	void EnterBattle();

@@ -34,13 +34,13 @@ public:
 	// HUD Elements
 	void SetCanvas(Odyssey::UICanvas* _canvas) { pCanvas = _canvas; }
 	void SetPortrait(Odyssey::Sprite2D* _sprite) { pPortrait = _sprite; }
-	void SetXpBar(Odyssey::Rectangle2D* _rect) { pXpBar = _rect; }
 	void SetCharacterName(Odyssey::Text2D* _text) { pCharacterName = _text; }
+	void SetXpBar(Odyssey::Rectangle2D* _rect) { pXpBar = _rect; }
 	void SetLevelNumber(Odyssey::Text2D* _text) { pLevelNumber = _text; }
 	void SetAttackNumber(Odyssey::Text2D* _text) { pAttackNumber = _text; }
 	void SetDefenseNumber(Odyssey::Text2D* _text) { pDefenseNumber = _text; }
 	void SetSpeedNumber(Odyssey::Text2D* _text) { pSpeedNumber = _text; }
-	void SetHealthBar(Odyssey::Rectangle2D* _rect) { pManaBar = _rect; }
+	void SetHealthBar(Odyssey::Rectangle2D* _rect) { pHealthBar = _rect; }
 	void SetHealthNumber(Odyssey::Text2D* _text) { pHealthNumber = _text; }
 	void SetManaBar(Odyssey::Rectangle2D* _rect) { pManaBar = _rect; }
 	void SetManaNumber(Odyssey::Text2D* _text) { pManaNumber = _text; }
@@ -67,7 +67,7 @@ public:
 	Odyssey::Text2D* GetAttackNumber() { return pAttackNumber; }
 	Odyssey::Text2D* GetDefenseNumber() { return pDefenseNumber; }
 	Odyssey::Text2D* GetSpeedNumber() { return pSpeedNumber; }
-	Odyssey::Rectangle2D* GetHealthBar() { return pManaBar; }
+	Odyssey::Rectangle2D* GetHealthBar() { return pHealthBar; }
 	Odyssey::Text2D* GetHealthNumber() { return pHealthNumber; }
 	Odyssey::Rectangle2D* GetManaBar() { return pManaBar; }
 	Odyssey::Text2D* GetManaNumber() { return pManaNumber; }

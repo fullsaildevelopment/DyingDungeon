@@ -69,7 +69,10 @@ namespace Odyssey
 			entity->getComponent<Transform>()->setPosition(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position));
 			entity->getComponent<Transform>()->setRotation(DirectX::XMVectorGetX(rotation), DirectX::XMVectorGetY(rotation), DirectX::XMVectorGetZ(rotation));
 		}
+
+		// Set the entity's scene and add it to the list of entities
 		entity->setScene(this);
+		mSceneEntities.push_back(entity);
 
 		// Initialize the entity's components
 		for (Component* component : entity->getComponents<Component>())
@@ -77,8 +80,22 @@ namespace Odyssey
 			component->initialize();
 		}
 
-		// Add the entity to the list and return
-		mSceneEntities.push_back(entity);
+		// Iterate through the prefab's child objects and spawn them
+		for (Entity* prefabChild : spawnPrefab->getChildren())
+		{
+			// Copy the child entity
+			std::shared_ptr<Entity> child = std::make_shared<Entity>(*prefabChild);
+			child->setScene(this);
+			child->setParent(entity.get());
+
+			for (Component* childComponent : child->getComponents<Component>())
+			{
+				childComponent->initialize();
+			}
+			mSceneEntities.push_back(child);
+			entity->addChild(child.get());
+		}
+
 		return entity.get();
 	}
 

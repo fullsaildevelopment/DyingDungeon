@@ -60,11 +60,11 @@ void TowerManager::initialize()
 		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
 
 		if (i == 0)
-			hudID = CharacterFactory::HudID::EnemyLeft;
+			hudID = CharacterFactory::HudID::HeroLeft;
 		else if (i == 1)
-			hudID = CharacterFactory::HudID::EnemyMiddle;
+			hudID = CharacterFactory::HudID::HeroMiddle;
 		else
-			hudID = CharacterFactory::HudID::EnemyRight;
+			hudID = CharacterFactory::HudID::HeroRight;
 
 		// Set the enum based on the name of the character
 		if (newHeroType == TeamManager::HeroType::Paladin)
@@ -81,7 +81,7 @@ void TowerManager::initialize()
 			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
 
 		// Create the character prefab
-		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Skeleton);
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, mPlayerPositions[i], mPlayerRotation));
 		// Create the hud prefab
 		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
@@ -95,6 +95,9 @@ void TowerManager::initialize()
 
 		// Set the elements of the character's HUD
 		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
+
+		// Add the mudda fricken character in the player list
+		mPlayerTeam.push_back(newCharacter);
 	}
 
 	// Don't show the boos character

@@ -31,6 +31,9 @@ void TeamSelectionController::initialize()
 	// Create the models and info popups
 	CreateModelsAndPopups();
 
+	// Don't display some of the characters
+	TurnOffOtherModels();
+
 	// Register callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
 
@@ -77,7 +80,7 @@ void TeamSelectionController::initialize()
 		mSlot1Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[0];
 		mSlot1CharacterList[mSlot1Index]->setVisible(true);
 		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
-
+	
 		mSlot2CharacterList[mSlot2Index]->setVisible(false);
 		mSlot2Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[1];
 		mSlot2CharacterList[mSlot2Index]->setVisible(true);
@@ -152,10 +155,10 @@ void TeamSelectionController::CreateModelsAndPopups()
 	float xOffset = -5.0f;
 	float yHeight = -2.0f;
 	float zDepth = 8.0f;
-	Odyssey::Entity* character;
+	Odyssey::Entity* character = nullptr;
 	Odyssey::Entity* infoPopup = mEntity->getScene()->createEntity();
-	Odyssey::Entity* prefab;
-	Odyssey::UICanvas* infoPopupCanvas;
+	Odyssey::Entity* prefab = nullptr;
+	Odyssey::UICanvas* infoPopupCanvas = nullptr;
 	DirectX::XMVECTOR position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
 	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
@@ -173,28 +176,24 @@ void TeamSelectionController::CreateModelsAndPopups()
 		// Mage
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Mage);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Bard
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Bard);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Warrior
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -219,28 +218,24 @@ void TeamSelectionController::CreateModelsAndPopups()
 		// Bard
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Bard);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Warrior
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Paladin
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -265,31 +260,48 @@ void TeamSelectionController::CreateModelsAndPopups()
 		// Warrior
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Paladin
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Mage
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Mage);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		character->setVisible(false);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
+	}
+}
+
+void TeamSelectionController::TurnOffOtherModels()
+{
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot1CharacterList.size(); i++)
+	{
+		mSlot1CharacterList[i]->setVisible(false);
+	}
+
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot2CharacterList.size(); i++)
+	{
+		mSlot2CharacterList[i]->setVisible(false);
+	}
+	
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot3CharacterList.size(); i++)
+	{
+		mSlot3CharacterList[i]->setVisible(false);
 	}
 }
 
