@@ -4,6 +4,7 @@
 #include "Sprite2D.h"
 #include "Text2D.h"
 #include "Rectangle2D.h"
+#include "Skills.h"
 
 class CharacterHUDElements : public Odyssey::Component
 {
@@ -26,6 +27,9 @@ public:
 	virtual void onDestroy();
 public:
 	// Setters
+
+	// HUD Position
+	void SetHudPosition(DirectX::XMFLOAT2 _hudPos) { pHudPosition = _hudPos; }
 
 	// HUD Elements
 	void SetCanvas(Odyssey::UICanvas* _canvas) { pCanvas = _canvas; }
@@ -79,8 +83,24 @@ public:
 	SkillPopup* GetSkill3Popup() { return pSkill3Popup; }
 	SkillPopup* GetSkill4Popup() { return pSkill4Popup; }
 
+	// Change the different elements
+	void ChangePortrait(std::wstring _filename) { pPortrait->setSprite(_filename, pPortrait->getDimensions().x, pPortrait->getDimensions().y); }
+	void ChangeCharacterName(std::wstring _name) { pCharacterName->setText(_name); }
+	void ChangeAttackNumber(std::wstring _num) { pAttackNumber->setText(_num); }
+	void ChangeDefenseNumber(std::wstring _num) { pDefenseNumber->setText(_num); }
+	void ChangeSpeedNumber(std::wstring _num) { pSpeedNumber->setText(_num); }
+	void ChangeHealthNumber(std::wstring _text) { pHealthNumber->setText(_text); }
+	void ChangeManaNumber(std::wstring _text) { pManaNumber->setText(_text); }
+
+	// Change the skill elements
+	void ChangeSkill(Skills* _skill, int _numOfSkill);
+
 private: //Variables
 
+	// HUD Position
+	DirectX::XMFLOAT2 pHudPosition;
+
+	// HUD Elements
 	Odyssey::UICanvas* pCanvas;
 	Odyssey::Sprite2D* pPortrait;
 	Odyssey::Rectangle2D* pXpBar;
@@ -114,5 +134,7 @@ private: //Variables
 	//Odyssey::Sprite2D* pAttackUp;
 
 private: // Fucntions
+
+	void SetupSkillHover(SkillPopup* _skillPopup, Skills* _skill);
 };
 

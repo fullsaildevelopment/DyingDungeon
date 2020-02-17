@@ -167,13 +167,6 @@ int playGame()
 	gSceneTwo = application->createScene("Scene Two", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
 	gSceneTwo->setSkybox("Skybox.dds");
 	setupSceneTwo();
-
-	// Create vector of all game scene
-	std::vector<Odyssey::Scene*> pListOfGameScenes;
-	pListOfGameScenes.push_back(gSceneOne);
-	pListOfGameScenes.push_back(gSceneTwo);
-	// Set the list of scenes in team select controller
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetGameScenes(pListOfGameScenes);
 	// Set the game's current tower
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
 	
@@ -250,11 +243,13 @@ void setupMainMenu(Odyssey::Application* application)
 	light->setSpotAngle(0.0f);
 
 	// Create a paladin and add him to the main menu scene
-	Odyssey::Entity* characterToAdd;
+	Odyssey::Entity* newCharacter = nullptr;
+	Odyssey::Entity* prefab = nullptr;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
-	characterToAdd = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Paladin, L"Main Menu Paladin", charPosition, charRotation, uiPosition, false, uiPosition, gMainMenu);
+	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, charPosition, charRotation));
 
 	// Create the UI
 	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);

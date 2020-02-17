@@ -7,7 +7,6 @@
 #include "Sprite2D.h"
 #include "StatTracker.h"
 #include "UIElement.h"
-#include "CharacterHUDElements.h"
 
 class GameUIManager
 {
@@ -126,6 +125,9 @@ public: // Functions
 	void StatsMenuPrevRound();
 
 	void HideStatsMenu();
+
+	// Set the characters HUD Elements
+	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
 	 
 	// Create hero character portrait
 	void CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition);
@@ -351,7 +353,6 @@ private: // Functions
 
 	// Skill Icon Creation Fucntions
 	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hudPosition);
-	void SetupSkillHover(CharacterHUDElements::SkillPopup* _skillPopup, DirectX::XMFLOAT2 _position);
 	//void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud);
 
 	// TODO: REFACTOR THIS LATER

@@ -1,6 +1,7 @@
 #include "GameUIManager.h"
 #include "RedAudioManager.h"
 #include "UICanvas.h"
+#include "CharacterHUDElements.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -834,6 +835,27 @@ void GameUIManager::HideStatsMenu()
 	//mStatsPrevButtonRound->unregisterCallback("onMouseClick");
 }
 
+void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud)
+{
+	// Get the hud elements to assign
+	CharacterHUDElements* hudElements = _newHud->getComponent<CharacterHUDElements>();
+
+	// Assign all of the elements
+	hudElements->ChangePortrait(_newCharacter->GetPortraitPath());
+	hudElements->ChangeCharacterName(_newCharacter->GetName());
+	hudElements->ChangeAttackNumber(std::to_wstring(_newCharacter->GetAtk()));
+	hudElements->ChangeDefenseNumber(std::to_wstring(_newCharacter->GetDef()));
+	hudElements->ChangeSpeedNumber(std::to_wstring(_newCharacter->GetSpeed()));
+	hudElements->ChangeHealthNumber(std::to_wstring(_newCharacter->GetHP()) + L"/" + std::to_wstring(_newCharacter->GetMaxHP()));
+	hudElements->ChangeManaNumber(std::to_wstring(_newCharacter->GetMana()) + L"/" + std::to_wstring(_newCharacter->GetMaxMana()));
+
+	// Update the skills
+	hudElements->ChangeSkill(_newCharacter->GetSkills()[0].get(), 1);
+	hudElements->ChangeSkill(_newCharacter->GetSkills()[1].get(), 2);
+	hudElements->ChangeSkill(_newCharacter->GetSkills()[2].get(), 3);
+	hudElements->ChangeSkill(_newCharacter->GetSkills()[3].get(), 4);
+}
+
 void GameUIManager::UpdateStatsMenu()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
@@ -1501,6 +1523,19 @@ Odyssey::UICanvas* GameUIManager::CreateHpPopup(Odyssey::Entity* _objToAddTo)
 void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition)
 {
 	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
+	newHud->SetHudPosition(_hudPosition);
+
+	// Set the popup objects
+	std::shared_ptr<CharacterHUDElements::SkillPopup> newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill1Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill2Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill3Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill4Popup(newPopup.get());
+
+	// Add the canvas to the skill popup
 	newHud->GetSkill1Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
 	newHud->GetSkill2Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
 	newHud->GetSkill3Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
@@ -1513,8 +1548,6 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 
 	// Skill1 Icon
 	newHud->SetSkill1(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Skill1 Hover Popup
-	SetupSkillHover(newHud->GetSkill1Popup(), _hudPosition);
 	// Sprite trigger
 	hover->registerSprite(newHud->GetSkill1(), newHud->GetSkill1Popup()->pCanvas);
 
@@ -1523,8 +1556,6 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 
 	// Skill2 Icon
 	newHud->SetSkill2(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Skill2 Hover Popup
-	SetupSkillHover(newHud->GetSkill2Popup(), _hudPosition);
 	// Sprite trigger
 	hover->registerSprite(newHud->GetSkill2(), newHud->GetSkill2Popup()->pCanvas);
 
@@ -1533,8 +1564,6 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 
 	// Skill3 Icon
 	newHud->SetSkill3(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Skill3 Hover Popup
-	SetupSkillHover(newHud->GetSkill3Popup(), _hudPosition);
 	// Sprite trigger
 	hover->registerSprite(newHud->GetSkill3(), newHud->GetSkill3Popup()->pCanvas);
 
@@ -1543,59 +1572,8 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 
 	// Skill4 Icon
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Skill4 Hover Popup
-	SetupSkillHover(newHud->GetSkill4Popup(), _hudPosition);
 	// Sprite trigger
 	hover->registerSprite(newHud->GetSkill4(), newHud->GetSkill4Popup()->pCanvas);
-}
-
-void GameUIManager::SetupSkillHover(CharacterHUDElements::SkillPopup* _skillPopup, DirectX::XMFLOAT2 _position)
-{
-	// Get the canvas
-	Odyssey::UICanvas* canvas = _skillPopup->pCanvas;
-
-	// Set color
-	DirectX::XMFLOAT4 themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
-
-	UINT windowWidth = screenWidth;
-	UINT windowHeight = screenHeight;
-	float x = _position.x;
-	float y = _position.y - 130.0f;
-	UINT width = 300;
-	UINT height = 115;
-	UINT pad = 10;
-
-	Odyssey::TextProperties title;
-	title.bold = true;
-	title.italic = false;
-	title.fontSize = 24.0f;
-	title.textAlignment = Odyssey::TextAlignment::Center;
-	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	title.fontName = L"Tw Cen MT Condensed";
-
-	Odyssey::TextProperties properties;
-	properties.bold = false;
-	properties.italic = false;
-	properties.fontSize = 14.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-	properties.fontName = L"Tw Cen MT Condensed";
-
-	// Background and Separators
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 2);
-
-	// Title Text and Icons
-	_skillPopup->pSkillName = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, L"Skill Name", title);
-	_skillPopup->pSkillImage = canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), L"assets/images/Guy.png", 40, 40);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
-	_skillPopup->pSkillManaCost = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, L"0", title);
-
-	// Description
-	_skillPopup->pSkillDescription = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45), themeColor, width - (2 * pad), 85, L"Description: I am a skill that skills the enemies!!!!!", properties);
-	
-	// Turn the canvas off on start
-	canvas->setActive(false);
 }
 
 //void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud)

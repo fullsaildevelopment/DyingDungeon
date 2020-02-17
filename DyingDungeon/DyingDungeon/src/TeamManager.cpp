@@ -1,6 +1,7 @@
 #include "TeamManager.h"
 #include "TowerManager.h"
 #include "CharacterFactory.h"
+#include "Character.h"
 
 TeamManager& TeamManager::getInstance()
 {
@@ -26,9 +27,9 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		//bool isBoss = enemies[i].pIsBoss;
 
 		// Character we are about to create
-		Odyssey::Entity* newCharacter;
+		Odyssey::Entity* newCharacter = nullptr;
 		// Character's HUD
-		Odyssey::Entity* newHUD;
+		Odyssey::Entity* newHUD = nullptr;
 		// Hud Id type
 		CharacterFactory::HudID hudID;
 		// Prefab we will need
@@ -52,16 +53,29 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
 				// Spawn Enemy HUD
 				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
-				//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
 				break;
 			case EnemyType::Ganfaul:
 				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Ganfaul);
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
 				break;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;
 				break;
 		}
+
+		// Set the character's hud index number
+		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
+		// Increase the character index
+		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
+		// Add the new HUD to the list of HUDs
+		GameUIManager::getInstance().AddHudToList(newHUD);
+
+		// Set the elements of the character's HUD
+		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
 
 		// Add the character we created to the enemy team list
 		mEnemyTeam.push_back(newCharacter);
