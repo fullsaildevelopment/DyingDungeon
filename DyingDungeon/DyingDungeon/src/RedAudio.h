@@ -19,8 +19,8 @@ class RedAudio
 		bool m_playing;
 		bool m_looping;
 		bool m_segmented;
-		//bool m_personal_volume;
 		unsigned int m_volume;
+		unsigned int m_personal_volume;
 	public:
 	private:
 		const wchar_t* ConvertCharToWChar(const char* p_char);
@@ -84,6 +84,7 @@ class RedAudio
 		/// </summary>
 		/// <param name="volume">unsigned intiger value of the audio level between 0 and 1000</param>
 		void SetVolume(unsigned int volume);
+		void SetPersonalVolume(unsigned int volume);
 		/// <summary>
 		/// Getter for the volume of the audio track
 		/// </summary>

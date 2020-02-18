@@ -100,6 +100,18 @@ void RedAudioManager::LoopRandom(std::string group)
 	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
 }
 
+void RedAudioManager::PlaySFXRandom(std::string group)
+{
+	std::vector<std::string> _temp = GetGroup(group);
+	if (_temp.size() > 0)
+	{
+		srand(time(NULL));
+		unsigned int index = rand() % (_temp.size());
+		//Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
+		FindAudio(_temp[index].c_str())->PlayInstance();
+	}
+}
+
 void RedAudioManager::LoopEvent(AudioLoopEvent* alEvent)
 {
 	FindAudio(alEvent->alias.c_str())->PlayLoop();
@@ -161,7 +173,7 @@ void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 	{
 		if (m_audioIdentifiers[i].first == AudioType(avEvent->audioType)) 
 		{
-			m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0]/1000.0f)));
+			m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0] / 1000.0f)));
 		}
 		else if (AudioType(avEvent->audioType) == AudioType::None)
 		{

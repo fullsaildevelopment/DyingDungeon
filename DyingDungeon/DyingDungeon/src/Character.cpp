@@ -152,13 +152,13 @@ void Character::SetHP(float HP)
 	else if (mCurrentHP > mBaseMaxHP)
 		mCurrentHP = mBaseMaxHP;
 
-	// Check whether or not the character was healed or damaged
-	// Player took damage
-	if (previousHealth > mCurrentHP)
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
-	//Player was healed or not damaged at all
-	else
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
+	//// Check whether or not the character was healed or damaged
+	//// Player took damage
+	//if (previousHealth > mCurrentHP)
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
+	////Player was healed or not damaged at all
+	//else
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
 }
 
 // Returns the max HP of the character
@@ -201,11 +201,13 @@ float Character::GetAtk()
 	return mAttack;
 }
 
+// Returns the Base Attack stat of the character
 float Character::GetBaseAtk()
 {
 	return mBaseAttack;
 }
 
+// Returns the Attack mod of the character
 float Character::GetAtkMod()
 {
 	return (mAttack - BASEATK) / 100.0f;
@@ -235,6 +237,7 @@ float Character::GetBaseDef()
 	return mBaseDefense;
 }
 
+// Returns the defense mod of the character
 float Character::GetDefMod()
 {
 	return (mDefense - BASEDEF) / 200.0f;
@@ -264,6 +267,7 @@ float Character::GetBaseSpeed()
 	return mBaseSpeed;
 }
 
+// Returns the Speed mod of the character
 float Character::GetSpdMod()
 {
 	return (mSpeed - BASESPD) / 50.0f;
@@ -341,6 +345,7 @@ void Character::SetName(std::wstring newName)
 	mName = newName;
 }
 
+// Resets the character back to its base
 void Character::ResetMe()
 {
 	// Update the bars
@@ -481,7 +486,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	return true;
 }
 
-// Manages status effects of passed in vector of effects, appling effects and removing expired ones
+// Manages status effects of passed in vector of effects, appling effects
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
 	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires.
@@ -491,6 +496,7 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	{
 		if ((*it)->GetDuration() <= 0)
 		{
+			std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from recipent";
 			it = effectList.erase(it);
 			continue;
 		}
@@ -502,6 +508,7 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	}
 }
 
+// Manages all status effect casted by this character
 void Character::ManageCastedEffects()
 {
 	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
@@ -510,24 +517,23 @@ void Character::ManageCastedEffects()
 	// Casted Effects
 	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
 	{
-		if (static_cast<int>((*it)->GetTypeId()) < 0  || static_cast<int>((*it)->GetTypeId()) > 8)
-		{
-			(*it) = nullptr;
+		if ((*it) == nullptr)
 			it = mCastedEffects.erase(it);
-			continue;
-		}
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			(*it) = nullptr;
-			it = mCastedEffects.erase(it);
-		}
 		else
-			it++;
+		{
+			(*it)->ReduceDuration(1);
+			if ((*it)->GetDuration() <= 0)
+			{
+				std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from caster";
+				it = mCastedEffects.erase(it);
+			}
+			else
+				it++;
+		}		
 	}
 }
 
+// Add a effect to my casted vector
 void Character::AddCastedEffect(StatusEffect* newCastedEffect)
 {
 	mCastedEffects.push_back(newCastedEffect);
@@ -558,6 +564,7 @@ void Character::ClearStatusEffects()
 	mSheilds.clear();
 }
 
+// Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
@@ -654,6 +661,7 @@ std::wstring Character::GetDescription()
 	return mDescription;
 }
 
+// Retuyrns the path to the characers model
 std::string Character::GetModel()
 {
 	return mModel;

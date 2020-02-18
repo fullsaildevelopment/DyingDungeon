@@ -15,6 +15,7 @@
 #include "Shields.h"
 #include "Provoked.h"
 #include "Clense.h"
+#include "CharacterHUDElements.h"
 #include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
@@ -1261,7 +1262,7 @@ std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
-	SetupClickableUI();
+	//SetupClickableUI();
 }
 
 // Set up for clickable UI
@@ -1271,22 +1272,22 @@ void HeroComponent::SetupClickableUI()
 	Odyssey::Sprite2D* currSkill = nullptr;
 
 	// Assign the new skill with the player's 1st skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill1;
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill1();
 	// Set up sprite's callback function for the Skill1Callback
 	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
 
 	// Assign the new skill with the player's 2nd skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill2;
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill2();
 	// Set up sprite's callback function for the Skill2Callback
 	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
 
 	// Assign the new skill with the player's 3rd skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill3;
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill3();
 	// Set up sprite's callback function for the Skill3Callback
 	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
 
 	// Assign the new skill with the player's 4th skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->pSkill4;
+	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill4();
 	// Set up sprite's callback function for the Skill4Callback
 	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
 }

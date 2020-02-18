@@ -3,6 +3,7 @@
 #include "RedAudioManager.h"
 #include "EventManager.h"
 #include "GameUIManager.h"
+#include "CharacterFactory.h"
 
 CLASS_DEFINITION(Odyssey::Component, MainMenuController)
 MainMenuController::MainMenuController(Odyssey::Application* application)
@@ -24,7 +25,15 @@ void MainMenuController::initialize()
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
-	GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+	if (StatTracker::Instance().GetLevelSize() > 0) 
+	{
+		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(255.0f, 255.0f, 255.0f));
+		GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(124.5f, 124.5f, 124.5f));
+	}
 	// TODO: M3B1 ONLY REFACTOR LATER
 	GameUIManager::getInstance().GetCreditsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowCreditsMenu);
 	GameUIManager::getInstance().GetExitGameText()->registerCallback("onMouseClick", this, &MainMenuController::ExitGame);
@@ -32,6 +41,15 @@ void MainMenuController::initialize()
 
 	// Animating bool
 	mAnimatingLaser = true;
+
+	// Create a paladin and add him to the main menu scene
+	Odyssey::Entity* newCharacter = nullptr;
+	Odyssey::Entity* prefab = nullptr;
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
+	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, charPosition, charRotation));
 }
 
 void MainMenuController::update(double deltaTime)

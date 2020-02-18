@@ -14,9 +14,6 @@ CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
 {
 	mApplication = application;
-	mPaladin = nullptr;
-	mMage = nullptr;
-	mRect = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
@@ -26,13 +23,16 @@ std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
 
 void TeamSelectionController::initialize()
 {
-	//RedAudioManager::Instance().Loop("BackgroundMenu");
-	//RedAudioManager::Instance().GetAudio("BackgroundMenu")->Stop();
-
 	// Reset bools and ints
 	changedTheScene = false;
 	mEnterBattle = false;
 	mBuildIndex = 0;
+
+	// Create the models and info popups
+	CreateModelsAndPopups();
+
+	// Don't display some of the characters
+	TurnOffOtherModels();
 
 	// Register callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
@@ -49,6 +49,11 @@ void TeamSelectionController::initialize()
 	GameUIManager::getInstance().GetShowInfoButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup1);
 	GameUIManager::getInstance().GetShowInfoButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup2);
 	GameUIManager::getInstance().GetShowInfoButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup3);
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowLoadLoadoutMenu);
+	GameUIManager::getInstance().GetSaveLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowSaveLoadoutMenu);
+
 
 	// Set the player positions
 	mPlayerPositions.clear();
@@ -72,21 +77,23 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
-	TeamManager::getInstance().ClearPlayerTeam();
-	if (SaveLoad::Instance().LoadLoadOut("LoadOut_Test"))
+
+	TeamManager::getInstance().ClearPlayerTeamEnumList();
+
+	if (SaveLoad::Instance().LoadLoadOut("Last_Loadout"))
 	{
 		mSlot1CharacterList[mSlot1Index]->setVisible(false);
-		mSlot1Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[0];
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[0];
 		mSlot1CharacterList[mSlot1Index]->setVisible(true);
 		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
-
+	
 		mSlot2CharacterList[mSlot2Index]->setVisible(false);
-		mSlot2Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[1];
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[1];
 		mSlot2CharacterList[mSlot2Index]->setVisible(true);
 		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 		
 		mSlot3CharacterList[mSlot3Index]->setVisible(false);
-		mSlot3Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[2];
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
 	}
@@ -98,13 +105,13 @@ void TeamSelectionController::update(double deltaTime)
 	if (mEnterBattle && !changedTheScene)
 	{
 		changedTheScene = true;
-		RedAudioManager::Instance().Stop("BackgroundMenu");
+		RedAudioManager::Instance().StopGroup("BackgroundMenu");
 		RedAudioManager::Instance().Loop("TorchBurningQuietly");
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
-		// Set up the tower manager with the enemy and player teams
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetPlayerTeam(), 2, mTurnIndicatorModel);
+		// Set up the tower manager with how many levels we want
+		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(2);
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
@@ -124,7 +131,7 @@ void TeamSelectionController::update(double deltaTime)
 	{
 		GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
 		unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
-		SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+		SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 		SaveLoad::Instance().SaveLoadOut();
 	}
 }
@@ -146,230 +153,194 @@ void TeamSelectionController::onDestroy()
 	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseEnter");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseExit");
+
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetCancelLoadoutButton()->unregisterCallback("onMouseClick");
 }
 
-void TeamSelectionController::setupHovers()
+void TeamSelectionController::CreateModelsAndPopups()
 {
-	if (mPaladin == nullptr)
+	// Set up variables
+	float xOffset = -5.0f;
+	float yHeight = -2.0f;
+	float zDepth = 8.0f;
+	Odyssey::Entity* character = nullptr;
+	Odyssey::Entity* infoPopup = mEntity->getScene()->createEntity();
+	Odyssey::Entity* prefab = nullptr;
+	Odyssey::UICanvas* infoPopupCanvas = nullptr;
+	DirectX::XMVECTOR position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
+
+	// Make Slot 1 Characters
+	bool makeSlot1Characters = true;
+	if (makeSlot1Characters)
 	{
-		mPaladin = mEntity->addComponent<Odyssey::UICanvas>();
-		setupCharacterHover(mPaladin, L"Paladin");
+		// Paladin
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot1CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Mage
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Mage);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot1CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Bard
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Bard);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot1CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Warrior
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot1CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Monk
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot1CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 	}
 
-	if (mMage == nullptr)
+	// Update variables for the slot 2 characters
+	xOffset = 0.0f;
+	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	uiPosition = { 490.0f, 145.0f };
+
+	// Make Slot 2 Characters
+	bool makeSlot2Characters = true;
+	if (makeSlot2Characters)
 	{
-		mMage = mEntity->addComponent<Odyssey::UICanvas>();
-		setupCharacterHover(mMage, L"Mage");
+		// Mage
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Mage);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot2CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Bard
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Bard);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot2CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Warrior
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot2CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Monk
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot2CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Paladin
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot2CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
+	}
+
+	// Update variables for the slot 3 characters
+	xOffset = 5.0f;
+	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+	uiPosition = { 860.0f, 145.0f };
+
+	// Make Slot 3 Characters
+	bool makeSlot3Characters = true;
+	if (makeSlot3Characters)
+	{
+		// Bard
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Bard);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot3CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Warrior
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Warrior);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot3CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Monk
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot3CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Paladin
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot3CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
+		// Mage
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Mage);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		mSlot3CharacterList.push_back(character);
+		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
+		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 	}
 }
 
-void TeamSelectionController::onPaladinEnter()
+void TeamSelectionController::TurnOffOtherModels()
 {
-	mPaladin->setActive(true);
-	mMage->setActive(false);
-}
-
-void TeamSelectionController::onPaladinExit()
-{
-	mPaladin->setActive(false);
-	mMage->setActive(false);
-}
-
-void TeamSelectionController::onMageEnter()
-{
-	mMage->setActive(true);
-	mPaladin->setActive(false);
-}
-
-void TeamSelectionController::onMageExit()
-{
-	mMage->setActive(false);
-	mPaladin->setActive(false);
-}
-
-void TeamSelectionController::setupCharacterHover(Odyssey::UICanvas* canvas, std::wstring character)
-{
-	DirectX::XMFLOAT4 themeColor;
-	std::wstring portrait;
-	std::wstring level = L"Lvl 1";
-	std::wstring title;
-	std::wstring subtitle;
-	std::wstring description;
-	std::wstring skill1Name;
-	std::wstring skill1Icon;
-	std::wstring skill2Name;
-	std::wstring skill2Icon;
-	std::wstring skill3Name;
-	std::wstring skill3Icon;
-	std::wstring skill4Name;
-	std::wstring skill4Icon;
-	std::wstring health;
-	std::wstring mana;
-	std::wstring attack;
-	std::wstring defense;
-	std::wstring speed;
-
-	DirectX::XMFLOAT4 paladinTheme = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	std::wstring paladinPortrait = L"assets/images/PaladinPortrait.jpg";
-	std::wstring paladinTitle = L"Paladin";
-	std::wstring paladinSubTitle = L"Divine Protector";
-	std::wstring paladinDescription = L"Description: The paladin is a guardian of divine power and a protector of the righteous. Utilize the paladin's skills to protect your team and bring evil to bear.";
-	std::wstring paladinSkill1Name = L"Basic Attack";
-	std::wstring paladinSkill1Icon = L"assets/images/Paladin_Skill_1.png";
-	std::wstring paladinSkill2Name = L"Judgement";
-	std::wstring paladinSkill2Icon = L"assets/images/Paladin_Skill_2.png";
-	std::wstring paladinSkill3Name = L"Shield of Light";
-	std::wstring paladinSkill3Icon = L"assets/images/Paladin_Skill_3.png";
-	std::wstring paladinSkill4Name = L"Blessing of Light";
-	std::wstring paladinSkill4Icon = L"assets/images/Paladin_Skill_4.png";
-	std::wstring paladinHealth = L"Health: 150";
-	std::wstring paladinMana = L"Mana: 100";
-	std::wstring paladinAttack = L"Attack: 15";
-	std::wstring paladinDefense = L"Defense: 30";
-	std::wstring paladinSpeed = L"Speed: 35";
-
-	DirectX::XMFLOAT4 mageTheme = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	std::wstring magePortrait = L"assets/images/MagePortrait.jpg";
-	std::wstring mageTitle = L"Mage";
-	std::wstring mageSubTitle = L"Elementalist";
-	std::wstring mageDescription = L"Descrption: The mage possesses an ancient knowledge of the elemental forces. These skills can be used to inflict tremendous damage on all enemies in your path.";
-	std::wstring mageSkill1Name = L"Basic Attack";
-	std::wstring mageSkill1Icon = L"assets/images/Mage_Skill_1.png";
-	std::wstring mageSkill2Name = L"Wind Slash";
-	std::wstring mageSkill2Icon = L"assets/images/Mage_Skill_2.png";
-	std::wstring mageSkill3Name = L"Firestorm";
-	std::wstring mageSkill3Icon = L"assets/images/Mage_Skill_3.png";
-	std::wstring mageSkill4Name = L"Lightning Bolt";
-	std::wstring mageSkill4Icon = L"assets/images/Mage_Skill_4.png";
-	std::wstring mageHealth = L"Health: 100";
-	std::wstring mageMana = L"Mana: 150";
-	std::wstring mageAttack = L"Attack: 50";
-	std::wstring mageDefense = L"Defense: 10";
-	std::wstring mageSpeed = L"Speed: 40";
-
-	float x = 970.0f;
-	float y = 450.0f;
-	UINT width = 300;
-	UINT height = 260;
-	UINT pad = 7;
-
-	Odyssey::TextProperties titleText;
-	titleText.bold = true;
-	titleText.italic = false;
-	titleText.fontSize = 20.0f;
-	titleText.textAlignment = Odyssey::TextAlignment::Left;
-	titleText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-	titleText.fontName = L"Tw Cen MT Condensed";
-
-	Odyssey::TextProperties properties;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-	properties.fontName = L"Tw Cen MT Condensed";
-
-	if (character == L"Paladin")
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot1CharacterList.size(); i++)
 	{
-		themeColor = paladinTheme;
-		portrait = paladinPortrait;
-		title = paladinTitle;
-		subtitle = paladinSubTitle;
-		description = paladinDescription;
-		skill1Name = paladinSkill1Name;
-		skill1Icon = paladinSkill1Icon;
-		skill2Name = paladinSkill2Name;
-		skill2Icon = paladinSkill2Icon;
-		skill3Name = paladinSkill3Name;
-		skill3Icon = paladinSkill3Icon;
-		skill4Name = paladinSkill4Name;
-		skill4Icon = paladinSkill4Icon;
-		health = paladinHealth;
-		mana = paladinMana;
-		attack = paladinAttack;
-		defense = paladinDefense;
-		speed = paladinSpeed;
-	}
-	else if (character == L"Mage")
-	{
-		themeColor = mageTheme;
-		portrait = magePortrait;
-		title = mageTitle;
-		subtitle = mageSubTitle;
-		description = mageDescription;
-		skill1Name = mageSkill1Name;
-		skill1Icon = mageSkill1Icon;
-		skill2Name = mageSkill2Name;
-		skill2Icon = mageSkill2Icon;
-		skill3Name = mageSkill3Name;
-		skill3Icon = mageSkill3Icon;
-		skill4Name = mageSkill4Name;
-		skill4Icon = mageSkill4Icon;
-		health = mageHealth;
-		mana = mageMana;
-		attack = mageAttack;
-		defense = mageDefense;
-		speed = mageSpeed;
+		mSlot1CharacterList[i]->setVisible(false);
 	}
 
-	// Background and separators
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 45), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 110), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 3);
-
-	// Title
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), portrait, 45, 45);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 45 + pad, y + pad), themeColor, 150, 50, title, titleText);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 120 + pad, y + 3 + pad), DirectX::XMFLOAT4(150.0f, 150.0f, 150.0f, 1.0f), 150, 50, subtitle, properties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 240 + pad, y + pad), themeColor, 150, 50, level, titleText);
-
-	// Description
-	properties.fontSize = 12.0f;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, description, properties);
-
-	// Skills block
-	properties.fontSize = 14.0f;
-	properties.italic = false;
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 110 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Skills: ", properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 130 + pad), skill1Icon, 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 130 + pad), themeColor, width - (2 * pad), 100, skill1Name, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 160 + pad), skill2Icon, 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 160 + pad), themeColor, width - (2 * pad), 100, skill2Name, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 190 + pad), skill3Icon, 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 190 + pad), themeColor, width - (2 * pad), 100, skill3Name, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 10, y + 220 + pad), skill4Icon, 25, 25);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 40, y + 220 + pad), themeColor, width - (2 * pad), 100, skill4Name, properties);
-
-	// Stats block
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 175, y + 110 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, L"Stats: ", properties);
-	properties.fontSize = 12.0f;
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 130 + pad), L"assets/images/Meat.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 130 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, health, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 155 + pad), L"assets/images/mp.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 155 + pad), DirectX::XMFLOAT4(50.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, mana, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 180 + pad), L"assets/images/Sword.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 180 + pad), DirectX::XMFLOAT4(255.0f, 50.0f, 50.0f, 1.0f), width - (2 * pad), 100, attack, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 205 + pad), L"assets/images/Shield.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 205 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width - (2 * pad), 100, defense, properties);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x + pad + 180, y + 230 + pad), L"assets/images/Speed.png", 20, 20);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad + 210, y + 230 + pad), DirectX::XMFLOAT4(255.0f, 255.0f, 50.0f, 1.0f), width - (2 * pad), 100, speed, properties);
-	canvas->setActive(false);
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot2CharacterList.size(); i++)
+	{
+		mSlot2CharacterList[i]->setVisible(false);
+	}
+	
+	// Turn off every character except the first character in the list
+	for (int i = 1; i < mSlot3CharacterList.size(); i++)
+	{
+		mSlot3CharacterList[i]->setVisible(false);
+	}
 }
 
 void TeamSelectionController::EnterBattle()
 {
-	RedAudioManager::Instance().StopGroup("BackgroundMenu");
+	/*RedAudioManager::Instance().StopGroup("BackgroundMenu");
 	RedAudioManager::Instance().Loop("TorchBurningQuietly");
 	RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
-	RedAudioManager::Instance().Loop("BackgroundBattle");
+	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
 	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
-	SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
-
-	// Make a list of enums to hold based what character it is
-	std::vector<CharacterFactory::CharacterOptions> enumList;
   
 	// Check what characters are shown on the screen for the slot 1
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
@@ -377,8 +348,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot1CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot1CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot1CharacterInfoPopupList[mSlot1Index]->setActive(false);
@@ -391,8 +362,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot2CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot2CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot2CharacterInfoPopupList[mSlot2Index]->setActive(false);
@@ -405,8 +376,8 @@ void TeamSelectionController::EnterBattle()
 		// Check if the character is visible or not
 		if (mSlot3CharacterList[i]->isVisible())
 		{
-			// Get the visible character type
-			CreateCharacterBasedOnName(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
+			// Add the character to the player enum list
+			AddCharacterTypeToPlayerTeam(mSlot3CharacterList[i]->getComponent<Character>()->GetName());
 
 			// Turn off the info popup before entering battle
 			mSlot3CharacterInfoPopupList[mSlot3Index]->setActive(false);
@@ -417,39 +388,29 @@ void TeamSelectionController::EnterBattle()
 	mEnterBattle = true;
 }
 
-void TeamSelectionController::CreateCharacterBasedOnName(std::wstring _name)
+void TeamSelectionController::AddCharacterTypeToPlayerTeam(std::wstring _characterName)
 {
-	CharacterFactory::CharacterOptions heroType;
+	// Define the new hero type
+	TeamManager::HeroType newHeroType = TeamManager::HeroType::Paladin;
 
-	if (_name == L"Paladin")
-		heroType = CharacterFactory::CharacterOptions::Paladin;
-	else if (_name == L"Mage")
-		heroType = CharacterFactory::CharacterOptions::Mage;
-	else if (_name == L"Bard")
-		heroType = CharacterFactory::CharacterOptions::Bard;
-	else if (_name == L"Warrior")
-		heroType = CharacterFactory::CharacterOptions::Warrior;
-	else if (_name == L"Monk")
-		heroType = CharacterFactory::CharacterOptions::Monk;
+	// Set the enum based on the name of the character
+	if (_characterName == L"Paladin")
+		newHeroType = TeamManager::HeroType::Paladin;
+	else if (_characterName == L"Mage")
+		newHeroType = TeamManager::HeroType::Mage;
+	else if (_characterName == L"Bard")
+		newHeroType = TeamManager::HeroType::Bard;
+	else if (_characterName == L"Warrior")
+		newHeroType = TeamManager::HeroType::Warrior;
+	else if (_characterName == L"Monk")
+		newHeroType = TeamManager::HeroType::Monk;
+	else
+		std::cout << "Not the correct name so we defaulted to Paladin in TeamSelectionController.cpp";
 
-	// This is the gGameScene from DyingDungeon.cpp
-	Odyssey::Scene* gameScene = mListOfGameScenes[0];
+	// Add the enum to the players to create list
+	TeamManager::getInstance().AddCharacterEnumToPlayerTeam(newHeroType);
 
-	// Create the paladin and add it to the game scene
-	DirectX::XMVECTOR position = mPlayerPositions[mBuildIndex];
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	Odyssey::Entity* newCharacter = CharacterFactory::getInstance().CreateCharacter(heroType, _name, position, rotation, mHudPositions[mBuildIndex], true, mHpPopupPositions[mBuildIndex], gameScene);
-
-	//// Add the paladin to all other game scenes, we add it into the first scene because we are passing it in the function
-	//for (int i = 1; i < mListOfGameScenes.size(); i++)
-	//{
-	//	mListOfGameScenes[i]->addEntity(newCharacter);
-	//}
-
-	// Add the new character to the player list in Team Manager
-	TeamManager::getInstance().AddCharacterToPlayerTeam(newCharacter);
-
-	// Increase build index
+	// Increase the build index fo rthe next player when adding him to the list
 	mBuildIndex++;
 }
 
@@ -670,5 +631,374 @@ void TeamSelectionController::ToggleShowInfoPopup3()
 void TeamSelectionController::ChangeSlotName(int _slotIndex, std::wstring _newName)
 {
 	GameUIManager::getInstance().GetNameSlots()[_slotIndex]->setText(_newName);
+}
+
+void TeamSelectionController::onHoverLoadout1()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[0]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_1"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout1()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[0]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(0, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::onHoverLoadout2()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[1]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout2()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[1]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(1, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::onHoverLoadout3()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[2]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout3()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[2]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(2, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::ShowSaveLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(true);
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->unregisterCallback("onMouseClick");
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveLoadoutButton()->unregisterCallback("onMouseClick");
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1")) 
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout1);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout1);
+	}
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout2);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout2);
+	}
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout3);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout3);
+	}
+
+	GameUIManager::getInstance().GetCancelLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::HideLoadLoadoutMenu);
+}
+
+void TeamSelectionController::ShowLoadLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(true);
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->unregisterCallback("onMouseClick");
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveLoadoutButton()->unregisterCallback("onMouseClick");
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout1);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+	}
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout2);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+	}
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout3);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+	}
+	GameUIManager::getInstance().GetCancelLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::HideLoadLoadoutMenu);
+
+}
+
+void TeamSelectionController::HideLoadLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(false);
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseEnter");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseExit");
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot3Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot3Index);
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup1);
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup2);
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup3);
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowLoadLoadoutMenu);
+	GameUIManager::getInstance().GetSaveLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowSaveLoadoutMenu);
+}
+
+void TeamSelectionController::SaveLoadout1()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_1", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::SaveLoadout2()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_2", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::SaveLoadout3()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_3", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::LoadLoadout1()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::LoadLoadout2()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::LoadLoadout3()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::ConfermationSave1()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout1);
+}
+
+void TeamSelectionController::ConfermationSave2()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout2);
+}
+
+void TeamSelectionController::ConfermationSave3()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout3);
+}
+
+void TeamSelectionController::ConfermationNo()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(false);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
 }
 

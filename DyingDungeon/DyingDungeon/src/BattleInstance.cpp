@@ -3,13 +3,18 @@
 #include "Transform.h"
 #include "Character.h"
 #include "StatusEvents.h"
+#include "CharacterFactory.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, Odyssey::Entity* _turnIndicatorModel)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 {
+	// Assign the character teams
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
-	mTurnIndicator = _turnIndicatorModel;
+
+	// Spawn the turn indicator
+	Odyssey::Entity* prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mTurnIndicator, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }));
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
