@@ -103,6 +103,9 @@
     <ClCompile Include="src\DyingDungeon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AiKnowledge.cpp">
+      <Filter>Source Files\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Converter.h">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="src\StatusEvents.h">
       <Filter>Header Files\Stat Tracking</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AiKnowledge.h">
+      <Filter>Header Files\Characters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
