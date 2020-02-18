@@ -63,6 +63,7 @@ namespace Odyssey
 
 			// Import the first mesh and assign it to the parameter Entity
 			entity->setParent(nullptr);
+
 			constructEntity(file, entity);
 		}
 
@@ -70,7 +71,17 @@ namespace Odyssey
 		for (int i = begin; i < numMeshes; i++)
 		{
 			// Each additional mesh in the file becomes a child to the first mesh
-			Entity* child = entity->getScene()->createEntity();
+			Entity* child = nullptr;
+
+			// Are we making a prefab?
+			if (entity->getScene())
+			{
+				child = entity->getScene()->createEntity();
+			}
+			else
+			{
+				EventManager::getInstance().publish(new CreatePrefabEvent(&child));
+			}
 
 			// Set the parent of the mesh to the first mesh Entity
 			child->setParent(entity);

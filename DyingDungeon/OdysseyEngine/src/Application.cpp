@@ -73,6 +73,8 @@ namespace Odyssey
 
 		EventManager::getInstance().subscribe(this, &Application::onUIScale);
 
+		EventManager::getInstance().subscribe(this, &Application::onCreatePrefab);
+
 		EventManager::getInstance().subscribe(this, &Application::onSpawnEntity);
 		EventManager::getInstance().subscribe(this, &Application::onDestroyEntity);
 	}
@@ -128,6 +130,11 @@ namespace Odyssey
 	void Application::onUIScale(UIScaleEvent* evnt)
 	{
 		mActiveWindow->getScreenScale(evnt->xScale, evnt->yScale);
+	}
+
+	void Application::onCreatePrefab(CreatePrefabEvent* evnt)
+	{
+		*(evnt->entity) = createPrefab();
 	}
 
 	void Application::onSpawnEntity(SpawnEntityEvent* evnt)

@@ -35,14 +35,40 @@ public:
 		Ganfaul
 	};
 
+	enum HudID
+	{
+		HeroLeft,
+		HeroMiddle,
+		HeroRight,
+		EnemyLeft,
+		EnemyMiddle,
+		EnemyRight,
+	};
+
+	enum SkillHoverID
+	{
+		LeftHUD,
+		MiddleHUD,
+		RightHUD,
+	};
+
 public: // Functions
 
 	void initialize(Odyssey::Application* _application);
 
-	Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
+	//Odyssey::Entity* CreateCharacter(CharacterOptions _characterToCreate, std::wstring _characterName, DirectX::XMVECTOR _position, DirectX::XMVECTOR _rotation, DirectX::XMFLOAT2 _hudPosition, bool _showHUD, DirectX::XMFLOAT2 _hpPopupPosition, Odyssey::Scene* _gameScene = nullptr);
+
+	//Increase the character hud index
+	void IncreaseCharacterHUDIndex() { mCharacterHudIndex++; }
+	// Get the character hud index
+	unsigned int GetCharacterHudIndex() { return mCharacterHudIndex; }
 
 	//Getters
-	Odyssey::Entity* GetPrefab(CharacterOptions _characterType);
+	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
+	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
+	Odyssey::Entity* GetImpactIndicatorPrefab();
+	Odyssey::Entity* GetTurnIndicatorPrefab();
+	Odyssey::Entity* GetBloodEffectPrefab();
 
 	//Setters
 
@@ -57,7 +83,7 @@ private: // Varibales
 	// Entitys
 
 	// Ints
-	unsigned int characterHudIndex = 0;
+	unsigned int mCharacterHudIndex = 0;
 
 	// Floats
 
@@ -65,15 +91,55 @@ private: // Varibales
 
 
 private: // Functions
-	void CreateCharacterImpactIndicator(Odyssey::Entity* _character, Odyssey::Scene* _sceneToAddTo);
+	// Create character prefabs
+	Odyssey::Entity* CreateCharacterPrefab(CharacterOptions _characterToCreate);
+
+	// Create hero hud
+	Odyssey::Entity* CreateHeroHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
+	// Create enemy hud
+	Odyssey::Entity* CreateEnemyHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
+	// Create skill hover hud
+	Odyssey::Entity* CreateSkillHoverHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
+	// Create hp popup
+	Odyssey::Entity* CreateHpPopupPrefab();
+
+	// Create impact indicator
+	Odyssey::Entity* CreateImpactIndicatorPrefab();
+
+	// Create turn indicator
+	Odyssey::Entity* CreateTurnIndicatorPrefab();
+
+	// Create blood particle effect
+	Odyssey::Entity* CreateBloodEffectPrefab();
 
 	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setupBlood(Odyssey::Scene* _sceneToAddTo);
 
-	// Dora's Map
-	std::map<CharacterOptions, Odyssey::Entity*> mPrefabMap;
+	// Character Map
+	std::map<CharacterOptions, Odyssey::Entity*> mCharacterPrefabMap;
+
+	// HUD Map
+	std::map<HudID, Odyssey::Entity*> mHudPrefabMap;
+
+	// Skill Hover Map
+	std::map<SkillHoverID, Odyssey::Entity*> mSkillHoverPrefabMap;
+
+	// Hp Popup 
+	Odyssey::Entity* mHpPopupPrefab;
+
+	// Impact Indicator
+	Odyssey::Entity* mImpactIndicatorPrefab;
+
+	// Turn Indicator
+	Odyssey::Entity* mTurnIndicatorPrefab;
+
+	// Bleed Effect
+	Odyssey::Entity* mBloodEffect;
 
 	// Application
 	Odyssey::Application* mApplication;

@@ -171,6 +171,7 @@
     <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\CharacterFactory.cpp" />
+    <ClCompile Include="src\CharacterHUDElements.cpp" />
     <ClCompile Include="src\Clense.cpp" />
     <ClCompile Include="src\Converter.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="src\SaveLoad.cpp" />
     <ClCompile Include="src\Shields.cpp" />
     <ClCompile Include="src\SkillHoverComponent.cpp" />
+    <ClCompile Include="src\SkillHUDElements.cpp" />
     <ClCompile Include="src\Skills.cpp" />
     <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
@@ -207,6 +209,7 @@
     <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\CharacterFactory.h" />
+    <ClInclude Include="src\CharacterHUDElements.h" />
     <ClInclude Include="src\Clense.h" />
     <ClInclude Include="src\Converter.h" />
     <ClInclude Include="src\DyingDungeon.h" />
@@ -226,6 +229,7 @@
     <ClInclude Include="src\SaveLoad.h" />
     <ClInclude Include="src\Shields.h" />
     <ClInclude Include="src\SkillHoverComponent.h" />
+    <ClInclude Include="src\SkillHUDElements.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\StatDown.h" />
     <ClInclude Include="src\StatTracker.h" />

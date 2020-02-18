@@ -13,7 +13,7 @@ class BattleInstance
 {
 
 public: // Constructors
-	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, Odyssey::Entity* _turnIndicatorModel);
+	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam);
 
 	enum BattleInstanceCommands
 	{

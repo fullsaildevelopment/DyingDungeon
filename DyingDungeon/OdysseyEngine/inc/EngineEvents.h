@@ -191,4 +191,15 @@ namespace Odyssey
 			priority = EventPriority::Deferred;
 		}
 	};
+
+	class CreatePrefabEvent : public Event
+	{
+	public:
+		Entity** entity;
+
+		CreatePrefabEvent(Entity** prefabEntity) : entity(prefabEntity)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
 }
