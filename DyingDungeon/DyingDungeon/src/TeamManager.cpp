@@ -70,9 +70,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		// Create the impact indicator for the enemies
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = position;
-		prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
-		prefab->getComponent<Odyssey::Transform>()->setScale(0.5f, 0.5f, 0.5f);
-		prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f));
+		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, rotation));
 
 		// Assign the impact indicator for the enemies

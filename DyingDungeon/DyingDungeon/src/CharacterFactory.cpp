@@ -422,9 +422,9 @@ Odyssey::Entity* CharacterFactory::CreateImpactIndicatorPrefab()
 	// Position indicator over the head
 	impactIndicator->getComponent<Odyssey::Transform>()->setPosition(0.0f, 4.0f, 0.0f);
 	impactIndicator->getComponent<Odyssey::Transform>()->setRotation(180.0f, 0.0f, 0.0f);
-	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.2f, 0.2f, 0.2f);
+	impactIndicator->getComponent<Odyssey::Transform>()->setScale(0.5f, 0.5f, 0.5f);
 	// Import Model
-	Odyssey::RenderManager::getInstance().importModel(impactIndicator, "assets/models/ImpactIndicator.dxm", false);
+	Odyssey::RenderManager::getInstance().importModel(impactIndicator, "assets/models/TurnIndicator.dxm", false);
 	// Set the impact indicator's color
 	DirectX::XMFLOAT4 impactIndicatorColor = { 255.0f, 0.0f, 0.0f, 1.0f };
 	impactIndicator->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(impactIndicatorColor);

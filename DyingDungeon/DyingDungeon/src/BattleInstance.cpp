@@ -8,9 +8,13 @@
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 {
+	// Assign the character teams
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
-	mTurnIndicator = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+
+	// Spawn the turn indicator
+	Odyssey::Entity* prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mTurnIndicator, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }));
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack

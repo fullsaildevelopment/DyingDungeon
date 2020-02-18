@@ -90,9 +90,7 @@ void TowerManager::initialize()
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
-		prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
-		prefab->getComponent<Odyssey::Transform>()->setScale(0.5f, 0.5f, 0.5f);
-		prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f));
+		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
 
 		// Assign the impact indicator for the heroes
