@@ -1,6 +1,7 @@
 #include "GameUIManager.h"
 #include "RedAudioManager.h"
 #include "UICanvas.h"
+#include "CharacterHUDElements.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -834,6 +835,31 @@ void GameUIManager::HideStatsMenu()
 	//mStatsPrevButtonRound->unregisterCallback("onMouseClick");
 }
 
+void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud)
+{
+	// Get the hud elements to assign
+	CharacterHUDElements* hudElements = _newHud->getComponent<CharacterHUDElements>();
+
+	// Assign all of the elements
+	if (_newCharacter->IsHero())
+	{
+		hudElements->ChangeAttackNumber(std::to_wstring((int)_newCharacter->GetAtk()));
+		hudElements->ChangeDefenseNumber(std::to_wstring((int)_newCharacter->GetDef()));
+		hudElements->ChangeSpeedNumber(std::to_wstring((int)_newCharacter->GetSpeed()));
+		hudElements->ChangeManaNumber(std::to_wstring((int)_newCharacter->GetMana()) + L"/" + std::to_wstring((int)_newCharacter->GetMaxMana()));
+		
+		// Update the skills
+		hudElements->ChangeSkill(_newCharacter->GetSkills()[0].get(), 1);
+		hudElements->ChangeSkill(_newCharacter->GetSkills()[1].get(), 2);
+		hudElements->ChangeSkill(_newCharacter->GetSkills()[2].get(), 3);
+		hudElements->ChangeSkill(_newCharacter->GetSkills()[3].get(), 4);
+	}
+
+	hudElements->ChangePortrait(_newCharacter->GetPortraitPath());
+	hudElements->ChangeCharacterName(_newCharacter->GetName());
+	hudElements->ChangeHealthNumber(std::to_wstring((int)_newCharacter->GetHP()) + L"/" + std::to_wstring((int)_newCharacter->GetMaxHP()));
+}
+
 void GameUIManager::UpdateStatsMenu()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
@@ -1019,346 +1045,127 @@ void GameUIManager::OptionsBackButton()
 	mPauseMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
 }
 
-// Create the character's UI Portrait
-Odyssey::UICanvas* GameUIManager::CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner)
+// Create hero character portrait
+void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition)
 {
 	// Create CharacterHUD object
-	std::shared_ptr<CharacterHUD> newHUD = std::make_shared<CharacterHUD>();
+	CharacterHUDElements* newHUD = _gameObjectToAddTo->addComponent<CharacterHUDElements>();
 	// Set the canvas 
-	newHUD->pCanvas = _gameObjectToAddTo->addComponent<Odyssey::UICanvas>();
-	
-	// Create Hero UI if the character is a hero
-	if (owner->IsHero())
-	{
-		Odyssey::TextProperties properties;
-		properties.bold = false;
-		properties.italic = false;
-		properties.fontSize = 14.0f;
-		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		properties.fontName = L"Tw Cen MT Condensed";
+	newHUD->SetCanvas(_gameObjectToAddTo->addComponent<Odyssey::UICanvas>());
+	// Get the canvas for the rest of the function
+	Odyssey::UICanvas* pCanvas = newHUD->GetCanvas();
 
-		// Get the position of the anchor points
-		DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y };
-		// Save the original position for the future when creating new items
-		DirectX::XMFLOAT2 originalPosition = position;
-		// Set the image width and height
-		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 359;
-		UINT imageHeight = 109;
-		UINT barWidth = 252.5f;
-		UINT barHeight = 21;
-		DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Tw Cen MT Condensed";
 
-		// Create the base ui template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout4.0.png", imageWidth, imageHeight);
+	// Get the position of the anchor points
+	DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y };
+	// Save the original position for the future when creating new items
+	DirectX::XMFLOAT2 originalPosition = position;
+	// Set the image width and height
+	// Set the bar width and height for the Rectangle2Ds
+	UINT imageWidth = 359;
+	UINT imageHeight = 109;
+	UINT barWidth = 252.5f;
+	UINT barHeight = 21;
+	DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
 
-		// Create the character's image
-		imageWidth = 71;
-		imageHeight = 68;
-		position.x += 2;
-		position.y += 1;
-		// Only add portrait if there is an image name
-		if (_imageName != L" ")
-			newHUD->pPortrait = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
+	// Create the base ui template
+	pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/HeroUILayout4.0.png", imageWidth, imageHeight);
 
-		// Create the xp/name bar
-		//TODO::Create XP Bars In The Character Class To Assign
-		position.x += imageWidth + 2.0f;
-		newHUD->pXpBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight);
+	// Create the character's image
+	imageWidth = 71;
+	imageHeight = 68;
+	position.x += 2;
+	position.y += 1;
+	newHUD->SetPortrait(pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight));
 
-		// Create the text element of the character's name
-		color = { 0.0f, 0.0f, 0.0f, 1.0f };
-		position.x += 7.5f;
-		// Add the name to the canvas
-		properties.bold = true;
+	// Create the xp/name bar
+	//TODO::Create XP Bars In The Character Class To Assign
+	position.x += imageWidth + 2.0f;
+	newHUD->SetXpBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight));
 
-		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
+	// Create the text element of the character's name
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	position.x += 7.5f;
+	// Add the name to the canvas
+	properties.bold = true;
+	newHUD->SetCharacterName(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, L"Setup Name", properties));
+	properties.bold = false;
 
-		properties.bold = false;
+	// Create the character's level number text next to the XP bar
+	position.x += barWidth;
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	newHUD->SetLevelNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties));
 
-		// Create the character's level number text next to the XP bar
-		position.x += barWidth;
-		color = { 255.0f, 255.0f, 255.0f, 1.0f };
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		newHUD->pLevelNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties);
+	// Add the text elements for Attack, Defense, and Speed;
+	position = originalPosition;
+	position.x += 100.0f;
+	position.y += 22.0f;
+	properties.fontSize = 12.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	// Attack number
+	newHUD->SetAttackNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"0", properties));
+	// Defense number
+	position.y += 16.5f;
+	newHUD->SetDefenseNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"0", properties));
+	// Speed number
+	position.y += 16.5f;
+	newHUD->SetSpeedNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"0", properties));
 
-		// Add the text elements for Attack, Defense, and Speed;
-		position = originalPosition;
-		position.x += 100.0f;
-		position.y += 22.0f;
-		properties.fontSize = 12.0f;
-		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		color = { 255.0f, 255.0f, 255.0f, 1.0f };
-		// Attack number
-		newHUD->pAttackNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetAtk())), properties);
-		// Defense number
-		position.y += 16.5f;
-		newHUD->pDefenseNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(static_cast<int>(owner->GetDef())), properties);
-		// Speed number
-		position.y += 16.5f;
-		newHUD->pSpeedNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring((int)owner->GetSpeed()), properties);
+	// Health and Mana bars
+	// Set the position to the origanal top left position
+	position = originalPosition;
+	barHeight = 17;
+	barWidth = 356;
+	position.x += 2.0f;
+	position.y += imageHeight + 3.5f;
+	// Create and assign the health bar
+	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
+	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	// Create the text for the health numbers of the character
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.fontSize = 10.5f;
+	position.x += 5.0f;
+	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
+	// Create and assign the mana bar
+	position.x -= 5.0f;
+	position.y += barHeight + 1.5;
+	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
+	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	// Create the text for the mana numbers of the character
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	position.x += 5.0f;
+	newHUD->SetManaNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
 
-		// Health and Mana bars
-		// Set the position to the origanal top left position
-		position = originalPosition;
-		barHeight = 17;
-		barWidth = 356;
-		position.x += 2.0f;
-		position.y += imageHeight + 3.5f;
-		// Create and assign the health bar
-		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
-		newHUD->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		// Create the text for the health numbers of the character
-		color = { 255.0f, 255.0f, 255.0f, 1.0f };
-		properties.fontSize = 10.5f;
-		position.x += 5.0f;
-		newHUD->pHealthNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetHP()) + L"/" + std::to_wstring((int)owner->GetMaxHP()), properties);
-		// Create and assign the mana bar
-		position.x -= 5.0f;
-		position.y += barHeight + 1.5;
-		newHUD->pManaBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
-		newHUD->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		// Create the text for the mana numbers of the character
-		color = { 255.0f, 255.0f, 255.0f, 1.0f };
-		position.x += 5.0f;
-		newHUD->pManaNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring((int)owner->GetMana()) + L"/" + std::to_wstring((int)owner->GetMaxMana()), properties);
+	// Position where the turn number will be located
+	position = originalPosition;
+	position.x += 5.0f;
+	properties.fontSize = 14.0f;
+	// Assign the character's turn order text
+	newHUD->SetTurnNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties));
 
-		// Position where the turn number will be located
-		position = originalPosition;
-		position.x += 5.0f;
-		properties.fontSize = 14.0f;
-		// Assign the character's turn order text
-		newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
-
-		// STUFF
-		//Paladin_Skill_1.png
-		//position = originalPosition;
-		//position.x += 134.0f;
-		//position.y += 24.0f;
-		//Odyssey::Sprite2D* s1 = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		//position.x += 56.5f;
-		//Odyssey::Sprite2D* s2 = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		//position.x += 56.5f;
-		//Odyssey::Sprite2D* s3 = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		//position.x += 56.5f;
-		//Odyssey::Sprite2D* s4 = newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Paladin_Skill_1.png", 52, 45);
-		
-		// TODO: REFACTOR LATER
-		//newHUD->pCanvas->getEntity()->addComponent<SkillHoverComponent>();
-		//newHUD->pCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s1, CreatePopup(newHUD->pCanvas->getEntity()));
-		//newHUD->pCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s2, CreatePopup(newHUD->pCanvas->getEntity()));
-		//newHUD->pCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s3, CreatePopup(newHUD->pCanvas->getEntity()));
-		//newHUD->pCanvas->getEntity()->getComponent<SkillHoverComponent>()->registerSprite(s4, CreatePopup(newHUD->pCanvas->getEntity()));
-	}
-	// Create the Enemy UI if the character is NOT a hero
-	else
-	{
-		Odyssey::TextProperties properties;
-		properties.bold = false;
-		properties.italic = false;
-		properties.fontSize = 14.0f;
-		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		properties.fontName = L"Tw Cen MT Condensed";
-
-		// Get the position of the anchor points
-		DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y };
-		// Save the original position for the future when creating new items
-		DirectX::XMFLOAT2 originalPosition = position;
-		// Set the image width and height
-		// Set the bar width and height for the Rectangle2Ds
-		UINT imageWidth = 214;
-		UINT imageHeight = 42;
-		UINT barWidth = 171;
-		UINT barHeight = 12;
-		DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
-
-		// Add in the enemy hud template
-		newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUI/EnemyUILayout4.0.png", imageWidth, imageHeight);
-
-		// Add in the enemy's portrait picture
-		imageWidth = 39;
-		imageHeight = 39;
-		// Only add the portrait image if there is one
-		position.x += 2.0f;
-		position.y += 2.0f;
-		if (_imageName != L" ")
-			newHUD->pCanvas->addElement<Odyssey::Sprite2D>(position, _imageName, imageWidth, imageHeight);
-
-		// Add in the enemy's name bar
-		barWidth = 94;
-		barHeight = 13;
-		position.x += imageWidth;
-		position.y += 9.0f;
-		position.x += 1.0f;
-		DirectX::XMFLOAT4 xpBarColor = { 116.0f, 71.0f, 201.0f, 1.0f };
-		newHUD->pXpBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, xpBarColor, barWidth, barHeight);
-		color = { 0.0f, 0.0f, 0.0f, 1.0f };
-		properties.fontSize = 12;
-		properties.bold = true;
-		position.x += 2.0f;
-		position.y -= 2.0f;
-		barHeight = 16;
-		newHUD->pCharacterName = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, owner->GetName(), properties);
-		position.x -= 2.0f;
-		properties.bold = false;
-
-		// Add in the enemy's health bar
-		barWidth = 171;
-		barHeight = 15;
-		position.y += 16.0f;
-		barHeight += 1.0f;
-		newHUD->pHealthBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight);
-		newHUD->pHealthBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		// Enemy HP Bar Number
-		properties.bold = false;
-		newHUD->pHealthNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 100, 43, std::to_wstring((int)owner->GetHP()), properties);
-		newHUD->pHealthNumber->setVisible(false);
-
-
-		// Add big health text
-		position.x += barWidth;
-		properties.fontSize = 25.0f;
-		properties.textAlignment = Odyssey::TextAlignment::Center;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-		// Create but don't show the mini hp text
-
-		// Add in the enemy's mana bar
-		newHUD->pManaBar = newHUD->pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight);
-		newHUD->pManaBar->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-		newHUD->pManaBar->setVisible(false);
-		newHUD->pManaNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 43, 43, std::to_wstring((int)owner->GetHP()), properties);
-		newHUD->pManaNumber->setVisible(false);
-
-		// Position where the turn number will be located
-		position = originalPosition;
-		position.x += 5.0f;
-		properties.fontSize = 14.0f;
-		properties.textAlignment = Odyssey::TextAlignment::Left;
-		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		// Assign the character's turn order text
-		newHUD->pTurnNumber = newHUD->pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties);
-	}
-
-	// Only add the skill icons if it is a hero
-	if (owner->IsHero())
-	{
-		// Create the skill icons for the character's hud
-		SetupSkillIcons(_gameObjectToAddTo, owner, _hudPosition, newHUD);
-		// Create status effects
-		SetupStatusEffects(_gameObjectToAddTo, owner, _hudPosition, newHUD);
-	}
-
-	// Create the health popup for the character
-	SetupHpPopup(_gameObjectToAddTo, _hpPopupPosition);
-
-	// Add the canvas to the mHudCharacterList
-	mCharacterHudList.push_back(newHUD);
-	// Return the canvas we just created 
-	return newHUD->pCanvas;
+	// Set up Skill Icons
+	SetupSkillIcons(_gameObjectToAddTo, _hudPosition);
 }
 
-void GameUIManager::SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud)
+// Create enemy character portrait
+void GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition)
 {
-	_newHud->pSkill1Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	_newHud->pSkill2Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	_newHud->pSkill3Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	_newHud->pSkill4Canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
-	SkillHoverComponent* hover = _objToAddTo->addComponent<SkillHoverComponent>();
-
-	// Set the correct offset position for the skills
-	float xAnchor = _hudPosition.x + 134.0f;
-	float yAnchor = _hudPosition.y + 24.0f;
-
-	// Get the list of skills from the character
-	std::vector<std::shared_ptr<Skills>> characterSkills = _newCharacter->GetSkills();
-
-	// 1st Skill
-	// Skill Icon
-	std::shared_ptr<Skills> currSkill = characterSkills[0];
-	_newHud->pSkill1 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
-	// Skill Hover Popup
-	// TODO :: ADD GETTER AND SETTER FOR TYPE OF CHARACTER
-	SetupSkillHover(_newHud->pSkill1Canvas, _hudPosition,  _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
-	// Basic Attack trigger
-	hover->registerSprite(_newHud->pSkill1, _newHud->pSkill1Canvas);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// 2nd Skill
-	// Skill Icon
-	currSkill = characterSkills[1];
-	_newHud->pSkill2 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
-	// Skill Hover Popup
-	SetupSkillHover(_newHud->pSkill2Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
-	// Wind Slash trigger
-	hover->registerSprite(_newHud->pSkill2, _newHud->pSkill2Canvas);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// 3rd Skill
-	// Skill Icon
-	currSkill = characterSkills[2];
-	_newHud->pSkill3 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
-	// Skill Hover Popup
-	SetupSkillHover(_newHud->pSkill3Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
-	// Firestorm trigger
-	hover->registerSprite(_newHud->pSkill3, _newHud->pSkill3Canvas);
-
-	// Increment the icon
-	xAnchor += 56.5f;
-
-	// 4th Skill
-	// Skill Icon
-	currSkill = characterSkills[3];
-	_newHud->pSkill4 = _objToAddTo->getComponent<Odyssey::UICanvas>()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), currSkill->GetSkillIconPath(), 52, 45);
-	// Skill Hover Popup
-	SetupSkillHover(_newHud->pSkill4Canvas, _hudPosition, _newCharacter->GetName(), currSkill->GetSkillName(), currSkill->GetSkillIconPath(), std::to_wstring((int)currSkill->GetManaCost()), currSkill->GetSkillDescription());
-	// Lightning Bolt trigger
-	hover->registerSprite(_newHud->pSkill4, _newHud->pSkill4Canvas);
-}
-
-void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2 _position, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description)
-{
-	DirectX::XMFLOAT4 themeColor;
-	// Assign theme color for text
-	// TODO :: CHANGE TO USE TYPE ID OF CHARACTER
-	if (character == L"Paladin")
-		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	else if (character == L"Mage")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	else if (character == L"Bard")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
-	else if (character == L"Warrior")
-		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
-	else if (character == L"Monk")
-		themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
-	else
-		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Don't display negative mana, display 0 instead
-	if (manaCost.substr(0, 1) == L"-")
-		manaCost = L"0";
-
-	UINT windowWidth = screenWidth;
-	UINT windowHeight = screenHeight;
-	float x = _position.x;
-	float y = _position.y - 130.0f;
-	UINT width = 300;
-	UINT height = 115;
-	UINT pad = 10;
-
-	Odyssey::TextProperties title;
-	title.bold = true;
-	title.italic = false;
-	title.fontSize = 24.0f;
-	title.textAlignment = Odyssey::TextAlignment::Center;
-	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	title.fontName = L"Tw Cen MT Condensed";
+	// Create CharacterHUD object
+	CharacterHUDElements* newHUD = _gameObjectToAddTo->addComponent<CharacterHUDElements>();
+	// Set the canvas 
+	newHUD->SetCanvas(_gameObjectToAddTo->addComponent<Odyssey::UICanvas>());
+	// Get the canvas for the rest of the function
+	Odyssey::UICanvas* pCanvas = newHUD->GetCanvas();
 
 	Odyssey::TextProperties properties;
 	properties.bold = false;
@@ -1368,22 +1175,101 @@ void GameUIManager::SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	properties.fontName = L"Tw Cen MT Condensed";
 
-	// Background and Separators
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 2);
+	// Get the position of the anchor points
+	DirectX::XMFLOAT2 position = { _hudPosition.x, _hudPosition.y};
+	// Save the original position for the future when creating new items
+	DirectX::XMFLOAT2 originalPosition = position;
+	// Set the image width and height
+	// Set the bar width and height for the Rectangle2Ds
+	UINT imageWidth = 214;
+	UINT imageHeight = 42;
+	UINT barWidth = 171;
+	UINT barHeight = 12;
+	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f };
 
-	// Title Text and Icons
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, skillName, title);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), icon, 40, 40);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, manaCost, title);
+	// Add in the enemy hud template
+	pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/EnemyUI/EnemyUILayout4.0.png", imageWidth, imageHeight);
 
-	// Description
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45), themeColor, width - (2 * pad), 85, description, properties);
-	canvas->setActive(false);
+	// Add in the enemy's portrait picture
+	imageWidth = 39;
+	imageHeight = 39;
+	// Only add the portrait image if there is one
+	position.x += 2.0f;
+	position.y += 2.0f;
+	newHUD->SetPortrait(pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight));
+
+	// Add in the enemy's name bar
+	barWidth = 94;
+	barHeight = 13;
+	position.x += imageWidth;
+	position.y += 9.0f;
+	position.x += 1.0f;
+	DirectX::XMFLOAT4 xpBarColor = { 116.0f, 71.0f, 201.0f, 1.0f };
+	newHUD->SetXpBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, xpBarColor, barWidth, barHeight));
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	properties.fontSize = 12;
+	properties.bold = true;
+	position.x += 2.0f;
+	position.y -= 2.0f;
+	barHeight = 16;
+	newHUD->SetCharacterName(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, L"Setup Name", properties));
+	position.x -= 2.0f;
+	properties.bold = false;
+
+	//// Add the text elements for Attack, Defense, and Speed;
+	//position = originalPosition;
+	//position.x += 100.0f;
+	//position.y += 22.0f;
+	//properties.fontSize = 12.0f;
+	//properties.textAlignment = Odyssey::TextAlignment::Left;
+	//properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	//color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	//// Attack number
+	//newHUD->SetAttackNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(0), properties));
+	//// Defense number
+	//position.y += 16.5f;
+	//newHUD->SetDefenseNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(0), properties));
+	//// Speed number
+	//position.y += 16.5f;
+	//newHUD->SetSpeedNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, std::to_wstring(0), properties));
+
+	// Add in the enemy's health bar
+	barWidth = 171;
+	barHeight = 15;
+	position.y += 16.0f;
+	barHeight += 1.0f;
+	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
+	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	// Enemy HP Bar Number
+	properties.bold = false;
+	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 100, 43, std::to_wstring(0), properties));
+	newHUD->GetHealthNumber()->setVisible(false);
+
+	// Add big health text
+	position.x += barWidth;
+	properties.fontSize = 25.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+
+	// Add in the enemy's mana bar
+	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
+	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+	newHUD->GetManaBar()->setVisible(false);
+	newHUD->SetManaNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTextColor, 43, 43, std::to_wstring(0), properties));
+	newHUD->GetManaNumber()->setVisible(false);
+
+	// Position where the turn number will be located
+	position = originalPosition;
+	position.x += 5.0f;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	// Assign the character's turn order text
+	newHUD->SetTurnNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties));
 }
 
-void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition)
+// Create hp popup
+Odyssey::UICanvas* GameUIManager::CreateHpPopup(Odyssey::Entity* _objToAddTo)
 {
 	// Add health popup canvas to entity
 	Odyssey::UICanvas* canvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
@@ -1404,32 +1290,91 @@ void GameUIManager::SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2
 	//canvas->addElement<Odyssey::Rectangle2D>(_hpPopupPosition, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.25f), width, height);
 
 	// Create the health pop text2D
-	Odyssey::Text2D* newPopup = canvas->addElement<Odyssey::Text2D>(_hpPopupPosition, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, L"100", properties);
+	Odyssey::Text2D* newPopup = canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, L"100", properties);
 	// Set the opacity to 0 on setup
 	newPopup->setOpacity(0.0f);
 	// Add new popup to the list
-	mCharacterHpPopupList.push_back(newPopup);
+	//mCharacterHpPopupList.push_back(newPopup);
+
+	return canvas;
 }
 
-void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud)
+// Set up the skill icons for the HUD
+void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition)
 {
-	// Set some variables
-	DirectX::XMFLOAT2 position = _hudPosition;
-	UINT imageWidth = 32;
-	UINT imageHeight = 32;
-	
-	// Move the image up above the bar
-	position.y -= static_cast<float>(imageHeight) + 5.0f;
-	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-	position.x += static_cast<float>(imageWidth) + 5.0f;
-	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-	position.x += static_cast<float>(imageWidth) + 5.0f;
-	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-	position.x += static_cast<float>(imageWidth) + 5.0f;
-	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-	position.x += static_cast<float>(imageWidth) + 5.0f;
-	_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
+	newHud->SetHudPosition(_hudPosition);
+
+	// Set the popup objects
+	std::shared_ptr<CharacterHUDElements::SkillPopup> newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill1Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill2Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill3Popup(newPopup.get());
+	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
+	newHud->SetSkill4Popup(newPopup.get());
+
+	// Add the canvas to the skill popup
+	newHud->GetSkill1Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
+	newHud->GetSkill2Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
+	newHud->GetSkill3Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
+	newHud->GetSkill4Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
+	SkillHoverComponent* hover = _hudEntity->addComponent<SkillHoverComponent>();
+
+	// Set the correct offset position for the skills
+	float xAnchor = _hudPosition.x + 134.0f;
+	float yAnchor = _hudPosition.y + 24.0f;
+
+	// Skill1 Icon
+	newHud->SetSkill1(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
+	// Sprite trigger
+	newHud->GetSkill1Popup()->pCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/Guy.png", 128, 128);
+	hover->registerSprite(newHud->GetSkill1(), newHud->GetSkill1Popup()->pCanvas);
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Skill2 Icon
+	newHud->SetSkill2(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
+	// Sprite trigger
+	hover->registerSprite(newHud->GetSkill2(), newHud->GetSkill2Popup()->pCanvas);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Skill3 Icon
+	newHud->SetSkill3(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
+	// Sprite trigger
+	hover->registerSprite(newHud->GetSkill3(), newHud->GetSkill3Popup()->pCanvas);
+
+	// Increment the icon
+	xAnchor += 56.5f;
+
+	// Skill4 Icon
+	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
+	// Sprite trigger
+	hover->registerSprite(newHud->GetSkill4(), newHud->GetSkill4Popup()->pCanvas);
 }
+
+//void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud)
+//{
+//	// Set some variables
+//	DirectX::XMFLOAT2 position = _hudPosition;
+//	UINT imageWidth = 32;
+//	UINT imageHeight = 32;
+//	
+//	// Move the image up above the bar
+//	position.y -= static_cast<float>(imageHeight) + 5.0f;
+//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+//	position.x += static_cast<float>(imageWidth) + 5.0f;
+//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+//	position.x += static_cast<float>(imageWidth) + 5.0f;
+//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+//	position.x += static_cast<float>(imageWidth) + 5.0f;
+//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+//	position.x += static_cast<float>(imageWidth) + 5.0f;
+//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+//}
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
 {
@@ -1544,6 +1489,11 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 	return popupCanvas;
 }
 
+void GameUIManager::AddHudToList(Odyssey::Entity* _newHud)
+{
+	mCharacterHudList.push_back(_newHud);
+}
+
 // Add character health bar to update list
 void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount)
 {
@@ -1551,8 +1501,8 @@ void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, fl
 	std::shared_ptr<AnimatingBar> healthBarToUpdate = std::make_shared<AnimatingBar>();
 
 	// Add its elements
-	healthBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthBar;
-	healthBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->pHealthNumber;
+	healthBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthBar();
+	healthBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthNumber();
 	healthBarToUpdate->pMaxValue = _currCharacter->GetMaxHP();
 	healthBarToUpdate->pCurrValue = _previousHpAmount;
 	healthBarToUpdate->pNewValue = _newHpAmount;
@@ -1576,8 +1526,8 @@ void GameUIManager::AddCharacterMpBarsToUpdateList(Character* _currCharacter, fl
 	std::shared_ptr<AnimatingBar> manaBarToUpdate = std::make_shared<AnimatingBar>();
 
 	// Add its elements
-	manaBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->pManaBar;
-	manaBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->pManaNumber;
+	manaBarToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetManaBar();
+	manaBarToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetManaNumber();
 	manaBarToUpdate->pMaxValue = _currCharacter->GetMaxMana();
 	manaBarToUpdate->pCurrValue = _previousMpAmount;
 	manaBarToUpdate->pNewValue = _newMpAmount;
@@ -1727,9 +1677,9 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 {
 	// If the turn number is 666, that means he is dead and the text needs to be set to X
 	if (_turnNumber == 666)
-		mCharacterHudList[_currCharacter->GetHudIndex()]->pTurnNumber->setText(L"X");
+		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(L"X");
 	else
-		mCharacterHudList[_currCharacter->GetHudIndex()]->pTurnNumber->setText(std::to_wstring(_turnNumber));
+		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
 
 void GameUIManager::DecreaseVolume()

@@ -46,6 +46,8 @@ namespace Odyssey
 
 		void onUIScale(UIScaleEvent* evnt);
 
+		void onCreatePrefab(CreatePrefabEvent* evnt);
+
 		void onSpawnEntity(SpawnEntityEvent* evnt);
 
 		void onDestroyEntity(DestroyEntityEvent* evnt);
