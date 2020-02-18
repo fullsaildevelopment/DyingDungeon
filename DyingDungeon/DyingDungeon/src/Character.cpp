@@ -152,13 +152,13 @@ void Character::SetHP(float HP)
 	else if (mCurrentHP > mBaseMaxHP)
 		mCurrentHP = mBaseMaxHP;
 
-	// Check whether or not the character was healed or damaged
-	// Player took damage
-	if (previousHealth > mCurrentHP)
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
-	//Player was healed or not damaged at all
-	else
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
+	//// Check whether or not the character was healed or damaged
+	//// Player took damage
+	//if (previousHealth > mCurrentHP)
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
+	////Player was healed or not damaged at all
+	//else
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
 }
 
 // Returns the max HP of the character

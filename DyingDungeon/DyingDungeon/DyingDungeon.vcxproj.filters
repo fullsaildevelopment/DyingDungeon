@@ -106,6 +106,9 @@
     <ClCompile Include="src\CharacterHUDElements.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
+    <ClCompile Include="src\SkillHUDElements.cpp">
+      <Filter>Source Files\User Interface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Converter.h">
@@ -226,6 +229,9 @@
       <Filter>Header Files\Stat Tracking</Filter>
     </ClInclude>
     <ClInclude Include="src\CharacterHUDElements.h">
+      <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkillHUDElements.h">
       <Filter>Header Files\User Interface</Filter>
     </ClInclude>
   </ItemGroup>
