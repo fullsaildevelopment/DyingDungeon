@@ -12,6 +12,8 @@
 #include "TeamManager.h"
 #include "CharacterFactory.h"
 #include "CharacterHUDElements.h"
+#include "SkillHUDElements.h"
+#include "SkillHoverComponent.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -33,94 +35,10 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
-	// Create the player characters
-	std::vector<DirectX::XMVECTOR> mPlayerPositions;
-	mPlayerPositions.resize(3);
-	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
-	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
-	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
-	// Player Rotations
-	DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-
-
-	// Create each player
-	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
-	{
-		// Character we are about to create
-		Odyssey::Entity* newCharacter = nullptr;
-		// Character's HUD
-		Odyssey::Entity* newHUD = nullptr;
-		// Prefab
-		Odyssey::Entity* prefab;
-		// Hud Id type
-		CharacterFactory::HudID hudID;
-		// Define the character type we need to create
-		CharacterFactory::CharacterOptions characterToCreate = CharacterFactory::CharacterOptions::Paladin;
-		// Get the hero type
-		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
-
-		if (i == 0)
-			hudID = CharacterFactory::HudID::HeroLeft;
-		else if (i == 1)
-			hudID = CharacterFactory::HudID::HeroMiddle;
-		else
-			hudID = CharacterFactory::HudID::HeroRight;
-
-		// Set the enum based on the name of the character
-		if (newHeroType == TeamManager::HeroType::Paladin)
-			characterToCreate = CharacterFactory::CharacterOptions::Paladin;
-		else if (newHeroType == TeamManager::HeroType::Mage)
-			characterToCreate = CharacterFactory::CharacterOptions::Mage;
-		else if (newHeroType == TeamManager::HeroType::Bard)
-			characterToCreate = CharacterFactory::CharacterOptions::Bard;
-		else if (newHeroType == TeamManager::HeroType::Warrior)
-			characterToCreate = CharacterFactory::CharacterOptions::Warrior;
-		else if (newHeroType == TeamManager::HeroType::Monk)
-			characterToCreate = CharacterFactory::CharacterOptions::Monk;
-		else
-			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
-
-		// Create the character prefab
-		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, mPlayerPositions[i], mPlayerRotation));
-		// Create the hud prefab
-		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
-		
-		// Create the impact indicator for the heroes
-		Odyssey::Entity* impactIndicator = nullptr;
-		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
-		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
-
-		// Assign the impact indicator for the heroes
-		impactIndicator->setActive(false);
-		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
-
-		// Create the blood effect for the heroes
-		Odyssey::Entity* bloodEffect = nullptr;
-		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
-		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, mPlayerRotation));
-
-		// Assign the blood effect for the heroes
-		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
-		
-		// Set the character's hud index number
-		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
-		// Increase the character index
-		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
-		// Add the new HUD to the list of HUDs
-		GameUIManager::getInstance().AddHudToList(newHUD);
-
-		// Set the elements of the character's HUD
-		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
-
-		// Add the mudda fricken character in the player list
-		mPlayerTeam.push_back(newCharacter);
-	}
-
-	// Don't show the boos character
+	// Create the player team
+	CreateThePlayerTeam();
+	
+	// Don't show the boss character
 	//mBossCharacter->setActive(false);
 	//GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
 
@@ -439,11 +357,6 @@ void TowerManager::GoToMainMenu()
 
 			// Turn off the previous canvases
 			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
-			// Turn off the skill canvases
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill1Popup()->pCanvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill2Popup()->pCanvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill3Popup()->pCanvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill4Popup()->pCanvas->setActive(false);
 			Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 		}
 	}
@@ -453,7 +366,7 @@ void TowerManager::GoToMainMenu()
 	//{
 	//	if (mEnemyTeam[i])
 	//	{
-	//		scene->removeEntity(mEnemyTeam[i]);
+	//		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
 	//	}
 	//}
 
@@ -474,4 +387,120 @@ void TowerManager::GoToMainMenu()
 	mIsPaused = true;
 	// Switch to main menu scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
+}
+
+void TowerManager::CreateThePlayerTeam()
+{
+	// Create the player characters
+	std::vector<DirectX::XMVECTOR> mPlayerPositions;
+	mPlayerPositions.resize(3);
+	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+	// Player Rotations
+	DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Create each player
+	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
+	{
+		// Character we are about to create
+		Odyssey::Entity* newCharacter = nullptr;
+		// Character's HUD
+		Odyssey::Entity* newHUD = nullptr;
+		// Prefab
+		Odyssey::Entity* prefab;
+		// Hud Id type
+		CharacterFactory::HudID hudID;
+		// Position taht the skill popup will needed to be spawned at
+		SkillHoverComponent::HudPosition skillPopupPos;
+		// Define the character type we need to create
+		CharacterFactory::CharacterOptions characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		// Get the hero type
+		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
+
+		if (i == 0)
+		{
+			hudID = CharacterFactory::HudID::HeroLeft;
+			skillPopupPos = SkillHoverComponent::HudPosition::Left;
+		}
+		else if (i == 1)
+		{
+			hudID = CharacterFactory::HudID::HeroMiddle;
+			skillPopupPos = SkillHoverComponent::HudPosition::Middle;
+		}
+		else
+		{
+			hudID = CharacterFactory::HudID::HeroRight;
+			skillPopupPos = SkillHoverComponent::HudPosition::Right;
+		}
+
+		// Set the enum based on the name of the character
+		if (newHeroType == TeamManager::HeroType::Paladin)
+			characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		else if (newHeroType == TeamManager::HeroType::Mage)
+			characterToCreate = CharacterFactory::CharacterOptions::Mage;
+		else if (newHeroType == TeamManager::HeroType::Bard)
+			characterToCreate = CharacterFactory::CharacterOptions::Bard;
+		else if (newHeroType == TeamManager::HeroType::Warrior)
+			characterToCreate = CharacterFactory::CharacterOptions::Warrior;
+		else if (newHeroType == TeamManager::HeroType::Monk)
+			characterToCreate = CharacterFactory::CharacterOptions::Monk;
+		else
+			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
+
+		// Create the character prefab
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, mPlayerPositions[i], mPlayerRotation));
+
+		// Create the hud prefab
+		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
+
+		// Set up the skill hover huds
+		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
+		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
+		// Register the skill sprites
+		hover->registerSprite(hudElements->GetSkill1());
+		hover->registerSprite(hudElements->GetSkill2());
+		hover->registerSprite(hudElements->GetSkill3());
+		hover->registerSprite(hudElements->GetSkill4());
+		// Assign the characters skills to the hover list
+		hover->mCharacterSkills = newCharacter->getComponent<Character>()->GetSkills();
+		// Assign the position that the prefab will needed to be spawned at
+		hover->mHudPositionEnum = skillPopupPos;
+		
+		// Create the impact indicator for the heroes
+		Odyssey::Entity* impactIndicator = nullptr;
+		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
+		// Assign the impact indicator for the heroes
+		impactIndicator->setActive(false);
+		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+
+		// Create the blood effect for the heroes
+		Odyssey::Entity* bloodEffect = nullptr;
+		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, mPlayerRotation));
+		// Assign the blood effect for the heroes
+		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+
+		// Set the character's hud index number
+		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
+		// Increase the character index
+		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
+		// Add the new HUD to the list of HUDs
+		GameUIManager::getInstance().AddHudToList(newHUD);
+
+		// Set the elements of the character's HUD
+		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
+
+		// Add the mudda fricken character in the player list
+		mPlayerTeam.push_back(newCharacter);
+	}
+}
+
+void TowerManager::CreateTheSkillHoverHuds()
+{
 }

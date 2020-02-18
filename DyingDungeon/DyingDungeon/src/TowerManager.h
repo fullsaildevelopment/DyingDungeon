@@ -96,5 +96,11 @@ private: // Functions
 	void TogglePauseMenu();
 	void ShowOptionsMenu();
 	void GoToMainMenu();
+
+	// Create the heros and all of their elements
+	void CreateThePlayerTeam();
+
+	// Create the four skill hover huds for the skills
+	void CreateTheSkillHoverHuds();
 };
 

@@ -23,6 +23,9 @@ public:
 private:
 	Odyssey::Application* mApplication;
 
+	// Paladin Character
+	Odyssey::Entity* mPaladinCharacter;
+
 	// Bools
 	bool mAnimatingLaser = true;
 };
