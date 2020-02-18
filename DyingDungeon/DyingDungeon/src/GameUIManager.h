@@ -141,6 +141,9 @@ public: // Functions
 	// Create enemy character portrait
 	void CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition);
 
+	// Create the skill popups
+	void CreateSkillHoverHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition);
+
 	// Create Hp Popup
 	Odyssey::UICanvas* CreateHpPopup(Odyssey::Entity* _objToAddTo);
 

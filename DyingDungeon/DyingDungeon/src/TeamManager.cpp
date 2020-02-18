@@ -67,6 +67,27 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 				break;
 		}
 
+		// Create the impact indicator for the enemies
+		Odyssey::Entity* impactIndicator = nullptr;
+		DirectX::XMVECTOR impactIndicatorPosition = position;
+		prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+		prefab->getComponent<Odyssey::Transform>()->setScale(0.5f, 0.5f, 0.5f);
+		prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, rotation));
+
+		// Assign the impact indicator for the enemies
+		impactIndicator->setActive(false);
+		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+
+		// Create the blood effect for the enemies
+		Odyssey::Entity* bloodEffect = nullptr;
+		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position) + 5.0f, DirectX::XMVectorGetZ(position) };
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, rotation));
+
+		// Assign the blood effect for the enemies
+		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+
 		// Set the character's hud index number
 		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
 		// Increase the character index
