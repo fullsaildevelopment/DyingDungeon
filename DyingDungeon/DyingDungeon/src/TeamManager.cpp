@@ -1,21 +1,12 @@
 #include "TeamManager.h"
 #include "TowerManager.h"
 #include "CharacterFactory.h"
+#include "Character.h"
 
 TeamManager& TeamManager::getInstance()
 {
 	static TeamManager instance;
 	return instance;
-}
-
-void TeamManager::initialize()
-{
-	std::vector<EnemySetups> enemies = mEnemiesToCreate[0];
-	DirectX::XMVECTOR position = enemies[0].pPosition;
-	DirectX::XMVECTOR rotation = enemies[0].pRotation;
-	DirectX::XMFLOAT2 hudPosition = enemies[0].pHudPosition;
-	DirectX::XMFLOAT2 hpPopupPosition = enemies[0].pHpPopupPosition;
-	ganfaulPrefab = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Ganfaul, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
 }
 
 std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
@@ -31,34 +22,60 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		EnemyType enemyType = enemies[i].pEnemyType;
 		DirectX::XMVECTOR position = enemies[i].pPosition;
 		DirectX::XMVECTOR rotation = enemies[i].pRotation;
-		DirectX::XMFLOAT2 hudPosition = enemies[i].pHudPosition;
-		DirectX::XMFLOAT2 hpPopupPosition = enemies[i].pHpPopupPosition;
-		bool isBoss = enemies[i].pIsBoss;
+		//DirectX::XMFLOAT2 hudPosition = enemies[i].pHudPosition;
+		//DirectX::XMFLOAT2 hpPopupPosition = enemies[i].pHpPopupPosition;
+		//bool isBoss = enemies[i].pIsBoss;
 
 		// Character we are about to create
-		Odyssey::Entity* newCharacter;
+		Odyssey::Entity* newCharacter = nullptr;
+		// Character's HUD
+		Odyssey::Entity* newHUD = nullptr;
+		// Hud Id type
+		CharacterFactory::HudID hudID;
+		// Prefab we will need
+		Odyssey::Entity* prefab;
+
+		// Determine the enemy hud we need based on the enemy list
+		// If there is only 1 player on the enemy team to start out with, make sur ehe is placed in the middle
+		if (i == 0 && enemies.size() != 1)
+			hudID = CharacterFactory::HudID::EnemyLeft;
+		else if (i == 1 || enemies.size() == 1)
+			hudID = CharacterFactory::HudID::EnemyMiddle;
+		else
+			hudID = CharacterFactory::HudID::EnemyRight;
 
 		// Create the character based on the enum
 		switch (enemyType)
 		{
 			case EnemyType::Skeleton:
-				newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Skeleton", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
+				// Spawn Enemy
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Skeleton);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
 				break;
 			case EnemyType::Ganfaul:
-				//newCharacter = CharacterFactory::getInstance().CreateCharacter(CharacterFactory::CharacterOptions::Skeleton, L"Ganfaul", position, rotation, hudPosition, true, hpPopupPosition, mSceneOne);
-				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(ganfaulPrefab, &newCharacter, position, rotation));
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Ganfaul);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
 				break;
 			default:
 				std::cout << "This enemy enum does not exist in the TeamManager.cpp CreateEnemyTeam function" << std::endl;
 				break;
 		}
 
-		// Check if the enemy is a boss or not
-		if (isBoss)
-		{
-			// Set the character as the boss
-			//mCurrentTower->getComponent<TowerManager>()->SetBossCharacter(newCharacter);
-		}
+		// Set the character's hud index number
+		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
+		// Increase the character index
+		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
+		// Add the new HUD to the list of HUDs
+		GameUIManager::getInstance().AddHudToList(newHUD);
+
+		// Set the elements of the character's HUD
+		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
 
 		// Add the character we created to the enemy team list
 		mEnemyTeam.push_back(newCharacter);
@@ -68,9 +85,9 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	return mEnemyTeam;
 }
 
-void TeamManager::AddCharacterToPlayerTeam(Odyssey::Entity* _characterToAdd)
+void TeamManager::AddCharacterEnumToPlayerTeam(HeroType _characterHeroType)
 {
-	mPlayerTeam.push_back(_characterToAdd);
+	mPlayerTeamToCreate.push_back(_characterHeroType);
 }
 
 void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
@@ -78,13 +95,8 @@ void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 	mEnemyTeam.push_back(_characterToAdd);
 }
 
-void TeamManager::ClearPlayerTeam()
+void TeamManager::ClearPlayerTeamEnumList()
 {
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		mPlayerTeam[i] = nullptr;
-	}
-
-	mPlayerTeam.clear();
-	mPlayerTeam.resize(0);
+	mPlayerTeamToCreate.clear();
+	mPlayerTeamToCreate.resize(0);
 }

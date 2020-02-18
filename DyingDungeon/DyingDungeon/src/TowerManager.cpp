@@ -10,6 +10,8 @@
 #include "UICanvas.h"
 #include "RedAudioManager.h"
 #include "TeamManager.h"
+#include "CharacterFactory.h"
+#include "CharacterHUDElements.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -30,6 +32,73 @@ void TowerManager::initialize()
 
 	// The tower will not be paused on start up
 	mIsPaused = false;
+
+	// Create the player characters
+	std::vector<DirectX::XMVECTOR> mPlayerPositions;
+	mPlayerPositions.resize(3);
+	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
+	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
+	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+	// Player Rotations
+	DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+	// Create each player
+	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
+	{
+		// Character we are about to create
+		Odyssey::Entity* newCharacter = nullptr;
+		// Character's HUD
+		Odyssey::Entity* newHUD = nullptr;
+		// Prefab
+		Odyssey::Entity* prefab;
+		// Hud Id type
+		CharacterFactory::HudID hudID;
+		// Define the character type we need to create
+		CharacterFactory::CharacterOptions characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		// Get the hero type
+		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
+
+		if (i == 0)
+			hudID = CharacterFactory::HudID::HeroLeft;
+		else if (i == 1)
+			hudID = CharacterFactory::HudID::HeroMiddle;
+		else
+			hudID = CharacterFactory::HudID::HeroRight;
+
+		// Set the enum based on the name of the character
+		if (newHeroType == TeamManager::HeroType::Paladin)
+			characterToCreate = CharacterFactory::CharacterOptions::Paladin;
+		else if (newHeroType == TeamManager::HeroType::Mage)
+			characterToCreate = CharacterFactory::CharacterOptions::Mage;
+		else if (newHeroType == TeamManager::HeroType::Bard)
+			characterToCreate = CharacterFactory::CharacterOptions::Bard;
+		else if (newHeroType == TeamManager::HeroType::Warrior)
+			characterToCreate = CharacterFactory::CharacterOptions::Warrior;
+		else if (newHeroType == TeamManager::HeroType::Monk)
+			characterToCreate = CharacterFactory::CharacterOptions::Monk;
+		else
+			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
+
+		// Create the character prefab
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, mPlayerPositions[i], mPlayerRotation));
+		// Create the hud prefab
+		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
+		// Set the character's hud index number
+		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
+		// Increase the character index
+		CharacterFactory::getInstance().IncreaseCharacterHUDIndex();
+		// Add the new HUD to the list of HUDs
+		GameUIManager::getInstance().AddHudToList(newHUD);
+
+		// Set the elements of the character's HUD
+		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
+
+		// Add the mudda fricken character in the player list
+		mPlayerTeam.push_back(newCharacter);
+	}
 
 	// Don't show the boos character
 	//mBossCharacter->setActive(false);
@@ -90,7 +159,7 @@ void TowerManager::update(double deltaTime)
 			// Turn off model
 			mEnemyTeam[i]->setActive(false);
 			// Turn off the HUD UI
-			GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
 		}
 
 		// Set the tower level to the last level which is the boss
@@ -229,15 +298,8 @@ void TowerManager::update(double deltaTime)
 	}
 }
 
-void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattles, Odyssey::Entity* _turnIndicatorModel)
+void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
-	// Assign the player team 
-	mPlayerTeam = _playerTeam;
-
-	// Add all of the characters from the player's team to the allCharacters vector
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-		mAllCharacters.push_back(mPlayerTeam[i]);
-
 	// Add Boss to the mAllCharacters
 	//mAllCharacters.push_back(mBossCharacter);
 
@@ -247,9 +309,6 @@ void TowerManager::SetUpTowerManager(EntityList _playerTeam, int _numberOfBattle
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
-
-	// Set the turn indicator model
-	tmTurnIndicator = _turnIndicatorModel;
 }
 
 void TowerManager::CreateBattleInstance()
@@ -272,7 +331,7 @@ void TowerManager::CreateBattleInstance()
 		// Turn off model
 		mEnemyTeam[i]->setActive(false);
 		// Turn off the HUD UI
-		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
 	}
 	
 	// Create the new enemy team before creating the battle
@@ -283,7 +342,7 @@ void TowerManager::CreateBattleInstance()
 		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, tmTurnIndicator);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
@@ -359,12 +418,12 @@ void TowerManager::GoToMainMenu()
 			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
 			// Turn off the previous canvases
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
 			// Turn off the skill canvases
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill1Canvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill2Canvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill3Canvas->setActive(false);
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->pSkill4Canvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill1Popup()->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill2Popup()->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill3Popup()->pCanvas->setActive(false);
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill4Popup()->pCanvas->setActive(false);
 			Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 		}
 	}

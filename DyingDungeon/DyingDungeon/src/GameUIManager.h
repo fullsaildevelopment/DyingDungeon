@@ -18,40 +18,40 @@ public:
 	};
 
 	// This struct will contain all of the UI elements associated with the character HUD
-	struct CharacterHUD
-	{
-		Odyssey::UICanvas* pCanvas;
-		Odyssey::Sprite2D* pPortrait;
-		Odyssey::Rectangle2D* pXpBar;
-		Odyssey::Text2D* pCharacterName;
-		Odyssey::Text2D* pLevelNumber;
-		Odyssey::Text2D* pAttackNumber;
-		Odyssey::Text2D* pDefenseNumber;
-		Odyssey::Text2D* pSpeedNumber;
-		Odyssey::Rectangle2D* pHealthBar;
-		Odyssey::Text2D* pHealthNumber;
-		Odyssey::Rectangle2D* pManaBar;
-		Odyssey::Text2D* pManaNumber;
-		Odyssey::Text2D* pTurnNumber;
-
-		// Skills
-		Odyssey::Sprite2D* pSkill1;
-		Odyssey::UICanvas* pSkill1Canvas;
-		Odyssey::Sprite2D* pSkill2;
-		Odyssey::UICanvas* pSkill2Canvas;
-		Odyssey::Sprite2D* pSkill3;
-		Odyssey::UICanvas* pSkill3Canvas;
-		Odyssey::Sprite2D* pSkill4;
-		Odyssey::UICanvas* pSkill4Canvas;
-
-		// Status Effects
-		//Odyssey::Sprite2D* pAttackUp;
-		//Odyssey::Sprite2D* pAttackUp;
-		//Odyssey::Sprite2D* pAttackUp;
-		//Odyssey::Sprite2D* pAttackUp;
-		//Odyssey::Sprite2D* pAttackUp;
-		//Odyssey::Sprite2D* pAttackUp;
-	};
+	//struct CharacterHUD
+	//{
+	//	Odyssey::UICanvas* pCanvas;
+	//	Odyssey::Sprite2D* pPortrait;
+	//	Odyssey::Rectangle2D* pXpBar;
+	//	Odyssey::Text2D* pCharacterName;
+	//	Odyssey::Text2D* pLevelNumber;
+	//	Odyssey::Text2D* pAttackNumber;
+	//	Odyssey::Text2D* pDefenseNumber;
+	//	Odyssey::Text2D* pSpeedNumber;
+	//	Odyssey::Rectangle2D* pHealthBar;
+	//	Odyssey::Text2D* pHealthNumber;
+	//	Odyssey::Rectangle2D* pManaBar;
+	//	Odyssey::Text2D* pManaNumber;
+	//	Odyssey::Text2D* pTurnNumber;
+	//
+	//	// Skills
+	//	Odyssey::Sprite2D* pSkill1;
+	//	Odyssey::UICanvas* pSkill1Canvas;
+	//	Odyssey::Sprite2D* pSkill2;
+	//	Odyssey::UICanvas* pSkill2Canvas;
+	//	Odyssey::Sprite2D* pSkill3;
+	//	Odyssey::UICanvas* pSkill3Canvas;
+	//	Odyssey::Sprite2D* pSkill4;
+	//	Odyssey::UICanvas* pSkill4Canvas;
+	//
+	//	// Status Effects
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//	//Odyssey::Sprite2D* pAttackUp;
+	//};
 
 	// This struct will hold the elements needed in order to animate the health and mana bars
 	struct AnimatingBar
@@ -131,13 +131,28 @@ public: // Functions
 	void StatsMenuPrevRound();
 
 	void HideStatsMenu();
+
+	// Set the characters HUD Elements
+	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
 	 
+	// Create hero character portrait
+	void CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition);
+
+	// Create enemy character portrait
+	void CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition);
+
+	// Create Hp Popup
+	Odyssey::UICanvas* CreateHpPopup(Odyssey::Entity* _objToAddTo);
+
 	// Create The UI portraits for the characters
-	Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
+	//Odyssey::UICanvas* CreateCharacterPortrait(DirectX::XMFLOAT2 _hudPosition, DirectX::XMFLOAT2 _hpPopupPosition, std::wstring _imageName, Odyssey::Entity* _gameObjectToAddTo, Character* owner);
 	
 	// Character info popup for team selection screen
 	Odyssey::UICanvas* SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition);
 
+	// Increase the char
+	// Add HUD to the character hud list
+	void AddHudToList(Odyssey::Entity* _newHud);
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
@@ -224,7 +239,7 @@ public: // Functions
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
 
 	// Get the list of all of the character hud canvases
-	std::vector<std::shared_ptr<CharacterHUD>> GetCharacterHuds() { return mCharacterHudList; }
+	std::vector<Odyssey::Entity*> GetCharacterHuds() { return mCharacterHudList; }
 
 	//Setters
 	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }
@@ -346,7 +361,7 @@ private: // Varibales
 
 	// Vectors
 	// List of the HUDs
-	std::vector<std::shared_ptr<CharacterHUD>> mCharacterHudList;
+	std::vector<Odyssey::Entity*> mCharacterHudList;
 	std::vector<Odyssey::Text2D*> mCharacterHpPopupList;
 	std::vector<Odyssey::Rectangle2D*> mCharacterBarsList;
 
@@ -377,10 +392,8 @@ private: // Functions
 	void IncreaseVolume();
 
 	// Skill Icon Creation Fucntions
-	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
-	void SetupSkillHover(Odyssey::UICanvas* canvas, DirectX::XMFLOAT2 _position, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring description);
-	void SetupHpPopup(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hpPopupPosition);
-	void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, std::shared_ptr<CharacterHUD> _newHud);
+	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hudPosition);
+	//void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);

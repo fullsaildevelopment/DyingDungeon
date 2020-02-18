@@ -83,42 +83,48 @@ namespace Odyssey
 				renderObject->entity = entity;
 			}
 
-			// Check if this is an animator component
-			if (component->isClassType(Animator::Type))
-			{
-				// Update the render object's components
-				renderObject->aabb = entity->getComponent<AABB>();
-				renderObject->animator = entity->getComponent<AnimatorDX11>();
-				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
-				renderObject->transform = entity->getComponent<Transform>();
-			}
+			// Update the render object's components
+			renderObject->aabb = entity->getComponent<AABB>();
+			renderObject->animator = entity->getRootComponent<AnimatorDX11>();
+			renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+			renderObject->transform = entity->getComponent<Transform>();
 
-			if (component->isClassType(AABB::Type))
-			{
-				// Update the render object's components
-				renderObject->aabb = static_cast<AABB*>(component);
-				renderObject->animator = entity->getComponent<AnimatorDX11>();
-				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
-				renderObject->transform = entity->getComponent<Transform>();
-			}
+			//// Check if this is an animator component
+			//if (component->isClassType(Animator::Type))
+			//{
+			//	// Update the render object's components
+			//	renderObject->aabb = entity->getComponent<AABB>();
+			//	renderObject->animator = entity->getComponent<AnimatorDX11>();
+			//	renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+			//	renderObject->transform = entity->getComponent<Transform>();
+			//}
 
-			if (component->isClassType(MeshRenderer::Type))
-			{
-				// Update the render object's components
-				renderObject->aabb = entity->getComponent<AABB>();
-				renderObject->animator = entity->getComponent<AnimatorDX11>();
-				renderObject->meshRenderer = static_cast<MeshRenderer*>(component);
-				renderObject->transform = entity->getComponent<Transform>();
-			}
+			//if (component->isClassType(AABB::Type))
+			//{
+			//	// Update the render object's components
+			//	renderObject->aabb = static_cast<AABB*>(component);
+			//	renderObject->animator = entity->getComponent<AnimatorDX11>();
+			//	renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+			//	renderObject->transform = entity->getComponent<Transform>();
+			//}
 
-			if (component->isClassType(Transform::Type))
-			{
-				// Update the render object's components
-				renderObject->aabb = entity->getComponent<AABB>();
-				renderObject->animator = entity->getComponent<AnimatorDX11>();
-				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
-				renderObject->transform = static_cast<Transform*>(component);
-			}
+			//if (component->isClassType(MeshRenderer::Type))
+			//{
+			//	// Update the render object's components
+			//	renderObject->aabb = entity->getComponent<AABB>();
+			//	renderObject->animator = entity->getComponent<AnimatorDX11>();
+			//	renderObject->meshRenderer = static_cast<MeshRenderer*>(component);
+			//	renderObject->transform = entity->getComponent<Transform>();
+			//}
+
+			//if (component->isClassType(Transform::Type))
+			//{
+			//	// Update the render object's components
+			//	renderObject->aabb = entity->getComponent<AABB>();
+			//	renderObject->animator = entity->getComponent<AnimatorDX11>();
+			//	renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+			//	renderObject->transform = static_cast<Transform*>(component);
+			//}
 			mLock.unlock(LockState::Write);
 		}
 
