@@ -65,6 +65,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="alias">Name the audio file is stored as in the manager</param>
 		void Play(const char* alias);
+		void PlayEvent();
 		/// <summary>
 		/// Stops the 'alias' audio file that is stored in the manager
 		/// </summary>
@@ -96,6 +97,7 @@ class RedAudioManager
 		/// </summary>
 		/// <param name="group"></param>
 		void LoopRandom(std::string group);
+		void PlaySFXRandom(std::string group);
 		/// <summary>
 		/// Listenner function for a Audio Loop event
 		/// </summary>

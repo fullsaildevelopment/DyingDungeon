@@ -95,6 +95,12 @@ public: // Functions
 	// Creation of the team select menu
 	void CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
+	void ShowSaveLoadoutMenu();
+
+	void HideLoadoutMenu();
+
+	void SaveLoadout1();
+
 	// Creation of the pause menu
 	void CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo);
 
@@ -203,6 +209,24 @@ public: // Functions
 	std::vector<Odyssey::Text2D*> GetNameSlots() { return mNameSlots; }
 	// Get the show info button sprites
 	std::vector<Odyssey::Sprite2D*> GetShowInfoButtons() { return mShowInfoButtons; }
+	//
+	Odyssey::Sprite2D** GetLoadoutButtons() { return mLoadoutButtons; }
+	//
+	Odyssey::Sprite2D* GetLoadLoadoutButton() { return mLoadLoadoutButton; }
+	//
+	Odyssey::Sprite2D* GetSaveLoadoutButton() { return mSaveLoadoutButton; }
+	//
+	Odyssey::Text2D* GetCancelLoadoutButton() { return mCancelLoadoutButton; }
+	//
+	Odyssey::Entity* GetLoadoutMenu() { return mLoadoutMenu; }
+	//
+	Odyssey::Sprite2D** GetSaveConfermationButtons() { return mSaveConfermationButtons; }
+	//
+	Odyssey::Entity* GetSaveConfermationMenu() { return mSaveLoadoutConfermation; }
+	//
+	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
+	//
+	Odyssey::Rectangle2D** GetLoadoutPortraitBackgrounds() { return mLoadoutPortraitBackground; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
 
@@ -254,6 +278,8 @@ private: // Varibales
 	Odyssey::Entity* mMainMenu;
 	Odyssey::Entity* mTowerSelectMenu;
 	Odyssey::Entity* mTeamSelectMenu;
+	Odyssey::Entity* mLoadoutMenu;
+	Odyssey::Entity* mSaveLoadoutConfermation;
 	Odyssey::Entity* mPauseMenu;
 	Odyssey::Entity* mOptionsMenu;
 	Odyssey::Entity* mStatsMenu;
@@ -278,6 +304,20 @@ private: // Varibales
 	// Team Menu Items
 	// Enter Battle Button
 	Odyssey::Sprite2D* mEnterBattleButton;
+	//Load Loadout Button
+	Odyssey::Sprite2D* mLoadLoadoutButton;
+	//Save Loadout Button
+	Odyssey::Sprite2D* mSaveLoadoutButton;
+	//Loadout Buttons
+	Odyssey::Sprite2D* mLoadoutButtons[3];
+	//Loadout pop-up
+	Odyssey::Rectangle2D* mLoadoutPortraitBackground[3];
+	//Loadout Character Portraits
+	Odyssey::Sprite2D* mLoadoutPortraits[3][3];
+	//Save Confermation Buttons
+	Odyssey::Sprite2D* mSaveConfermationButtons[2];
+	//Loadout Cancel Button
+	Odyssey::Text2D* mCancelLoadoutButton;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots

@@ -50,6 +50,11 @@ void TeamSelectionController::initialize()
 	GameUIManager::getInstance().GetShowInfoButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup2);
 	GameUIManager::getInstance().GetShowInfoButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup3);
 
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowLoadLoadoutMenu);
+	GameUIManager::getInstance().GetSaveLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowSaveLoadoutMenu);
+
+
 	// Set the player positions
 	mPlayerPositions.clear();
 	mPlayerPositions.resize(3);
@@ -72,22 +77,23 @@ void TeamSelectionController::initialize()
 	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
 
 	// Clear the player team from Team Manager before adding in new characters
+
 	TeamManager::getInstance().ClearPlayerTeamEnumList();
 
-	if (SaveLoad::Instance().LoadLoadOut("LoadOut_Test"))
+	if (SaveLoad::Instance().LoadLoadOut("Last_Loadout"))
 	{
 		mSlot1CharacterList[mSlot1Index]->setVisible(false);
-		mSlot1Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[0];
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[0];
 		mSlot1CharacterList[mSlot1Index]->setVisible(true);
 		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
 	
 		mSlot2CharacterList[mSlot2Index]->setVisible(false);
-		mSlot2Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[1];
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[1];
 		mSlot2CharacterList[mSlot2Index]->setVisible(true);
 		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
 		
 		mSlot3CharacterList[mSlot3Index]->setVisible(false);
-		mSlot3Index = SaveLoad::Instance().GetLoadOut("LoadOut_Test").index[2];
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
 	}
@@ -99,7 +105,7 @@ void TeamSelectionController::update(double deltaTime)
 	if (mEnterBattle && !changedTheScene)
 	{
 		changedTheScene = true;
-		RedAudioManager::Instance().Stop("BackgroundMenu");
+		RedAudioManager::Instance().StopGroup("BackgroundMenu");
 		RedAudioManager::Instance().Loop("TorchBurningQuietly");
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
 		RedAudioManager::Instance().Loop("BackgroundBattle");
@@ -125,7 +131,7 @@ void TeamSelectionController::update(double deltaTime)
 	{
 		GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
 		unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
-		SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+		SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 		SaveLoad::Instance().SaveLoadOut();
 	}
 }
@@ -147,6 +153,25 @@ void TeamSelectionController::onDestroy()
 	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseEnter");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseExit");
+
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetCancelLoadoutButton()->unregisterCallback("onMouseClick");
 }
 
 void TeamSelectionController::CreateModelsAndPopups()
@@ -307,14 +332,14 @@ void TeamSelectionController::TurnOffOtherModels()
 
 void TeamSelectionController::EnterBattle()
 {
-	RedAudioManager::Instance().StopGroup("BackgroundMenu");
+	/*RedAudioManager::Instance().StopGroup("BackgroundMenu");
 	RedAudioManager::Instance().Loop("TorchBurningQuietly");
 	RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 200);
-	RedAudioManager::Instance().Loop("BackgroundBattle");
+	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
 	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
-	SaveLoad::Instance().AddLoadOut("LoadOut_Test", ids, indecies);
+	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
   
 	// Check what characters are shown on the screen for the slot 1
@@ -606,5 +631,374 @@ void TeamSelectionController::ToggleShowInfoPopup3()
 void TeamSelectionController::ChangeSlotName(int _slotIndex, std::wstring _newName)
 {
 	GameUIManager::getInstance().GetNameSlots()[_slotIndex]->setText(_newName);
+}
+
+void TeamSelectionController::onHoverLoadout1()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[0]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_1"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_1").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(0, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout1()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[0]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(0, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::onHoverLoadout2()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[1]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_2").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(1, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout2()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[1]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(1, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::onHoverLoadout3()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[2]->setVisible(true);
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+		{
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->setSprite(mSlot1CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[0]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->setSprite(mSlot2CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[1]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->setSprite(mSlot3CharacterList[SaveLoad::Instance().GetLoadOut("Loadout_3").index[2]]->getComponent<Character>()->GetPortraitPath(), GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->getDimensions().x, GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->getDimensions().y);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 0)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 1)->setVisible(true);
+			GameUIManager::getInstance().GetLoadoutPortraits(2, 2)->setVisible(true);
+		}
+	//}
+}
+
+void TeamSelectionController::onExitHoverLoadout3()
+{
+	GameUIManager::getInstance().GetLoadoutPortraitBackgrounds()[2]->setVisible(false);
+	for (int i = 0; i < 3; i++)
+	{
+		GameUIManager::getInstance().GetLoadoutPortraits(2, i)->setVisible(false);
+	}
+}
+
+void TeamSelectionController::ShowSaveLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(true);
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->unregisterCallback("onMouseClick");
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveLoadoutButton()->unregisterCallback("onMouseClick");
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1")) 
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout1);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout1);
+	}
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout2);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout2);
+	}
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationSave3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout3);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout3);
+	}
+
+	GameUIManager::getInstance().GetCancelLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::HideLoadLoadoutMenu);
+}
+
+void TeamSelectionController::ShowLoadLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(true);
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->unregisterCallback("onMouseClick");
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->unregisterCallback("onMouseClick");
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveLoadoutButton()->unregisterCallback("onMouseClick");
+
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout1);
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout1);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[0]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[0]->getDimensions().y);
+	}
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout2);
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout2);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[1]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[1]->getDimensions().y);
+	}
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3")) {
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoard.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::LoadLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseEnter", this, &TeamSelectionController::onHoverLoadout3);
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->registerCallback("onMouseExit", this, &TeamSelectionController::onExitHoverLoadout3);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetLoadoutButtons()[2]->setSprite(L"assets/images/TeamSelectionImages/SmallBoardInactive.png", GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().x, GameUIManager::getInstance().GetLoadoutButtons()[2]->getDimensions().y);
+	}
+	GameUIManager::getInstance().GetCancelLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::HideLoadLoadoutMenu);
+
+}
+
+void TeamSelectionController::HideLoadLoadoutMenu()
+{
+	GameUIManager::getInstance().GetLoadoutMenu()->setActive(false);
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseEnter");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseEnter");
+
+	GameUIManager::getInstance().GetLoadoutButtons()[0]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[1]->unregisterCallback("onMouseExit");
+	GameUIManager::getInstance().GetLoadoutButtons()[2]->unregisterCallback("onMouseExit");
+
+	// Register callbacks
+	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
+
+	// Register callbacks for the arrows
+	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot1Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[3]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot2Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[4]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot3Index);
+	GameUIManager::getInstance().GetTeamSelectionArrows()[5]->registerCallback("onMouseClick", this, &TeamSelectionController::IncreaseSlot3Index);
+
+	// Register the show info button callbacks
+	GameUIManager::getInstance().GetShowInfoButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup1);
+	GameUIManager::getInstance().GetShowInfoButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup2);
+	GameUIManager::getInstance().GetShowInfoButtons()[2]->registerCallback("onMouseClick", this, &TeamSelectionController::ToggleShowInfoPopup3);
+
+	//Register the save and load callbacks
+	GameUIManager::getInstance().GetLoadLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowLoadLoadoutMenu);
+	GameUIManager::getInstance().GetSaveLoadoutButton()->registerCallback("onMouseClick", this, &TeamSelectionController::ShowSaveLoadoutMenu);
+}
+
+void TeamSelectionController::SaveLoadout1()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_1", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::SaveLoadout2()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_2", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::SaveLoadout3()
+{
+	ConfermationNo();
+
+	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
+	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	SaveLoad::Instance().AddLoadOut("Loadout_3", ids, indecies);
+	SaveLoad::Instance().SaveLoadOut();
+
+	HideLoadLoadoutMenu();
+}
+
+void TeamSelectionController::LoadLoadout1()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_1"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::LoadLoadout2()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_2"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::LoadLoadout3()
+{
+	if (SaveLoad::Instance().LoadLoadOut("Loadout_3"))
+	{
+		mSlot1CharacterList[mSlot1Index]->setVisible(false);
+		mSlot1Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[0];
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		ChangeSlotName(0, mSlot1CharacterList[mSlot1Index]->getComponent<Character>()->GetName());
+
+		mSlot2CharacterList[mSlot2Index]->setVisible(false);
+		mSlot2Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[1];
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		ChangeSlotName(1, mSlot2CharacterList[mSlot2Index]->getComponent<Character>()->GetName());
+
+		mSlot3CharacterList[mSlot3Index]->setVisible(false);
+		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[2];
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
+		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
+	}
+}
+
+void TeamSelectionController::ConfermationSave1()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout1);
+}
+
+void TeamSelectionController::ConfermationSave2()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout2);
+}
+
+void TeamSelectionController::ConfermationSave3()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(true);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::ConfermationNo);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->registerCallback("onMouseClick", this, &TeamSelectionController::SaveLoadout3);
+}
+
+void TeamSelectionController::ConfermationNo()
+{
+	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(false);
+	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
 }
 
