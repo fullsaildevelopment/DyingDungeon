@@ -86,6 +86,28 @@ void TowerManager::initialize()
 		// Create the hud prefab
 		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
+		
+		// Create the impact indicator for the heroes
+		Odyssey::Entity* impactIndicator = nullptr;
+		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+		prefab->getComponent<Odyssey::Transform>()->setScale(0.5f, 0.5f, 0.5f);
+		prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor(DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
+
+		// Assign the impact indicator for the heroes
+		impactIndicator->setActive(false);
+		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
+
+		// Create the blood effect for the heroes
+		Odyssey::Entity* bloodEffect = nullptr;
+		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, mPlayerRotation));
+
+		// Assign the blood effect for the heroes
+		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+		
 		// Set the character's hud index number
 		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
 		// Increase the character index

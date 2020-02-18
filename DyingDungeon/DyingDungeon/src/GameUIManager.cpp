@@ -2,6 +2,7 @@
 #include "RedAudioManager.h"
 #include "UICanvas.h"
 #include "CharacterHUDElements.h"
+#include "SkillHUDElements.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1266,6 +1267,56 @@ void GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX:
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	// Assign the character's turn order text
 	newHUD->SetTurnNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties));
+}
+
+void GameUIManager::CreateSkillHoverHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition)
+{
+	// Create CharacterHUD object
+	SkillHUDElements* newSkillHUD = _gameObjectToAddTo->addComponent<SkillHUDElements>();
+	// Set the canvas 
+	newSkillHUD->SetCanvas(_gameObjectToAddTo->addComponent<Odyssey::UICanvas>());
+	// Get the canvas for the rest of the function
+	Odyssey::UICanvas* canvas = newSkillHUD->GetCanvas();
+
+	// Set color
+	DirectX::XMFLOAT4 themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	UINT windowWidth = 1280;
+	UINT windowHeight = 720;
+	float x = _hudPosition.x;
+	float y = _hudPosition.y - 130.0f;
+	UINT width = 300;
+	UINT height = 115;
+	UINT pad = 10;
+
+	Odyssey::TextProperties title;
+	title.bold = true;
+	title.italic = false;
+	title.fontSize = 24.0f;
+	title.textAlignment = Odyssey::TextAlignment::Center;
+	title.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	title.fontName = L"Tw Cen MT Condensed";
+
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 14.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Tw Cen MT Condensed";
+
+	// Background and Separators
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y), DirectX::XMFLOAT4(50.5f, 50.5f, 50.5f, 0.75f), width, height);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x, y + 40), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, 2);
+
+	// Title Text and Icons
+	newSkillHUD->SetSkillName(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, L"Skill Name", title));
+	newSkillHUD->SetSkillImage(canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), L"assets/images/Guy.png", 40, 40));
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
+	newSkillHUD->SetSkillName(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, L"0", title));
+
+	// Description
+	newSkillHUD->SetSkillDescription(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45), themeColor, width - (2 * pad), 85, L"This is be description", properties));
 }
 
 // Create hp popup

@@ -45,6 +45,13 @@ public:
 		EnemyRight,
 	};
 
+	enum SkillHoverID
+	{
+		LeftHUD,
+		MiddleHUD,
+		RightHUD,
+	};
+
 public: // Functions
 
 	void initialize(Odyssey::Application* _application);
@@ -61,6 +68,7 @@ public: // Functions
 	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
 	Odyssey::Entity* GetImpactIndicatorPrefab();
 	Odyssey::Entity* GetTurnIndicatorPrefab();
+	Odyssey::Entity* GetBloodEffectPrefab();
 
 	//Setters
 
@@ -92,6 +100,9 @@ private: // Functions
 	// Create enemy hud
 	Odyssey::Entity* CreateEnemyHudPrefab(DirectX::XMFLOAT2 _hudPosition);
 
+	// Create skill hover hud
+	Odyssey::Entity* CreateSkillHoverHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
 	// Create hp popup
 	Odyssey::Entity* CreateHpPopupPrefab();
 
@@ -100,6 +111,9 @@ private: // Functions
 
 	// Create turn indicator
 	Odyssey::Entity* CreateTurnIndicatorPrefab();
+
+	// Create blood particle effect
+	Odyssey::Entity* CreateBloodEffectPrefab();
 
 	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
@@ -112,6 +126,9 @@ private: // Functions
 	// HUD Map
 	std::map<HudID, Odyssey::Entity*> mHudPrefabMap;
 
+	// Skill Hover Map
+	std::map<SkillHoverID, Odyssey::Entity*> mSkillHoverPrefabMap;
+
 	// Hp Popup 
 	Odyssey::Entity* mHpPopupPrefab;
 
@@ -120,6 +137,9 @@ private: // Functions
 
 	// Turn Indicator
 	Odyssey::Entity* mTurnIndicatorPrefab;
+
+	// Bleed Effect
+	Odyssey::Entity* mBloodEffect;
 
 	// Application
 	Odyssey::Application* mApplication;

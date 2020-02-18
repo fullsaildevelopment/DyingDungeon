@@ -134,7 +134,5 @@ private: //Variables
 	//Odyssey::Sprite2D* pAttackUp;
 
 private: // Fucntions
-
-	void SetupSkillHover(SkillPopup* _skillPopup, Skills* _skill);
 };
 
