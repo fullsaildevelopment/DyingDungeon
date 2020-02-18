@@ -9,7 +9,6 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	m_playing = false;
 	m_looping = false;
 	m_segmented = false;
-	//m_personal_volume = false;
 	m_start = 0;
 	m_volume = 500;
 
@@ -431,7 +430,7 @@ void RedAudio::SeekEnd()
 void RedAudio::SetVolume(unsigned int volume)
 {
 	//Open();
-	m_volume = volume;
+	m_volume = static_cast<float>(volume /1000.0f) * 1000;
 	LPTSTR out_string = LPTSTR(new char[60]);
 
 	std::string cmd = "setaudio ";
@@ -455,6 +454,11 @@ void RedAudio::SetVolume(unsigned int volume)
 	cmd.clear();
 	delete[] in_cmd;
 	delete[] out_string;
+}
+
+void RedAudio::SetPersonalVolume(unsigned int volume)
+{
+	m_personal_volume = volume;
 }
 
 unsigned int RedAudio::GetVolume()

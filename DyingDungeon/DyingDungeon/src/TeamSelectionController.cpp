@@ -923,6 +923,8 @@ void TeamSelectionController::LoadLoadout1()
 		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_1").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
 	}
 }
 
@@ -944,6 +946,8 @@ void TeamSelectionController::LoadLoadout2()
 		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_2").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
 	}
 }
 
@@ -965,6 +969,8 @@ void TeamSelectionController::LoadLoadout3()
 		mSlot3Index = SaveLoad::Instance().GetLoadOut("Loadout_3").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+
+		HideLoadLoadoutMenu();
 	}
 }
 

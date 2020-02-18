@@ -25,7 +25,15 @@ void MainMenuController::initialize()
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
-	GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+	if (StatTracker::Instance().GetLevelSize() > 0) 
+	{
+		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(255.0f, 255.0f, 255.0f));
+		GameUIManager::getInstance().GetStatsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowStatsMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(124.5f, 124.5f, 124.5f));
+	}
 	// TODO: M3B1 ONLY REFACTOR LATER
 	GameUIManager::getInstance().GetCreditsText()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowCreditsMenu);
 	GameUIManager::getInstance().GetExitGameText()->registerCallback("onMouseClick", this, &MainMenuController::ExitGame);
