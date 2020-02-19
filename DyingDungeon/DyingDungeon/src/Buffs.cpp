@@ -39,6 +39,7 @@ void Buffs::Use(Character& caster, Character& target)
 {
 	// Update combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	GameUIManager::getInstance().UpdateCombatLogText(mStatusEffect->GetAmountOfEffect());
 
 	// If i have a status effect to apply, apply it
 	if (mStatusEffect != nullptr)
