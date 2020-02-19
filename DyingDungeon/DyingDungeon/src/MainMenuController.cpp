@@ -43,13 +43,13 @@ void MainMenuController::initialize()
 	mAnimatingLaser = true;
 
 	// Create a paladin and add him to the main menu scene
-	Odyssey::Entity* newCharacter = nullptr;
+	mPaladinCharacter = nullptr;
 	Odyssey::Entity* prefab = nullptr;
 	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
 	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
-	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, charPosition, charRotation));
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
 }
 
 void MainMenuController::update(double deltaTime)
@@ -110,6 +110,10 @@ void MainMenuController::onDestroy()
 
 void MainMenuController::EnterTowerSelectScreen()
 {
+	// Destroy the paladin
+	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPaladinCharacter));
+
+	// Change to the tower selection screen
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 }
 

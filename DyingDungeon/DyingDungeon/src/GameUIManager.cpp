@@ -1408,7 +1408,7 @@ void GameUIManager::CreateSkillHoverHud(Odyssey::Entity* _gameObjectToAddTo, Dir
 	newSkillHUD->SetSkillName(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + 40, y), themeColor, width - 80, 40, L"Skill Name", title));
 	newSkillHUD->SetSkillImage(canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(x, y), L"assets/images/Guy.png", 40, 40));
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(50.0f, 50.0f, 50.0f, 1.0f), 40, 40);
-	newSkillHUD->SetSkillName(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, L"0", title));
+	newSkillHUD->SetManaCost(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + width - 40, y), DirectX::XMFLOAT4(0.0f, 122.5f, 122.5f, 1.0f), 40, 40, L"0", title));
 
 	// Description
 	newSkillHUD->SetSkillDescription(canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(x + pad, y + 45), themeColor, width - (2 * pad), 85, L"This is be description", properties));
@@ -1451,55 +1451,29 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
 	newHud->SetHudPosition(_hudPosition);
 
-	// Set the popup objects
-	std::shared_ptr<CharacterHUDElements::SkillPopup> newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
-	newHud->SetSkill1Popup(newPopup.get());
-	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
-	newHud->SetSkill2Popup(newPopup.get());
-	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
-	newHud->SetSkill3Popup(newPopup.get());
-	newPopup = std::make_shared<CharacterHUDElements::SkillPopup>();
-	newHud->SetSkill4Popup(newPopup.get());
-
-	// Add the canvas to the skill popup
-	newHud->GetSkill1Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
-	newHud->GetSkill2Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
-	newHud->GetSkill3Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
-	newHud->GetSkill4Popup()->pCanvas = _hudEntity->addComponent<Odyssey::UICanvas>();
-	SkillHoverComponent* hover = _hudEntity->addComponent<SkillHoverComponent>();
-
 	// Set the correct offset position for the skills
 	float xAnchor = _hudPosition.x + 134.0f;
 	float yAnchor = _hudPosition.y + 24.0f;
 
 	// Skill1 Icon
 	newHud->SetSkill1(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Sprite trigger
-	newHud->GetSkill1Popup()->pCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/Guy.png", 128, 128);
-	hover->registerSprite(newHud->GetSkill1(), newHud->GetSkill1Popup()->pCanvas);
 	// Increment the icon
 	xAnchor += 56.5f;
 
 	// Skill2 Icon
 	newHud->SetSkill2(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Sprite trigger
-	hover->registerSprite(newHud->GetSkill2(), newHud->GetSkill2Popup()->pCanvas);
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
 	// Skill3 Icon
 	newHud->SetSkill3(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Sprite trigger
-	hover->registerSprite(newHud->GetSkill3(), newHud->GetSkill3Popup()->pCanvas);
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
 	// Skill4 Icon
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
-	// Sprite trigger
-	hover->registerSprite(newHud->GetSkill4(), newHud->GetSkill4Popup()->pCanvas);
 }
 
 //void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud)

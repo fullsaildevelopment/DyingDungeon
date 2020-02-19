@@ -66,6 +66,7 @@ public: // Functions
 	//Getters
 	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
 	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
+	Odyssey::Entity* GetSkillHoverHUDPrefab(SkillHoverID _hoverHudToGet);
 	Odyssey::Entity* GetImpactIndicatorPrefab();
 	Odyssey::Entity* GetTurnIndicatorPrefab();
 	Odyssey::Entity* GetBloodEffectPrefab();

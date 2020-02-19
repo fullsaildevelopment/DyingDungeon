@@ -10,15 +10,6 @@ class CharacterHUDElements : public Odyssey::Component
 {
 	CLASS_DECLARATION(CharacterHUDElements)
 
-	struct SkillPopup
-	{
-		Odyssey::UICanvas* pCanvas;
-		Odyssey::Text2D* pSkillName;
-		Odyssey::Sprite2D* pSkillImage;
-		Odyssey::Text2D* pSkillManaCost;
-		Odyssey::Text2D* pSkillDescription;
-	};
-
 public:
 	CharacterHUDElements() = default;
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
@@ -51,10 +42,6 @@ public:
 	void SetSkill2(Odyssey::Sprite2D* _sprite) { pSkill2 = _sprite; }
 	void SetSkill3(Odyssey::Sprite2D* _sprite) { pSkill3 = _sprite; }
 	void SetSkill4(Odyssey::Sprite2D* _sprite) { pSkill4 = _sprite; }
-	void SetSkill1Popup(SkillPopup* _skillPopup) { pSkill1Popup = _skillPopup; }
-	void SetSkill2Popup(SkillPopup* _skillPopup) { pSkill2Popup = _skillPopup; }
-	void SetSkill3Popup(SkillPopup* _skillPopup) { pSkill3Popup = _skillPopup; }
-	void SetSkill4Popup(SkillPopup* _skillPopup) { pSkill4Popup = _skillPopup; }
 
 	// Getters
 
@@ -78,10 +65,6 @@ public:
 	Odyssey::Sprite2D* GetSkill2() { return pSkill2; }
 	Odyssey::Sprite2D* GetSkill3() { return pSkill3; }
 	Odyssey::Sprite2D* GetSkill4() { return pSkill4; }
-	SkillPopup* GetSkill1Popup() { return pSkill1Popup; }
-	SkillPopup* GetSkill2Popup() { return pSkill2Popup; }
-	SkillPopup* GetSkill3Popup() { return pSkill3Popup; }
-	SkillPopup* GetSkill4Popup() { return pSkill4Popup; }
 
 	// Change the different elements
 	void ChangePortrait(std::wstring _filename) { pPortrait->setSprite(_filename, pPortrait->getDimensions().x, pPortrait->getDimensions().y); }
@@ -120,10 +103,6 @@ private: //Variables
 	Odyssey::Sprite2D* pSkill2;
 	Odyssey::Sprite2D* pSkill3;
 	Odyssey::Sprite2D* pSkill4;
-	SkillPopup* pSkill1Popup;
-	SkillPopup* pSkill2Popup;
-	SkillPopup* pSkill3Popup;
-	SkillPopup* pSkill4Popup;
 
 	// Status Effects
 	//Odyssey::Sprite2D* pAttackUp;
