@@ -609,7 +609,13 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed, or particle effect 
 		static bool particleTriggerButBetter = false;
 		static bool triggerButBetter = false;
+		static bool soundTriggerButBetter = false;
 
+		if (soundTriggerButBetter == false && mMoves.GetMove()->skill->GetSoundEffectTiming() <= mAnimator->getProgress())
+		{
+			RedAudioManager::Instance().PlaySFX(mMoves.GetMove()->skill->GetSoundEffectName().c_str());
+			soundTriggerButBetter = true;
+		}
 		// Fire particle effects when the timming is right
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
@@ -757,6 +763,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			// Reset static bools
 			triggerButBetter = false;
 			particleTriggerButBetter = false;
+			soundTriggerButBetter = false;
 
 			// Set current state to finished
 			mCurrentState = STATE::FINISHED;
@@ -808,7 +815,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 void EnemyComponent::Die()
 {
 	// Play death sound effect
-	RedAudioManager::Instance().PlaySFX("DeathMeme");
+	RedAudioManager::Instance().PlaySFX(mSoundClips["Death"].c_str());
 
 	// Clear all remaining status effects
 	ClearStatusEffects();

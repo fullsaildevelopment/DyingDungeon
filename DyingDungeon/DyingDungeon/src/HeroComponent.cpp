@@ -1037,7 +1037,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 void HeroComponent::Die()
 {
 	// Play death sound effect
-	RedAudioManager::Instance().PlaySFX("DeathMeme");
+	RedAudioManager::Instance().PlaySFX(mSoundClips["Death"].c_str());
 
 	// Clear all remaining status effects
 	ClearStatusEffects();
