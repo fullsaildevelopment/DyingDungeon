@@ -1003,7 +1003,19 @@ void GameUIManager::UpdateStatsMenu()
 		default:
 			break;
 		}
-		statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setFontSize(30.0f);
+		size_t target_size = StatTracker::Instance().GetTargetList(mStatMenuCurrentLevel, mStatMenuCurrentTurn).size();
+		if (target_size <= 2) 
+		{
+			statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setFontSize(22.0f);
+		}
+		else if(target_size == 3)
+		{
+			statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setFontSize(17.0f);
+		}
+		else 
+		{
+			statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setFontSize(12.0f);
+		}
 		statsMenuCanvas->getElements<Odyssey::Text2D>()[0]->setText(_turnText);
 		statsMenuCanvas->getElements<Odyssey::Text2D>()[2]->setText(L"Level " + std::to_wstring(mStatMenuCurrentLevel));
 		statsMenuCanvas->getElements<Odyssey::Text2D>()[1]->setText(L"Turn " + std::to_wstring(mStatMenuCurrentTurn));
