@@ -111,7 +111,7 @@ int playGame()
 	//_CrtSetBreakAlloc(2034525);
 #endif // _DEBUG
 	// Seed random using time
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
@@ -297,8 +297,8 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
-	UINT rewardsImageWidth = width*0.6;
-	UINT rewardsImageHeight = height*0.6;
+	UINT rewardsImageWidth = width * (UINT)0.6f;
+	UINT rewardsImageHeight = height * (UINT)0.6f;
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 
@@ -357,7 +357,7 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 
 	canvas->setActive(false); // The rewards screen won't show up at the start
-	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4.0f, rewardsImageHeight / 4.0f);
+	StatTracker::Instance().SetCanvas(canvas, static_cast<unsigned int>(rewardsImageHeight / 4), static_cast<unsigned int>(rewardsImageHeight / 4));
 }
 
 void setupTowerManager()

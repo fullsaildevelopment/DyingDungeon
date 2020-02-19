@@ -260,7 +260,7 @@ void TowerManager::CreateBattleInstance()
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-		// Destroy the previous enemy's impact indicator
+		// Destroy the previous enemy's blood particle effect
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous enemies
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
@@ -344,19 +344,27 @@ void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
 
+	//for (int i = 0; i < mPlayerTeam.size(); i++)
+	//{
+	//	if (mPlayerTeam[i] != nullptr)
+	//	{
+	//		// Turn off the previous canvases
+	//		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
+	//		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
+	//	}
+	//}
+
+	// Remove the current enemy team from the scene
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
-		if (mPlayerTeam[i] != nullptr)
-		{
-			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
-			// This will show a sim of entering a new battle
-			mPlayerTeam[i]->getComponent<Character>()->ResetMe();
-			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
-
-			// Turn off the previous canvases
-			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
-			Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
-		}
+		// Destory the previous player's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous player's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous player's blood particle effect
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous player
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 	}
 
 	//// TODO: REFACTOR LATER

@@ -14,6 +14,7 @@ CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
 {
 	mApplication = application;
+	mCurrentTower = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
@@ -130,7 +131,7 @@ void TeamSelectionController::update(double deltaTime)
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::A) && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::S))
 	{
 		GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-		unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+		unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 		SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 		SaveLoad::Instance().SaveLoadOut();
 	}
@@ -444,7 +445,7 @@ void TeamSelectionController::EnterBattle()
 	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
   
@@ -535,7 +536,7 @@ void TeamSelectionController::DecreaseSlot1Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot1Index < 0)
-		mSlot1Index = mSlot1CharacterList.size() - 1;
+		mSlot1Index = (int)mSlot1CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -591,7 +592,7 @@ void TeamSelectionController::DecreaseSlot2Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot2Index < 0)
-		mSlot2Index = mSlot2CharacterList.size() - 1;
+		mSlot2Index = (int)mSlot2CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -647,7 +648,7 @@ void TeamSelectionController::DecreaseSlot3Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot3Index < 0)
-		mSlot3Index = mSlot3CharacterList.size() - 1;
+		mSlot3Index = (int)mSlot3CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -980,7 +981,7 @@ void TeamSelectionController::SaveLoadout1()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_1", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 
@@ -992,7 +993,7 @@ void TeamSelectionController::SaveLoadout2()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_2", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 
@@ -1004,7 +1005,7 @@ void TeamSelectionController::SaveLoadout3()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index,(unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_3", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 

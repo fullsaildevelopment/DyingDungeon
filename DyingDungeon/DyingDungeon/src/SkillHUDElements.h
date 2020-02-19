@@ -40,7 +40,7 @@ public:
 	// Changers
 
 	// Change the different elements
-	void ChangeSkillImage(std::wstring _filename) { mSkillImage->setSprite(_filename, mSkillImage->getDimensions().x, mSkillImage->getDimensions().y); }
+	void ChangeSkillImage(std::wstring _filename) { mSkillImage->setSprite(_filename, (UINT)mSkillImage->getDimensions().x, (UINT)mSkillImage->getDimensions().y); }
 	void ChangeSkillName(std::wstring _name) { mSkillName->setText(_name); }
 	void ChangeManaCost(std::wstring _num) { mManaCost->setText(_num); }
 	void ChangeSkillDescription(std::wstring _desc) { mSkillDescription->setText(_desc); }
@@ -51,14 +51,14 @@ public:
 private: //Variables
 
 	// HUD Position
-	DirectX::XMFLOAT2 pHudPosition;
+	DirectX::XMFLOAT2 pHudPosition = { 0.0f, 0.0f };
 
 	// HUD Elements
-	Odyssey::UICanvas* mCanvas;
-	Odyssey::Sprite2D* mSkillImage;
-	Odyssey::Text2D* mSkillName;
-	Odyssey::Text2D* mManaCost;
-	Odyssey::Text2D* mSkillDescription;
+	Odyssey::UICanvas* mCanvas = nullptr;
+	Odyssey::Sprite2D* mSkillImage = nullptr;
+	Odyssey::Text2D* mSkillName = nullptr;
+	Odyssey::Text2D* mManaCost = nullptr;
+	Odyssey::Text2D* mSkillDescription = nullptr;
 
 private: // Fucntions
 };

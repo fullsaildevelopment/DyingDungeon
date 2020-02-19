@@ -83,10 +83,10 @@ private: // Variables
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 
 	// Holds the tower manager entity
-	Odyssey::Entity* mCurrentTower;
+	Odyssey::Entity* mCurrentTower = nullptr;
 
 	// Hold the first scene
-	Odyssey::Scene* mSceneOne;
+	Odyssey::Scene* mSceneOne = nullptr;
 
 private: // Functions
 	

@@ -21,11 +21,11 @@ public: // Constructors
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual ~TowerManager();
 
-	Odyssey::UICanvas* UI;
-	Odyssey::UICanvas* Rewards;
+	Odyssey::UICanvas* UI = nullptr;
+	Odyssey::UICanvas* Rewards = nullptr;
 
 	// TODO: REFACTOR LATER
-	Odyssey::Scene* scene;
+	Odyssey::Scene* scene = nullptr;
 
 public: // Functions
 
@@ -64,7 +64,7 @@ private: // Varibales
 	bool mUsedBossCheatCode = false;
 
 	//Battle Instance
-	BattleInstance* mCurrentBattle;
+	BattleInstance* mCurrentBattle = nullptr;
 
 	// Vectors
 	EntityList mAllCharacters; // allCharacters will hold all of the game objects that are in the current battle
@@ -75,21 +75,21 @@ private: // Varibales
 	// Queues
 
 	// Entities
-	Odyssey::Entity* mBossCharacter; // This will be the object that is the boss character
-	Odyssey::Entity* tmTurnIndicator; // This will be the object underneath the character who's turn it is
+	Odyssey::Entity* mBossCharacter = nullptr; // This will be the object that is the boss character
+	Odyssey::Entity* tmTurnIndicator = nullptr; // This will be the object underneath the character who's turn it is
 
 	// Ints
-	int mCurrentLevel;
-	int mNumberOfLevels;
+	int mCurrentLevel = 0;
+	int mNumberOfLevels = 0;
 
 	// Floats
-	std::shared_ptr<float> mStatitics;
+	std::shared_ptr<float> mStatitics = std::make_shared<float>();
 
 	// Bools
 	bool mIsPaused = false;
 
 	// Tower State
-	TOWER_STATE mTowerState;
+	TOWER_STATE mTowerState = TOWER_STATE::NOT_IN_BATTLE;
 
 private: // Functions
 	void DestroyBattleInstance();

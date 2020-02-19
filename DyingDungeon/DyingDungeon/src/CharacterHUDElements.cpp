@@ -25,19 +25,19 @@ void CharacterHUDElements::ChangeSkill(Skills* _skill, int _numOfSkill)
 	{
 		case 1:
 			// Set the new sprite image
-			pSkill1->setSprite(_skill->GetSkillIconPath(), pSkill1->getDimensions().x, pSkill1->getDimensions().y);
+			pSkill1->setSprite(_skill->GetSkillIconPath(), (UINT)pSkill1->getDimensions().x, (UINT)pSkill1->getDimensions().y);
 			break;
 		case 2:
 			// Set the new sprite image
-			pSkill2->setSprite(_skill->GetSkillIconPath(), pSkill2->getDimensions().x, pSkill2->getDimensions().y);
+			pSkill2->setSprite(_skill->GetSkillIconPath(), (UINT)pSkill2->getDimensions().x, (UINT)pSkill2->getDimensions().y);
 			break;
 		case 3:
 			// Set the new sprite image
-			pSkill3->setSprite(_skill->GetSkillIconPath(), pSkill3->getDimensions().x, pSkill3->getDimensions().y);
+			pSkill3->setSprite(_skill->GetSkillIconPath(), (UINT)pSkill3->getDimensions().x, (UINT)pSkill3->getDimensions().y);
 			break;
 		case 4:
 			// Set the new sprite image
-			pSkill4->setSprite(_skill->GetSkillIconPath(), pSkill4->getDimensions().x, pSkill4->getDimensions().y);
+			pSkill4->setSprite(_skill->GetSkillIconPath(), (UINT)pSkill4->getDimensions().x, (UINT)pSkill4->getDimensions().y);
 			break;
 		default:
 			break;

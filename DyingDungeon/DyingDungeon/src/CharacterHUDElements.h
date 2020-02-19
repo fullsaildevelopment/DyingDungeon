@@ -67,7 +67,7 @@ public:
 	Odyssey::Sprite2D* GetSkill4() { return pSkill4; }
 
 	// Change the different elements
-	void ChangePortrait(std::wstring _filename) { pPortrait->setSprite(_filename, pPortrait->getDimensions().x, pPortrait->getDimensions().y); }
+	void ChangePortrait(std::wstring _filename) { pPortrait->setSprite(_filename, (UINT)pPortrait->getDimensions().x, (UINT)pPortrait->getDimensions().y); }
 	void ChangeCharacterName(std::wstring _name) { pCharacterName->setText(_name); }
 	void ChangeAttackNumber(std::wstring _num) { pAttackNumber->setText(_num); }
 	void ChangeDefenseNumber(std::wstring _num) { pDefenseNumber->setText(_num); }
@@ -81,28 +81,28 @@ public:
 private: //Variables
 
 	// HUD Position
-	DirectX::XMFLOAT2 pHudPosition;
+	DirectX::XMFLOAT2 pHudPosition = { 0.0f, 0.0f };
 
 	// HUD Elements
-	Odyssey::UICanvas* pCanvas;
-	Odyssey::Sprite2D* pPortrait;
-	Odyssey::Rectangle2D* pXpBar;
-	Odyssey::Text2D* pCharacterName;
-	Odyssey::Text2D* pLevelNumber;
-	Odyssey::Text2D* pAttackNumber;
-	Odyssey::Text2D* pDefenseNumber;
-	Odyssey::Text2D* pSpeedNumber;
-	Odyssey::Rectangle2D* pHealthBar;
-	Odyssey::Text2D* pHealthNumber;
-	Odyssey::Rectangle2D* pManaBar;
-	Odyssey::Text2D* pManaNumber;
-	Odyssey::Text2D* pTurnNumber;
+	Odyssey::UICanvas* pCanvas = nullptr;
+	Odyssey::Sprite2D* pPortrait = nullptr;
+	Odyssey::Rectangle2D* pXpBar = nullptr;
+	Odyssey::Text2D* pCharacterName = nullptr;
+	Odyssey::Text2D* pLevelNumber = nullptr;
+	Odyssey::Text2D* pAttackNumber = nullptr;
+	Odyssey::Text2D* pDefenseNumber = nullptr;
+	Odyssey::Text2D* pSpeedNumber = nullptr;
+	Odyssey::Rectangle2D* pHealthBar = nullptr;
+	Odyssey::Text2D* pHealthNumber = nullptr;
+	Odyssey::Rectangle2D* pManaBar = nullptr;
+	Odyssey::Text2D* pManaNumber = nullptr;
+	Odyssey::Text2D* pTurnNumber = nullptr;
 
 	// Skills
-	Odyssey::Sprite2D* pSkill1;
-	Odyssey::Sprite2D* pSkill2;
-	Odyssey::Sprite2D* pSkill3;
-	Odyssey::Sprite2D* pSkill4;
+	Odyssey::Sprite2D* pSkill1 = nullptr;
+	Odyssey::Sprite2D* pSkill2 = nullptr;
+	Odyssey::Sprite2D* pSkill3 = nullptr;
+	Odyssey::Sprite2D* pSkill4 = nullptr;
 
 	// Status Effects
 	//Odyssey::Sprite2D* pAttackUp;

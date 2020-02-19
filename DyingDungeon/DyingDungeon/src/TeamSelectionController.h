@@ -21,7 +21,7 @@ public:
 	void SetTowerManager(Odyssey::Entity* _towerManager) {mCurrentTower = _towerManager; }
 
 private:
-	Odyssey::Application* mApplication;
+	Odyssey::Application* mApplication = nullptr;
 	// This will let us know when the user has a clicked the enter battle button
 	bool mEnterBattle = true;
 	// Only allow to change scene once
@@ -40,7 +40,7 @@ private:
 	std::vector<DirectX::XMFLOAT2> mHpPopupPositions;
 
 	// Hold the tower manager object
-	Odyssey::Entity* mCurrentTower;
+	Odyssey::Entity* mCurrentTower = nullptr;
 
 	// These vectors will hold the character list for each slot
 	std::vector<Odyssey::Entity*> mSlot1CharacterList;
