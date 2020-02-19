@@ -89,7 +89,6 @@ void Character::TakeDamage(float dmg)
 		}
 		else
 		{
-			(*it)->Remove();
 			it = mSheilds.erase(it);
 		}
 	}
