@@ -11,6 +11,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	m_segmented = false;
 	m_start = 0;
 	m_volume = 500;
+	m_personal_volume = 1000;
 
 	Open();
 	SetVolume(m_volume);
@@ -430,13 +431,13 @@ void RedAudio::SeekEnd()
 void RedAudio::SetVolume(unsigned int volume)
 {
 	//Open();
-	m_volume = static_cast<float>(volume /1000.0f) * 1000;
+	m_volume = static_cast<float>(volume /1000.0f) * m_personal_volume;
 	LPTSTR out_string = LPTSTR(new char[60]);
 
 	std::string cmd = "setaudio ";
 	cmd.append(m_alias);
 	cmd.append(" volume to ");
-	cmd.append(std::to_string(volume));
+	cmd.append(std::to_string(m_volume));
 	cmd.append(" wait");
 	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
 	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
@@ -458,7 +459,33 @@ void RedAudio::SetVolume(unsigned int volume)
 
 void RedAudio::SetPersonalVolume(unsigned int volume)
 {
+	float m_master_volume = (static_cast<float>(m_volume) / static_cast<float>(m_personal_volume));
 	m_personal_volume = volume;
+	m_volume = m_master_volume * m_personal_volume;
+
+	LPTSTR out_string = LPTSTR(new char[60]);
+
+	std::string cmd = "setaudio ";
+	cmd.append(m_alias);
+	cmd.append(" volume to ");
+	cmd.append(std::to_string(m_volume));
+	cmd.append(" wait");
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
+#ifdef DEBUG_AUDIO_CONSOLE_OUT
+	if (strcmp((const char*)out_string, "") != 0) {
+		LPTSTR out_error = LPTSTR(new char[45]);
+		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+	}
+#endif
+	if (m_alias == "BackgroundBattle")
+	{
+		int i = 0;
+	}
+	cmd.clear();
+	delete[] in_cmd;
+	delete[] out_string;
 }
 
 unsigned int RedAudio::GetVolume()
