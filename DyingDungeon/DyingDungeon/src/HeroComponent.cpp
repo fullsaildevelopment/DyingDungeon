@@ -145,20 +145,24 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 12.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
+		mSkillList[0]->SetSoundEffect("PaladinAttack",0.25f);
 		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 12 damage provoking him to hit you. Restores 15 mana.");
 		// Skill 2
 		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 30.0f, 35.0f, 10.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_2.png");
+		mSkillList[1]->SetSoundEffect("PaladinAttack",0.25f);
 		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
+		mSkillList[2]->SetSoundEffect("SpellCasting",0.25f);
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
 		// Skill 4
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_4.png");
+		mSkillList[3]->SetSoundEffect("SpellCasting", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"Protects all allies from harm granting them 50% increased defense 3 turns. Costs 15 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -252,25 +256,29 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Basic attack
+		// Skill 1
 		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
+		mSkillList[0]->SetSoundEffect("MagicWoosh", 0.25f);
 		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
-		// Wind Slash, aoe dps, speed down 
+		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 15.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_2.png");
+		mSkillList[1]->SetSoundEffect("MagicWoosh", 0.25f);
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 15 mana.");
-		// Fire sTrom BIIIIGGGGG DPS with bleed
+		// Skill 3
 		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 30.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_3.png");
+		mSkillList[2]->SetSoundEffect("LargeFireball", 0.25f);
 		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
-		// Lighting Bolt BIGGGGG siongle target dps
+		// Skill 4
 		temp = std::make_shared<Stun>(1,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
+		mSkillList[3]->SetSoundEffect("MagicZap", 0.25f);
 		mSkillList[3]->SetStatusChance(0.33f);
 		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 30 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,12 +370,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Spd, nullptr); 
 		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_1.png");
+		mSkillList[0]->SetSoundEffect("ArrowReleaseHit", 0.25f);
 		mSkillList[0]->SetStatusChance(0.25f);
 		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage, with a 25% chance to inflict a 50% speed down. Returns 10 mana.");
 		// Skill 2
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_2.png");
+		mSkillList[1]->SetSoundEffect("", 0.25f);
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 15 mana.");
 		// Skill 3
@@ -375,11 +385,13 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 35.0f));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_3.png");
+		mSkillList[2]->SetSoundEffect("", 0.25f);
 		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving a ally hope, healing for 35 health, and giving a 30% attack up. Costs 20 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
+		mSkillList[3]->SetSoundEffect("MagicalVanish", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, ridding them of any harmful status effects. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -483,22 +495,26 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Skill 1
 		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
+		mSkillList[0]->SetSoundEffect("", 0.25f);
 		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 25.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
+		mSkillList[1]->SetSoundEffect("", 0.25f);
 		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense 50% and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_3.png");
+		mSkillList[2]->SetSoundEffect("", 0.25f);
 		mSkillList[2]->SetStatusChance(0.75f);
 		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit with a 75% chance to provoke. Cost 15 mana.");
 		// Skill 4 
 		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 45.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
+		mSkillList[3]->SetSoundEffect("", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack by 33%, hitting target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
@@ -602,22 +618,26 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
+		mSkillList[0]->SetSoundEffect("", 0.25f);
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
+		mSkillList[1]->SetSoundEffect("", 0.25f);
 		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
+		mSkillList[2]->SetSoundEffect("", 0.25f);
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
+		mSkillList[3]->SetSoundEffect("", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
@@ -807,6 +827,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed, or particle effect 
 		static bool particleTrigger = false;
 		static bool animeTrigger = false;
+		static bool soundTrigger = false;
+
+		if (soundTrigger == false && mCurrentSkill->GetSoundEffectTiming() <= mAnimator->getProgress())
+		{
+			RedAudioManager::Instance().PlaySFX(mCurrentSkill->GetSoundEffectName().c_str());
+			soundTrigger = true;
+		}
 
 		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
@@ -952,6 +979,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			// Reset static bools
 			animeTrigger = false;
 			particleTrigger = false;
+			soundTrigger = false;
 
 			// Set this characters state to finished unless im cheating
 			if (!mIsCheating)

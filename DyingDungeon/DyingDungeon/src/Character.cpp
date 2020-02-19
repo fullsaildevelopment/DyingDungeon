@@ -688,3 +688,13 @@ unsigned int Character::GetHudIndex()
 {
 	return mHudIndex;
 }
+
+void Character::AddSoundClip(std::string soundKey, std::string newSoundName)
+{
+	mSoundClips[soundKey] = newSoundName;
+}
+
+std::string Character::GetSoundClipName(std::string soundKey)
+{
+	return mSoundClips[soundKey];
+}
