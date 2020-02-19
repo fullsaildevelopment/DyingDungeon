@@ -9,6 +9,7 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 	mRecipient = target;
 	mProvoker = provoker;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Provoke.png";
 }
 
 Provoked::~Provoked()

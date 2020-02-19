@@ -8,6 +8,7 @@ Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Bleed.png";
 }
 
 Bleed::~Bleed()
