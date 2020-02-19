@@ -10,6 +10,7 @@ class StatusEffect
 	// public and private variables
 public:
 protected:
+	// Id for what status effect it is
 	EFFECTTYPE mTypeId;
 	// How much stat will be affected
 	float mAmountOfEffect;
@@ -19,6 +20,8 @@ protected:
 	Character* mRecipient;
 	// What stat will be affected
 	STATS mAffectedStatId;
+	// The Icon sprite for the effect
+	std::wstring mEffectIconName;
 private:
 	// public and private functions
 public:
@@ -31,6 +34,10 @@ public:
 	virtual void Use() = 0;
 	// TypeId functions
 	EFFECTTYPE GetTypeId();
+	// Gets the path for the statusEffects icon
+	std::wstring GetIcon();
+	// Set the path for the statuseffect
+	void SetIcon(std::wstring newIcon);
 	// mAffectedStatFunc
 	STATS GetAffectedStatId();
 	//  mDuration functions
