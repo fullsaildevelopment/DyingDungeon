@@ -133,6 +133,9 @@ public:
 	// Sets the characters name 
 	void SetName(std::wstring newName);
 
+	// Gets the characters theme color
+	DirectX::XMFLOAT3 GetThemeColor();
+
 	// Resets the characters
 	void ResetMe();
 
@@ -262,6 +265,9 @@ protected:
 
 	// The sub-name for the character
 	std::wstring mSubName;
+
+	// The theme color for the character
+	DirectX::XMFLOAT3 mThemeColor;
 
 	// Name of file path for character portrait
 	std::wstring mPortrait;

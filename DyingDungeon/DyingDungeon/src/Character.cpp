@@ -344,6 +344,11 @@ void Character::SetName(std::wstring newName)
 	mName = newName;
 }
 
+DirectX::XMFLOAT3 Character::GetThemeColor()
+{
+	return mThemeColor;
+}
+
 // Resets the character back to its base
 void Character::ResetMe()
 {

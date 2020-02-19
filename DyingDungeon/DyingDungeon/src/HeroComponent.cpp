@@ -38,6 +38,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
 	mIsCheating = false;
+	mThemeColor = { 0.0f,0.0f,0.0f };
 	////////////////////////////////////////////////
 
 	// Temp variable for creating status effects
@@ -62,6 +63,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the portaits path
 		mPortrait = L"assets/images/PaladinPortrait.jpg";
+
+		// Set the characters theme color
+		mThemeColor = {255.0f,203.0f,31.0f};
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +178,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the portaits path
 		mPortrait = L"assets/images/MagePortrait.jpg";
+		
+		// Set the characters theme color
+		mThemeColor = { 31.0f, 255.0f, 203.0f };
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -285,6 +292,9 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the portaits path
 		mPortrait = L"assets/images/BardPortrait.png";
 
+		// Set the characters theme color
+		mThemeColor = { 31.0f, 255.0f, 75.0f };
+
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
 
@@ -389,6 +399,22 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the portaits path
 		mPortrait = L"assets/images/WarriorPortrait.png";
 
+		// Set the characters theme color
+		mThemeColor = { 31.0f, 255.0f, 203.0f };
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 200.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 75.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 40.0f;
+		mBaseDefense = mDefense = 50.0f;
+		mBaseSpeed = mSpeed = 30.0f;
+		////////////////////////////////////
+
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -452,19 +478,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mDescription = L"The warrior is beefy and strong. Use his nearly endless pool of health to soak up raw damage, while dealing out debilitating  attacks.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 200.0f;
-
-		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 75.0f;
-
-		// Set the stats for the character //
-		////////////////////////////////////
-		mBaseAttack = mAttack = 40.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 30.0f;
-		////////////////////////////////////
-
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
@@ -503,6 +516,22 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the portaits path
 		mPortrait = L"assets/images/Gordon.jpg";
+
+		// Set the characters theme color
+		mThemeColor = { 255.0f, 255.0f, 255.0f };
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 150.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 80.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 70.0f;
+		////////////////////////////////////
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,19 +595,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		////////////////////////////////////////////////////////////////////////////////////////////
 		mDescription = L"The monk works to cripple the enemy through multiple types of debuffs. The Monk has a high damage and speed but low defensive stats, excelling at damage output and team utility.";
 		////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 150.0f;
-
-		// Set the base Mana and current Mana
-		mBaseMaxMana = mCurrentMana = 100.0f;
-
-		// Set the stats for the character //
-		////////////////////////////////////
-		mBaseAttack = mAttack = 80.0f;
-		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 70.0f;
-		////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
