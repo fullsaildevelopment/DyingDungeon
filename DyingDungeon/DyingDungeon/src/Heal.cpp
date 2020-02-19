@@ -43,7 +43,7 @@ void Heal::Use(Character& caster, Character& target)
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));
 
 	// Play audio "heal" sound effect
-	RedAudioManager::Instance().PlaySFX("Healing"); 
+	RedAudioManager::Instance().PlaySFX(mSoundEffectPath); 
 
 	// If i have a status effect to apply, then apply it
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)

@@ -35,6 +35,8 @@ protected:
 	std::wstring mSkillName;
 	// Animation ID
 	std::string mAnimationId;
+	// Sound Effect
+	std::string mSoundEffectPath;
 	// Status Effect Attached to skill
 	std::shared_ptr<StatusEffect> mStatusEffect;
 	// Particle effect if the skill has it 
@@ -66,6 +68,10 @@ public:
 	std::wstring GetSkillName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
+	// Get the sound effect path
+	std::string GetSoundEffectName();
+	// Set sound effect name
+	void SetSoundEffect(std::string newSoundEffect);
 	// Get TypeID
 	GameplayTypes::SKILLTYPE GetSkillTypeId();
 	// Get isAOE
