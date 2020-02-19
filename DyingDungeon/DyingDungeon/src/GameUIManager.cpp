@@ -1900,7 +1900,50 @@ void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, S
 	}
 	case GameplayTypes::SKILLTYPE::BUFF:
 	{
-		newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+		switch (skill->GetStatusEffect()->GetTypeId())
+		{
+		case EFFECTTYPE::Bleed:
+		{
+			newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::Regen:
+		{
+			newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::StatUp:
+		{
+			newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::StatDown:
+		{
+			newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::Stun:
+		{
+			newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::Shield:
+		{
+			newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::Provoke:
+		{
+			newCombatLogColor = { 255.0f, 0.0f, 0.0f };
+			break;
+		}
+		case EFFECTTYPE::Clense:
+		{
+			newCombatLogColor = { 0.0f, 255.0f, 0.0f };
+			break;
+		}
+		}
+		//newCombatLogColor = { 0.0f, 255.0f, 0.0f };
 		break;
 	}
 	default:
@@ -1971,7 +2014,7 @@ void GameUIManager::UpdateCombatLogText(float damage)
 		}
 	}
 
-	mBattleLogVec[0]->setText(newText);
 	mBattleLogVec[0]->setColor(newCombatLogColor);
+	mBattleLogVec[0]->setText(newText);
 	
 }

@@ -29,6 +29,9 @@ void AiKnowledge::UpdatePreviousMoves(Skills* _skill, Character* _target)
 
 AiKnowledge::Move* AiKnowledge::GetMostRecentMove()
 {
+	if (previousMoves.size() < 1)
+		return nullptr;
+
 	return previousMoves[0];
 }
 

@@ -20,14 +20,18 @@ public:
 private: 
 	AiKnowledge() { }
 
-//Functions
+// Functions
 public:
-	//Update previous moves. Only stores the past 4 moves.
+	// Update previous moves. Only stores the past 4 moves.
 	void UpdatePreviousMoves(Skills* _skill, Character* _target);
+
+	// Gets the most recent move which is at index 0. If it does not exist it return nullptr
 	AiKnowledge::Move* GetMostRecentMove();
+
+	// Returns the move at that index. If it does not exist it return nullptr
 	AiKnowledge::Move* GetMoveAtIndex(int _index);
 
-//Variables
+// Variables
 private:
 	std::vector<AiKnowledge::Move*> previousMoves;
 
