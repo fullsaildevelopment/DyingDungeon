@@ -187,31 +187,43 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 2:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
+				SkeletonDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 3:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
+				SkeletonDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 4:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
+				SkeletonDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 5:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
+				SkeletonDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
