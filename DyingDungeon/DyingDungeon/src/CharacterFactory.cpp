@@ -52,6 +52,21 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	// Add the new character to the prefab map
 	mCharacterPrefabMap[CharacterFactory::Skeleton] = newCharacter;
 
+	// Create the summoner prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Summoner);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Summoner] = newCharacter;
+	
+	// Create the melee demon prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::MeleeDemon);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::MeleeDemon] = newCharacter;
+	
+	// Create the caster demon prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::CasterDemon);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::CasterDemon] = newCharacter;
+
 	// Create the skeleton prefab
 	newCharacter = CreateCharacterPrefab(CharacterOptions::Ganfaul);
 	// Add the new character to the prefab map
@@ -363,6 +378,57 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			}
 
 			characterName = L"Skeleton";
+			break;
+		}
+		case Summoner:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Summoner);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
+			break;
+		}
+		case MeleeDemon:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::MeleeDemon);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
+			break;
+		}
+		case CasterDemon:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::CasterDemon);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
 			break;
 		}
 		case Ganfaul:

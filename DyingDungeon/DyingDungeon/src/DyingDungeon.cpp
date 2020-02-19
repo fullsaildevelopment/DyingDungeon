@@ -404,7 +404,7 @@ void setupEnemiesToCreate()
 		// Level One Enemies
 		TeamManager::EnemySetups levelOneEnemy;
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Summoner;
 		levelOneEnemy.pPosition = leftPosition;
 		levelOneEnemy.pRotation = leftRotation;
 		levelOneEnemy.pHudPosition = leftHudPosition;
@@ -413,7 +413,7 @@ void setupEnemiesToCreate()
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
 		levelOneEnemy.pHudPosition = middleHudPosition;
@@ -422,7 +422,7 @@ void setupEnemiesToCreate()
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
 		levelOneEnemy.pPosition = rightPosition;
 		levelOneEnemy.pRotation = rightRotation;
 		levelOneEnemy.pHudPosition = rightHudPosition;

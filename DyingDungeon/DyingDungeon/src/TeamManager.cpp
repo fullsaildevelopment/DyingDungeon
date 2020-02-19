@@ -55,6 +55,27 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
 				break;
+			case EnemyType::Summoner:
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Summoner);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
+				break;
+			case EnemyType::MeleeDemon:
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::MeleeDemon);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
+				break;
+			case EnemyType::CasterDemon:
+				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::CasterDemon);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
+				// Spawn Enemy HUD
+				prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, position, rotation));
+				break;
 			case EnemyType::Ganfaul:
 				prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Ganfaul);
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newCharacter, position, rotation));
