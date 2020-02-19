@@ -177,7 +177,14 @@ void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 		}
 		else if (AudioType(avEvent->audioType) == AudioType::None)
 		{
-			m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(avEvent->volumeLevel * static_cast<float>(m_volume[0] / 1000.0f)));
+			if (m_audioIdentifiers[i].first == AudioType::None)
+			{
+				m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(m_volume[static_cast<unsigned int>(m_audioIdentifiers[i].first) + 1] * static_cast<float>(m_volume[0] / 1000.0f)));
+			}
+			else
+			{
+				m_audioFiles[i].first.SetVolume(m_volume[static_cast<unsigned int>(m_audioIdentifiers[i].first) + 1]);
+			}
 		}
 	}
 }
