@@ -130,7 +130,7 @@ bool RedAudioManager::SetVolume(const char* alias, unsigned int volume)
 	}
 	else 
 	{
-		FindAudio(alias)->SetVolume(volume);
+		FindAudio(alias)->SetPersonalVolume(volume);
 		return true;
 	}
 }

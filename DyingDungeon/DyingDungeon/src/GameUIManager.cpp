@@ -1065,26 +1065,54 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	// Create the volume bar background
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x - 2.5f, position.y - 2.5f), color, width + 5.0f, height + 5.0f);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x - 2.5f, position.y - 2.5f + 75.0f), color, width + 5.0f, height + 5.0f);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x - 2.5f, position.y - 2.5f + 150.0f), color, width + 5.0f, height + 5.0f);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x - 2.5f, position.y - 2.5f + 225.0f), color, width + 5.0f, height + 5.0f);
 	color = { 70.0f, 70.0f, 70.0f, 1.0f };
 	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
 	// Add the volume bar to the canvas
 	color = { 50.0f, 180.0f, 255.0f, 1.0f };
-	mVolumeBar = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mVolumeBar[0] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mVolumeBar[1] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+	mVolumeBar[2] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+	mVolumeBar[3] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
 	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
-	mVolumeBar->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+	mVolumeBar[0]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+	mVolumeBar[3]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
+	mVolumeBar[1]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
+	mVolumeBar[2]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
 
 	// Create the plus and minus symbols that the user can click on to adjust the volume
 	UINT imageWidth = 32;
 	UINT imageHeight = 32;
 	position.x -= static_cast<float>(imageWidth) * 1.5f;
 	position.y -= 4.0f;
+
 	// Minus Symbol
-	mMinusImage = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage->registerCallback("onMouseClick", this, &GameUIManager::DecreaseVolume);
+	mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+	mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+	mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+	mMinusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+	
+	mMinusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
+	mMinusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
+	mMinusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
+	mMinusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+
 	// Plus Symbol
 	position.x += (static_cast<float>(imageWidth) * 1.5f) + width + (static_cast<float>(imageWidth) / 2.0f);
-	mPlusImage = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage->registerCallback("onMouseClick", this, &GameUIManager::IncreaseVolume);
+	mPlusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	mPlusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	mPlusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	mPlusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	
+	mPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
+	mPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
+	mPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
+	mPlusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
 
 	// Create the options back button
 	position = originalPosition;
@@ -1800,24 +1828,84 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
 
-void GameUIManager::DecreaseVolume()
+void GameUIManager::DecreaseMasterVolume()
 {
 	// Decrease volume with Red's audio manager
 	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None) - 50);
 
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
-	mVolumeBar->setFill(volumeRatio);
+	mVolumeBar[0]->setFill(volumeRatio);
 }
 
-void GameUIManager::IncreaseVolume()
+void GameUIManager::DecreaseBackgroundVolume()
+{
+	// Decrease volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background) - 50, RedAudioManager::AudioType::Background);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
+	mVolumeBar[1]->setFill(volumeRatio);
+}
+
+void GameUIManager::DecreaseSFXVolume()
+{
+	// Decrease volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX) - 50, RedAudioManager::AudioType::SFX);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
+	mVolumeBar[2]->setFill(volumeRatio);
+}
+
+void GameUIManager::DecreaseDialogVolume()
+{
+	// Decrease volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog) - 50, RedAudioManager::AudioType::Dialog);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
+	mVolumeBar[3]->setFill(volumeRatio);
+}
+
+void GameUIManager::IncreaseMasterVolume()
 {
 	// Increase volume with Red's audio manager
 	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None) + 50);
 
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
-	mVolumeBar->setFill(volumeRatio);
+	mVolumeBar[0]->setFill(volumeRatio);
+}
+
+void GameUIManager::IncreaseBackgroundVolume()
+{
+	// Increase volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background) + 50, RedAudioManager::AudioType::Background);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
+	mVolumeBar[1]->setFill(volumeRatio);
+}
+
+void GameUIManager::IncreaseSFXVolume()
+{
+	// Increase volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX) + 50, RedAudioManager::AudioType::SFX);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
+	mVolumeBar[2]->setFill(volumeRatio);
+}
+
+void GameUIManager::IncreaseDialogVolume()
+{
+	// Increase volume with Red's audio manager
+	RedAudioManager::Instance().SetMasterVolume(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog) + 50, RedAudioManager::AudioType::Dialog);
+
+	// Set the fill of the volume bar
+	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
+	mVolumeBar[3]->setFill(volumeRatio);
 }
 
 Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)

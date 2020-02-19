@@ -339,9 +339,9 @@ private: // Varibales
 	// Options Menu Items
 	Odyssey::Text2D* mOptionsTitle;
 	Odyssey::Text2D* mVolumeText;
-	Odyssey::Rectangle2D* mVolumeBar;
-	Odyssey::Sprite2D* mPlusImage;
-	Odyssey::Sprite2D* mMinusImage;
+	Odyssey::Rectangle2D* mVolumeBar[4];
+	Odyssey::Sprite2D* mPlusImage[4];
+	Odyssey::Sprite2D* mMinusImage[4];
 	Odyssey::Text2D* mBackButtonText;
 
 	//Stats Menu Items
@@ -391,8 +391,17 @@ private: // Varibales
 private: // Functions
 	void CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo);
 	void OptionsBackButton();
-	void DecreaseVolume();
-	void IncreaseVolume();
+	void DecreaseMasterVolume();
+	void DecreaseBackgroundVolume();
+	void DecreaseSFXVolume();
+	void DecreaseDialogVolume();
+	void IncreaseMasterVolume();
+
+	void IncreaseBackgroundVolume();
+
+	void IncreaseSFXVolume();
+
+	void IncreaseDialogVolume();
 
 	// Skill Icon Creation Fucntions
 	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hudPosition);
