@@ -17,42 +17,6 @@ public:
 		Paladin, Mage
 	};
 
-	// This struct will contain all of the UI elements associated with the character HUD
-	//struct CharacterHUD
-	//{
-	//	Odyssey::UICanvas* pCanvas;
-	//	Odyssey::Sprite2D* pPortrait;
-	//	Odyssey::Rectangle2D* pXpBar;
-	//	Odyssey::Text2D* pCharacterName;
-	//	Odyssey::Text2D* pLevelNumber;
-	//	Odyssey::Text2D* pAttackNumber;
-	//	Odyssey::Text2D* pDefenseNumber;
-	//	Odyssey::Text2D* pSpeedNumber;
-	//	Odyssey::Rectangle2D* pHealthBar;
-	//	Odyssey::Text2D* pHealthNumber;
-	//	Odyssey::Rectangle2D* pManaBar;
-	//	Odyssey::Text2D* pManaNumber;
-	//	Odyssey::Text2D* pTurnNumber;
-	//
-	//	// Skills
-	//	Odyssey::Sprite2D* pSkill1;
-	//	Odyssey::UICanvas* pSkill1Canvas;
-	//	Odyssey::Sprite2D* pSkill2;
-	//	Odyssey::UICanvas* pSkill2Canvas;
-	//	Odyssey::Sprite2D* pSkill3;
-	//	Odyssey::UICanvas* pSkill3Canvas;
-	//	Odyssey::Sprite2D* pSkill4;
-	//	Odyssey::UICanvas* pSkill4Canvas;
-	//
-	//	// Status Effects
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//};
-
 	// This struct will hold the elements needed in order to animate the health and mana bars
 	struct AnimatingBar
 	{
@@ -243,6 +207,7 @@ public: // Functions
 
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() { return mCharacterHudList; }
+	void ClearBarsToUpdateList() { mUpdateCharacterBarsList.clear(); }
 
 	//Setters
 	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }
