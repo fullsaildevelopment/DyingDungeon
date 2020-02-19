@@ -344,17 +344,7 @@ void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
 
-	//for (int i = 0; i < mPlayerTeam.size(); i++)
-	//{
-	//	if (mPlayerTeam[i] != nullptr)
-	//	{
-	//		// Turn off the previous canvases
-	//		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
-	//		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
-	//	}
-	//}
-
-	// Remove the current enemy team from the scene
+	// Remove the current player team from the scene
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		// Destory the previous player's UI Elements
@@ -367,14 +357,18 @@ void TowerManager::GoToMainMenu()
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 	}
 
-	//// TODO: REFACTOR LATER
-	//for (int i = 0; i < mEnemyTeam.size(); i++)
-	//{
-	//	if (mEnemyTeam[i])
-	//	{
-	//		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
-	//	}
-	//}
+	// Remove the current enemy team from the scene
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		// Destory the previous enemy's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous enemy's blood particle effect
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous enemies
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);

@@ -297,8 +297,8 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
-	UINT rewardsImageWidth = width * (UINT)0.6f;
-	UINT rewardsImageHeight = height * (UINT)0.6f;
+	UINT rewardsImageWidth = width * 0.6f;
+	UINT rewardsImageHeight = height * 0.6f;
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 
