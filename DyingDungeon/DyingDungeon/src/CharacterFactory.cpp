@@ -564,14 +564,13 @@ Odyssey::Entity* CharacterFactory::CreateBloodEffectPrefab()
 	blood->setColor(DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	blood->setLifetime(0.5f, 0.75f);
 	blood->setParticleCount(150, 300);
-	blood->setRateOverTime(150);
+	blood->setEmissionOverLifetime(150);
 	blood->setDuration(1.25);
 	blood->setSpeed(5.0f, 7.5f);
 	blood->setSize(0.25f, 0.5f);
 	blood->setGravity(12.5f);
 	blood->setLooping(false);
 	blood->setShape(Odyssey::SpherePS(0.0f, 2.5f, 0.0f, 0.2f));
-	blood->stop();
 	return bloodEffect;
 }
 
@@ -592,13 +591,12 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _s
 	fireButBetter->setColor(DirectX::XMFLOAT3(0.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fireButBetter->setLifetime(0.5f, 1.0f);
 	fireButBetter->setParticleCount(100, 150);
-	fireButBetter->setRateOverTime(125);
+	fireButBetter->setEmissionOverLifetime(125);
 	fireButBetter->setDuration(7.0);
 	fireButBetter->setSpeed(1.0f, 1.5f);
 	fireButBetter->setSize(1.0f, 1.5f);
 	fireButBetter->setLooping(false);
 	fireButBetter->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.05f));
-	fireButBetter->stop();
 
 	// TODO: VERIFY CHANGE
 	gFireBall->setActive(false);
@@ -618,14 +616,13 @@ Odyssey::ParticleSystem* CharacterFactory::setUpFireStorm(Odyssey::Scene* _scene
 	fireStorm->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fireStorm->setLifetime(1.0f, 1.5f);
 	fireStorm->setParticleCount(100, 350);
-	fireStorm->setRateOverTime(150);
+	fireStorm->setEmissionOverLifetime(150);
 	fireStorm->setDuration(2.0f);
 	fireStorm->setSpeed(2.5f, 3.5f);
 	fireStorm->setSize(4.0f, 4.0f);
 	fireStorm->setLooping(false);
 	fireStorm->setGravity(5.0f);
 	fireStorm->setShape(Odyssey::BoxPS(-1.0f, 0.5f, 0.0f, 13.5f, 1.0f, 5.0f));
-	fireStorm->stop();
 	return fireStorm;
 }
 
@@ -638,13 +635,12 @@ Odyssey::ParticleSystem* CharacterFactory::setupBlood(Odyssey::Scene* _sceneToAd
 	blood->setColor(DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	blood->setLifetime(0.5f, 0.75f);
 	blood->setParticleCount(150, 300);
-	blood->setRateOverTime(150);
+	blood->setEmissionOverLifetime(150);
 	blood->setDuration(1.25);
 	blood->setSpeed(5.0f, 7.5f);
 	blood->setSize(0.25f, 0.5f);
 	blood->setGravity(12.5f);
 	blood->setLooping(false);
 	blood->setShape(Odyssey::SpherePS(0.0f, 2.5f, 0.0f, 0.2f));
-	blood->stop();
 	return blood;
 }

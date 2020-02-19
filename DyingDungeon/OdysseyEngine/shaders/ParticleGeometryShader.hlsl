@@ -3,12 +3,17 @@
 struct Particle
 {
 	float4 color;
+	// 12 bytes
 	float3 position;
     float lifetime;
+	// 12 bytes
     float3 velocity;
     float startLifetime;
+	// 12 bytes
 	float size;
+	float sizeLifetime;
 	bool active;
+	// 12 bytes
 };
 
 struct GSOutput
@@ -44,14 +49,17 @@ void main(point uint input[1] : PRIMITIVE_ID, inout TriangleStream<GSOutput> out
     float3 camRight = view[0].xyz;
     float3 camUp = view[1].xyz;
 
+	// Rotating the transform should only change the velocity fwd, right and up for particle creation velocity
+	// Rotating over lifetime will rotate the particle's world matrix.
+	// 
 	GSOutput vOut[4];
 	for (int i = 0; i < 4; i++)
 	{
-		float4 pos = float4(p.position + (camRight * offsets[i].x * (p.size * 0.5f)) + (camUp * offsets[i].y * (p.size * 0.5f)), 1.0f);
-		vOut[i].position = mul(world, pos);
+		vOut[i].position = float4(p.position + (camRight * offsets[i].x * (p.size * 0.5f)) + (camUp * offsets[i].y * (p.size * 0.5f)), 1.0f);
+		//vOut[i].position = mul(world, pos);
 		vOut[i].position = mul(viewProj, vOut[i].position);
 		vOut[i].color = p.color;
-        vOut[i].tex = tex[i];
+		vOut[i].tex = tex[i];
         vOut[i].active = p.active;
     }
 
