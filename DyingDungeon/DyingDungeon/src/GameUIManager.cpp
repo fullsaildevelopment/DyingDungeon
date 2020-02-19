@@ -1643,9 +1643,7 @@ void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, fl
 	healthBarToUpdate->pTookDamage = true;
 	// Check if they were actually granted health
 	if (_newHpAmount > _previousHpAmount)
-	{
 		healthBarToUpdate->pTookDamage = false;
-	}
 
 	// Add the health bar to the update list if there is any change
 	mUpdateCharacterBarsList.push_back(healthBarToUpdate);
@@ -1691,6 +1689,12 @@ void GameUIManager::UpdateCharacterBars(float _deltaTime)
 		float currValue = mUpdateCharacterBarsList[i]->pCurrValue;
 		// Get the target amount of the bar
 		float targetValue = mUpdateCharacterBarsList[i]->pNewValue;
+
+		// Make sure I'm clamping the target value to lerp to
+		if (targetValue > maxValue)
+			targetValue = maxValue;
+		else if (targetValue < 0.0f)
+			targetValue = 0.0f;
 
 		// Check if the bar is done animating
 		if (mUpdateCharacterBarsList[i]->pTookDamage)

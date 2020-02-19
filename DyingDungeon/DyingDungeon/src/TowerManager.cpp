@@ -90,16 +90,6 @@ void TowerManager::update(double deltaTime)
 		DestroyBattleInstance();
 		// Set the game to in rewards 
 		mTowerState = IN_REWARDS;
-
-		// Remove the current enemy team from the scene
-		for (int i = 0; i < mEnemyTeam.size(); i++)
-		{
-			// Turn off model
-			mEnemyTeam[i]->setActive(false);
-			// Turn off the HUD UI
-			GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
-		}
-
 		// Set the tower level to the last level which is the boss
 		mCurrentLevel = mNumberOfLevels;
 		// Set the cheat code bool
@@ -122,7 +112,7 @@ void TowerManager::update(double deltaTime)
 	if (!mIsPaused)
 	{
 		// Update the health popups
-		GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
+		//GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
 		// Update the UI bars
 		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
@@ -266,10 +256,14 @@ void TowerManager::CreateBattleInstance()
 	// Remove the current enemy team from the scene
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
-		// Turn off model
-		mEnemyTeam[i]->setActive(false);
-		// Turn off the HUD UI
-		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetCanvas()->setActive(false);
+		// Destory the previous enemy's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous enemies
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
 	}
 	
 	// Create the new enemy team before creating the battle
@@ -307,6 +301,10 @@ void TowerManager::DestroyBattleInstance()
 	// Destory pointer and set it to a nullptr
 	if (mCurrentBattle)
 	{
+		// Destroy the current mTurnIndicator in the current battle
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mCurrentBattle->GetTurnIndicator()));
+
+		// Delete the current battle
 		delete mCurrentBattle;
 		mCurrentBattle = nullptr;
 	}

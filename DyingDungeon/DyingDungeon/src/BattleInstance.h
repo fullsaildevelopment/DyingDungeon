@@ -29,6 +29,9 @@ public: // Functions
 	//Getters
 	int GetCurrentRound() { return mCurrentRound; }
 
+	// Get the turn indicator entity
+	Odyssey::Entity* GetTurnIndicator() { return mTurnIndicator; }
+
 	//Setters
 
 private: // Varibales
