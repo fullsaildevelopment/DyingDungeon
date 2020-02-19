@@ -52,6 +52,21 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	// Add the new character to the prefab map
 	mCharacterPrefabMap[CharacterFactory::Skeleton] = newCharacter;
 
+	// Create the summoner prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::Summoner);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::Summoner] = newCharacter;
+	
+	// Create the melee demon prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::MeleeDemon);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::MeleeDemon] = newCharacter;
+	
+	// Create the caster demon prefab
+	newCharacter = CreateCharacterPrefab(CharacterOptions::CasterDemon);
+	// Add the new character to the prefab map
+	mCharacterPrefabMap[CharacterFactory::CasterDemon] = newCharacter;
+
 	// Create the skeleton prefab
 	newCharacter = CreateCharacterPrefab(CharacterOptions::Ganfaul);
 	// Add the new character to the prefab map
@@ -88,7 +103,19 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	mHudPrefabMap[HudID::EnemyRight] = enemyHud;
 
 	// Create the Left Skill Hover Prefab
-	Odyssey::Entity* skillHoverHUD = 
+	Odyssey::Entity* skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(10.0f, 600.0f));
+	// Add the skill hover hud to the skill hover prefab map
+	mSkillHoverPrefabMap[SkillHoverID::LeftHUD] = skillHoverHUD;
+
+	// Create the Middle Skill Hover Prefab
+	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(470.0f, 600.0f));
+	// Add the skill hover hud to the skill hover prefab map
+	mSkillHoverPrefabMap[SkillHoverID::MiddleHUD] = skillHoverHUD;
+
+	// Create the Right Skill Hover Prefab
+	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(910.0f, 600.0f));
+	// Add the skill hover hud to the skill hover prefab map
+	mSkillHoverPrefabMap[SkillHoverID::RightHUD] = skillHoverHUD;
 
 	// Create HP Popup
 	//mHpPopupPrefab = CreateHpPopupPrefab();
@@ -117,22 +144,22 @@ Odyssey::Entity* CharacterFactory::GetHUDPrefab(HudID _hudToGet)
 	// Check what hud we wanted to get
 	switch (_hudToGet)
 	{
-		case CharacterFactory::HeroLeft:
+		case HudID::HeroLeft:
 			myHud = mHudPrefabMap[HudID::HeroLeft];
 			break;
-		case CharacterFactory::HeroMiddle:
+		case HudID::HeroMiddle:
 			myHud = mHudPrefabMap[HudID::HeroMiddle];
 			break;
-		case CharacterFactory::HeroRight:
+		case HudID::HeroRight:
 			myHud = mHudPrefabMap[HudID::HeroRight];
 			break;
-		case CharacterFactory::EnemyLeft:
+		case HudID::EnemyLeft:
 			myHud = mHudPrefabMap[HudID::EnemyLeft];
 			break;
-		case CharacterFactory::EnemyMiddle:
+		case HudID::EnemyMiddle:
 			myHud = mHudPrefabMap[HudID::EnemyMiddle];
 			break;
-		case CharacterFactory::EnemyRight:
+		case HudID::EnemyRight:
 			myHud = mHudPrefabMap[HudID::EnemyRight];
 			break;
 		default:
@@ -142,6 +169,32 @@ Odyssey::Entity* CharacterFactory::GetHUDPrefab(HudID _hudToGet)
 	
 	// Return the hud I wanted;
 	return myHud;
+}
+
+Odyssey::Entity* CharacterFactory::GetSkillHoverHUDPrefab(SkillHoverID _hoverHudToGet)
+{
+	// Default to the enemy right hud
+	Odyssey::Entity* mySkillHoverHud = mSkillHoverPrefabMap[SkillHoverID::LeftHUD];
+
+	// Check what hud we wanted to get
+	switch (_hoverHudToGet)
+	{
+		case SkillHoverID::LeftHUD:
+			mySkillHoverHud = mSkillHoverPrefabMap[SkillHoverID::LeftHUD];
+			break;
+		case SkillHoverID::MiddleHUD:
+			mySkillHoverHud = mSkillHoverPrefabMap[SkillHoverID::MiddleHUD];
+			break;
+		case SkillHoverID::RightHUD:
+			mySkillHoverHud = mSkillHoverPrefabMap[SkillHoverID::RightHUD];
+			break;
+		default:
+			std::cout << "Didn't get the hud in Char Factory, GetHUDPrefab!" << std::endl;
+			break;
+	}
+
+	// Return the hud I wanted;
+	return mySkillHoverHud;
 }
 
 Odyssey::Entity* CharacterFactory::GetImpactIndicatorPrefab() 
@@ -325,6 +378,57 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			}
 
 			characterName = L"Skeleton";
+			break;
+		}
+		case Summoner:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::Summoner);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
+			break;
+		}
+		case MeleeDemon:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::MeleeDemon);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
+			break;
+		}
+		case CasterDemon:
+		{
+			// Set up enemy component
+			EnemyComponent* tempEnemy = newCharacter->addComponent<EnemyComponent>(GameplayTypes::ENEMYID::CasterDemon);
+
+			// Set up its model
+			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			// For each animation in its vector of animations path, import an animation
+			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
+			{
+				newCharacter->getComponent<Odyssey::Animator>()->importAnimation(tempEnemy->GetAnimationPaths()[i].mAnimationNickName, tempEnemy->GetAnimationPaths()[i].mAnimationPath.c_str(), tempEnemy->GetAnimationPaths()[i].mIsLooping);
+			}
+
+			characterName = L"Summoner";
 			break;
 		}
 		case Ganfaul:

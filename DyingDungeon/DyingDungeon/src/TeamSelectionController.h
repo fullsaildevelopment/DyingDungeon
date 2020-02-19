@@ -57,6 +57,9 @@ private:
 	int mSlot2Index = 0;
 	int mSlot3Index = 0;
 
+	//REFACTOR
+	Odyssey::Entity* loadingScreen = nullptr;
+
 private: // Functions
 
 	// Create the prefab models with the info popups

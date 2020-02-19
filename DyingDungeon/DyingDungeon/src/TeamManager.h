@@ -8,12 +8,20 @@ class TeamManager
 public:
 	enum class HeroType
 	{
-		Paladin, Mage, Bard, Warrior, Monk
+		Paladin, 
+		Mage, 
+		Bard, 
+		Warrior, 
+		Monk
 	};
 
 	enum class EnemyType
 	{
-		Skeleton, Ganfaul
+		Skeleton,
+		Summoner,
+		MeleeDemon,
+		CasterDemon,
+		Ganfaul
 	};
 
 	struct EnemySetups
