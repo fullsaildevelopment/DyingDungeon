@@ -9,6 +9,7 @@
 #include "StatDown.h"
 #include "StatUp.h"
 #include "Stun.h"
+#include "Shields.h"
 
 AIMoves::AIMoves()
 {
@@ -93,66 +94,61 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		{
 			// TODO MAKE REAL MOVES
 			// Skill 1
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -20.0f, 15.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
-			//Bleed for dot
-			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
-			// Skelator slash for big dps, inflicts bleed
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
-			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Necrotic Infection big aoe dps
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
-			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			// Skill 2
+			//mSkillList.push_back(std::make_shared<Attack>(L"Summon Caster", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			//mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			// Skill 3
+			//mSkillList.push_back(std::make_shared<Attack>(L"Summon Melee", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			//mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
 		// MeleeDemon
 		case 3:
 		{
-			// TODO MAKE REAL MOVES
 			// Skill 1
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			StatusEffect = std::make_shared<Provoked>(1, mCaster, nullptr);
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, StatusEffect));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
-			//Bleed for dot
-			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
-			// Skelator slash for big dps, inflicts bleed
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			// Skill 2 
+			StatusEffect = std::make_shared<StatDown>(0.35f, 3, STATS::Def, nullptr);
+			mSkillList.push_back(std::make_shared<Buffs>(L"Def Down", "Skill_2", 0.25f, 15.0f, StatusEffect, false));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Necrotic Infection big aoe dps
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			// Skill 3 
+			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f, true));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
 		// CasterDemon
 		case 4:
 		{
-			// TODO MAKE REAL MOVES
-			// Skill 1
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
+			// Skill 1 
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, true));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
-			//Bleed for dot
-			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
-			// Skelator slash for big dps, inflicts bleed
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			// Skill 2
+			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
+			mSkillList.push_back(std::make_shared<Attack>(L"AOE Speed dwn", "Skill_2", 0.25f, 10.0f, 15.0f, StatusEffect, true));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Necrotic Infection big aoe dps
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
-			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			// Skill 3
+			StatusEffect = std::make_shared<Shields>(25.0f, 3, nullptr);
+			mSkillList.push_back(std::make_shared<Buffs>(L"Shield", "Skill_3", 0.89f, 20.0f, StatusEffect, true));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
 		// Enemy Mage
 		case 5:
 		{
-			// TODO MAKE REAL MOVES
 			// Skill 1
 			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
-			//Bleed for dot
+			// Skill 2
 			StatusEffect = std::make_shared<Bleed>(0.15f, 2, nullptr);
-			// Skelator slash for big dps, inflicts bleed
 			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Necrotic Infection big aoe dps
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
+			// Skill 3
+			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
+			mSkillList.push_back(std::make_shared<Attack>(L"Attack down", "Skill_3", 0.25f, 40.0f, 30.0f, true));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
