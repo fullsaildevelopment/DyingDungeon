@@ -89,7 +89,6 @@ void Character::TakeDamage(float dmg)
 		}
 		else
 		{
-			(*it)->Remove();
 			it = mSheilds.erase(it);
 		}
 	}
@@ -343,6 +342,11 @@ std::wstring Character::GetName()
 void Character::SetName(std::wstring newName)
 {
 	mName = newName;
+}
+
+DirectX::XMFLOAT3 Character::GetThemeColor()
+{
+	return mThemeColor;
 }
 
 // Resets the character back to its base

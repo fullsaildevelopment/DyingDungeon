@@ -182,6 +182,7 @@ namespace Odyssey
 			// Update the component
 			mComponentList[i]->onDestroy();
 		}
+		flushDestroyList();
 	}
 
 	std::vector<std::shared_ptr<Entity>> SceneDX11::getEntities()
@@ -222,6 +223,7 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 		return returnPackage;
 	}
+
 	void SceneDX11::flushDestroyList()
 	{
 		for (Entity* entity : mDestroyList)

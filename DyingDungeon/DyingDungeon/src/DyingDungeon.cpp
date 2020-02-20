@@ -404,7 +404,7 @@ void setupEnemiesToCreate()
 		// Level One Enemies
 		TeamManager::EnemySetups levelOneEnemy;
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Summoner;
 		levelOneEnemy.pPosition = leftPosition;
 		levelOneEnemy.pRotation = leftRotation;
 		levelOneEnemy.pHudPosition = leftHudPosition;
@@ -413,7 +413,7 @@ void setupEnemiesToCreate()
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
 		levelOneEnemy.pHudPosition = middleHudPosition;
@@ -422,7 +422,7 @@ void setupEnemiesToCreate()
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
 		levelOneEnemy.pPosition = rightPosition;
 		levelOneEnemy.pRotation = rightRotation;
 		levelOneEnemy.pHudPosition = rightHudPosition;
@@ -607,7 +607,7 @@ void setupSceneOne()
 	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.0f, 1.50f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.0f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.5f, 0.5f);
@@ -636,7 +636,7 @@ void setupSceneOne()
 	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.0f, 1.50f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.0f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.5f, 0.5f);
@@ -665,7 +665,7 @@ void setupSceneOne()
 	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.0f, 1.50f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.0f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.5f, 0.5f);
@@ -694,7 +694,7 @@ void setupSceneOne()
 	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.8f, 0.5f, 0.4f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.0f, 1.50f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(75, 175);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 1.0f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.5f, 0.5f);
@@ -709,7 +709,7 @@ void setupSceneOne()
 	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.075f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
 	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
-	fog->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(60);
+	fog->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(60);
 	fog->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fog->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.25f);
 	fog->getComponent<Odyssey::ParticleSystem>()->setSize(20.0f, 20.0f);
@@ -897,7 +897,7 @@ void setupSceneTwo()
 	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire1->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -912,7 +912,7 @@ void setupSceneTwo()
 	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire2->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -927,7 +927,7 @@ void setupSceneTwo()
 	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire3->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -942,7 +942,7 @@ void setupSceneTwo()
 	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire4->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -957,7 +957,7 @@ void setupSceneTwo()
 	fire5->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire5->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire5->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire5->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -972,7 +972,7 @@ void setupSceneTwo()
 	fire6->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire6->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire6->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire6->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire6->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire6->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire6->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -987,7 +987,7 @@ void setupSceneTwo()
 	fire7->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire7->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire7->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire7->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire7->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire7->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire7->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -1002,7 +1002,7 @@ void setupSceneTwo()
 	fire8->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire8->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire8->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire8->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire8->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire8->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire8->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -1017,7 +1017,7 @@ void setupSceneTwo()
 	fire9->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire9->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire9->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire9->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire9->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire9->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire9->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -1032,7 +1032,7 @@ void setupSceneTwo()
 	fire10->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire10->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire10->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire10->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire10->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire10->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire10->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
@@ -1047,7 +1047,7 @@ void setupSceneTwo()
 	fire11->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fire11->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setRateOverTime(90);
+	fire11->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);

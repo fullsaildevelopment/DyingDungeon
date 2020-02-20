@@ -126,7 +126,7 @@ namespace Odyssey
 
 				renderSceneObject(itr->second, args);
 
-				if (AnimatorDX11 * animator = itr->second->entity->getRootComponent<AnimatorDX11>())
+				if (AnimatorDX11* animator = itr->second->entity->getRootComponent<AnimatorDX11>())
 				{
 					animator->unbind(args.context);
 				}
@@ -154,7 +154,7 @@ namespace Odyssey
 		for (Light* light : renderPackage.sceneLights)
 		{
 			ShaderLight shaderLight;
-			if (sceneLighting.numLights != 8 && light->getEntity()->isActive() && light->getEntity()->isVisible())
+			if (sceneLighting.numLights != 12 && light->getEntity()->isActive() && light->getEntity()->isVisible())
 			{
 				if (light->getLightType() == LightType::Point)
 				{

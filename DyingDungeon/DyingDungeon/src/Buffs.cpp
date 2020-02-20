@@ -39,6 +39,7 @@ void Buffs::Use(Character& caster, Character& target)
 {
 	// Update combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	GameUIManager::getInstance().UpdateCombatLogText(mStatusEffect->GetAmountOfEffect());
 
 	// If i have a status effect to apply, apply it
 	if (mStatusEffect != nullptr)
@@ -46,7 +47,7 @@ void Buffs::Use(Character& caster, Character& target)
 		mStatusEffect->Apply(caster, target);
 
 		// Play audio "heal" sound effect
-		RedAudioManager::Instance().PlaySFX("ForwardAerial");
+		RedAudioManager::Instance().PlaySFX("GokuSJJ3");
 
 		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())

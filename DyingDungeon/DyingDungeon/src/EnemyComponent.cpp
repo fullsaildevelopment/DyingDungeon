@@ -207,7 +207,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mSubName = L"";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/SummonerPortrait.jpg";
+		mPortrait = L"assets/images/SummonerPortrait.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -297,7 +297,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mSubName = L"";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/MeleeDemonPortrait.jpg";
+		mPortrait = L"assets/images/MeleeDemonPortrait.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -386,7 +386,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mSubName = L"";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/CasterDemonPortrait.jpg";
+		mPortrait = L"assets/images/CasterDemonPortrait.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;
@@ -484,7 +484,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mSubName = L"";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/EnemyMagePortrait.jpg";
+		mPortrait = L"assets/images/EnemyMagePortrait.png";
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 100.0f;

@@ -84,8 +84,15 @@ namespace Odyssey
 			{
 				// Store the command and publish the command receive event
 				// The command receive event will trigger a process commands event allowing us to process commands next frame
-				mCommands[typeid(EventType)].push_back(evnt);
-				publish(new CommandReceiveEvent());
+				if (mCommands.count(typeid(EventType)))
+				{
+					mCommands[typeid(EventType)].push_back(evnt);
+					publish(new CommandReceiveEvent());
+				}
+				else
+				{
+					mCommands[(typeid(EventType))].push_back(evnt);
+				}
 			}
 			else
 			{

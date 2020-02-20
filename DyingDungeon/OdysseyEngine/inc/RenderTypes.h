@@ -38,7 +38,9 @@ namespace Odyssey
 		float startLifetime;
 		// 12 bytes
 		float size;
+		float sizeLifetime;
 		bool active;
+		// 12 bytes
 
 		Particle()
 		{
@@ -48,6 +50,7 @@ namespace Odyssey
 			lifeTime = 5.0f;
 			startLifetime = lifeTime;
 			size = 1.0f;
+			sizeLifetime = 0.0f;
 			active = false;
 		}
 	};
