@@ -412,7 +412,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mPortrait = L"assets/images/WarriorPortrait.png";
 
 		// Set the characters theme color
-		mThemeColor = { 31.0f, 255.0f, 203.0f };
+		mThemeColor = { 255.0f, 35.0f, 35.0f };
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 200.0f;
@@ -534,7 +534,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mPortrait = L"assets/images/MonkPortrait.png";
 
 		// Set the characters theme color
-		mThemeColor = { 255.0f, 255.0f, 255.0f };
+		mThemeColor = { 169.0f, 69.0f, 0.0f };
 
 		// Set the base HP and current HP
 		mBaseMaxHP = mCurrentHP = 150.0f;

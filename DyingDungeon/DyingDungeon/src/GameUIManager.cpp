@@ -3,6 +3,7 @@
 #include "UICanvas.h"
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
+#include "HeroComponent.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1600,20 +1601,8 @@ Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, C
 	// Create the new canvas
 	Odyssey::UICanvas* popupCanvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
 
-	DirectX::XMFLOAT4 themeColor;
-	// Assign theme color for text
-	if (_character->GetName() == L"Paladin")
-		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	else if (_character->GetName() == L"Mage")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	else if (_character->GetName() == L"Bard")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
-	else if (_character->GetName() == L"Warrior")
-		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
-	else if (_character->GetName() == L"Monk")
-		themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
-	else
-		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT3 color = _character->getEntity()->getComponent<HeroComponent>()->GetThemeColor();
+	DirectX::XMFLOAT4 themeColor = { color.x, color.y, color.z, 1.0f };
 
 	std::wstring portrait = _character->GetPortraitPath();
 	std::wstring level = L"Lvl 1";

@@ -35,10 +35,6 @@ private:
 	// List of all of the positions that the character's will spawn at in battle
 	std::vector<DirectX::XMVECTOR> mPlayerPositions;
 
-	// List of all of the hud and health popup positions for each character
-	std::vector<DirectX::XMFLOAT2> mHudPositions;
-	std::vector<DirectX::XMFLOAT2> mHpPopupPositions;
-
 	// Hold the tower manager object
 	Odyssey::Entity* mCurrentTower = nullptr;
 

@@ -63,22 +63,7 @@ void TeamSelectionController::initialize()
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
 
-	// Set the HUD positions
-	mHudPositions.clear();
-	mHudPositions.resize(3);
-	mHudPositions[0] = DirectX::XMFLOAT2(10.0f, 600.0f); // First Character HUD
-	mHudPositions[1] = DirectX::XMFLOAT2(470.0f, 600.0f); // Second Character HUD
-	mHudPositions[2] = DirectX::XMFLOAT2(910.0f, 600.0f); // Third Character HUD
-
-	// Set the HP positions
-	mHpPopupPositions.clear();
-	mHpPopupPositions.resize(3);
-	mHpPopupPositions[0] = DirectX::XMFLOAT2(325.0f, 350.0f); // First Character HP popup
-	mHpPopupPositions[1] = DirectX::XMFLOAT2(615.0f, 350.0f); // Second Character HP popup
-	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
-
 	// Clear the player team from Team Manager before adding in new characters
-
 	TeamManager::getInstance().ClearPlayerTeamEnumList();
 
 	if (SaveLoad::Instance().LoadLoadOut("Last_Loadout"))
@@ -112,7 +97,7 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().Loop("BackgroundBattle");
 
 		// Set up the tower manager with how many levels we want
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(2);
+		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));

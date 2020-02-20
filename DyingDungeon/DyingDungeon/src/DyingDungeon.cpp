@@ -94,15 +94,8 @@ void setupTowerManager();
 void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
-// Factories
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
-
-//void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
-//void setupPaladinSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-//void setupMageSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-
-
+// Functions
 int playGame()
 {
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
@@ -409,27 +402,18 @@ void setupEnemiesToCreate()
 		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = leftPosition;
 		levelOneEnemy.pRotation = leftRotation;
-		levelOneEnemy.pHudPosition = leftHudPosition;
-		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
-		levelOneEnemy.pHudPosition = middleHudPosition;
-		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = rightPosition;
 		levelOneEnemy.pRotation = rightRotation;
-		levelOneEnemy.pHudPosition = rightHudPosition;
-		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
@@ -441,17 +425,43 @@ void setupEnemiesToCreate()
 	// LEVEL TWO ENEMIES
 	if (true)
 	{
-		// Level One Enemies
+		// Level Two Enemies
 		TeamManager::EnemySetups levelTwoEnemy;
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
-		levelTwoEnemy.pPosition = middlePosition;
-		levelTwoEnemy.pRotation = middleRotation;
-		levelTwoEnemy.pHudPosition = middleHudPosition;
-		levelTwoEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelTwoEnemy.pIsBoss = true;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = leftPosition;
+		levelTwoEnemy.pRotation = leftRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelTwoEnemy.pPosition = middlePosition;
+		levelTwoEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = rightPosition;
+		levelTwoEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL THREE ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelThreeEnemy;
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelThreeEnemy.pPosition = middlePosition;
+		levelThreeEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
 		// Clear the new enemy list 
@@ -545,21 +555,6 @@ void setupAudio()
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
-}
-
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
-{
-	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = 12.0f;
-	properties.bold = true;
-	UINT iconStepX = static_cast<UINT>(width * 1.25f);
-	UINT iconStepY = static_cast<UINT>(height * 1.25f);
-	slot -= 1;
-	int number = (slot % 3) + 1;
-	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
-	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
 void setupSceneOne()
