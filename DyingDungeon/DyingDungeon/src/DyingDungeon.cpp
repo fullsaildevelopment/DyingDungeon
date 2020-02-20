@@ -124,10 +124,12 @@ int playGame()
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	gDefaultText.fontName = L"Constantia";
 
-	// Setup the application pointer
+	// Setup the character and other model prefabs
 	CharacterFactory::getInstance().initialize(application.get());
 	// Assign the width and height for the UI Manager
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Setup the UI prefabs
+	GameUIManager::getInstance().initialize(application.get());
 
 	// Set up the main menu
 	setupMainMenu(application.get());
@@ -171,7 +173,7 @@ int playGame()
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
 	
 	// Set up multithreading
-	application->setMultithreading(true);
+	application->setMultithreading(false);
 
 	// Play audio
 	setupAudio();

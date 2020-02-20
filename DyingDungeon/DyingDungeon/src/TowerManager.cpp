@@ -398,7 +398,6 @@ void TowerManager::CreateThePlayerTeam()
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
 	// Player Rotations
-	DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Create each player
 	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
@@ -417,6 +416,8 @@ void TowerManager::CreateThePlayerTeam()
 		CharacterFactory::CharacterOptions characterToCreate = CharacterFactory::CharacterOptions::Paladin;
 		// Get the hero type
 		TeamManager::HeroType newHeroType = TeamManager::getInstance().GetPlayerTeamToCreate()[i];
+		// Set the player rotations
+		DirectX::XMVECTOR mPlayerRotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
 		if (i == 0)
 		{
@@ -444,9 +445,13 @@ void TowerManager::CreateThePlayerTeam()
 		else if (newHeroType == TeamManager::HeroType::Warrior)
 			characterToCreate = CharacterFactory::CharacterOptions::Warrior;
 		else if (newHeroType == TeamManager::HeroType::Monk)
+		{
 			characterToCreate = CharacterFactory::CharacterOptions::Monk;
+			mPlayerRotation = DirectX::XMVectorSet(DirectX::XMVectorGetX(mPlayerRotation), 180.0f, DirectX::XMVectorGetZ(mPlayerRotation), 1.0f);
+		}
 		else
 			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
+
 
 		// Create the character prefab
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
@@ -456,10 +461,15 @@ void TowerManager::CreateThePlayerTeam()
 		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
 
-		// Set up the skill hover huds
+		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
 		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
-		// Register the skill sprites
+
+		// Clickable UI
+		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
+		heroComp->SetupClickableUI(hudElements->GetSkill1(), hudElements->GetSkill2(), hudElements->GetSkill3(), hudElements->GetSkill4());
+
+		// Register the skill sprites for hovering over them
 		hover->registerSprite(hudElements->GetSkill1());
 		hover->registerSprite(hudElements->GetSkill2());
 		hover->registerSprite(hudElements->GetSkill3());

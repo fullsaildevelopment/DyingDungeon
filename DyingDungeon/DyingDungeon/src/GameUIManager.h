@@ -7,10 +7,17 @@
 #include "Sprite2D.h"
 #include "StatTracker.h"
 #include "UIElement.h"
+#include <map>
 
 class GameUIManager
 {
 public:
+
+	enum class UIObject
+	{
+		PauseMenu,
+		OptionsMenu
+	};
 
 	enum class CharacterType
 	{
@@ -43,6 +50,9 @@ private: // Singleton pattern
 	GameUIManager() { }
 
 public: // Functions
+
+	// The initalize function to create all of the UI Prefabs
+	void initialize(Odyssey::Application* _application);
 
 	// Create the battle log UI 
 	void CreateBattleLog(Odyssey::Scene* _sceneToAddTo);
@@ -375,4 +385,13 @@ private: // Functions
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
+
+	// Application
+	Odyssey::Application* mApplication = nullptr;
+
+	// Prefab Maps
+	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
+
+	// Prefab Creation Functions
+	Odyssey::Entity*  CreatePauseMenuPrefab();
 };

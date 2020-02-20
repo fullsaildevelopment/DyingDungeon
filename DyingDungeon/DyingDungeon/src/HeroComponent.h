@@ -19,6 +19,9 @@ public:
 	// Destructor
 	~HeroComponent();
 
+	//Set up for clickable UI
+	void SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::Sprite2D* _skillImage2, Odyssey::Sprite2D* _skillImage3, Odyssey::Sprite2D* _skillImage4);
+
 	// Function that allows the player to take thier turn, Character Controler
 	virtual bool TakeTurn(EntityList heros, EntityList enemies);
 
@@ -63,9 +66,6 @@ private:
 	// List that contains the list ofheros and enemies
 	std::vector<Odyssey::Entity*> mHeroList;
 	std::vector<Odyssey::Entity*> mEnemyList;
-
-	//Set up for clickable UI
-	void SetupClickableUI();
 
 	// Skill callbacks //
 	//////////////////////

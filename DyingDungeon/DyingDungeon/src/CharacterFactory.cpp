@@ -231,9 +231,6 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 	float yRot = 0.0f;
 	float zRot = 0.0f;
 
-	if (_characterToCreate == CharacterOptions::Monk)
-		yRot = 180.0f;
-
 	// Add the transform
 	newCharacter->addComponent<Odyssey::Transform>();
 	// Set position

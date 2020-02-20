@@ -325,7 +325,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		rotation = DirectX::XMVectorSet(0.0f, 320.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -361,7 +363,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -396,8 +400,10 @@ void TeamSelectionController::CreateModelsAndPopups()
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
-		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk); 
+		rotation = DirectX::XMVectorSet(0.0f, 40.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);

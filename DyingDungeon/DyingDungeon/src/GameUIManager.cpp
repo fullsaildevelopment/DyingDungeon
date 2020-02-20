@@ -16,6 +16,20 @@ GameUIManager& GameUIManager::getInstance()
 	return instance;
 }
 
+void GameUIManager::initialize(Odyssey::Application* _application)
+{
+	// Set application
+	mApplication = _application;
+
+	// Create the entity to create new UI prefabs
+	Odyssey::Entity* newUIPrefab;
+
+	// Create the paladin prefab
+	newUIPrefab = CreatePauseMenuPrefab();
+	// Add the new character to the prefab map
+	mUIObjectsPrefabMap[UIObject::PauseMenu] = newUIPrefab;
+}
+
 void GameUIManager::CreateBattleLog(Odyssey::Scene* _sceneToAddTo)
 {
 	// Create the battle log object
@@ -1189,8 +1203,8 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Create the character's image
 	imageWidth = 71;
 	imageHeight = 68;
-	position.x += 2;
-	position.y += 1;
+	position.x += 2.0f;
+	position.y += 1.0f;
 	newHUD->SetPortrait(pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight));
 
 	// Create the xp/name bar
@@ -1207,7 +1221,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	properties.bold = false;
 
 	// Create the character's level number text next to the XP bar
-	position.x += barWidth;
+	position.x += (float)barWidth;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	newHUD->SetLevelNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties));
@@ -1235,7 +1249,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	barHeight = 17;
 	barWidth = 356;
 	position.x += 2.0f;
-	position.y += imageHeight + 3.5f;
+	position.y += (float)imageHeight + 3.5f;
 	// Create and assign the health bar
 	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
 	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
@@ -1246,7 +1260,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
 	// Create and assign the mana bar
 	position.x -= 5.0f;
-	position.y += barHeight + 1.5f;
+	position.y += (float)barHeight + 1.5f;
 	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
 	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	// Create the text for the mana numbers of the character
@@ -2095,4 +2109,80 @@ void GameUIManager::UpdateCombatLogText(float damage)
 	mBattleLogVec[0]->setColor(newCombatLogColor);
 	mBattleLogVec[0]->setText(newText);
 	
+}
+
+///////////////////////////////
+//                           //
+// Prefab Creation Functions //
+//                           //
+///////////////////////////////
+Odyssey::Entity* GameUIManager::CreatePauseMenuPrefab()
+{
+	// Create the pause menu prefab
+	mPauseMenu = mApplication->createPrefab();
+	// Add a canvas to the object
+	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->addComponent<Odyssey::UICanvas>();
+
+	// Create the rectangle object
+	UINT width = 1920;
+	UINT height = 1080;
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	// Add the rectangle to the pause menu canvas
+	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Make the rectangle have 50% transparency
+	mBlackBackground->setOpacity(BackgroundBigOpacity);
+
+	// Create the pause menu smaller black rectangle
+	width = 640;
+	height = 360;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	// Add the rectangle to the pause menu canvas
+	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+
+	// Create Pause Title
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Tw Cen MT Condensed";
+	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
+
+	// Resume Button
+	width /= (UINT)2.5f;
+	height = 50;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position.y -= 50.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the reusume background to the canvas
+	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Resume text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.bold = false;
+	properties.fontSize = 30.0f;
+	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
+
+	// Options Button
+	position.y += 75.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the options background to the canvas
+	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Options text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
+
+	// Main Menu Button
+	position.y += 75.0f;
+	color = { 180.0f, 30.0f, 30.0f, 1.0f };
+	// Add the main menu background to the canvas
+	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Main menu text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
+
+	return mPauseMenu;
 }

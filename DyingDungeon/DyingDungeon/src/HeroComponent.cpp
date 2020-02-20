@@ -643,6 +643,19 @@ HeroComponent::~HeroComponent()
 {
 }
 
+// Set up for clickable UI
+void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::Sprite2D* _skillImage2, Odyssey::Sprite2D* _skillImage3, Odyssey::Sprite2D* _skillImage4)
+{
+	// Set up sprite's callback function for the Skill1Callback
+	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
+	// Set up sprite's callback function for the Skill2Callback
+	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
+	// Set up sprite's callback function for the Skill3Callback
+	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
+	// Set up sprite's callback function for the Skill4Callback
+	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
+}
+
 // Function that allows the player to take thier turn, Character Controler
 bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 {
@@ -1278,34 +1291,6 @@ std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
-	//SetupClickableUI();
-}
-
-// Set up for clickable UI
-void HeroComponent::SetupClickableUI()
-{
-	// Create new skill
-	Odyssey::Sprite2D* currSkill = nullptr;
-
-	// Assign the new skill with the player's 1st skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill1();
-	// Set up sprite's callback function for the Skill1Callback
-	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
-
-	// Assign the new skill with the player's 2nd skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill2();
-	// Set up sprite's callback function for the Skill2Callback
-	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
-
-	// Assign the new skill with the player's 3rd skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill3();
-	// Set up sprite's callback function for the Skill3Callback
-	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
-
-	// Assign the new skill with the player's 4th skill icon
-	currSkill = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkill4();
-	// Set up sprite's callback function for the Skill4Callback
-	currSkill->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
 }
 
 // Skill Call backs for clickable UI //
