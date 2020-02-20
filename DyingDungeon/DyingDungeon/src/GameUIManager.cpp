@@ -1277,6 +1277,9 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 
 	// Set up Skill Icons
 	SetupSkillIcons(_gameObjectToAddTo, _hudPosition);
+
+	// Set up the status effects
+	SetupStatusEffects(_gameObjectToAddTo, _hudPosition);
 }
 
 // Create enemy character portrait
@@ -1502,25 +1505,29 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 }
 
-//void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud)
-//{
-//	// Set some variables
-//	DirectX::XMFLOAT2 position = _hudPosition;
-//	UINT imageWidth = 32;
-//	UINT imageHeight = 32;
-//	
-//	// Move the image up above the bar
-//	position.y -= static_cast<float>(imageHeight) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//}
+void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition)
+{
+	// Get the character hud elements component
+	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
+
+	// Set some variables
+	DirectX::XMFLOAT2 position = _hudPosition;
+	UINT imageWidth = 32;
+	UINT imageHeight = 32;
+	float imageSpacing = 5.0f;
+	
+	// Move the image up above the bar
+	position.y -= static_cast<float>(imageHeight) + 5.0f;
+	newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/Guy.png", imageWidth, imageHeight));
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+	position.x += static_cast<float>(imageWidth) + 5.0f;
+	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
+}
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
 {
