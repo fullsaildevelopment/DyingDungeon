@@ -1279,7 +1279,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	SetupSkillIcons(_gameObjectToAddTo, _hudPosition);
 
 	// Set up the status effects
-	SetupStatusEffects(_gameObjectToAddTo, _hudPosition);
+	SetupStatusEffects(_gameObjectToAddTo, _hudPosition, true);
 }
 
 // Create enemy character portrait
@@ -1391,6 +1391,9 @@ void GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX:
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	// Assign the character's turn order text
 	newHUD->SetTurnNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties));
+
+	// Set up the status effects
+	SetupStatusEffects(_gameObjectToAddTo, _hudPosition, false);
 }
 
 void GameUIManager::CreateSkillHoverHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition)
@@ -1505,41 +1508,91 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 }
 
-void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition)
+void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero)
 {
 	// Get the character hud elements component
 	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
 
-	// Set some variables
-	DirectX::XMFLOAT2 position = _hudPosition;
+	// Image variables
 	UINT imageWidth = 25;
 	UINT imageHeight = 25;
 	float imageSpacing = 5.0f;
-	
-	// Move the image up above the bar
-	position.y -= static_cast<float>(imageHeight) + imageSpacing;
-	newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetAttackDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackDown.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetDefenseUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseUp.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetDefenseDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseDown.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetSpeedUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedUp.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetSpeedDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedDown.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetBleedBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Bleed.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetStunBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Stun.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetProvokeBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Provoke.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetRegenBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Regen.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
-	newHud->SetShieldBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Shield.png", imageWidth, imageHeight));
-	position.x += static_cast<float>(imageWidth) + imageSpacing;
+
+	if (_isHero)
+	{
+		// Set some variables
+		DirectX::XMFLOAT2 position = _hudPosition;
+
+		// Move the image up above the bar
+		position.y -= static_cast<float>(imageHeight) + imageSpacing;
+		newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetAttackDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetBleedBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Bleed.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetStunBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Stun.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetProvokeBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Provoke.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetRegenBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Regen.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetShieldBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Shield.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+	}
+	else
+	{
+		// Set some variables
+		DirectX::XMFLOAT2 position = _hudPosition;
+		position.y += 42.0f; // Plus the height of the enemy hud sprite
+		DirectX::XMFLOAT2 originalPosition = position;
+
+		newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetAttackDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedDown.png", imageWidth, imageHeight));
+		// Move the next set of buffs down a row
+		position = originalPosition;
+		position.y += (float)imageHeight;
+		newHud->SetBleedBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Bleed.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetStunBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Stun.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetProvokeBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Provoke.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetRegenBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Regen.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetShieldBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Shield.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+	}
+
+	// Don't show the buffs on the screen on start
+	newHud->GetAttackUpBuff()->setVisible(false);
+	newHud->GetAttackDownBuff()->setVisible(false);
+	newHud->GetDefenseUpBuff()->setVisible(false);
+	newHud->GetDefenseDownBuff()->setVisible(false);
+	newHud->GetSpeedUpBuff()->setVisible(false);
+	newHud->GetSpeedDownBuff()->setVisible(false);
+	newHud->GetBleedBuff()->setVisible(false);
+	newHud->GetStunBuff()->setVisible(false);
+	newHud->GetProvokeBuff()->setVisible(false);
+	newHud->GetRegenBuff()->setVisible(false);
+	newHud->GetShieldBuff()->setVisible(false);
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)

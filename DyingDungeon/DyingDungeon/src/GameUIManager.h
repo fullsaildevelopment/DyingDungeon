@@ -381,7 +381,7 @@ private: // Functions
 
 	// Skill Icon Creation Fucntions
 	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
-	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
+	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
