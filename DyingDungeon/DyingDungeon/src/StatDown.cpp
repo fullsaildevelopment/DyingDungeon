@@ -9,6 +9,26 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 	mRecipient = target;
 	mAffectedStatId = stat;
 	mStatId = stat;
+	switch (mStatId)
+	{
+	case STATS::Atk:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/AttackDown.png";
+		break;
+	}
+	case STATS::Def:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/DefenseDown.png";
+		break;
+	}
+	case STATS::Spd:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/SpeedDown.png";
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 StatDown::~StatDown()

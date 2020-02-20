@@ -9,6 +9,7 @@ Clense::Clense(int duration, Character* target)
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
 	mStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Clense.png";
 }
 
 Clense::~Clense()

@@ -5,6 +5,16 @@ EFFECTTYPE StatusEffect::GetTypeId()
 	return mTypeId;
 }
 
+std::wstring StatusEffect::GetIcon()
+{
+	return mEffectIconName;
+}
+
+void StatusEffect::SetIcon(std::wstring newIcon)
+{
+	mEffectIconName = newIcon;
+}
+
 STATS StatusEffect::GetAffectedStatId()
 {
 	return mAffectedStatId;
