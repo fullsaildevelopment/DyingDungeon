@@ -531,7 +531,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSubName = L"Dps";
 
 		// Set the portaits path
-		mPortrait = L"assets/images/Gordon.jpg";
+		mPortrait = L"assets/images/MonkPortrait.png";
 
 		// Set the characters theme color
 		mThemeColor = { 255.0f, 255.0f, 255.0f };

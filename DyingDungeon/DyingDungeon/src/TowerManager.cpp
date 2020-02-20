@@ -469,6 +469,8 @@ void TowerManager::CreateThePlayerTeam()
 		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
 		heroComp->SetupClickableUI(hudElements->GetSkill1(), hudElements->GetSkill2(), hudElements->GetSkill3(), hudElements->GetSkill4());
 
+		// Assign the character component
+		hover->characterComponent = newCharacter->getComponent<Character>();
 		// Register the skill sprites for hovering over them
 		hover->registerSprite(hudElements->GetSkill1());
 		hover->registerSprite(hudElements->GetSkill2());
