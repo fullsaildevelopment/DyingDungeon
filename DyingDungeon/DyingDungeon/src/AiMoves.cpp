@@ -124,7 +124,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 4:
 		{
 			// Skill 1 
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f,true));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			// Skill 2
 			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
@@ -191,8 +191,7 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 		case 2:
 		{
 			//FindBestMove
-			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
-				SkeletonDeterminePriority();
+			UngaAttackDeterminePriority();
 
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
@@ -201,8 +200,7 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 		case 3:
 		{
 			//FindBestMove
-			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
-				SkeletonDeterminePriority();
+			UngaAttackDeterminePriority();
 
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
@@ -211,8 +209,7 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 		case 4:
 		{
 			//FindBestMove
-			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
-				SkeletonDeterminePriority();
+			UngaAttackDeterminePriority();
 
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
@@ -221,8 +218,7 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 		case 5:
 		{
 			//FindBestMove
-			if (mPriorityMove == GameplayTypes::SKILLTYPE::NONE)
-				SkeletonDeterminePriority();
+			UngaAttackDeterminePriority();
 
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
@@ -741,7 +737,6 @@ void AIMoves::SetPrevMove()
 	mPrevMove.target = mBestMove->target;
 	mPrevMove.score = mBestMove->score;
 }
-
 
 // Reset all the deciding moves
 void AIMoves::ResetDecidingMoves()
