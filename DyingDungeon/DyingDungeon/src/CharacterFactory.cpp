@@ -103,17 +103,17 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	mHudPrefabMap[HudID::EnemyRight] = enemyHud;
 
 	// Create the Left Skill Hover Prefab
-	Odyssey::Entity* skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(10.0f, 600.0f));
+	Odyssey::Entity* skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(10.0f, 582.0f));
 	// Add the skill hover hud to the skill hover prefab map
 	mSkillHoverPrefabMap[SkillHoverID::LeftHUD] = skillHoverHUD;
 
 	// Create the Middle Skill Hover Prefab
-	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(470.0f, 600.0f));
+	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(470.0f, 582.0f));
 	// Add the skill hover hud to the skill hover prefab map
 	mSkillHoverPrefabMap[SkillHoverID::MiddleHUD] = skillHoverHUD;
 
 	// Create the Right Skill Hover Prefab
-	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(910.0f, 600.0f));
+	skillHoverHUD = CreateSkillHoverHudPrefab(DirectX::XMFLOAT2(910.0f, 582.0f));
 	// Add the skill hover hud to the skill hover prefab map
 	mSkillHoverPrefabMap[SkillHoverID::RightHUD] = skillHoverHUD;
 
@@ -230,9 +230,6 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 	float xRot = 0.0f;
 	float yRot = 0.0f;
 	float zRot = 0.0f;
-
-	if (_characterToCreate == CharacterOptions::Monk)
-		yRot = 180.0f;
 
 	// Add the transform
 	newCharacter->addComponent<Odyssey::Transform>();

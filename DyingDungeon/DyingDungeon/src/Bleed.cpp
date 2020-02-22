@@ -1,5 +1,6 @@
 #include "Bleed.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 {
@@ -24,6 +25,7 @@ void Bleed::Apply(Character& caster, Character& target)
 	std::shared_ptr<StatusEffect> newStatusEffect;
 	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
+	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(true);
 	caster.AddCastedEffect(newStatusEffect.get());
 	return;
 }

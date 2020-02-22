@@ -94,15 +94,8 @@ void setupTowerManager();
 void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
-// Factories
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
-
-//void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
-//void setupPaladinSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-//void setupMageSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-
-
+// Functions
 int playGame()
 {
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
@@ -111,7 +104,7 @@ int playGame()
 	//_CrtSetBreakAlloc(2034525);
 #endif // _DEBUG
 	// Seed random using time
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
@@ -124,10 +117,12 @@ int playGame()
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	gDefaultText.fontName = L"Constantia";
 
-	// Setup the application pointer
+	// Setup the character and other model prefabs
 	CharacterFactory::getInstance().initialize(application.get());
 	// Assign the width and height for the UI Manager
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Setup the UI prefabs
+	GameUIManager::getInstance().initialize(application.get());
 
 	// Set up the main menu
 	setupMainMenu(application.get());
@@ -171,7 +166,7 @@ int playGame()
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
 	
 	// Set up multithreading
-	application->setMultithreading(true);
+	application->setMultithreading(false);
 
 	// Play audio
 	setupAudio();
@@ -297,8 +292,8 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
-	UINT rewardsImageWidth = width*0.6;
-	UINT rewardsImageHeight = height*0.6;
+	UINT rewardsImageWidth = width * 0.6f;
+	UINT rewardsImageHeight = height * 0.6f;
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 
@@ -357,7 +352,7 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 
 	canvas->setActive(false); // The rewards screen won't show up at the start
-	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4.0f, rewardsImageHeight / 4.0f);
+	StatTracker::Instance().SetCanvas(canvas, static_cast<unsigned int>(rewardsImageHeight / 4), static_cast<unsigned int>(rewardsImageHeight / 4));
 }
 
 void setupTowerManager()
@@ -407,27 +402,18 @@ void setupEnemiesToCreate()
 		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = leftPosition;
 		levelOneEnemy.pRotation = leftRotation;
-		levelOneEnemy.pHudPosition = leftHudPosition;
-		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
-		levelOneEnemy.pHudPosition = middleHudPosition;
-		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = rightPosition;
 		levelOneEnemy.pRotation = rightRotation;
-		levelOneEnemy.pHudPosition = rightHudPosition;
-		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
@@ -439,17 +425,43 @@ void setupEnemiesToCreate()
 	// LEVEL TWO ENEMIES
 	if (true)
 	{
-		// Level One Enemies
+		// Level Two Enemies
 		TeamManager::EnemySetups levelTwoEnemy;
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
-		levelTwoEnemy.pPosition = middlePosition;
-		levelTwoEnemy.pRotation = middleRotation;
-		levelTwoEnemy.pHudPosition = middleHudPosition;
-		levelTwoEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelTwoEnemy.pIsBoss = true;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = leftPosition;
+		levelTwoEnemy.pRotation = leftRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelTwoEnemy.pPosition = middlePosition;
+		levelTwoEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = rightPosition;
+		levelTwoEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL THREE ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelThreeEnemy;
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelThreeEnemy.pPosition = middlePosition;
+		levelThreeEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
 		// Clear the new enemy list 
@@ -543,21 +555,6 @@ void setupAudio()
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
-}
-
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
-{
-	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = 12.0f;
-	properties.bold = true;
-	UINT iconStepX = static_cast<UINT>(width * 1.25f);
-	UINT iconStepY = static_cast<UINT>(height * 1.25f);
-	slot -= 1;
-	int number = (slot % 3) + 1;
-	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
-	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
 void setupSceneOne()

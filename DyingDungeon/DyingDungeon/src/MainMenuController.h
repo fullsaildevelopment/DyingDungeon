@@ -19,12 +19,12 @@ private:
 	void ExitGame();
 	// TODO: M3B1 ONLY END
 public:
-	Odyssey::Rectangle2D* mRect;
+	Odyssey::Rectangle2D* mRect = nullptr;
 private:
-	Odyssey::Application* mApplication;
+	Odyssey::Application* mApplication = nullptr;
 
 	// Paladin Character
-	Odyssey::Entity* mPaladinCharacter;
+	Odyssey::Entity* mPaladinCharacter = nullptr;
 
 	// Bools
 	bool mAnimatingLaser = true;
