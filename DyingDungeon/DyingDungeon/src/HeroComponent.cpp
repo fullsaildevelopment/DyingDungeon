@@ -1174,6 +1174,17 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 	}
 
+	// Spit out current targets stats
+	if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D8))
+	{
+		std::cout << "Name: " << mCurrentTarget->GetName().c_str() << std::endl;
+		std::cout << "Attack: " << mCurrentTarget->GetAtk() << std::endl;
+		std::cout << "Defense: " << mCurrentTarget->GetDef() << std::endl;
+		std::cout << "Speed: " << mCurrentTarget->GetSpeed() << std::endl;
+		std::cout << "Health: " << mCurrentTarget->GetHP() << std::endl;
+		std::cout << "Mana: " << mCurrentTarget->GetMana() << std::endl;
+	}
+
 	// If enter is hit set state to in progress and begin playing animations for caster
 	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
 	{
