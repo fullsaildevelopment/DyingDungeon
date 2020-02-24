@@ -43,6 +43,7 @@ void Stun::Remove()
 {
 	if (mRecipient->GetState() != STATE::DEAD)
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 		mRecipient->SetState(STATE::NONE);
 	}
 	return;

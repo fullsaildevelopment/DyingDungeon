@@ -30,6 +30,7 @@ void Regens::Apply(Character& caster, Character& target)
 }
 void Regens::Remove()
 {
+	GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(false);
 	return;
 }
 void Regens::Use()

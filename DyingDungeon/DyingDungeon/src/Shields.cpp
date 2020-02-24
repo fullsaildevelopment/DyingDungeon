@@ -33,6 +33,8 @@ void Shields::Apply(Character& caster, Character& target)
 
 void Shields::Remove()
 {
+	if(mRecipient->IsShielded())
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 	return;
 }
 

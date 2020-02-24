@@ -571,29 +571,13 @@ void Character::ClearStatusEffects()
 // Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	mDebuffs.clear();
+	mBleeds.clear();
+}
 
-	for (it = mDebuffs.begin(); it != mDebuffs.end();)
-	{
-		if ((*it))
-		{
-			(*it)->Remove();
-			it = mDebuffs.erase(it);
-		}
-		else
-			it++;
-	}
-
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		if ((*it))
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
+bool Character::IsShielded()
+{
+	return !mSheilds.empty();
 }
 
 // Sets the Particle system pointer to a "Hit effect"

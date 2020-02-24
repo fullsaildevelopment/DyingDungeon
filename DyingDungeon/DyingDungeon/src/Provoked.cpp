@@ -40,6 +40,7 @@ void Provoked::Remove()
 	if (mRecipient->GetProvoked() == mProvoker)
 	{
 		mRecipient->SetProvoked(nullptr);
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
 	}
 }
 

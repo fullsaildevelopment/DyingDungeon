@@ -88,18 +88,21 @@ void StatUp::Remove()
 	{
 	case STATS::Atk:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackUpBuff()->setVisible(false);
 		mRecipient->DecreaseAtk(mAmountOfEffect);
 		temp = " Attack";
 		break;
 	}
 	case STATS::Def:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseUpBuff()->setVisible(false);
 		mRecipient->DecreaseDef(mAmountOfEffect);
 		temp = " Defense";
 		break;
 	}
 	case STATS::Spd:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedUpBuff()->setVisible(false);
 		mRecipient->DecreaseSpd(mAmountOfEffect);
 		temp = " Speed";
 		break;

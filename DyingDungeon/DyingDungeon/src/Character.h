@@ -178,6 +178,9 @@ public:
 	// Remove all harmful status effects
 	void ClearBadStatusEffects();
 
+	// Returns if there is a shield or not on the character
+	bool IsShielded();
+
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 
