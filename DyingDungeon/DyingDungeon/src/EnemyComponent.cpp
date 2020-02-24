@@ -53,7 +53,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		////////////////////////////////////
 		mBaseAttack = mAttack = 40.0f;
 		mBaseDefense = mDefense = 40.0f;
-		mBaseSpeed = mSpeed = 30.0f;
+		mBaseSpeed = mSpeed = 10.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
