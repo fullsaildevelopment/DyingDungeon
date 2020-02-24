@@ -1,5 +1,6 @@
 #include "Shields.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Shields::Shields(float amountOfAffect, int duration, Character* target)
 {
@@ -26,6 +27,7 @@ void Shields::Apply(Character& caster, Character& target)
 	newStatusEffect = std::make_shared<Shields>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
 	caster.AddCastedEffect(newStatusEffect.get());
+	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
 	return;
 }
 

@@ -1,5 +1,6 @@
 #include "StatDown.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* target)
 {
@@ -54,18 +55,21 @@ void StatDown::Apply(Character& caster, Character& target)
 	{
 	case STATS::Atk:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(true);
 		target.DecreaseAtk(mAmountOfEffect);
 		temp = " Attack";
 		break;
 	}
 	case STATS::Def:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(true);
 		target.DecreaseDef(mAmountOfEffect);
 		temp = " Defense";
 		break;
 	}
 	case STATS::Spd:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(true);
 		target.DecreaseSpd(mAmountOfEffect);
 		temp = " Speed";
 		break;
