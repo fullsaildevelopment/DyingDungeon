@@ -19,6 +19,16 @@ public:
 		OptionsMenu
 	};
 
+	enum class ClickableCharacterUI
+	{
+		HeroLeft,
+		HeroMiddle,
+		HeroRight,
+		EnemyLeft,
+		EnemyMiddle,
+		EnemyRight
+	};
+
 	enum class CharacterType
 	{
 		Paladin, Mage
@@ -142,7 +152,6 @@ public: // Functions
 	// Character info popup for team selection screen
 	Odyssey::UICanvas* SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition);
 
-	// Increase the char
 	// Add HUD to the character hud list
 	void AddHudToList(Odyssey::Entity* _newHud);
 	// Add character health and mana bars to update list in order for the bars to be animated
@@ -159,6 +168,9 @@ public: // Functions
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
+	// Add a cliackable entity to target enemies or allies
+	void AddClickableElementToList(Odyssey::Entity* _clickableUI) { mClickableUIList.push_back(_clickableUI); }
+
 	//Updates
 	void UpdateStatsMenu();
 
@@ -168,6 +180,9 @@ public: // Functions
 	void ClearCombatLog();
 
 	//Getters
+	Odyssey::Entity* GetClickableUIPrefab(ClickableCharacterUI _clickableUIPos) { return mClickableUIPrefabMap[_clickableUIPos]; };
+	std::vector<Odyssey::Entity*> GetClickableUIElements() { return mClickableUIList; }
+
 	// Get battle log text
 	Odyssey::Text2D* GetBattleLogText() { return mBattleLogText; }
 
@@ -379,6 +394,9 @@ private: // Varibales
 	// List of character bars I need to update
 	std::vector<std::shared_ptr<AnimatingBar>> mUpdateCharacterBarsList;
 
+	// List of clickable elements for selecting who to target
+	std::vector<Odyssey::Entity*> mClickableUIList;
+
 	// Queues
 
 	// Entities
@@ -420,7 +438,9 @@ private: // Functions
 
 	// Prefab Maps
 	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
+	std::map<ClickableCharacterUI, Odyssey::Entity*> mClickableUIPrefabMap;
 
 	// Prefab Creation Functions
-	Odyssey::Entity*  CreatePauseMenuPrefab();
+	Odyssey::Entity* CreatePauseMenuPrefab();
+	Odyssey::Entity* CreateClickableUIPrefab(DirectX::XMFLOAT2 _clickableRectPos, bool _isHero);
 };

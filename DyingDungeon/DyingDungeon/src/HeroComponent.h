@@ -67,12 +67,18 @@ private:
 	std::vector<Odyssey::Entity*> mHeroList;
 	std::vector<Odyssey::Entity*> mEnemyList;
 
-	// Skill callbacks //
-	//////////////////////
+	// Skill callbacks
 	void Skill1Callback();
 	void Skill2Callback();
 	void Skill3Callback();
 	void Skill4Callback();
-	//////////////////////
+
+	// Character select callbacks
+	void Character1Callback();
+	void Character2Callback();
+	void Character3Callback();
+	void Character4Callback();
+	void Character5Callback();
+	void Character6Callback();
 };
 

@@ -117,9 +117,6 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	// Add the skill hover hud to the skill hover prefab map
 	mSkillHoverPrefabMap[SkillHoverID::RightHUD] = skillHoverHUD;
 
-	// Create HP Popup
-	//mHpPopupPrefab = CreateHpPopupPrefab();
-
 	// Create the impact indicator 
 	mImpactIndicatorPrefab = CreateImpactIndicatorPrefab();
 

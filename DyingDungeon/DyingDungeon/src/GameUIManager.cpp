@@ -25,10 +25,40 @@ void GameUIManager::initialize(Odyssey::Application* _application)
 	// Create the entity to create new UI prefabs
 	Odyssey::Entity* newUIPrefab;
 
-	// Create the paladin prefab
+	// Create the pause menu prefab
 	newUIPrefab = CreatePauseMenuPrefab();
-	// Add the new character to the prefab map
+	// Add the new pause menu to the prefab map
 	mUIObjectsPrefabMap[UIObject::PauseMenu] = newUIPrefab;
+
+	// Create the hero clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(300.0f, 300.0f), true);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::HeroLeft] = newUIPrefab;
+
+	// Create the hero clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(590.0f, 300.0f), true);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::HeroMiddle] = newUIPrefab;
+
+	// Create the hero clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(900.0f, 300.0f), true);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::HeroRight] = newUIPrefab;
+
+	// Create the enemy clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(450.0f, 150.0f), false);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::EnemyLeft] = newUIPrefab;
+
+	// Create the enemy clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(600.0f, 150.0f), false);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::EnemyMiddle] = newUIPrefab;
+
+	// Create the enemy clickable UI elements
+	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(750.0f, 150.0f), false);
+	// Add the new clickable ui elements to the prefab map
+	mClickableUIPrefabMap[ClickableCharacterUI::EnemyRight] = newUIPrefab;
 }
 
 void GameUIManager::CreateBattleLog(Odyssey::Scene* _sceneToAddTo)
@@ -2363,4 +2393,38 @@ Odyssey::Entity* GameUIManager::CreatePauseMenuPrefab()
 	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
 	return mPauseMenu;
+}
+
+Odyssey::Entity* GameUIManager::CreateClickableUIPrefab(DirectX::XMFLOAT2 _clickableRectPos, bool _isHero)
+{
+	// Create the clickable object prefab
+	Odyssey::Entity* mClickableUI = mApplication->createPrefab();
+	// Add a canvas to the object
+	Odyssey::UICanvas* canvas = mClickableUI->addComponent<Odyssey::UICanvas>();
+
+	// Set screen size
+	UINT width = 0;
+	UINT height = 0;
+
+	if (_isHero)
+	{
+		width = 100;
+		height = 200;
+	}
+	else
+	{
+		width = 50;
+		height = 100;
+	}
+
+	// Set position
+	DirectX::XMFLOAT2 position = _clickableRectPos;
+	// Set color
+	DirectX::XMFLOAT4 color = { 0.0f, 255.0f, 0.0f, 1.0f };
+	// Add the rectangle to the pause menu canvas
+	Odyssey::Rectangle2D* rect = canvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Make the rectangle have 50% transparency
+	rect->setOpacity(BackgroundBigOpacity);
+
+	return mClickableUI;
 }

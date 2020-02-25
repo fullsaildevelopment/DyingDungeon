@@ -137,9 +137,7 @@ int playGame()
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
-
 	// Set up the team selection screen
-	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
 	setupTeamSelectMenu(application.get());
 
 	// Create Scene One

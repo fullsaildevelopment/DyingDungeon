@@ -37,25 +37,6 @@ void TowerManager::initialize()
 
 	// Create the player team
 	CreateThePlayerTeam();
-	
-	// Don't show the boss character
-	//mBossCharacter->setActive(false);
-	//GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
-
-	//// Reset the enemy team to the skely bois
-	//if (mSkeletonTeam.size() != 0)
-	//{
-	//	// Clear enemy team
-	//	mEnemyTeam.clear();
-	//
-	//	// Set the enemy team to be the skeleton team on start
-	//	for (int i = 0; i < mSkeletonTeam.size(); i++)
-	//	{
-	//		mSkeletonTeam[i]->setActive(true);
-	//		GameUIManager::getInstance().GetCharacterHuds()[mSkeletonTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
-	//		mEnemyTeam.push_back(mSkeletonTeam[i]);
-	//	}
-	//}
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	CreateBattleInstance();
@@ -228,9 +209,6 @@ void TowerManager::update(double deltaTime)
 
 void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
-	// Add Boss to the mAllCharacters
-	//mAllCharacters.push_back(mBossCharacter);
-
 	// Set the current level to 1
 	mCurrentLevel = 1;
 
@@ -349,6 +327,8 @@ void TowerManager::GoToMainMenu()
 	{
 		// Destory the previous player's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous player's clickable box
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
 		// Destroy the previous player's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous player's blood particle effect
@@ -362,6 +342,8 @@ void TowerManager::GoToMainMenu()
 	{
 		// Destory the previous enemy's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the enemy's clickable box
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous enemy's blood particle effect
@@ -397,7 +379,6 @@ void TowerManager::CreateThePlayerTeam()
 	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
-	// Player Rotations
 
 	// Create each player
 	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
@@ -410,6 +391,8 @@ void TowerManager::CreateThePlayerTeam()
 		Odyssey::Entity* prefab;
 		// Hud Id type
 		CharacterFactory::HudID hudID;
+		// Clickable Character position
+		GameUIManager::ClickableCharacterUI clickablePos;
 		// Position taht the skill popup will needed to be spawned at
 		SkillHoverComponent::HudPosition skillPopupPos;
 		// Define the character type we need to create
@@ -423,16 +406,19 @@ void TowerManager::CreateThePlayerTeam()
 		{
 			hudID = CharacterFactory::HudID::HeroLeft;
 			skillPopupPos = SkillHoverComponent::HudPosition::Left;
+			clickablePos = GameUIManager::ClickableCharacterUI::HeroLeft;
 		}
 		else if (i == 1)
 		{
 			hudID = CharacterFactory::HudID::HeroMiddle;
 			skillPopupPos = SkillHoverComponent::HudPosition::Middle;
+			clickablePos = GameUIManager::ClickableCharacterUI::HeroMiddle;
 		}
 		else
 		{
 			hudID = CharacterFactory::HudID::HeroRight;
 			skillPopupPos = SkillHoverComponent::HudPosition::Right;
+			clickablePos = GameUIManager::ClickableCharacterUI::HeroRight;
 		}
 
 		// Set the enum based on the name of the character
@@ -480,6 +466,12 @@ void TowerManager::CreateThePlayerTeam()
 		hover->mCharacterSkills = newCharacter->getComponent<Character>()->GetSkills();
 		// Assign the position that the prefab will needed to be spawned at
 		hover->mHudPositionEnum = skillPopupPos;
+
+		// Create the hero clickable UI box
+		Odyssey::Entity* clickableHeroUI = nullptr;
+		prefab = GameUIManager::getInstance().GetClickableUIPrefab(clickablePos);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &clickableHeroUI, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
+		GameUIManager::getInstance().AddClickableElementToList(clickableHeroUI);
 		
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
@@ -511,8 +503,4 @@ void TowerManager::CreateThePlayerTeam()
 		// Add the mudda fricken character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
-}
-
-void TowerManager::CreateTheSkillHoverHuds()
-{
 }
