@@ -43,7 +43,7 @@ void MainMenuController::initialize()
 	// TODO: M3B1 ONLY END
 
 	// Animating bool
-	mAnimatingLaser = true;
+	mAnimatingLaser = false;
 
 	// Create a paladin and add him to the main menu scene
 	mPaladinCharacter = nullptr;

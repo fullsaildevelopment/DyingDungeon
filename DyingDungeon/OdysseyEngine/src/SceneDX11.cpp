@@ -64,19 +64,34 @@ namespace Odyssey
 	{
 		// Create the entity from the prefab copy and set the scene
 		std::shared_ptr<Entity> entity = std::make_shared<Entity>(*spawnPrefab);
-		entity->getComponent<Transform>()->setPosition(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position));
-		entity->getComponent<Transform>()->setRotation(DirectX::XMVectorGetX(rotation), DirectX::XMVectorGetY(rotation), DirectX::XMVectorGetZ(rotation));
 
+		if (entity->getComponent<Transform>())
+		{
+			entity->getComponent<Transform>()->setPosition(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position));
+			entity->getComponent<Transform>()->setRotation(DirectX::XMVectorGetX(rotation), DirectX::XMVectorGetY(rotation), DirectX::XMVectorGetZ(rotation));
+		}
+		
 		// Initialize the entity's components
 		for (Component* component : entity->getComponents<Component>())
 		{
 			component->initialize();
 		}
-
 		entity->setScene(this);
+		mSceneEntities.push_back(entity);
+
+		for (Entity* child : entity->getChildren())
+		{
+			std::shared_ptr<Entity> childSpawn = std::make_shared<Entity>(*spawnPrefab);
+
+			for (Component* childComponent : childSpawn->getComponents<Component>())
+			{
+				childComponent->initialize();
+			}
+			childSpawn->setScene(this);
+			mSceneEntities.push_back(childSpawn);
+		}
 
 		// Add the entity to the list and return
-		mSceneEntities.push_back(entity);
 		return entity.get();
 	}
 
