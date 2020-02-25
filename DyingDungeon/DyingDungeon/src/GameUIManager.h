@@ -58,9 +58,9 @@ public:
 	{
 		Odyssey::Rectangle2D* pBar = nullptr;
 		Odyssey::Text2D* pBarText = nullptr;
-		float pMaxValue;
-		float pCurrValue; // This will change in the update function
-		float pNewValue;
+		float pMaxValue = 0.0f;
+		float pCurrValue = 0.0f; // This will change in the update function
+		float pNewValue = 0.0f;
 
 		// Used for checking while updating
 		bool pTookDamage;
@@ -129,6 +129,8 @@ public: // Functions
 	// TODO: M3B1 ONLY REFACTOR LATER
 	void ShowCreditsMenu();
 	void HideCreditsMenu();
+	void ShowMainOptions();
+	void HideMainOptions();
 	// TODO: M3B1 ONLY END
 
 	void StatsMenuPrevTurn();
@@ -240,8 +242,16 @@ public: // Functions
 	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
 	//
 	Odyssey::Rectangle2D** GetLoadoutPortraitBackgrounds() { return mLoadoutPortraitBackground; }
+	//
+	Odyssey::Text2D* GetBackTextOptions() { return mOptionsBack; }
+	//
+	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
+
+	Odyssey::Sprite2D** GetMainMenuPlusVolumeButtons() { return mMainPlusImage; }
+
+	Odyssey::Sprite2D** GetMainMenuMinusVolumeButtons() { return mMainMinusImage; }
 
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
@@ -289,6 +299,7 @@ private: // Varibales
 
 	// Menu Entities
 	Odyssey::Entity* mMainMenu = nullptr;
+	Odyssey::Entity* mMainMenuOptions = nullptr;
 	Odyssey::Entity* mTowerSelectMenu = nullptr;
 	Odyssey::Entity* mTeamSelectMenu = nullptr;
 	Odyssey::Entity* mLoadoutMenu = nullptr;
@@ -303,10 +314,15 @@ private: // Varibales
 	Odyssey::Sprite2D* mAnimatedLaser = nullptr;
 	Odyssey::Text2D* mNewGameText = nullptr;
 	Odyssey::Text2D* mStatsText = nullptr;
+	Odyssey::Text2D* mOptionsBack = nullptr;
+	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mMainVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
 	// TODO: M3B1 ONLY REFACTOR LATER
 	Odyssey::Text2D* mCreditsText = nullptr;
 	Odyssey::Text2D* mExitGameText = nullptr;
 	Odyssey::Text2D* mCreditsBackText = nullptr;
+	Odyssey::Text2D* mMainOptionsText = nullptr;
 	// TODO: M3B1 ONLY END
 
 	// Tower Menu Items
