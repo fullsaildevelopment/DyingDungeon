@@ -20,6 +20,8 @@ namespace Odyssey
 		mShape = copy.mShape;
 		mStartColor = copy.mStartColor;
 		mEndColor = copy.mEndColor;
+		mFadeStart = copy.mFadeStart;
+		mFadeEnd = copy.mFadeEnd;
 		mMinLife = copy.mMinLife;
 		mMaxLife = copy.mMaxLife;
 		mMinSpeed = copy.mMinSpeed;
@@ -73,18 +75,38 @@ namespace Odyssey
 		// Create the depth
 		mDepthState = RenderManager::getInstance().createDepthState(false, true, ComparisonFunc::COMPARISON_LESS);
 
+		D3D11_BLEND_DESC blendDesc;
+		ZeroMemory(&blendDesc, sizeof(blendDesc));
+
+		D3D11_RENDER_TARGET_BLEND_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.BlendEnable = true;
+		desc.BlendEnable = true;
+		desc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		desc.DestBlend = D3D11_BLEND_ONE;
+		desc.BlendOp = D3D11_BLEND_OP_ADD;
+		desc.SrcBlendAlpha = D3D11_BLEND_ZERO;
+		desc.DestBlendAlpha = D3D11_BLEND_ONE;
+		desc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		desc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		blendDesc.AlphaToCoverageEnable = true;
+		blendDesc.IndependentBlendEnable = false;
+		blendDesc.RenderTarget[0] = desc;
+
+		RenderManager::getInstance().getDX11Device()->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
 		// Create the blend state
-		float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		BlendDesc blendDesc;
-		blendDesc.mSrcBlend = Blend::BLEND_SRC_ALPHA;
-		blendDesc.mDestBlend = Blend::BLEND_ONE;
-		blendDesc.mBlendOp = BlendOperation::BLEND_OP_ADD;
-		blendDesc.mSrcAlphaBlend = Blend::BLEND_ZERO;
-		blendDesc.mDestAlphaBlend = Blend::BLEND_ONE;
-		blendDesc.mAlphaBlendOp = BlendOperation::BLEND_OP_ADD;
-		blendDesc.mAlphaToCoverage = true;
-		blendDesc.mIndependentBlendEnable = false;
-		mBlendState = RenderManager::getInstance().createBlendState(blendDesc, blendFactor);
+		//float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		//BlendDesc blendDesc;
+		//blendDesc.mSrcBlend = Blend::BLEND_SRC_ALPHA;
+		//blendDesc.mDestBlend = Blend::BLEND_ONE;
+		//blendDesc.mBlendOp = BlendOperation::BLEND_OP_ADD;
+		//blendDesc.mSrcAlphaBlend = Blend::BLEND_ZERO;
+		//blendDesc.mDestAlphaBlend = Blend::BLEND_ONE;
+		//blendDesc.mAlphaBlendOp = BlendOperation::BLEND_OP_ADD;
+		//blendDesc.mAlphaToCoverage = false;
+		//blendDesc.mIndependentBlendEnable = false;
+		//mBlendState = RenderManager::getInstance().createBlendState(blendDesc, blendFactor);
 
 		// Default to the fire texture
 		mTexture = RenderManager::getInstance().createTexture(TextureType::Diffuse, "Particle.png");
@@ -128,14 +150,17 @@ namespace Odyssey
 		renderManager.getTexture(mTexture)->bind(context);
 
 		// Bind the blend state
-		renderManager.getBlendState(mBlendState)->bind(context);
+		float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xFFFFFFFF);
+		//renderManager.getBlendState(mBlendState)->bind(context);
 
 		// Draw the particles
 		context->Draw(mMaxCount, 0);
 
 		// Unbind the depth and blend state
 		renderManager.getDepthState(mDepthState)->unbind(context);
-		renderManager.getBlendState(mBlendState)->unbind(context);
+		//renderManager.getBlendState(mBlendState)->unbind(context);
+		context->OMSetBlendState(nullptr, blendFactor, 0xFFFFFFFF);
 
 		// Unbind the shaders and buffers
 		renderManager.getBuffer(mParticleBuffer)->unbind(context, 0, ShaderType::GeometryShader);
@@ -543,7 +568,7 @@ namespace Odyssey
 
 				float ratio = 1.0f - mParticleData[i].lifeTime / mParticleData[i].startLifetime;
 
-				if (ratio >= 0.8f)
+				if (false || ratio >= 0.8f)
 				{
 					mParticleData[i].color = colorLerp(mFadeStart, mFadeEnd, (ratio - 0.8f) / 0.2f);
 				}

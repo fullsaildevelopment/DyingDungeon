@@ -122,11 +122,10 @@ namespace Odyssey
 	{
 		// Set the out parameter to the forward vector from the world matrix
 		mLock.lock(LockState::Read);
-		DirectX::XMVECTOR fwd = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2])));
+		DirectX::XMFLOAT3 fwd = DirectX::XMFLOAT3(mWorldMatrix.m[2][0], mWorldMatrix.m[2][1], mWorldMatrix.m[2][2]);
+		DirectX::XMStoreFloat3(&fwd, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&fwd)));
 		mLock.unlock(LockState::Read);
-		DirectX::XMFLOAT3 f3Fwd;
-		DirectX::XMStoreFloat3(&f3Fwd, fwd);
-		return f3Fwd;
+		return fwd;
 	}
 
 	DirectX::XMFLOAT3 Transform::getRight()
@@ -134,6 +133,7 @@ namespace Odyssey
 		// Set the out parameter to the right vector from the world matrix
 		mLock.lock(LockState::Read);
 		DirectX::XMFLOAT3 right = DirectX::XMFLOAT3(mWorldMatrix.m[0][0], mWorldMatrix.m[0][1], mWorldMatrix.m[0][2]);
+		DirectX::XMStoreFloat3(&right, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&right)));
 		mLock.unlock(LockState::Read);
 		return right;
 	}
@@ -143,6 +143,7 @@ namespace Odyssey
 		// Set the out parameter to the up vector from the world matrix
 		mLock.lock(LockState::Read);
 		DirectX::XMFLOAT3 up = DirectX::XMFLOAT3(mWorldMatrix.m[1][0], mWorldMatrix.m[1][1], mWorldMatrix.m[1][2]);
+		DirectX::XMStoreFloat3(&up, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&up)));
 		mLock.unlock(LockState::Read);
 		return up;
 	}

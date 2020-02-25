@@ -177,7 +177,7 @@ namespace Odyssey
 		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity, DirectX::XMVECTOR spawnPosition, DirectX::XMVECTOR spawnRotation) 
 			: prefab(spawnPrefab), entity(outEntity), position(spawnPosition), rotation(spawnRotation)
 		{
-			priority = EventPriority::Immediate;
+			priority = EventPriority::Deferred;
 		}
 	};
 
@@ -188,7 +188,7 @@ namespace Odyssey
 
 		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
 		{
-			priority = EventPriority::Deferred;
+			priority = EventPriority::Immediate;
 		}
 	};
 

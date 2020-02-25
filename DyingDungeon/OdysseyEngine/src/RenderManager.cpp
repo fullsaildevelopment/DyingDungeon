@@ -510,7 +510,7 @@ namespace Odyssey
 	{
 		// Create the 2D factory
 		auto options = D2D1_FACTORY_OPTIONS();
-		options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+		//options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 		HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, options, mFactory2D.GetAddressOf());
 
 		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;

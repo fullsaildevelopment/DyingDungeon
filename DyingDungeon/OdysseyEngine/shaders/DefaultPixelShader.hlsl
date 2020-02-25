@@ -41,18 +41,18 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	if (mat.hasNormalTexture)
 	{
 		// Sample the texture
-		//input.tangent = normalize(input.tangent);
-		//input.binormal = normalize(input.binormal);
-		//
-		//float4 texNormal = txNormal.Sample(samLinear, input.tex);
-		//// Convert from a 0.0 to 1.0 value into a -1.0 to 1.0 value
-		//texNormal = (2.0f * texNormal) - 1.0f;
-		//// Ensure the tangent is orthogonal
-		//input.tangent = normalize(input.tangent - dot(input.tangent, surfaceNormal) * surfaceNormal);
-		//// Create the texture space matrix
-		//float3x3 texSpace = float3x3(input.tangent, input.binormal, surfaceNormal);
-		//// Transform the texture normal into texture space
-		//surfaceNormal = normalize(mul(texNormal.xyz, texSpace));
+		input.tangent = normalize(input.tangent);
+		input.binormal = normalize(input.binormal);
+		
+		float4 texNormal = txNormal.Sample(samLinear, input.tex);
+		// Convert from a 0.0 to 1.0 value into a -1.0 to 1.0 value
+		texNormal = (2.0f * texNormal) - 1.0f;
+		// Ensure the tangent is orthogonal
+		input.tangent = normalize(input.tangent - dot(input.tangent, surfaceNormal) * surfaceNormal);
+		// Create the texture space matrix
+		float3x3 texSpace = float3x3(input.tangent, input.binormal, surfaceNormal);
+		// Transform the texture normal into texture space
+		surfaceNormal = normalize(mul(texNormal.xyz, texSpace));
 	}
 
 	return float4(surfaceNormal, 1.0f);

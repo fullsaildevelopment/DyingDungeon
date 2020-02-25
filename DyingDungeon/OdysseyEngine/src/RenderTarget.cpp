@@ -167,7 +167,11 @@ namespace Odyssey
 		{
 			D3D11_DEPTH_STENCIL_VIEW_DESC zViewDesc;
 			zViewDesc.Format = format;
-			zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+			if (width == 4096)
+				zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			else
+				zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+
 			zViewDesc.Texture2D.MipSlice = 0;
 
 			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreateDepthStencilView(texture, nullptr, mDepthStencilView.GetAddressOf());

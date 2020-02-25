@@ -226,7 +226,8 @@ namespace Odyssey
 		int mPixelShader;
 		int mRenderState;
 		int mDepthState;
-		int mBlendState;
+		//int mBlendState;
+		Microsoft::WRL::ComPtr<ID3D11BlendState> mBlendState;
 		int mTexture;
 		int mParticleBuffer;
 		std::vector<Particle> mParticleData;

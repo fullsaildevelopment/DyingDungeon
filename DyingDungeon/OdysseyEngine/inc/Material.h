@@ -48,7 +48,8 @@ namespace Odyssey
 		void setReflectance(float reflectance);
 		void setDiffuseColor(DirectX::XMFLOAT4 color);
 		void setReceiveShadow(bool receiveShadow);
-		void setShader(int pixelShader);
+		void setShader(const char* filename);
+		void setAlphaBlend(bool alphaBlend);
 		Shader* getShader();
 	private:
 		void setDefaultMaterialProperties();
@@ -57,6 +58,7 @@ namespace Odyssey
 		std::map<TextureType, int> mTextureMap;
 		int mMaterialBuffer;
 		int mPixelShader;
+		Microsoft::WRL::ComPtr<ID3D11BlendState> mBlendState;
 		ReadWriteLock mLock;
 	};
 }
