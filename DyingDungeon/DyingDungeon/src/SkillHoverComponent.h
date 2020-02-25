@@ -41,6 +41,9 @@ public:
 	// Hold the character's skill list
 	std::vector<std::shared_ptr<Skills>> mCharacterSkills;
 
+	// Hold the character component
+	Character* characterComponent;
+
 
 private:
 	// Hold the current prefab object

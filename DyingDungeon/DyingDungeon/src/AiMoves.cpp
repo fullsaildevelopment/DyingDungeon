@@ -56,14 +56,17 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			// Skill 1
 			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 15.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			mSkillList[0]->SetSoundEffect("SkeletonPunch",0.25f);
 			// Skill 2
-			StatusEffect = std::make_shared<Bleed>(0.15f,2,nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
-			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
-			// Skill 3
-			StatusEffect = std::make_shared < StatDown>(0.5f, 3, STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, true));
-			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			//StatusEffect = std::make_shared<Bleed>(0.15f,2,nullptr);
+			//mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.25f, 10.0f, 25.0f, StatusEffect));
+			//mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			//mSkillList[1]->SetSoundEffect("",0.25);
+			//// Skill 3
+			//StatusEffect = std::make_shared <StatDown>(0.5f, 3, STATS::Atk, nullptr);
+			//mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.25f, 40.0f, 30.0f, StatusEffect, true));
+			//mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			//mSkillList[2]->SetSoundEffect("", 0.25);
 			break;
 		}
 		// Ganfaul
@@ -124,7 +127,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 4:
 		{
 			// Skill 1 
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f,true));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			// Skill 2
 			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
@@ -187,31 +190,39 @@ bool AIMoves::FindMove(GameplayTypes::SKILLTYPE priorityOverride, std::vector<Od
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 2:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			UngaAttackDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 3:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			UngaAttackDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 4:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			UngaAttackDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
-		// Ganfaul
+		// 
 		case 5:
 		{
-			GanfaulDeterminePriority();
+			//FindBestMove
+			UngaAttackDeterminePriority();
+
 			finished = SkillCheck(playerTeam, enemyTeam);
 			break;
 		}
@@ -729,7 +740,6 @@ void AIMoves::SetPrevMove()
 	mPrevMove.target = mBestMove->target;
 	mPrevMove.score = mBestMove->score;
 }
-
 
 // Reset all the deciding moves
 void AIMoves::ResetDecidingMoves()

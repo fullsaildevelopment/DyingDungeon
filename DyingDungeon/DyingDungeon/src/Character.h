@@ -178,6 +178,9 @@ public:
 	// Remove all harmful status effects
 	void ClearBadStatusEffects();
 
+	// Returns if there is a shield or not on the character
+	bool IsShielded();
+
 	// Sets the Particle system pointer to a "Hit effect"
 	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
 
@@ -214,9 +217,18 @@ public:
 	// Returns the character hud index
 	unsigned int GetHudIndex();
 
+	// Adds a soundClip to the map
+	void AddSoundClip(std::string soundKey, std::string newSoundName);
+
+	// Returns a string used for a sound clip
+	std::string GetSoundClipName(std::string soundKey);
+
 protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
+
+	// Map of strings for sound effects
+	std::map<std::string, std::string> mSoundClips;
 
 	// Character hud index
 	unsigned int mHudIndex;

@@ -1,5 +1,6 @@
 #include "StatDown.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* target)
 {
@@ -9,6 +10,26 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 	mRecipient = target;
 	mAffectedStatId = stat;
 	mStatId = stat;
+	switch (mStatId)
+	{
+	case STATS::Atk:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/AttackDown.png";
+		break;
+	}
+	case STATS::Def:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/DefenseDown.png";
+		break;
+	}
+	case STATS::Spd:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/SpeedDown.png";
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 StatDown::~StatDown()
@@ -34,18 +55,21 @@ void StatDown::Apply(Character& caster, Character& target)
 	{
 	case STATS::Atk:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(true);
 		target.DecreaseAtk(mAmountOfEffect);
 		temp = " Attack";
 		break;
 	}
 	case STATS::Def:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(true);
 		target.DecreaseDef(mAmountOfEffect);
 		temp = " Defense";
 		break;
 	}
 	case STATS::Spd:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(true);
 		target.DecreaseSpd(mAmountOfEffect);
 		temp = " Speed";
 		break;
@@ -64,18 +88,21 @@ void StatDown::Remove()
 	{
 	case STATS::Atk:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(false);
 		mRecipient->IncreaseAtk(mAmountOfEffect);
 		temp = " Attack";
 		break;
 	}
 	case STATS::Def:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(false);
 		mRecipient->IncreaseDef(mAmountOfEffect);
 		temp = " Defense";
 		break;
 	}
 	case STATS::Spd:
 	{
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(false);
 		mRecipient->IncreaseSpd(mAmountOfEffect);
 		temp = " Speed";
 		break;

@@ -131,18 +131,18 @@ private: // Functions
 	std::map<SkillHoverID, Odyssey::Entity*> mSkillHoverPrefabMap;
 
 	// Hp Popup 
-	Odyssey::Entity* mHpPopupPrefab;
+	Odyssey::Entity* mHpPopupPrefab = nullptr;
 
 	// Impact Indicator
-	Odyssey::Entity* mImpactIndicatorPrefab;
+	Odyssey::Entity* mImpactIndicatorPrefab = nullptr;
 
 	// Turn Indicator
-	Odyssey::Entity* mTurnIndicatorPrefab;
+	Odyssey::Entity* mTurnIndicatorPrefab = nullptr;
 
 	// Bleed Effect
-	Odyssey::Entity* mBloodEffect;
+	Odyssey::Entity* mBloodEffect = nullptr;
 
 	// Application
-	Odyssey::Application* mApplication;
+	Odyssey::Application* mApplication = nullptr;
 };
 

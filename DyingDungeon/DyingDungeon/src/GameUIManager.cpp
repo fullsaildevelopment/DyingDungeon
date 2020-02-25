@@ -3,6 +3,7 @@
 #include "UICanvas.h"
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
+#include "HeroComponent.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -14,6 +15,20 @@ GameUIManager& GameUIManager::getInstance()
 {
 	static GameUIManager instance;
 	return instance;
+}
+
+void GameUIManager::initialize(Odyssey::Application* _application)
+{
+	// Set application
+	mApplication = _application;
+
+	// Create the entity to create new UI prefabs
+	Odyssey::Entity* newUIPrefab;
+
+	// Create the paladin prefab
+	newUIPrefab = CreatePauseMenuPrefab();
+	// Add the new character to the prefab map
+	mUIObjectsPrefabMap[UIObject::PauseMenu] = newUIPrefab;
 }
 
 void GameUIManager::CreateBattleLog(Odyssey::Scene* _sceneToAddTo)
@@ -111,7 +126,7 @@ void GameUIManager::SetBattleLogText(std::wstring newText, bool concat)
 		mBattleLogVec[0]->setText(mBattleLogVec[0]->getText().append(newText));
 		return;
 	}
-
+  
 	for (int i = static_cast<int>(mBattleLogVec.size()) - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
@@ -580,7 +595,7 @@ void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
 
 	// Resume Button
-	width /= 2.5f;
+	width /= (UINT)2.5f;
 	height = 50;
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	position.y -= 50.0f;
@@ -913,7 +928,7 @@ void GameUIManager::StatsMenuNextTurn()
 			mStatMenuCurrentTurn++;
 			UpdateStatsMenu();
 		}
-		else if ((mStatMenuCurrentTurn + 1) > StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
+		else if (((int)mStatMenuCurrentTurn + 1) > StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size())
 		{
 			mStatMenuCurrentTurn = 1;
 			mStatMenuCurrentRound = 1;
@@ -952,7 +967,7 @@ void GameUIManager::StatsMenuNextLevel()
 			mStatMenuCurrentRound = 1;
 			UpdateStatsMenu();
 		}
-		else if ((mStatMenuCurrentLevel + 1) > StatTracker::Instance().GetLevelSize())
+		else if (((int)mStatMenuCurrentLevel + 1) > StatTracker::Instance().GetLevelSize())
 		{
 			mStatMenuCurrentLevel = 1;
 			mStatMenuCurrentTurn = 1;
@@ -1178,7 +1193,7 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	position.y -= 105.0f;
 	mVolumeText = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Adjust Volume", properties);
 	// Volume bar
-	width /= 2.0f;
+	width /= 2;
 	height = 25;
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	position.y -= 75.0f;
@@ -1287,7 +1302,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Set the bar width and height for the Rectangle2Ds
 	UINT imageWidth = 359;
 	UINT imageHeight = 109;
-	UINT barWidth = 252.5f;
+	UINT barWidth = 252;
 	UINT barHeight = 21;
 	DirectX::XMFLOAT4 color = { 116.0f, 71.0f, 201.0f, 1.0f };
 
@@ -1297,8 +1312,8 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Create the character's image
 	imageWidth = 71;
 	imageHeight = 68;
-	position.x += 2;
-	position.y += 1;
+	position.x += 2.0f;
+	position.y += 1.0f;
 	newHUD->SetPortrait(pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Gordon.jpg", imageWidth, imageHeight));
 
 	// Create the xp/name bar
@@ -1315,7 +1330,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	properties.bold = false;
 
 	// Create the character's level number text next to the XP bar
-	position.x += barWidth;
+	position.x += (float)barWidth;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	newHUD->SetLevelNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, 20, barHeight, L"01", properties));
@@ -1343,7 +1358,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	barHeight = 17;
 	barWidth = 356;
 	position.x += 2.0f;
-	position.y += imageHeight + 3.5f;
+	position.y += (float)imageHeight + 3.5f;
 	// Create and assign the health bar
 	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
 	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
@@ -1354,7 +1369,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
 	// Create and assign the mana bar
 	position.x -= 5.0f;
-	position.y += barHeight + 1.5;
+	position.y += (float)barHeight + 1.5f;
 	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
 	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	// Create the text for the mana numbers of the character
@@ -1371,6 +1386,9 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 
 	// Set up Skill Icons
 	SetupSkillIcons(_gameObjectToAddTo, _hudPosition);
+
+	// Set up the status effects
+	SetupStatusEffects(_gameObjectToAddTo, _hudPosition, true);
 }
 
 // Create enemy character portrait
@@ -1453,7 +1471,7 @@ void GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX:
 	barWidth = 171;
 	barHeight = 15;
 	position.y += 16.0f;
-	barHeight += 1.0f;
+	barHeight += 1;
 	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
 	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
 	// Enemy HP Bar Number
@@ -1482,6 +1500,9 @@ void GameUIManager::CreateEnemyHud(Odyssey::Entity* _gameObjectToAddTo, DirectX:
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	// Assign the character's turn order text
 	newHUD->SetTurnNumber(pCanvas->addElement<Odyssey::Text2D>(position, mTurnOrderColor, 32, 32, L"1", properties));
+
+	// Set up the status effects
+	SetupStatusEffects(_gameObjectToAddTo, _hudPosition, false);
 }
 
 void GameUIManager::CreateSkillHoverHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::XMFLOAT2 _hudPosition)
@@ -1596,45 +1617,100 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 }
 
-//void GameUIManager::SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud)
-//{
-//	// Set some variables
-//	DirectX::XMFLOAT2 position = _hudPosition;
-//	UINT imageWidth = 32;
-//	UINT imageHeight = 32;
-//	
-//	// Move the image up above the bar
-//	position.y -= static_cast<float>(imageHeight) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//	position.x += static_cast<float>(imageWidth) + 5.0f;
-//	//_newHud->pCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight);
-//}
+void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero)
+{
+	// Get the character hud elements component
+	CharacterHUDElements* newHud = _hudEntity->getComponent<CharacterHUDElements>();
+
+	// Image variables
+	UINT imageWidth = 25;
+	UINT imageHeight = 25;
+	float imageSpacing = 5.0f;
+
+	if (_isHero)
+	{
+		// Set some variables
+		DirectX::XMFLOAT2 position = _hudPosition;
+
+		// Move the image up above the bar
+		position.y -= static_cast<float>(imageHeight) + imageSpacing;
+		newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetAttackDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetBleedBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Bleed.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetStunBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Stun.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetProvokeBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Provoke.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetRegenBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Regen.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetShieldBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Shield.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+	}
+	else
+	{
+		// Set some variables
+		DirectX::XMFLOAT2 position = _hudPosition;
+		position.y += 42.0f; // Plus the height of the enemy hud sprite
+		DirectX::XMFLOAT2 originalPosition = position;
+
+		newHud->SetAttackUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetAttackDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/AttackDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetDefenseDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/DefenseDown.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedUpBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedUp.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetSpeedDownBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/SpeedDown.png", imageWidth, imageHeight));
+		// Move the next set of buffs down a row
+		position = originalPosition;
+		position.y += (float)imageHeight;
+		newHud->SetBleedBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Bleed.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetStunBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Stun.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetProvokeBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Provoke.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetRegenBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Regen.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+		newHud->SetShieldBuff(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(position, L"assets/images/StatusEffects/Shield.png", imageWidth, imageHeight));
+		position.x += static_cast<float>(imageWidth) + imageSpacing;
+	}
+
+	// Don't show the buffs on the screen on start
+	newHud->GetAttackUpBuff()->setVisible(false);
+	newHud->GetAttackDownBuff()->setVisible(false);
+	newHud->GetDefenseUpBuff()->setVisible(false);
+	newHud->GetDefenseDownBuff()->setVisible(false);
+	newHud->GetSpeedUpBuff()->setVisible(false);
+	newHud->GetSpeedDownBuff()->setVisible(false);
+	newHud->GetBleedBuff()->setVisible(false);
+	newHud->GetStunBuff()->setVisible(false);
+	newHud->GetProvokeBuff()->setVisible(false);
+	newHud->GetRegenBuff()->setVisible(false);
+	newHud->GetShieldBuff()->setVisible(false);
+}
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
 {
 	// Create the new canvas
 	Odyssey::UICanvas* popupCanvas = _objToAddTo->addComponent<Odyssey::UICanvas>();
 
-	DirectX::XMFLOAT4 themeColor;
-	// Assign theme color for text
-	if (_character->GetName() == L"Paladin")
-		themeColor = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
-	else if (_character->GetName() == L"Mage")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	else if (_character->GetName() == L"Bard")
-		themeColor = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
-	else if (_character->GetName() == L"Warrior")
-		themeColor = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
-	else if (_character->GetName() == L"Monk")
-		themeColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
-	else
-		themeColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT3 color = _character->getEntity()->getComponent<HeroComponent>()->GetThemeColor();
+	DirectX::XMFLOAT4 themeColor = { color.x, color.y, color.z, 1.0f };
 
 	std::wstring portrait = _character->GetPortraitPath();
 	std::wstring level = L"Lvl 1";
@@ -1751,9 +1827,7 @@ void GameUIManager::AddCharacterHpBarsToUpdateList(Character* _currCharacter, fl
 	healthBarToUpdate->pTookDamage = true;
 	// Check if they were actually granted health
 	if (_newHpAmount > _previousHpAmount)
-	{
 		healthBarToUpdate->pTookDamage = false;
-	}
 
 	// Add the health bar to the update list if there is any change
 	mUpdateCharacterBarsList.push_back(healthBarToUpdate);
@@ -1785,7 +1859,7 @@ void GameUIManager::AddCharacterMpBarsToUpdateList(Character* _currCharacter, fl
 }
 
 // Animate the bars
-void GameUIManager::UpdateCharacterBars(float _deltaTime)
+void GameUIManager::UpdateCharacterBars(double _deltaTime)
 {
 	// Update the health and mana bars that need to be updated
 	for (int i = 0; i < mUpdateCharacterBarsList.size(); i++)
@@ -1799,6 +1873,12 @@ void GameUIManager::UpdateCharacterBars(float _deltaTime)
 		float currValue = mUpdateCharacterBarsList[i]->pCurrValue;
 		// Get the target amount of the bar
 		float targetValue = mUpdateCharacterBarsList[i]->pNewValue;
+
+		// Make sure I'm clamping the target value to lerp to
+		if (targetValue > maxValue)
+			targetValue = maxValue;
+		else if (targetValue < 0.0f)
+			targetValue = 0.0f;
 
 		// Check if the bar is done animating
 		if (mUpdateCharacterBarsList[i]->pTookDamage)
@@ -1834,13 +1914,13 @@ void GameUIManager::UpdateCharacterBars(float _deltaTime)
 		if (mUpdateCharacterBarsList[i]->pTookDamage)
 		{
 			// Update the bar's currValue
-			mUpdateCharacterBarsList[i]->pCurrValue -= (speed * _deltaTime);
+			mUpdateCharacterBarsList[i]->pCurrValue -= (speed * (float)_deltaTime);
 		}
 		// Else we go up
 		else
 		{
 			// Update the bar's currValue
-			mUpdateCharacterBarsList[i]->pCurrValue += (speed * _deltaTime);
+			mUpdateCharacterBarsList[i]->pCurrValue += (speed * (float)_deltaTime);
 		}
 
 		// Clamp the pCurrBalue to the maxValue or 0
@@ -1894,7 +1974,7 @@ void GameUIManager::AddHpPopupToUpdateList(Character* _currCharacter, bool _took
 }
 
 // This will be called in the tower manager's update
-void GameUIManager::UpdateCharacterHealthPopups(float _deltaTime)
+void GameUIManager::UpdateCharacterHealthPopups(double _deltaTime)
 {
 	// Update the health pop ups that need to be updated
 	for (int i = 0; i < mUpdateHpPopupList.size(); i++)
@@ -1904,7 +1984,7 @@ void GameUIManager::UpdateCharacterHealthPopups(float _deltaTime)
 		// Set the speed varibale 
 		float speed = 0.25f;
 		// Set the new opacity
-		mUpdateHpPopupList[i]->setOpacity(currentOpacity - (speed * _deltaTime));
+		mUpdateHpPopupList[i]->setOpacity(currentOpacity - (speed * (float)_deltaTime));
 
 		// Check to see if the opacity is back 0.0f, if so remove it from the list
 		if (mUpdateHpPopupList[i]->getOpacity() <= 0.0f)
@@ -2069,7 +2149,7 @@ Odyssey::UICanvas* GameUIManager::CreatePopup(Odyssey::Entity* entity)
 
 void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill)
 {
-	float spriteSize = 25.0f;
+	UINT spriteSize = 25;
 
 	switch (skill->GetSkillTypeId())
 	{
@@ -2143,7 +2223,7 @@ void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, S
 	}
 	}
 
-	for (int i = mCombatCasterIcons.size() - 1; i > 0; i--)
+	for (int i = (int)mCombatCasterIcons.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
 		{
@@ -2172,7 +2252,7 @@ void GameUIManager::UpdateCombatLogIcons(Character* caster, Character* target, S
 
 void GameUIManager::ClearCombatLog()
 {
-	float spriteSize = 20.0f;
+	UINT spriteSize = 20;
 
 	for (int i = 0; i < mCombatCasterIcons.size(); i++)
 		mCombatCasterIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
@@ -2183,7 +2263,7 @@ void GameUIManager::ClearCombatLog()
 	for (int i = 0; i < mCombatTargetIcons.size(); i++)
 		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 
-	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
+	for (int i = (int)mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		mBattleLogVec[i]->setText(L"");
 	}
@@ -2193,7 +2273,7 @@ void GameUIManager::UpdateCombatLogText(float damage)
 {
 	std::wstring newText = Converter::FormatToPercentageW(damage, 2);
 
-	for (int i = mBattleLogVec.size() - 1; i > 0; i--)
+	for (int i = (int)mBattleLogVec.size() - 1; i > 0; i--)
 	{
 		if (i - 1 >= 0)
 		{
@@ -2207,4 +2287,80 @@ void GameUIManager::UpdateCombatLogText(float damage)
 	mBattleLogVec[0]->setColor(newCombatLogColor);
 	mBattleLogVec[0]->setText(newText);
 	
+}
+
+///////////////////////////////
+//                           //
+// Prefab Creation Functions //
+//                           //
+///////////////////////////////
+Odyssey::Entity* GameUIManager::CreatePauseMenuPrefab()
+{
+	// Create the pause menu prefab
+	mPauseMenu = mApplication->createPrefab();
+	// Add a canvas to the object
+	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->addComponent<Odyssey::UICanvas>();
+
+	// Create the rectangle object
+	UINT width = 1920;
+	UINT height = 1080;
+	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	// Add the rectangle to the pause menu canvas
+	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Make the rectangle have 50% transparency
+	mBlackBackground->setOpacity(BackgroundBigOpacity);
+
+	// Create the pause menu smaller black rectangle
+	width = 640;
+	height = 360;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	// Add the rectangle to the pause menu canvas
+	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+
+	// Create Pause Title
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	Odyssey::TextProperties properties;
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 60.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	properties.fontName = L"Tw Cen MT Condensed";
+	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
+
+	// Resume Button
+	width /= (UINT)2.5f;
+	height = 50;
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position.y -= 50.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the reusume background to the canvas
+	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Resume text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	properties.bold = false;
+	properties.fontSize = 30.0f;
+	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
+
+	// Options Button
+	position.y += 75.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the options background to the canvas
+	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Options text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
+
+	// Main Menu Button
+	position.y += 75.0f;
+	color = { 180.0f, 30.0f, 30.0f, 1.0f };
+	// Add the main menu background to the canvas
+	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Main menu text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
+
+	return mPauseMenu;
 }

@@ -7,51 +7,22 @@
 #include "Sprite2D.h"
 #include "StatTracker.h"
 #include "UIElement.h"
+#include <map>
 
 class GameUIManager
 {
 public:
 
+	enum class UIObject
+	{
+		PauseMenu,
+		OptionsMenu
+	};
+
 	enum class CharacterType
 	{
 		Paladin, Mage
 	};
-
-	// This struct will contain all of the UI elements associated with the character HUD
-	//struct CharacterHUD
-	//{
-	//	Odyssey::UICanvas* pCanvas;
-	//	Odyssey::Sprite2D* pPortrait;
-	//	Odyssey::Rectangle2D* pXpBar;
-	//	Odyssey::Text2D* pCharacterName;
-	//	Odyssey::Text2D* pLevelNumber;
-	//	Odyssey::Text2D* pAttackNumber;
-	//	Odyssey::Text2D* pDefenseNumber;
-	//	Odyssey::Text2D* pSpeedNumber;
-	//	Odyssey::Rectangle2D* pHealthBar;
-	//	Odyssey::Text2D* pHealthNumber;
-	//	Odyssey::Rectangle2D* pManaBar;
-	//	Odyssey::Text2D* pManaNumber;
-	//	Odyssey::Text2D* pTurnNumber;
-	//
-	//	// Skills
-	//	Odyssey::Sprite2D* pSkill1;
-	//	Odyssey::UICanvas* pSkill1Canvas;
-	//	Odyssey::Sprite2D* pSkill2;
-	//	Odyssey::UICanvas* pSkill2Canvas;
-	//	Odyssey::Sprite2D* pSkill3;
-	//	Odyssey::UICanvas* pSkill3Canvas;
-	//	Odyssey::Sprite2D* pSkill4;
-	//	Odyssey::UICanvas* pSkill4Canvas;
-	//
-	//	// Status Effects
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//};
 
 	// This struct will hold the elements needed in order to animate the health and mana bars
 	struct AnimatingBar
@@ -63,7 +34,7 @@ public:
 		float pNewValue = 0.0f;
 
 		// Used for checking while updating
-		bool pTookDamage;
+		bool pTookDamage = 0;
 	};
 
 public: // Singleton pattern
@@ -92,6 +63,9 @@ private: // Singleton pattern
 	}
 
 public: // Functions
+
+	// The initalize function to create all of the UI Prefabs
+	void initialize(Odyssey::Application* _application);
 
 	// Create the battle log UI 
 	void CreateBattleLog(Odyssey::Scene* _sceneToAddTo);
@@ -175,11 +149,13 @@ public: // Functions
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
 	// Update health bar
-	void UpdateCharacterBars(float _deltaTime);
+	void UpdateCharacterBars(double _deltaTime);
+	// Clear the list of bars to update
+	void ClearBarsToUpdateList() { mUpdateCharacterBarsList.clear(); }
 	// Add character's health popup to update list in order from them to be updated
 	void AddHpPopupToUpdateList(Character* _currCharacter, bool _tookDamage, float _changeInHP);
 	// Update health popups
-	void UpdateCharacterHealthPopups(float _deltaTime);
+	void UpdateCharacterHealthPopups(double _deltaTime);
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
@@ -295,7 +271,7 @@ private: // Varibales
 	std::vector<Odyssey::Sprite2D*> mCombatTargetIcons;
 
 	// Battle Log Colors
-	DirectX::XMFLOAT3 newCombatLogColor;
+	DirectX::XMFLOAT3 newCombatLogColor = { 0.0f, 0.0f, 0.0f };
 
 	// Menu Entities
 	Odyssey::Entity* mMainMenu = nullptr;
@@ -433,9 +409,18 @@ private: // Functions
 	void IncreaseDialogVolume();
 
 	// Skill Icon Creation Fucntions
-	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hudPosition);
-	//void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud);
+	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
+	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
+
+	// Application
+	Odyssey::Application* mApplication = nullptr;
+
+	// Prefab Maps
+	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
+
+	// Prefab Creation Functions
+	Odyssey::Entity*  CreatePauseMenuPrefab();
 };

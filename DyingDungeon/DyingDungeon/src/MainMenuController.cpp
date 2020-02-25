@@ -10,6 +10,7 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 {
 	mApplication = application;
 	mRect = nullptr;
+	mPaladinCharacter = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> MainMenuController::clone() const
@@ -52,6 +53,7 @@ void MainMenuController::initialize()
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
+	mPaladinCharacter->getChildren()[1]->setVisible(false);
 }
 
 void MainMenuController::update(double deltaTime)
@@ -65,7 +67,7 @@ void MainMenuController::update(double deltaTime)
 	if (mAnimatingLaser)
 	{
 		// Set the fill of the logo based on the (totalTime / waitTime)
-		float fillRatio = totalTime / (waitTime - 0.5f); // Give some padding
+		float fillRatio = static_cast<float>(totalTime / (waitTime - 0.5f)); // Give some padding
 
 		// If the fillRatio is at 100%, stop animating
 		if (fillRatio >= 1.0f)

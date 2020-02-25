@@ -14,6 +14,7 @@ CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
 {
 	mApplication = application;
+	mCurrentTower = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
@@ -62,22 +63,7 @@ void TeamSelectionController::initialize()
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
 
-	// Set the HUD positions
-	mHudPositions.clear();
-	mHudPositions.resize(3);
-	mHudPositions[0] = DirectX::XMFLOAT2(10.0f, 600.0f); // First Character HUD
-	mHudPositions[1] = DirectX::XMFLOAT2(470.0f, 600.0f); // Second Character HUD
-	mHudPositions[2] = DirectX::XMFLOAT2(910.0f, 600.0f); // Third Character HUD
-
-	// Set the HP positions
-	mHpPopupPositions.clear();
-	mHpPopupPositions.resize(3);
-	mHpPopupPositions[0] = DirectX::XMFLOAT2(325.0f, 350.0f); // First Character HP popup
-	mHpPopupPositions[1] = DirectX::XMFLOAT2(615.0f, 350.0f); // Second Character HP popup
-	mHpPopupPositions[2] = DirectX::XMFLOAT2(905.0f, 350.0f); // Third Character HP popup
-
 	// Clear the player team from Team Manager before adding in new characters
-
 	TeamManager::getInstance().ClearPlayerTeamEnumList();
 
 	if (SaveLoad::Instance().LoadLoadOut("Last_Loadout"))
@@ -111,7 +97,7 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().LoopRandom("BackgroundBattle");
 
 		// Set up the tower manager with how many levels we want
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(2);
+		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
 		// Change the scene to the game
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
@@ -130,7 +116,7 @@ void TeamSelectionController::update(double deltaTime)
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::A) && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::S))
 	{
 		GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-		unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+		unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 		SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 		SaveLoad::Instance().SaveLoadOut();
 	}
@@ -324,7 +310,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		rotation = DirectX::XMVectorSet(0.0f, 320.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -360,7 +348,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -395,8 +385,10 @@ void TeamSelectionController::CreateModelsAndPopups()
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
-		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
+		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk); 
+		rotation = DirectX::XMVectorSet(0.0f, 40.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
+		rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -444,7 +436,7 @@ void TeamSelectionController::EnterBattle()
 	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
   
@@ -535,7 +527,7 @@ void TeamSelectionController::DecreaseSlot1Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot1Index < 0)
-		mSlot1Index = mSlot1CharacterList.size() - 1;
+		mSlot1Index = (int)mSlot1CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -591,7 +583,7 @@ void TeamSelectionController::DecreaseSlot2Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot2Index < 0)
-		mSlot2Index = mSlot2CharacterList.size() - 1;
+		mSlot2Index = (int)mSlot2CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -647,7 +639,7 @@ void TeamSelectionController::DecreaseSlot3Index()
 
 	// If this go negative, set it to the size of a list - 1
 	if (mSlot3Index < 0)
-		mSlot3Index = mSlot3CharacterList.size() - 1;
+		mSlot3Index = (int)mSlot3CharacterList.size() - 1;
 
 	// Check if the previous popup was on or not
 	if (isPopupOn)
@@ -980,7 +972,7 @@ void TeamSelectionController::SaveLoadout1()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_1", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 
@@ -992,7 +984,7 @@ void TeamSelectionController::SaveLoadout2()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_2", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 
@@ -1004,7 +996,7 @@ void TeamSelectionController::SaveLoadout3()
 	ConfermationNo();
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { mSlot1Index, mSlot2Index, mSlot3Index };
+	unsigned int indecies[3] = { (unsigned int)mSlot1Index,(unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 	SaveLoad::Instance().AddLoadOut("Loadout_3", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
 

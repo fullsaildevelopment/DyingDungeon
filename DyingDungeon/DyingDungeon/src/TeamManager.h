@@ -29,9 +29,6 @@ public:
 		EnemyType pEnemyType;
 		DirectX::XMVECTOR pPosition;
 		DirectX::XMVECTOR pRotation;
-		DirectX::XMFLOAT2 pHudPosition;
-		DirectX::XMFLOAT2 pHpPopupPosition;
-		bool pIsBoss;
 	};
 
 public: // Singleton pattern
@@ -65,6 +62,8 @@ public: // Functions
 	std::vector<HeroType> GetPlayerTeamToCreate() { return mPlayerTeamToCreate; }
 	// Get the enemies that were created
 	std::vector<Odyssey::Entity*> GetEnemyTeam() { return mEnemyTeam; }
+	// Get the list of enemies to create
+	std::vector<std::vector<TeamManager::EnemySetups>> GetEnemiesToCreateList() { return mEnemiesToCreate; }
 
 	// Setters
 	// Set the current tower
@@ -83,10 +82,10 @@ private: // Variables
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 
 	// Holds the tower manager entity
-	Odyssey::Entity* mCurrentTower;
+	Odyssey::Entity* mCurrentTower = nullptr;
 
 	// Hold the first scene
-	Odyssey::Scene* mSceneOne;
+	Odyssey::Scene* mSceneOne = nullptr;
 
 private: // Functions
 	
