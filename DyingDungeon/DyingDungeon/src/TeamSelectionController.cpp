@@ -94,7 +94,7 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().StopGroup("BackgroundMenu");
 		RedAudioManager::Instance().Loop("TorchBurningQuietly");
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 600);
-		RedAudioManager::Instance().Loop("BackgroundBattle");
+		RedAudioManager::Instance().LoopRandom("BackgroundBattle");
 
 		// Set up the tower manager with how many levels we want
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());

@@ -29,9 +29,9 @@ public:
 	{
 		Odyssey::Rectangle2D* pBar = nullptr;
 		Odyssey::Text2D* pBarText = nullptr;
-		float pMaxValue = 0;
-		float pCurrValue = 0; // This will change in the update function
-		float pNewValue = 0;
+		float pMaxValue = 0.0f;
+		float pCurrValue = 0.0f; // This will change in the update function
+		float pNewValue = 0.0f;
 
 		// Used for checking while updating
 		bool pTookDamage = 0;
@@ -47,7 +47,20 @@ public: // Singleton pattern
 	~GameUIManager() { }
 
 private: // Singleton pattern
-	GameUIManager() { }
+	GameUIManager() 
+	{ 
+		mLoadoutPortraits[0][1] = nullptr;
+		mLoadoutPortraits[0][2] = nullptr;
+		mLoadoutPortraits[0][3] = nullptr;
+
+		mLoadoutPortraits[1][1] = nullptr;
+		mLoadoutPortraits[1][2] = nullptr;
+		mLoadoutPortraits[1][3] = nullptr;
+
+		mLoadoutPortraits[2][1] = nullptr;
+		mLoadoutPortraits[2][2] = nullptr;
+		mLoadoutPortraits[2][3] = nullptr;
+	}
 
 public: // Functions
 
@@ -90,6 +103,8 @@ public: // Functions
 	// TODO: M3B1 ONLY REFACTOR LATER
 	void ShowCreditsMenu();
 	void HideCreditsMenu();
+	void ShowMainOptions();
+	void HideMainOptions();
 	// TODO: M3B1 ONLY END
 
 	void StatsMenuPrevTurn();
@@ -203,8 +218,16 @@ public: // Functions
 	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
 	//
 	Odyssey::Rectangle2D** GetLoadoutPortraitBackgrounds() { return mLoadoutPortraitBackground; }
+	//
+	Odyssey::Text2D* GetBackTextOptions() { return mOptionsBack; }
+	//
+	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
+
+	Odyssey::Sprite2D** GetMainMenuPlusVolumeButtons() { return mMainPlusImage; }
+
+	Odyssey::Sprite2D** GetMainMenuMinusVolumeButtons() { return mMainMinusImage; }
 
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
@@ -252,6 +275,7 @@ private: // Varibales
 
 	// Menu Entities
 	Odyssey::Entity* mMainMenu = nullptr;
+	Odyssey::Entity* mMainMenuOptions = nullptr;
 	Odyssey::Entity* mTowerSelectMenu = nullptr;
 	Odyssey::Entity* mTeamSelectMenu = nullptr;
 	Odyssey::Entity* mLoadoutMenu = nullptr;
@@ -266,10 +290,15 @@ private: // Varibales
 	Odyssey::Sprite2D* mAnimatedLaser = nullptr;
 	Odyssey::Text2D* mNewGameText = nullptr;
 	Odyssey::Text2D* mStatsText = nullptr;
+	Odyssey::Text2D* mOptionsBack = nullptr;
+	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mMainVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
 	// TODO: M3B1 ONLY REFACTOR LATER
 	Odyssey::Text2D* mCreditsText = nullptr;
 	Odyssey::Text2D* mExitGameText = nullptr;
 	Odyssey::Text2D* mCreditsBackText = nullptr;
+	Odyssey::Text2D* mMainOptionsText = nullptr;
 	// TODO: M3B1 ONLY END
 
 	// Tower Menu Items
@@ -287,11 +316,11 @@ private: // Varibales
 	//Loadout Buttons
 	Odyssey::Sprite2D* mLoadoutButtons[3];
 	//Loadout pop-up
-	Odyssey::Rectangle2D* mLoadoutPortraitBackground[3];
+	Odyssey::Rectangle2D* mLoadoutPortraitBackground[3] = { nullptr, nullptr, nullptr };
 	//Loadout Character Portraits
 	Odyssey::Sprite2D* mLoadoutPortraits[3][3];
 	//Save Confermation Buttons
-	Odyssey::Sprite2D* mSaveConfermationButtons[2];
+	Odyssey::Sprite2D* mSaveConfermationButtons[2] = {nullptr, nullptr};
 	//Loadout Cancel Button
 	Odyssey::Text2D* mCancelLoadoutButton = nullptr;
 	// The arrow sprites
@@ -315,9 +344,9 @@ private: // Varibales
 	// Options Menu Items
 	Odyssey::Text2D* mOptionsTitle = nullptr;
 	Odyssey::Text2D* mVolumeText = nullptr;
-	Odyssey::Rectangle2D* mVolumeBar[4];
-	Odyssey::Sprite2D* mPlusImage[4];
-	Odyssey::Sprite2D* mMinusImage[4];
+	Odyssey::Rectangle2D* mVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
+	Odyssey::Sprite2D* mPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Text2D* mBackButtonText = nullptr;
 
 	//Stats Menu Items

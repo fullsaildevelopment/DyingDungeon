@@ -20,12 +20,14 @@ std::shared_ptr<Odyssey::Component> MainMenuController::clone() const
 
 void MainMenuController::initialize()
 {
-	RedAudioManager::Instance().Stop("BackgroundBattle");
+	RedAudioManager::Instance().StopGroup("BackgroundBattle");
 	RedAudioManager::Instance().Stop("TorchBurningQuietly");
 	RedAudioManager::Instance().LoopRandom("BackgroundMenu");
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
+	GameUIManager::getInstance().GetOptionsButtonMain()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowMainOptions);
+
 	if (StatTracker::Instance().GetLevelSize() > 0) 
 	{
 		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(255.0f, 255.0f, 255.0f));
@@ -107,6 +109,11 @@ void MainMenuController::onDestroy()
 	// TODO: M3B1 ONLY REFACTOR LATER
 	GameUIManager::getInstance().GetCreditsText()->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetExitGameText()->unregisterCallback("onMouseClick");
+
+	for (int i = 0; i < 4; i++) {
+		GameUIManager::getInstance().GetMainMenuPlusVolumeButtons()[i]->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuMinusVolumeButtons()[i]->unregisterCallback("onMouseClick");
+	}
 	// TODO: M3B1 ONLY END
 }
 
