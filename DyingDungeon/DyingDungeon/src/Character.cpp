@@ -507,6 +507,7 @@ void Character::ManageCastedEffects()
 			if ((*it)->GetDuration() <= 0)
 			{
 				std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from caster";
+				//(*it)->Remove();
 				it = mCastedEffects.erase(it);
 			}
 			else

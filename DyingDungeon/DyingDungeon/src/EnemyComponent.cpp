@@ -582,8 +582,9 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		if(mMechPtr)
 			(this->*mMechPtr)();
 		ManageCastedEffects();
-		ManageStatusEffects(mRegens);
-		ManageStatusEffects(mBleeds);
+		ManageAllEffects();
+		//ManageStatusEffects(mRegens);
+		//ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -775,13 +776,13 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 	case STATE::FINISHED:
 	{
 		// Manage all my buffs
-		ManageStatusEffects(mBuffs);
+		//ManageStatusEffects(mBuffs);
 
 		// Manage all my debuffs
-		ManageStatusEffects(mDebuffs);
+		//ManageStatusEffects(mDebuffs);
 
 		// Manage all my shields
-		ManageStatusEffects(mSheilds);
+		//ManageStatusEffects(mSheilds);
 
 		// Reset state to default
 		mCurrentState = STATE::NONE;
