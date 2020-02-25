@@ -8,6 +8,7 @@ Shields::Shields(float amountOfAffect, int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Shield.png";
 }
 
 Shields::~Shields()

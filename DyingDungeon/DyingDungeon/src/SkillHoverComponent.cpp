@@ -1,6 +1,7 @@
 #include "SkillHoverComponent.h"
 #include "SkillHUDElements.h"
 #include "EventManager.h"
+#include "Character.h"
 
 CLASS_DEFINITION(Odyssey::Component, SkillHoverComponent)
 
@@ -114,7 +115,7 @@ void SkillHoverComponent::CreateSkillHoverPrefab(SkillNumber _skillNumber)
 	}
 	skillHud->ChangeManaCost(std::to_wstring((int)manaCost));
 	skillHud->ChangeSkillDescription(mCharacterSkills[_skillNumber]->GetSkillDescription());
-	//skillHud->ChangeThemeColor(characterClass->GetThemeColor()); // Set the color to the character's theme color
+	skillHud->ChangeThemeColor(characterComponent->GetThemeColor()); // Set the color to the character's theme color
 }
 
 void SkillHoverComponent::DestorySkillHoverPopup(SkillNumber _skillNumber)

@@ -2,6 +2,7 @@
 #include "TowerManager.h"
 #include "CharacterFactory.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 TeamManager& TeamManager::getInstance()
 {
@@ -13,6 +14,9 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 {
 	// Clear the enemy team
 	mEnemyTeam.clear();
+
+	// Clear the bars to animate before adding in the new enemies
+	GameUIManager::getInstance().ClearBarsToUpdateList();
 	
 	// Get the list of enemies to create
 	std::vector<EnemySetups> enemies = mEnemiesToCreate[_index];
@@ -22,9 +26,6 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		EnemyType enemyType = enemies[i].pEnemyType;
 		DirectX::XMVECTOR position = enemies[i].pPosition;
 		DirectX::XMVECTOR rotation = enemies[i].pRotation;
-		//DirectX::XMFLOAT2 hudPosition = enemies[i].pHudPosition;
-		//DirectX::XMFLOAT2 hpPopupPosition = enemies[i].pHpPopupPosition;
-		//bool isBoss = enemies[i].pIsBoss;
 
 		// Character we are about to create
 		Odyssey::Entity* newCharacter = nullptr;
@@ -107,6 +108,8 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		// Assign the blood effect for the enemies
 		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
 
+		// Set the hud to the init values
+		//newHUD->getComponent< CharacterHUDElements>()->GetHealthBar()->setFill(1.0f);
 		// Set the character's hud index number
 		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());
 		// Increase the character index

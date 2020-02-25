@@ -9,6 +9,26 @@ StatUp::StatUp(float ammountOfEffect, int duration, STATS stat, Character* targe
 	mRecipient = target;
 	mAffectedStatId = stat;
 	mStatId = stat;
+	switch (mStatId)
+	{
+	case STATS::Atk:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/AttackUp.png";
+		break;
+	}
+	case STATS::Def:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/DefenseUp.png";
+		break;
+	}
+	case STATS::Spd:
+	{
+		mEffectIconName = L"assets/images/StatusEffects/SpeedUp.png";
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 StatUp::~StatUp()
