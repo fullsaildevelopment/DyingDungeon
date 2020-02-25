@@ -490,6 +490,7 @@ void setupAudio()
 
 	// Bard Sound Effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",					RedAudioManager::AudioType::SFX);
 
 	// Warrior Sound Effects
 
@@ -517,14 +518,12 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/medieval_parade.mp3",					"Win",						RedAudioManager::AudioType::SFX);
 
 	// Misc Sounds Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",			"TorchBurning",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",	"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",							"CharacterEntrance",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Healing",					RedAudioManager::AudioType::SFX);
 
 	// Memes
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",						"NoManaCritical",			RedAudioManager::AudioType::SFX);
@@ -535,12 +534,13 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",							"FBIRade",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
 
 	// Extras
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"ArrowHit",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",					"ElectricBlast",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",							"MagicZap",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"ArrowHit",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",					"ElectricBlast",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",							"MagicZap",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",		"PlateArmorHit",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",						"LargeFireball",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);

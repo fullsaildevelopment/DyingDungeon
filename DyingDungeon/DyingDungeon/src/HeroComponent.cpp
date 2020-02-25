@@ -716,8 +716,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				mEnemyList[i] = enemies[i];
 		}
 		ManageCastedEffects();
-		ManageStatusEffects(mRegens);
-		ManageStatusEffects(mBleeds);
+		ManageAllEffects();
+		//ManageStatusEffects(mRegens);
+		//ManageStatusEffects(mBleeds);
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -1007,13 +1008,13 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	case STATE::FINISHED:
 	{
 		// Manage all my buffs
-		ManageStatusEffects(mBuffs);
+		//ManageStatusEffects(mBuffs);
 
 		// Manage all my debuffs
-		ManageStatusEffects(mDebuffs);
+		//ManageStatusEffects(mDebuffs);
 
 		// Manage all my shields
-		ManageStatusEffects(mSheilds);
+		//ManageStatusEffects(mSheilds);
 
 		// Turns off all targeting and 
 		ResetToSelection();
@@ -1172,6 +1173,17 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 
 		// Set current target to something to avoid repeating this loop
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
+	}
+
+	// Spit out current targets stats
+	if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D8))
+	{
+		std::cout << "Name: " << mCurrentTarget->GetName().c_str() << std::endl;
+		std::cout << "Attack: " << mCurrentTarget->GetAtk() << std::endl;
+		std::cout << "Defense: " << mCurrentTarget->GetDef() << std::endl;
+		std::cout << "Speed: " << mCurrentTarget->GetSpeed() << std::endl;
+		std::cout << "Health: " << mCurrentTarget->GetHP() << std::endl;
+		std::cout << "Mana: " << mCurrentTarget->GetMana() << std::endl;
 	}
 
 	// If enter is hit set state to in progress and begin playing animations for caster

@@ -383,10 +383,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mBleeds.begin(); it != mBleeds.end();)
 		{
 			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+				it = mBleeds.erase(it);
 			else
 				it++;
 		}
@@ -398,10 +395,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mRegens.begin(); it != mRegens.end();)
 		{
 			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+				it = mRegens.erase(it);
 			else
 				it++;
 		}
@@ -410,14 +404,10 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	}
 	case EFFECTTYPE::StatUp:
 	{
-		StatUp* temp = nullptr;
 		for (it = mBuffs.begin(); it != mBuffs.end();)
 		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+			if ((*it)->GetAffectedStatId() == newEffect->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
+				it = mBuffs.erase(it);
 			else
 				it++;
 		}
@@ -429,10 +419,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mDebuffs.begin(); it != mDebuffs.end();)
 		{
 			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+				it = mDebuffs.erase(it);
 			else
 				it++;
 		}
@@ -444,10 +431,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mDebuffs.begin(); it != mDebuffs.end();)
 		{
 			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+				it = mDebuffs.erase(it);
 			else
 				it++;
 		}
@@ -459,10 +443,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mSheilds.begin(); it != mSheilds.end();)
 		{
 			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
+				it = mSheilds.erase(it);
 			else
 				it++;
 		}
@@ -474,10 +455,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 		for (it = mDebuffs.begin(); it != mDebuffs.end();)
 		{
 			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId())
-			{
-				(*it)->Remove();
 				it = mDebuffs.erase(it);
-			}
 			else
 				it++;
 		}
@@ -529,6 +507,7 @@ void Character::ManageCastedEffects()
 			if ((*it)->GetDuration() <= 0)
 			{
 				std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from caster";
+				//(*it)->Remove();
 				it = mCastedEffects.erase(it);
 			}
 			else
@@ -571,29 +550,13 @@ void Character::ClearStatusEffects()
 // Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	mDebuffs.clear();
+	mBleeds.clear();
+}
 
-	for (it = mDebuffs.begin(); it != mDebuffs.end();)
-	{
-		if ((*it))
-		{
-			(*it)->Remove();
-			it = mDebuffs.erase(it);
-		}
-		else
-			it++;
-	}
-
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		if ((*it))
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
+bool Character::IsShielded()
+{
+	return !mSheilds.empty();
 }
 
 // Sets the Particle system pointer to a "Hit effect"

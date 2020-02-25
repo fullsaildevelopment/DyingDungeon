@@ -1,5 +1,6 @@
 #include "Provoked.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Provoked::Provoked(int duration, Character* provoker, Character* target)
 {
@@ -30,7 +31,8 @@ void Provoked::Apply(Character& caster, Character& target)
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Provoked>(mDuration, mProvoker, &target);
 	target.AddStatusEffect(newStatusEffect);
-	caster.AddCastedEffect(newStatusEffect.get());
+	caster.AddCastedEffect(newStatusEffect.get());		
+	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(true);
 }
 
 void Provoked::Remove()
@@ -38,6 +40,7 @@ void Provoked::Remove()
 	if (mRecipient->GetProvoked() == mProvoker)
 	{
 		mRecipient->SetProvoked(nullptr);
+		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
 	}
 }
 
