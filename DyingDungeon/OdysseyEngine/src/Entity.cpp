@@ -35,7 +35,7 @@ namespace Odyssey
 		mDebugEnabled = copy.mDebugEnabled;
 		mIsActive = copy.mIsActive;
 		mIsVisible = copy.mIsVisible;
-		mChildren = copy.mChildren;
+		mChildren.clear();
 
 		for (std::shared_ptr<Component> component : copy.mComponents)
 		{
@@ -52,7 +52,7 @@ namespace Odyssey
 		mDebugEnabled = copy.mDebugEnabled;
 		mIsActive = copy.mIsActive;
 		mIsVisible = copy.mIsVisible;
-		mChildren = copy.mChildren;
+		mChildren.clear();
 
 		for (std::shared_ptr<Component> component : copy.mComponents)
 		{
