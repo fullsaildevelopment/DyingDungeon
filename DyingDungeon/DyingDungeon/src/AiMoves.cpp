@@ -436,7 +436,7 @@ void AIMoves::ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<Odys
 	float attackAOEScore = 0;
 	Character* currTarget = nullptr;
 
-	if (mPrevMove.skill != nullptr && mPrevMove.skill->IsAOE())
+	if (mPrevMove.skill != nullptr && mPrevMove.skill == skill)
 		return;
 
 	// Is the priority the same as our skill 
@@ -486,7 +486,7 @@ void AIMoves::ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<Odyssey::
 	Character* target = nullptr;
 
 	// Did we not use a buff
-	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill != skill)
 		buffScore += 50.0f;
 
 	for (Odyssey::Entity* t : enemyTeam)
@@ -532,7 +532,7 @@ void AIMoves::ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<Odysse
 	Character* target = nullptr;
 
 	// Didn't previouly use a buff
-	if (mPrevMove.skill != nullptr && mPrevMove.skill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::BUFF)
+	if (mPrevMove.skill != nullptr && mPrevMove.skill != skill)
 		buffAOEScore += 50.0f;
 
 	// Loop through all friendlies

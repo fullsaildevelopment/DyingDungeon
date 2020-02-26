@@ -96,9 +96,6 @@ void Character::TakeDamage(float dmg)
 	// Reduce health by the amount of damage that made it through
 	SetHP(GetHP() - dmg);
 
-	// Update the combat log
-	GameUIManager::getInstance().UpdateCombatLogText(dmg);
-
 	// If they run out of Health kill the character
 	if (mCurrentHP <= 0.0f)
 		Die();
@@ -109,8 +106,6 @@ void Character::ReceiveHealing(float healing)
 {
 	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
-	
-	GameUIManager::getInstance().UpdateCombatLogText(healing);
 
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));

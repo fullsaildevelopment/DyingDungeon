@@ -38,6 +38,8 @@ void Heal::Use(Character& caster, Character& target)
 
 	// Update the combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	GameUIManager::getInstance().SetCombatLogTextColor({ 0.0f, 255.0f, 0.0f });
+	GameUIManager::getInstance().UpdateCombatLogText(mStatusEffect->GetAmountOfEffect());
 
 	// Fire off reds event
 	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));

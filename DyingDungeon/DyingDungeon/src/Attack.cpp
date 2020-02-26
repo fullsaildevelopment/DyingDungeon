@@ -94,6 +94,8 @@ void Attack::Use(Character& caster, Character& target)
 	std::wstring targetName = target.GetName();
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	GameUIManager::getInstance().SetCombatLogTextColor({ 255.0f, 0.0f, 0.0f });
+	GameUIManager::getInstance().UpdateCombatLogText(mDamage);
 	//////////////////////////////////////////////
 
 	// Play audio "hit" sound effect
@@ -146,7 +148,12 @@ void Attack::Use(Character& caster, Character& target)
   
 	// If this move returns me health gib it
 	if (mHealing > 0.0f)
+	{
+		GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &caster, this);
+		GameUIManager::getInstance().SetCombatLogTextColor({ 0.0f, 255.0f, 0.0f });
+		GameUIManager::getInstance().UpdateCombatLogText(mHealing);
 		caster.ReceiveHealing(mHealing);
+	}
 }
 
 // Get the damage this skill does
