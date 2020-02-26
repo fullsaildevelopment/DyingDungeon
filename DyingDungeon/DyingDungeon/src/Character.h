@@ -158,7 +158,7 @@ public:
 	Odyssey::Entity* GetInpactIndicator() { return mImpactIndicator; }
 
 	// Adds a status effect to the character and sorts it putting it in the correct vector
-	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect);
+	bool AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Character* caster);
 
 	// Manages the passed in status effect, appling effects and removing expired ones
 	void ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList);
@@ -167,10 +167,10 @@ public:
 	void ManageCastedEffects();
 
 	// Add a status effect I cast to the Casted list
-	void AddCastedEffect(StatusEffect* newCastedEffect);
+	void AddCastedEffect(std::shared_ptr<StatusEffect> newCastedEffect);
 
 	// Manages all status effects, appling effects and removing expired ones
-	bool ManageAllEffects();
+	bool ManageTOREffects();
 
 	// Removes all status effects from characters
 	void ClearStatusEffects();
@@ -227,6 +227,25 @@ protected:
 	// Bool to tell if character is a hero or enemy
 	bool mHero;
 
+	// Bool for if im affected by a bleed
+	bool mIsBleeding;
+	int mBleedTimer;
+
+	// Bool for telling if im regenreating or not
+	bool mIsRegenerating;
+	int mRegenTimer;
+
+	// Timer for how long im stunned
+	int mStunTimer;
+
+	// A pointer to a character that get sets whenever the character is provoked  
+	Character* mProvoked;
+	int mProvokedTimer;
+
+	// how much a character has of temp health
+	float mShielding;
+	int mShieldTimer;
+
 	// Map of strings for sound effects
 	std::map<std::string, std::string> mSoundClips;
 
@@ -269,9 +288,6 @@ protected:
 	// Float for the current exp of the character
 	float mEXP;
 
-	// A pointer to a character that get sets whenever the character is provoked  
-	Character* mProvoked;
-
 	// The name for the character
 	std::wstring mName;
 
@@ -297,22 +313,25 @@ protected:
 	std::vector<std::shared_ptr<Skills>> mSkillList;
 
 	// Vector of shared pointers that point to the Debuffs the character has
-	std::vector<std::shared_ptr<StatusEffect>> mDebuffs;
+	//std::vector<std::shared_ptr<StatusEffect>> mDebuffs;
 
 	// Vector of shared pointers that point to the Buffs the character has
-	std::vector<std::shared_ptr<StatusEffect>> mBuffs;
+	//std::vector<std::shared_ptr<StatusEffect>> mBuffs;
 
 	// Vector of shared pointers that point to the Bleeds the character has
-	std::vector<std::shared_ptr<StatusEffect>> mBleeds;
+	//std::vector<std::shared_ptr<StatusEffect>> mBleeds;
 
 	// Vector of shared pointers that point to the Regens the character has
-	std::vector<std::shared_ptr<StatusEffect>> mRegens;
+	//std::vector<std::shared_ptr<StatusEffect>> mRegens;
 
 	// Vector of shared pointers that point to the Sheilds the character has
-	std::vector<std::shared_ptr<StatusEffect>> mSheilds;
+	//std::vector<StatusEffect*> mSheilds;
 
-	// Vector of raw pointer I casted 
-	std::vector<StatusEffect*> mCastedEffects;
+	// Vector of raw pointer to effects affecting me
+	std::vector<StatusEffect*> mSE;
+
+	// Vector of pointers for effects I casted 
+	std::vector<std::shared_ptr<StatusEffect>> mCastedEffects;
 
 	// Pointer to the animator the character uses
 	Odyssey::Animator* mAnimator;

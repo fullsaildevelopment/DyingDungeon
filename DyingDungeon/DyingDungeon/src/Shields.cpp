@@ -25,16 +25,12 @@ void Shields::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Shields>(mAmountOfEffect, mDuration, &target);
-	target.AddStatusEffect(newStatusEffect);
-	caster.AddCastedEffect(newStatusEffect.get());
-	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
+	target.AddStatusEffect(newStatusEffect, &caster);
 	return;
 }
 
 void Shields::Remove()
 {
-	if(mRecipient->IsShielded())
-		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 	return;
 }
 

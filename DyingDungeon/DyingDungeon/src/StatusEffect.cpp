@@ -54,3 +54,10 @@ void StatusEffect::SetRecipient(Character* recipient)
 {
 	mRecipient = recipient;
 }
+
+bool StatusEffect::RemoveMe()
+{
+	return mRemoveMe;
+}
+
+

@@ -24,9 +24,7 @@ void Bleed::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect;
 	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
-	target.AddStatusEffect(newStatusEffect);
-	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(true);
-	caster.AddCastedEffect(newStatusEffect.get());
+	target.AddStatusEffect(newStatusEffect, &caster);
 	return;
 }
 
@@ -37,8 +35,5 @@ void Bleed::Remove()
 
 void Bleed::Use()
 {
-	float totalBleed = 0;
-	totalBleed = mAmountOfEffect * mRecipient->GetMaxHP();
-	float totalBleedButBetter = totalBleed -  totalBleed * mRecipient->GetDef();
-	mRecipient->TakeDamage(totalBleed);
+	return;
 }

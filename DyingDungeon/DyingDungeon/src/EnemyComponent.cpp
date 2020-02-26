@@ -1,6 +1,7 @@
 #include "EnemyComponent.h"
 #include "Entity.h"
 #include "Transform.h"
+#include "CharacterHUDElements.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -19,8 +20,15 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	mMechPtr = nullptr;
 	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 	mCurrentState = STATE::NONE;
-	mMoves = AIMoves(static_cast<int>(_enemyID), this);
 	mID = _enemyID;
+	mIsBleeding = false;
+	mBleedTimer = 0;
+	mIsRegenerating = false;
+	mRegenTimer = 0;
+	mStunTimer = 0;
+	mProvokedTimer = 0;
+	mShielding = 0.0f;
+	mShieldTimer = 0;
 	////////////////////////////////////////////////
 
 	// Make a temp variable to contain animation data
@@ -569,9 +577,27 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 	// If the AI is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
-		mCurrentState = STATE::NONE;
 		ManageCastedEffects();
-		ManageAllEffects();
+		ManageTOREffects();
+		mStunTimer--;
+		if (mStunTimer <= 0)
+		{
+			if (mCurrentState != STATE::DEAD)
+			{
+				mCurrentState = STATE::NONE;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
+			}
+		}
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
 		return true;
 	}
 	// If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
@@ -582,9 +608,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		if(mMechPtr)
 			(this->*mMechPtr)();
 		ManageCastedEffects();
-		ManageAllEffects();
-		//ManageStatusEffects(mRegens);
-		//ManageStatusEffects(mBleeds);
+		ManageTOREffects();
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -787,6 +811,17 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		// Reset state to default
 		mCurrentState = STATE::NONE;
 
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
+
 		// Return true
 		return true;
 
@@ -953,4 +988,5 @@ std::shared_ptr<Odyssey::Component> EnemyComponent::clone() const
 void EnemyComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
+	mMoves = AIMoves(static_cast<int>(mID), this);
 }
