@@ -202,4 +202,15 @@ namespace Odyssey
 			priority = EventPriority::Immediate;
 		}
 	};
+
+	class ChangeMouseCursorEvent : public Event
+	{
+	public:
+		const wchar_t* filename;
+
+		ChangeMouseCursorEvent(const wchar_t* file) : filename(file)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
 }

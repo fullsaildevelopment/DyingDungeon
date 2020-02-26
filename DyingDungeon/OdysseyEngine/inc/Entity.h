@@ -156,12 +156,12 @@ namespace Odyssey
 		ComponentType* getComponent()
 		{
 			// Iterate through the components vector
-			for (auto&& component : mComponents)
+			for (int i = 0; i < mComponents.size(); i++)
 			{
 				// Check the type against the templated type
-				if (component->isClassType(ComponentType::Type))
+				if (mComponents[i]->isClassType(ComponentType::Type))
 				{
-					ComponentType* foundComponent = static_cast<ComponentType*>(component.get());
+					ComponentType* foundComponent = static_cast<ComponentType*>(mComponents[i].get());
 					return foundComponent;
 				}
 			}

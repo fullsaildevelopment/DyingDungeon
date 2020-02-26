@@ -4,6 +4,7 @@
 #include "RenderTypes.h"
 #include "EngineEvents.h"
 #include "ReadWriteLock.h"
+#include <atomic>
 
 namespace Odyssey
 {
@@ -64,6 +65,6 @@ namespace Odyssey
 
 	private:
 		std::vector<Entity*> mDestroyList;
-
+		bool mShutdown = true;
 	};
 }

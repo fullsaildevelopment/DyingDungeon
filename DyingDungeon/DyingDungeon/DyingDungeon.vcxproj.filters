@@ -109,6 +109,13 @@
     <ClCompile Include="src\SkillHUDElements.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
+    <ClCompile Include="src\AiKnowledge.cpp" />
+    <ClCompile Include="src\LoadingScreenController.cpp">
+      <Filter>Source Files\Game Management</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkillShowcase.cpp">
+      <Filter>Source Files\Skills</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Converter.h">
@@ -233,6 +240,13 @@
     </ClInclude>
     <ClInclude Include="src\SkillHUDElements.h">
       <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AiKnowledge.h" />
+    <ClInclude Include="src\LoadingScreenController.h">
+      <Filter>Header Files\Game Management</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkillShowcase.h">
+      <Filter>Header Files\Skills</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

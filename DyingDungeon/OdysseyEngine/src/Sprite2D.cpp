@@ -50,6 +50,7 @@ namespace Odyssey
 		// Fill the rectangle
 		if (context)
 		{
+			mBitmapBrush->SetOpacity(mColor.w);
 			context->FillRectangle(fillShape, mBitmapBrush.Get());
 		}
 

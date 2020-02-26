@@ -9,6 +9,7 @@
 #include "Material.h"
 #include "TowerManager.h"
 #include "SaveLoad.h"
+#include "LoadingScreenController.h"
 
 CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
@@ -100,7 +101,8 @@ void TeamSelectionController::update(double deltaTime)
 		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
 		// Change the scene to the game
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
+		Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Scene One"));
 	}
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -119,112 +121,6 @@ void TeamSelectionController::update(double deltaTime)
 		unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
 		SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 		SaveLoad::Instance().SaveLoadOut();
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::T))
-	{
-		Odyssey::Entity* loadingScreenPrefab = mApplication->createPrefab();
-		Odyssey::UICanvas* canvas = loadingScreenPrefab->addComponent<Odyssey::UICanvas>();
-
-		// Loading Screen Code
-		Odyssey::TextProperties titleProperties;
-		titleProperties.fontName = L"Tw Cen MT Condensed";
-		titleProperties.fontSize = 32;
-		titleProperties.textAlignment = Odyssey::TextAlignment::Left;
-		titleProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		titleProperties.bold = true;
-
-		Odyssey::TextProperties paragraphProperties;
-		paragraphProperties.fontName = L"Tw Cen MT Condensed";
-		paragraphProperties.fontSize = 18;
-		paragraphProperties.textAlignment = Odyssey::TextAlignment::Left;
-		paragraphProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
-		paragraphProperties.bold = false;
-
-		// Set the text to use
-		std::wstring titleText = L"Renaud - The Zealous Knight";
-		std::wstring backgroundFile = L"assets/images/FantasyBackground1.jpg";
-		std::wstring spriteFile = L"assets/images/Renaud.png";
-		std::wstring paragraphText = L"Renaud has always been a devout follower of the church. He grew up in the church, training his entire life to become a paladin. Renaud has found absolution within the church’s teachings and knows nothing beyond them. Ever since the day Ganfaul killed The Council and took control of Metis, Renaud has sought to overthrow him and return the church to its former glory.";
-		// Stat Icons
-		std::wstring healthIcon = L"assets/images/Meat.png";
-		std::wstring healthText = L"Health: 100";
-		std::wstring manaIcon = L"assets/images/mp.png";
-		std::wstring manaText = L"Mana: 100";
-		std::wstring attackIcon = L"assets/images/Sword.png";
-		std::wstring attackText = L"Attack: 65";
-		std::wstring defenseIcon = L"assets/images/Shield.png";
-		std::wstring defenseText = L"Defense: 80";
-		std::wstring speedIcon = L"assets/images/Speed.png";
-		std::wstring speedText = L"Speed: 20";
-
-		std::wstring skill1Text = L"Judgement";
-		std::wstring skill1Icon = L"assets/images/Paladin_Skill_1.png";
-		std::wstring skill2Text = L"Smite";
-		std::wstring skill2Icon = L"assets/images/Paladin_Skill_2.png";
-		std::wstring skill3Text = L"Shield of Light";
-		std::wstring skill3Icon = L"assets/images/Paladin_Skill_3.png";
-		std::wstring skill4Text = L"Blessing of Light";
-		std::wstring skill4Icon = L"assets/images/Paladin_Skill_4.png";
-
-		// Add the background image and the title/image
-		//Odyssey::UICanvas* canvas = gSceneOneCamera->addComponent<Odyssey::UICanvas>();
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), backgroundFile, 1280, 720);
-		canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(90.0f, 90.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.6f), 650, 400);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(100.0f, 100.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 500, 100, titleText, titleProperties);
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(850.0f, 125.0f), spriteFile, 350, 500);
-
-		// Add the summary and background
-		paragraphProperties.italic = true;
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(115.0f, 150.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 610, 500, paragraphText, paragraphProperties);
-
-		// Stats line - Health
-		paragraphProperties.italic = false;
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(220.0f, 290.0f), healthIcon, 30, 30);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(265.0f, 295.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), 100, 100, healthText, paragraphProperties);
-
-		// Stats line - Mana
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(380.0f, 290.0f), manaIcon, 30, 30);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(420.0f, 295.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 255.0f, 1.0f), 100, 100, manaText, paragraphProperties);
-
-		// Stats line - Attack
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(170.0f, 330.0f), attackIcon, 30, 30);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(205.0f, 330.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), 100, 100, attackText, paragraphProperties);
-
-		// Stats line - Defense
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(300.0f, 330.0f), defenseIcon, 25, 30);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(335.0f, 330.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, 100, defenseText, paragraphProperties);
-
-		// Stats line - Speed
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(440.0f, 330.0f), speedIcon, 30, 30);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(475.0f, 330.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f), 100, 100, speedText, paragraphProperties);
-
-		// Skill 1
-		paragraphProperties.fontSize = 24;
-		//gSceneOneCamera->getComponent<CameraController>()->mRect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(108.0f, 378.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 0.5f), 44, 44);
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(110.0f, 380.0f), skill1Icon, 40, 40);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(170.0f, 382.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 400, 100, skill1Text, paragraphProperties);
-
-		// Skill 2
-		//gSceneOneCamera->getComponent<CameraController>()->mRect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(408.0f, 378.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 0.5f), 44, 44);
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(410.0f, 380.0f), skill2Icon, 40, 40);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(470.0f, 382.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 400, 100, skill2Text, paragraphProperties);
-
-		// Skill 3
-		//gSceneOneCamera->getComponent<CameraController>()->mRect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(108.0f, 428.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 0.5f), 44, 44);
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(110.0f, 430.0f), skill3Icon, 40, 40);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(170.0f, 432.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 400, 100, skill3Text, paragraphProperties);
-
-		// Skill 4
-		//gSceneOneCamera->getComponent<CameraController>()->mRect = canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(408.0f, 428.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 0.5f), 44, 44);
-		canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(410.0f, 430.0f), skill4Icon, 40, 40);
-		canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(470.0f, 432.0f), DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f), 400, 100, skill4Text, paragraphProperties);
-		
-		// Show the screen
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(loadingScreenPrefab, &loadingScreen, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::T))
-	{
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(loadingScreen));
 	}
 }
 
@@ -1099,4 +995,3 @@ void TeamSelectionController::ConfermationNo()
 	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
 }
-

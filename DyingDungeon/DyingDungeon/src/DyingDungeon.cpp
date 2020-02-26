@@ -23,6 +23,8 @@
 #include "ParticleMover.h"
 #include "SkillHoverComponent.h"
 #include "SaveLoad.h"
+#include "LoadingScreenController.h"
+#include "SkillShowcase.h"
 
 // Engine includes
 #include "OdysseyEngine.h"
@@ -55,6 +57,7 @@ namespace
 	std::shared_ptr<Odyssey::RenderTarget> gRenderTarget;
 	// Scene resources
 	Odyssey::Scene* gMainMenu;
+	Odyssey::Scene* gLoadingScene;
 	Odyssey::Scene* gSceneOne;
 	Odyssey::Scene* gSceneTwo;
 	Odyssey::Scene* gTowerSelectScene;
@@ -86,6 +89,8 @@ namespace
 int playGame();
 void setupSceneOne();
 void setupSceneTwo();
+void setupLoadingScene(Odyssey::Application* application);
+void setupSkillVFX(Odyssey::Application* application);
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
@@ -126,6 +131,7 @@ int playGame()
 
 	// Set up the main menu
 	setupMainMenu(application.get());
+	setupLoadingScene(application.get());
 	// Create the menu canvas
 	GameUIManager::getInstance().CreateStatsMenuCanvas(gMainMenu);
 	// TODO: M3B1 ONLY REFACTOR LATER
@@ -136,7 +142,6 @@ int playGame()
 	setupMenu(application.get(), gTowerSelectScene, gTowerSelectMenu, L"assets/images/TowerSelectionBackground.png", "TowerSelection", MenuComponent::eTowerSelector);
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
-
 
 	// Set up the team selection screen
 	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
@@ -166,7 +171,7 @@ int playGame()
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
 	
 	// Set up multithreading
-	application->setMultithreading(false);
+	application->setMultithreading(true);
 
 	// Play audio
 	setupAudio();
@@ -1096,6 +1101,146 @@ void setupSceneTwo()
 	fire11->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
 	fire11->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+}
+
+void setupLoadingScene(Odyssey::Application* application)
+{
+	gLoadingScene = application->createScene("Loading Screen", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
+
+	Odyssey::Entity* camera = gLoadingScene->createEntity();
+	camera->addComponent<Odyssey::Transform>();
+	camera->getComponent<Odyssey::Transform>()->setPosition(0.395f, 6.703f, 13.438f);
+	camera->getComponent<Odyssey::Transform>()->setRotation(23.669f, -178.152f, 0.0f);
+	camera->addComponent<Odyssey::Camera>();
+	camera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	camera->addComponent<CameraController>();
+
+	Odyssey::Entity* controller = gLoadingScene->createEntity();
+	controller->addComponent<Odyssey::Transform>();
+	controller->addComponent<LoadingScreenController>();
+}
+
+void setupSkillVFX(Odyssey::Application* application)
+{
+	// Create the showcase entity in the game scene
+	Odyssey::Entity* showcase = gSceneOne->createEntity();
+	showcase->addComponent<Odyssey::Transform>();
+	showcase->getComponent<Odyssey::Transform>()->setPosition(0.0f, 1.0f, 10.0f);
+	showcase->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+	showcase->addComponent<SkillShowcase>();
+
+	// Create the skill 1 prefab
+	showcase->getComponent<SkillShowcase>()->bard1 = application->createPrefab();
+	//bard->getComponent<BardController>()->skill1Prefab = application.createPrefab();
+	//bard->getComponent<BardController>()->skill1Prefab->addComponent<Odyssey::Transform>();
+	//DirectX::XMFLOAT3 fwd = bard->getComponent<BardController>()->skill1Prefab->getComponent<Odyssey::Transform>()->getForward();
+	//// Add a light to the prefab
+	//Odyssey::Light* light = bard->getComponent<BardController>()->skill1Prefab->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(0.5f, 0.3f, 0.6f);
+	//light->setRange(10.0f);
+	//light->setIntensity(2.0f);
+
+	//// Setup the starfire arrow vfx
+	//Odyssey::ParticleSystem* skillVFX = bard->getComponent<BardController>()->skill1Prefab->addComponent<Odyssey::ParticleSystem>();
+	//bard->getComponent<BardController>()->skill1Prefab->setStatic(false);
+	//skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star2.png");
+	//skillVFX->setColor(DirectX::XMFLOAT3(0.5f, 0.3f, 0.6f), DirectX::XMFLOAT3(0.2f, 0.4f, 0.5f));
+	//skillVFX->setLifetime(0.5f, 1.0f);
+	//skillVFX->setParticleCount(100, 100);
+	//skillVFX->setEmissionOverLifetime(0);
+	//skillVFX->setDuration(0.75f);
+	//skillVFX->setSpeed(2.5f, 5.0f);
+	//skillVFX->setSize(0.25f, 0.5f);
+	//skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	//skillVFX->setGravity(4.0f);
+	//skillVFX->setLooping(false);
+	//skillVFX->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.5f));
+
+	//// Create the skill 2 prefab
+	//bard->getComponent<BardController>()->skill2Prefab = application.createPrefab();
+	//bard->getComponent<BardController>()->skill2Prefab->addComponent<Odyssey::Transform>();
+
+	//// Add a light to the prefab
+	//light = bard->getComponent<BardController>()->skill2Prefab->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(0.8f, 0.1f, 0.1f);
+	//light->setRange(10.0f);
+	//light->setIntensity(0.5f);
+
+	//// Setup skill 2 vfx
+	//skillVFX = bard->getComponent<BardController>()->skill2Prefab->addComponent<Odyssey::ParticleSystem>();
+	//skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Bard_VFX/Music.png");
+	//skillVFX->setColor(DirectX::XMFLOAT3(0.8f, 0.1f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//skillVFX->setLifetime(1.0f, 1.5f);
+	//skillVFX->setParticleCount(0, 15);
+	//skillVFX->setEmissionOverLifetime(15);
+	//skillVFX->setDuration(3.0f);
+	//skillVFX->setSpeed(1.5f, 2.25f);
+	//skillVFX->setSize(0.75f, 1.0f);
+	//skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	//skillVFX->setGravity(1.5f);
+	//skillVFX->setLooping(false);
+	//skillVFX->setShape(Odyssey::BoxPS(0.0f, 1.0f, 0.0f, 1.5f, 2.5f, 1.5f));
+
+	//// Create the skill 3 prefab
+	//bard->getComponent<BardController>()->skill3Prefab = application.createPrefab();
+	//bard->getComponent<BardController>()->skill3Prefab->addComponent<Odyssey::Transform>();
+
+	//// Add a light to the prefab
+	//light = bard->getComponent<BardController>()->skill3Prefab->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(0.1f, 0.8f, 0.1f);
+	//light->setRange(10.0f);
+	//light->setIntensity(0.5f);
+
+	//// Skill 3 prefab
+	//skillVFX = bard->getComponent<BardController>()->skill3Prefab->addComponent<Odyssey::ParticleSystem>();
+	//skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Bard_VFX/Music.png");
+	//skillVFX->setColor(DirectX::XMFLOAT3(0.1f, 0.8f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//skillVFX->setLifetime(1.0f, 1.5f);
+	//skillVFX->setParticleCount(0, 15);
+	//skillVFX->setEmissionOverLifetime(15);
+	//skillVFX->setDuration(3.0f);
+	//skillVFX->setSpeed(1.5f, 2.25f);
+	//skillVFX->setSize(0.75f, 1.0f);
+	//skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	//skillVFX->setGravity(1.5f);
+	//skillVFX->setLooping(false);
+	//skillVFX->setShape(Odyssey::BoxPS(0.0f, 1.0f, 0.0f, 1.5f, 2.5f, 1.5f));
+
+	//// Create the skill 3 prefab
+	//bard->getComponent<BardController>()->skill4Prefab = application.createPrefab();
+	//bard->getComponent<BardController>()->skill4Prefab->addComponent<Odyssey::Transform>();
+
+	//// Add a light to the prefab
+	//light = bard->getComponent<BardController>()->skill4Prefab->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(1.0f, 0.8f, 0.1f);
+	//light->setRange(10.0f);
+	//light->setIntensity(0.5f);
+
+	//// Setup the skill 4 vfx
+	//bard->getComponent<BardController>()->skill4Prefab->addComponent<PurifyMover>();
+	//bard->getComponent<BardController>()->skill4Prefab->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
+	//Odyssey::RenderManager::getInstance().importModel(bard->getComponent<BardController>()->skill4Prefab, "assets/models/Magic_Rune.dxm", false);
+	//bard->getComponent<BardController>()->skill4Prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
+	//bard->getComponent<BardController>()->skill4Prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
+	//bard->getComponent<BardController>()->skill4Prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
+	//bard->getComponent<BardController>()->skill4Prefab->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
+	//skillVFX = bard->getComponent<BardController>()->skill4Prefab->addComponent<Odyssey::ParticleSystem>();
+	//skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	//skillVFX->setColor(DirectX::XMFLOAT3(0.12f, 1.0f, 0.29f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//skillVFX->setLifetime(0.75f, 1.5f);
+	//skillVFX->setParticleCount(0, 90);
+	//skillVFX->setEmissionOverLifetime(90);
+	//skillVFX->setDuration(3.0f);
+	//skillVFX->setSpeed(3.0f, 4.5f);
+	//skillVFX->setSize(0.25f, 1.0f);
+	//skillVFX->setSizeOverLifetime(0.25f, 1.0f);
+	//skillVFX->setGravity(1.0f);
+	//skillVFX->setLooping(false);
+	//skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
