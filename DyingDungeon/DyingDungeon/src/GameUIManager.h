@@ -175,6 +175,7 @@ public: // Functions
 	void UpdateCombatLogIcons(Character* caster, Character* target, Skills* skill);
 	void UpdateCombatLogText(float dmg);
 	void ClearCombatLog();
+	void SetCombatLogTextColor(DirectX::XMFLOAT3 _newCombatLogColor) { newCombatLogColor = _newCombatLogColor; };
 
 	//Getters
 	// Get battle log text

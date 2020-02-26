@@ -39,6 +39,11 @@ void Buffs::Use(Character& caster, Character& target)
 {
 	// Update combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
+	if (mSkillTypeId == GameplayTypes::SKILLTYPE::BUFF)
+		GameUIManager::getInstance().SetCombatLogTextColor({ 0.0f, 255.0f, 0.0f });
+	else
+		GameUIManager::getInstance().SetCombatLogTextColor({ 255.0f, 0.0f, 0.0f });
+
 	GameUIManager::getInstance().UpdateCombatLogText(mStatusEffect->GetAmountOfEffect());
 
 	// If i have a status effect to apply, apply it
