@@ -693,7 +693,7 @@ void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	width /= (UINT)2.5f;
 	height = 50;
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	position.y -= 50.0f;
+	position.y -= 75.0f;//change back to 50.0f later
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the reusume background to the canvas
 	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
@@ -707,10 +707,18 @@ void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	position.y += 75.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the options background to the canvas
-	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mOptionsVolumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Options text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
+	mOptionsVolumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
+
+	position.y += 75.0f;
+	color = { 30.0f, 180.0f, 30.0f, 1.0f };
+	// Add the options background to the canvas
+	mOptionsControlsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	// Options text
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsControlText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
 
 	// Main Menu Button
 	position.y += 75.0f;
@@ -720,6 +728,14 @@ void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	// Main menu text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
+
+	mOptionsControlsImage = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/KeyGuide.png", screenWidth, screenHeight);
+	mOptionsControlsImage->setVisible(false);
+
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	mOptionsControlBackText = pauseMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), color, width, height, L"Back", properties);
+	mOptionsControlBackText->setVisible(false);
+	properties.textAlignment = Odyssey::TextAlignment::Center;
 
 	// Turn off the canvas when creating it
 	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
@@ -1396,6 +1412,12 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	position.y -= 4.0f;
 
 	// Minus Symbol
+	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y), color, 70, 25, L"Master ", properties);
+	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 75.0f), color, 70, 25, L"Music ", properties);
+	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 150.0f), color, 70, 25, L"SFX ", properties);
+	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 225.0f), color, 70, 30, L"Dialog ", properties);
+
 	mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
 	mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
 	mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
@@ -1423,6 +1445,7 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	width = 100;
 	height = 30;
 	position.y += 400.0f - height;
+	position.x += 320;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
