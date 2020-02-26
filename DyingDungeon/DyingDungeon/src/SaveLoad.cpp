@@ -39,7 +39,7 @@ bool SaveLoad::SaveStats(std::string saveName)
 				file.write((const char*)&size_c, sizeof(uint32_t));
 				file.write(StatTracker::Instance().GetLevel(i).turns[j].characterName.c_str(), size_c);
 
-				file.write((const char*)StatTracker::Instance().GetLevel(i).turns[j].unique_id, sizeof(unsigned int));
+				file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].unique_id, sizeof(unsigned int));
 
 				uint32_t size_t = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets.size());
 				file.write((const char*)&size_t, sizeof(uint32_t));

@@ -188,7 +188,7 @@ namespace Odyssey
 
 		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
 		{
-			priority = EventPriority::Deferred;
+			priority = EventPriority::Immediate;
 		}
 	};
 

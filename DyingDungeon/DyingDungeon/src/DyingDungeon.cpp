@@ -94,15 +94,8 @@ void setupTowerManager();
 void setupEnemiesToCreate();
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
-// Factories
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner);
 
-
-//void setupSkillHover(Odyssey::UICanvas* canvas, std::wstring character, std::wstring skillName, std::wstring icon, std::wstring manaCost, std::wstring skillType, std::wstring numTargets, std::wstring skillValue, std::wstring description);
-//void setupPaladinSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-//void setupMageSkills(Odyssey::Entity* character, float xAnchor, float yAnchor);
-
-
+// Functions
 int playGame()
 {
 	// TODO: BREAKPOINT FOR YOUR DUMBASS MEMORY LEAKS
@@ -111,7 +104,7 @@ int playGame()
 	//_CrtSetBreakAlloc(2034525);
 #endif // _DEBUG
 	// Seed random using time
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	// Set up the application and create a render window
 	std::shared_ptr<Odyssey::Application> application = std::make_shared<Odyssey::Application>();
@@ -124,10 +117,12 @@ int playGame()
 	gDefaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	gDefaultText.fontName = L"Constantia";
 
-	// Setup the application pointer
+	// Setup the character and other model prefabs
 	CharacterFactory::getInstance().initialize(application.get());
 	// Assign the width and height for the UI Manager
 	GameUIManager::getInstance().SetScreenWidthAndHeight(gMainWindow->getWidth(), gMainWindow->getHeight());
+	// Setup the UI prefabs
+	GameUIManager::getInstance().initialize(application.get());
 
 	// Set up the main menu
 	setupMainMenu(application.get());
@@ -171,7 +166,7 @@ int playGame()
 	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
 	
 	// Set up multithreading
-	application->setMultithreading(true);
+	application->setMultithreading(false);
 
 	// Play audio
 	setupAudio();
@@ -297,8 +292,8 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
 	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
-	UINT rewardsImageWidth = width*0.6;
-	UINT rewardsImageHeight = height*0.6;
+	UINT rewardsImageWidth = width * 0.6f;
+	UINT rewardsImageHeight = height * 0.6f;
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
 	float rewardsImageY = (height / 2.0f) - (static_cast<float>(rewardsImageHeight) / 2.0f);
 
@@ -308,56 +303,69 @@ void setupRewardsPrefab(Odyssey::Application* application)
 
 	//Stat Background
 	//protrait backgrounds
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 20.0f, rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 50)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 20.0f, rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 20.0f, rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-
-	//attack backgrounds
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-
-	//defence backgrounds
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	
-	//aid backgrounds
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-
-	//Character Protraits
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 20.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (20.0f + rewardsImageHeight * 0.3333f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + (20.0f + rewardsImageHeight * 0.6667f)), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
-	
-	//Stat Text
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 50)->setOpacity(0.8f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 60, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight)+80, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//
+	////attack backgrounds
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//
+	////defence backgrounds
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageWidth / 4.0f) + 20.0f, rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//
+	////aid backgrounds
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + (rewardsImageHeight * 0.3333f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	//
+	////Character Protraits
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 60, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight)+80, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	//
+	////Stat Text
 	//stat discriptors
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 50.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Attack", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 40, rewardsImageY - 50.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight)+80, rewardsImageY - 50.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Aid", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 50.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Attack", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 60, rewardsImageY - 50.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight) + 80, rewardsImageY - 50.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Aid", rewardsTextProperties);
+
+	rewardsTextProperties.fontSize = 16.0f;
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 20.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Attack", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 55.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Dealt", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 85.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Landed", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 120.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 155.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Taken", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 185.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Block", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 220.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Gained", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 255.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Support", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 290.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Given", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 325.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense Given", rewardsTextProperties);
 	
 	rewardsTextProperties.fontSize = 16.0f;
 	
 	//attack text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + 7.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + (7.0f + rewardsImageHeight *0.3333f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + 7.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + (7.0f + rewardsImageHeight *0.3333f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (rewardsImageWidth / 4), rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f) ), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Attack: NN.NN%\nDamage Dealt: NN.NN\nDamage Success: NN.NN%", rewardsTextProperties);
 	//defense text
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + 7.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.3333f)), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + 7.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.3333f)), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (2.0f * (rewardsImageWidth / 4)) + 30.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Defend: NN.NN%\nDamage Taken: NN.NN\nDamage Blocked: NN.NN%\nHealth Gained: NN.NN", rewardsTextProperties);
 	//aid texts
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + 7.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.3333f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + 7.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.3333f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
+	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 
 	canvas->setActive(false); // The rewards screen won't show up at the start
-	StatTracker::Instance().SetCanvas(canvas, rewardsImageHeight / 4.0f, rewardsImageHeight / 4.0f);
+	StatTracker::Instance().SetCanvas(canvas, static_cast<unsigned int>(rewardsImageHeight / 4), static_cast<unsigned int>(rewardsImageHeight / 4));
 }
 
 void setupTowerManager()
@@ -404,30 +412,21 @@ void setupEnemiesToCreate()
 		// Level One Enemies
 		TeamManager::EnemySetups levelOneEnemy;
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Summoner;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = leftPosition;
 		levelOneEnemy.pRotation = leftRotation;
-		levelOneEnemy.pHudPosition = leftHudPosition;
-		levelOneEnemy.pHpPopupPosition = leftHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
-		levelOneEnemy.pHudPosition = middleHudPosition;
-		levelOneEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = rightPosition;
 		levelOneEnemy.pRotation = rightRotation;
-		levelOneEnemy.pHudPosition = rightHudPosition;
-		levelOneEnemy.pHpPopupPosition = rightHpPopupPosition;
-		levelOneEnemy.pIsBoss = false;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
@@ -439,17 +438,43 @@ void setupEnemiesToCreate()
 	// LEVEL TWO ENEMIES
 	if (true)
 	{
-		// Level One Enemies
+		// Level Two Enemies
 		TeamManager::EnemySetups levelTwoEnemy;
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
-		levelTwoEnemy.pPosition = middlePosition;
-		levelTwoEnemy.pRotation = middleRotation;
-		levelTwoEnemy.pHudPosition = middleHudPosition;
-		levelTwoEnemy.pHpPopupPosition = middleHpPopupPosition;
-		levelTwoEnemy.pIsBoss = true;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = leftPosition;
+		levelTwoEnemy.pRotation = leftRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelTwoEnemy.pPosition = middlePosition;
+		levelTwoEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Set enemy properties
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pPosition = rightPosition;
+		levelTwoEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelTwoEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL THREE ENEMIES
+	if (true)
+	{
+		// Level One Enemies
+		TeamManager::EnemySetups levelThreeEnemy;
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelThreeEnemy.pPosition = middlePosition;
+		levelThreeEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
 		// Clear the new enemy list 
@@ -461,74 +486,92 @@ void setupAudio()
 {
 	//RedAudioManager::Instance();
 	//SFX                                |                          Paths                       |  |        Alias        |     |           Audio Type          |        |     Group     |
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3",							"SkeletonAttack",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinAttack",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"PaladinHit",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_1.mp3",				"FemaleHitReaction1",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_2.mp3",				"FemaleHitReaction2",		RedAudioManager::AudioType::SFX);
+	// Male Hit reactions / Death
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3",					"MaleHitReaction",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt2-death-pain.mp3",					"MaleDeath",				RedAudioManager::AudioType::SFX);
+	// Female Hit Reaction / Death
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_1.mp3",				"FemaleHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_2.mp3",				"FemaleDeath",				RedAudioManager::AudioType::SFX);
+
+	// Paladin Sound effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",			RedAudioManager::AudioType::SFX);
+
+	// Mage Sound Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_swish.mp3",						"MagicMissle",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",			RedAudioManager::AudioType::SFX);
+
+	// Bard Sound Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",					RedAudioManager::AudioType::SFX);
+
+	// Warrior Sound Effects
+
+	// Monk Sound Effects
+
+	// Skeleton Sound Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3",							"SkeletonPunch",			RedAudioManager::AudioType::SFX);
+
+	// Ganfoul sound effects
+
+	// Summoner Sound Effects
+
+	// Caster Demon Sound Effects
+
+	// Melee Demon Sound Efffects
+
+	// Enemy Mage Sound Efffects
+
+	// Music
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",						"BackgroundBattle",			RedAudioManager::AudioType::Background);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",					"BackgroundMenu1",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",						"BackgroundMenu2",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",				"BackgroundMenu3",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/losing.mp3",							"Loss",						RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/medieval_parade.mp3",					"Win",						RedAudioManager::AudioType::SFX);
+
+	// Misc Sounds Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",			"TorchBurning",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",	"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",							"CharacterEntrance",		RedAudioManager::AudioType::SFX);
+
+	// Memes
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",						"NoManaCritical",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_3.mp3",						"NoManaBitch",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_2.mp3",						"NoManaMidium",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_1.mp3",						"NoManaLow",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ArrowReleaseHit",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"ArrowHit",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",					"ElectricBlast",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_swish.mp3",						"MagicWoosh",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",							"MagicZap",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",		"PlateArmorHit",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"SmallFireball",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",						"LargeFireball",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",							"CharacterEntrance",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Healing",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt2-death-pain.mp3",					"Death",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3",					"MaleHitReaction",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",						"ForwardAerial",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",							"FBIRade",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",			"TorchBurning",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",	"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
-
 	// Tower select screen door sounds
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
 	
 	//Background Sound
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",						"BackgroundBattle",			RedAudioManager::AudioType::Background);
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",						"BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/rage_in_the_darkness.mp3",				"BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",					"BackgroundMenu1",			RedAudioManager::AudioType::Background, "BackgroundMenu");
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",						"BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
 	RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",				"BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
-	
-	//Background Sound
-	//RedAudioManager::Instance().AddAudio("assets/audio/battle_music.mp3", "BackgroundBattle");
-	//RedAudioManager::Instance().AddAudio("assets/audio/menu_music.mp3", "BackgroundMenu");
-	
+	// Extras
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"ArrowHit",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",					"ElectricBlast",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",							"MagicZap",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",		"PlateArmorHit",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",						"LargeFireball",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
+  
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
-}
-
-void createBuffIcon(UINT anchorX, UINT anchorY, int slot, int buildDirection, const wchar_t* image, UINT width, UINT height, Odyssey::UICanvas* canvas, Character* owner)
-{
-	Odyssey::TextProperties properties = gDefaultText;
-	properties.fontSize = 12.0f;
-	properties.bold = true;
-	UINT iconStepX = static_cast<UINT>(width * 1.25f);
-	UINT iconStepY = static_cast<UINT>(height * 1.25f);
-	slot -= 1;
-	int number = (slot % 3) + 1;
-	float xPos = static_cast<float>(anchorX + (slot % 3) * iconStepX);
-	float yPos = static_cast<float>(anchorY + (slot / 3) * iconStepY);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xPos, yPos), image, width, height);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(xPos, yPos + height / 2.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width, height, std::to_wstring(number), properties);
 }
 
 void setupSceneOne()

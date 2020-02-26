@@ -12,7 +12,7 @@ namespace Odyssey
 			mBlendFactor[i] = blendFactor[i];
 		}
 		D3D11_BLEND_DESC dx11BlendDesc;
-		ZeroMemory(&blendDesc, sizeof(blendDesc));
+		ZeroMemory(&dx11BlendDesc, sizeof(dx11BlendDesc));
 
 		D3D11_RENDER_TARGET_BLEND_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
@@ -29,7 +29,8 @@ namespace Odyssey
 		dx11BlendDesc.IndependentBlendEnable = mBlendDesc.mIndependentBlendEnable;
 		dx11BlendDesc.RenderTarget[0] = desc;
 
-		RenderManager::getInstance().getDX11Device()->CreateBlendState(&dx11BlendDesc, mBlendState.GetAddressOf());
+		HRESULT hr =RenderManager::getInstance().getDX11Device()->CreateBlendState(&dx11BlendDesc, mBlendState.GetAddressOf());
+		assert(!FAILED(hr));
 	}
 
 	void BlendState::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
@@ -39,6 +40,7 @@ namespace Odyssey
 
 	void BlendState::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
-		context->OMSetBlendState(0, 0, 0xffffffff);
+		float blend[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		context->OMSetBlendState(nullptr, blend, 0xffffffff);
 	}
 }

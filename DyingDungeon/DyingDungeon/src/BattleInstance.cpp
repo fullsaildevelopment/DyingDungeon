@@ -196,7 +196,7 @@ bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
 void BattleInstance::UpdateCharacterTurnNumbers()
 {
 	EntityQueue tempBattleQueue = mBattleQueue;
-	int startingNum = tempBattleQueue.size();
+	int startingNum = (int)tempBattleQueue.size();
 	int counter = 1;
 
 	//Loop through each character and update it's

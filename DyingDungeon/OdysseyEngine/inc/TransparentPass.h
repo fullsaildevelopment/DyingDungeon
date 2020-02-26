@@ -7,8 +7,10 @@ namespace Odyssey
 	class TransparentPass : public RenderPass
 	{
 	public:
-		TransparentPass() = default;
+		TransparentPass();
 		virtual void preRender(RenderArgs& args, RenderPackage& renderPackage);
 		virtual void render(RenderArgs& args, RenderPackage& renderPackage);
+	private:
+		unsigned int mBlendState;
 	};
 }

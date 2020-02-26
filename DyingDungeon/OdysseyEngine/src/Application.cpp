@@ -278,6 +278,7 @@ namespace Odyssey
 	Entity* Application::createPrefab()
 	{
 		std::shared_ptr<Entity> prefab = std::make_shared<Entity>();
+		prefab->setStatic(false);
 		mPrefabs.push_back(prefab);
 		return prefab.get();
 	}

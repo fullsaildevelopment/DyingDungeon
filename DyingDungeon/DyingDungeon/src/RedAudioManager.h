@@ -50,6 +50,7 @@ class RedAudioManager
 		std::vector<std::pair<AudioType, std::string>> m_audioIdentifiers;
 		RedAudio* m_default_audio;
 		unsigned int m_volume[4];
+		unsigned int unmutedMaster;
 		bool m_muted;
 	private:
 		RedAudio* FindAudio(const char* alias);
@@ -197,6 +198,6 @@ class RedAudioManager
 		/// Getter for the size for the container holding the audio files
 		/// </summary>
 		/// <returns>Size of containter holding the audio objects</returns>
-		unsigned int AudioListSize();
+		size_t AudioListSize();
 };
 

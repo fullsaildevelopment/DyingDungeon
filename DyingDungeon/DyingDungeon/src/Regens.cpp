@@ -1,5 +1,6 @@
 #include "Regens.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Regens::Regens(float ammountOfEffect, int duration, Character* target)
 {
@@ -8,6 +9,7 @@ Regens::Regens(float ammountOfEffect, int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Regen.png";
 }
 Regens::~Regens()
 {
@@ -23,10 +25,12 @@ void Regens::Apply(Character& caster, Character& target)
 	newStatusEffect = std::make_shared<Regens>(mAmountOfEffect, mDuration, &target);
 	target.AddStatusEffect(newStatusEffect);
 	caster.AddCastedEffect(newStatusEffect.get());
+	GameUIManager::getInstance().GetCharacterHuds()[target.GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(true);
 	return;
 }
 void Regens::Remove()
 {
+	GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(false);
 	return;
 }
 void Regens::Use()

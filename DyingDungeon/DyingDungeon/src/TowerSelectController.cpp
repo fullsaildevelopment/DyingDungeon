@@ -458,23 +458,25 @@ void TowerSelectController::Door5Animation(double _deltaTime)
 void TowerSelectController::SetNextDoorImage(Door _doorToChange)
 {
 	DirectX::XMFLOAT2 deminsions = _doorToChange.doorImage->getDimensions();
+	UINT x = (UINT)deminsions.x;
+	UINT y = (UINT)deminsions.y;
 
 	switch (_doorToChange.mDoorImageIndex)
 	{
 		case 1:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", x, y);
 			break;
 		case 2:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", x, y);
 			break;
 		case 3:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", x, y);
 			break;
 		case 4:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", x, y);
 			break;
 		case 5:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", x, y);
 			break;
 	}
 }

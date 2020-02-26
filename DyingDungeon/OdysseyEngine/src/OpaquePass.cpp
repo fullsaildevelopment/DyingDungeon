@@ -119,16 +119,16 @@ namespace Odyssey
 			{
 				updateLightingBuffer(itr->second, args, renderPackage);
 
-				if (AnimatorDX11* animator = itr->second->entity->getRootComponent<AnimatorDX11>())
+				if (itr->second->animator)
 				{
-					animator->bind(args.context);
+					itr->second->animator->bind(args.context);
 				}
 
 				renderSceneObject(itr->second, args);
 
-				if (AnimatorDX11* animator = itr->second->entity->getRootComponent<AnimatorDX11>())
+				if (itr->second->animator)
 				{
-					animator->unbind(args.context);
+					itr->second->animator->unbind(args.context);
 				}
 			}
 		}
@@ -209,5 +209,7 @@ namespace Odyssey
 
 		// Draw the mesh
 		args.context->DrawIndexed(renderObject->meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
+
+		renderObject->meshRenderer->unbind(args.context);
 	}
 }

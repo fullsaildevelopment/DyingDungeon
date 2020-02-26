@@ -33,7 +33,6 @@ Buffs::Buffs(std::wstring skillName, std::string animationId, float animationTim
 }
 //////////////////////////////////////////////////////////////
 
-
 // Function that applies the attack to the passed in target
 void Buffs::Use(Character& caster, Character& target)
 {
@@ -52,7 +51,7 @@ void Buffs::Use(Character& caster, Character& target)
 		mStatusEffect->Apply(caster, target);
 
 		// Play audio "heal" sound effect
-		RedAudioManager::Instance().PlaySFX("GokuSJJ3");
+		RedAudioManager::Instance().PlaySFX(target.GetSoundClipName("Buffed").c_str());
 
 		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())

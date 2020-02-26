@@ -2,7 +2,7 @@
 #define DEBUG_STAT_TRACK
 StatTracker::StatTracker()
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	m_currentLevel = 1;
 	m_maxPlayerCount = 3;
 	m_p_canvas = nullptr;
@@ -98,7 +98,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[i - 1]->setText(rewardsText);
 		m_p_canvas->getElements<Odyssey::Sprite2D>()[i - 1]->setSprite();
 	}*/
-	for (int txt = 3, i = 0; i < 3; i++) 
+	/*for (int txt = 3, i = 0; i < 3; i++) 
 	{
 		m_p_canvas->getElements<Odyssey::Sprite2D>()[i]->setSprite(m_levels.back().characters[i].second, m_portrait_width, m_portrait_height);
 		for (int j = 0; j < 3; j++)
@@ -127,7 +127,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 			txt++;
 		}
 
-	}
+	}*/
 	//OutputStatSheet();
 }
 

@@ -30,6 +30,7 @@ RedAudioManager::RedAudioManager()
 	m_volume[1] = 1000;
 	m_volume[2] = 1000;
 	m_volume[3] = 1000;
+	unmutedMaster = 500;
 	m_muted = false;
 	m_default_audio = new RedAudio("assets/audio/SFX/wheres_the_lamb_sauce.mp3", "DEFAULT");
 	m_default_audio->Open();
@@ -95,7 +96,7 @@ void RedAudioManager::Loop(const char* alias)
 void RedAudioManager::LoopRandom(std::string group)
 {
 	std::vector<std::string> _temp = GetGroup(group);
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	unsigned int index = rand() % (_temp.size());
 	Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
 }
@@ -105,7 +106,7 @@ void RedAudioManager::PlaySFXRandom(std::string group)
 	std::vector<std::string> _temp = GetGroup(group);
 	if (_temp.size() > 0)
 	{
-		srand(time(NULL));
+		srand(static_cast<unsigned int>(time(NULL)));
 		unsigned int index = rand() % (_temp.size());
 		//Odyssey::EventManager::getInstance().publish(new AudioLoopEvent(_temp[index]));
 		FindAudio(_temp[index].c_str())->PlayInstance();
@@ -151,23 +152,24 @@ bool RedAudioManager::SetMasterVolume(unsigned int volume, AudioType audio_type)
 void RedAudioManager::Mute()
 {
 	m_muted = true;
+	unmutedMaster = m_volume[0];
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(0));
 }
 
 void RedAudioManager::Unmute()
 {
 	m_muted = false;
-
-	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[1], int(AudioType::Background)));
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(unmutedMaster));
+	/*Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[1], int(AudioType::Background)));
 	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[2], int(AudioType::SFX)));
-	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[3], int(AudioType::Dialog)));
+	Odyssey::EventManager::getInstance().publish(new AudioVolumeEvent(m_volume[3], int(AudioType::Dialog)));*/
 }
 
 void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 {
-	if (!m_muted) {
+	/*if (!m_muted) {*/
 		m_volume[avEvent->audioType + 1] = avEvent->volumeLevel;
-	}
+	//}
 	
 	for (int i = 0; i < m_audioFiles.size(); i++)
 	{
@@ -177,7 +179,7 @@ void RedAudioManager::SetVolumeEvent(AudioVolumeEvent* avEvent)
 		}
 		else if (AudioType(avEvent->audioType) == AudioType::None)
 		{
-			if (m_audioIdentifiers[i].first == AudioType::None)
+			if (m_audioIdentifiers[i].first != AudioType::None)
 			{
 				m_audioFiles[i].first.SetVolume(static_cast<unsigned int>(m_volume[static_cast<unsigned int>(m_audioIdentifiers[i].first) + 1] * static_cast<float>(m_volume[0] / 1000.0f)));
 			}
@@ -245,7 +247,7 @@ void RedAudioManager::SetDefult(const char* path)
 	m_default_audio->SetVolume(m_volume[0]);
 }
 
-unsigned int RedAudioManager::AudioListSize()
+size_t RedAudioManager::AudioListSize()
 {
 	return m_audioFiles.size();
 }

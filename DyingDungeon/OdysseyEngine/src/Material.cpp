@@ -14,6 +14,7 @@ namespace Odyssey
 		setDefaultMaterialProperties();
 
 		mPixelShader = -1;
+		mBlendState = nullptr;
 	}
 
 	Material::Material(TextureType textureType, int textureID)
@@ -33,6 +34,12 @@ namespace Odyssey
 		if (mPixelShader != -1)
 		{
 			RenderManager::getInstance().getShader(mPixelShader)->bind(context);
+		}
+
+		if (mBlendState)
+		{
+			float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			context->OMSetBlendState(mBlendState.Get(), blendFactor, 0xFFFFFFFF);
 		}
 
 		// Bind the material properties constant buffer to the pixel shader slot 0
@@ -73,6 +80,13 @@ namespace Odyssey
 	void Material::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		mLock.lock(LockState::Read);
+
+		if (mBlendState)
+		{
+			float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			context->OMSetBlendState(nullptr, blendFactor, 0xFFFFFFFF);
+		}
+
 		// Bind the diffuse texture
 		if (mTextureMap.count(TextureType::Diffuse) != 0)
 		{
@@ -159,11 +173,42 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
-	void Material::setShader(int pixelShader)
+	void Material::setShader(const char* filename)
 	{
 		mLock.lock(LockState::Write);
-		mPixelShader = pixelShader;
+		mPixelShader = RenderManager::getInstance().createShader(ShaderType::PixelShader, filename, nullptr, 0);
 		mLock.unlock(LockState::Write);
+	}
+
+	void Material::setAlphaBlend(bool alphaBlend)
+	{
+		if (mBlendState == nullptr && alphaBlend)
+		{
+			// Create the blend state
+			D3D11_RENDER_TARGET_BLEND_DESC desc;
+			ZeroMemory(&desc, sizeof(desc));
+			desc.BlendEnable = true;
+			desc.BlendEnable = true;
+			desc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			desc.DestBlend = D3D11_BLEND_ONE;
+			desc.BlendOp = D3D11_BLEND_OP_ADD;
+			desc.SrcBlendAlpha = D3D11_BLEND_ZERO;
+			desc.DestBlendAlpha = D3D11_BLEND_ONE;
+			desc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			desc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+			D3D11_BLEND_DESC blendDesc;
+			ZeroMemory(&blendDesc, sizeof(blendDesc));
+			blendDesc.AlphaToCoverageEnable = true;
+			blendDesc.IndependentBlendEnable = false;
+			blendDesc.RenderTarget[0] = desc;
+
+			RenderManager::getInstance().getDX11Device()->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
+		}
+		else
+		{
+			mBlendState = nullptr;
+		}
 	}
 
 	Shader* Material::getShader()

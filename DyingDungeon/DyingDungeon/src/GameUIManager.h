@@ -7,63 +7,34 @@
 #include "Sprite2D.h"
 #include "StatTracker.h"
 #include "UIElement.h"
+#include <map>
 
 class GameUIManager
 {
 public:
+
+	enum class UIObject
+	{
+		PauseMenu,
+		OptionsMenu
+	};
 
 	enum class CharacterType
 	{
 		Paladin, Mage
 	};
 
-	// This struct will contain all of the UI elements associated with the character HUD
-	//struct CharacterHUD
-	//{
-	//	Odyssey::UICanvas* pCanvas;
-	//	Odyssey::Sprite2D* pPortrait;
-	//	Odyssey::Rectangle2D* pXpBar;
-	//	Odyssey::Text2D* pCharacterName;
-	//	Odyssey::Text2D* pLevelNumber;
-	//	Odyssey::Text2D* pAttackNumber;
-	//	Odyssey::Text2D* pDefenseNumber;
-	//	Odyssey::Text2D* pSpeedNumber;
-	//	Odyssey::Rectangle2D* pHealthBar;
-	//	Odyssey::Text2D* pHealthNumber;
-	//	Odyssey::Rectangle2D* pManaBar;
-	//	Odyssey::Text2D* pManaNumber;
-	//	Odyssey::Text2D* pTurnNumber;
-	//
-	//	// Skills
-	//	Odyssey::Sprite2D* pSkill1;
-	//	Odyssey::UICanvas* pSkill1Canvas;
-	//	Odyssey::Sprite2D* pSkill2;
-	//	Odyssey::UICanvas* pSkill2Canvas;
-	//	Odyssey::Sprite2D* pSkill3;
-	//	Odyssey::UICanvas* pSkill3Canvas;
-	//	Odyssey::Sprite2D* pSkill4;
-	//	Odyssey::UICanvas* pSkill4Canvas;
-	//
-	//	// Status Effects
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//	//Odyssey::Sprite2D* pAttackUp;
-	//};
-
 	// This struct will hold the elements needed in order to animate the health and mana bars
 	struct AnimatingBar
 	{
 		Odyssey::Rectangle2D* pBar = nullptr;
 		Odyssey::Text2D* pBarText = nullptr;
-		float pMaxValue;
-		float pCurrValue; // This will change in the update function
-		float pNewValue;
+		float pMaxValue = 0.0f;
+		float pCurrValue = 0.0f; // This will change in the update function
+		float pNewValue = 0.0f;
 
 		// Used for checking while updating
-		bool pTookDamage;
+		bool pTookDamage = 0;
 	};
 
 public: // Singleton pattern
@@ -76,9 +47,25 @@ public: // Singleton pattern
 	~GameUIManager() { }
 
 private: // Singleton pattern
-	GameUIManager() { }
+	GameUIManager() 
+	{ 
+		mLoadoutPortraits[0][1] = nullptr;
+		mLoadoutPortraits[0][2] = nullptr;
+		mLoadoutPortraits[0][3] = nullptr;
+
+		mLoadoutPortraits[1][1] = nullptr;
+		mLoadoutPortraits[1][2] = nullptr;
+		mLoadoutPortraits[1][3] = nullptr;
+
+		mLoadoutPortraits[2][1] = nullptr;
+		mLoadoutPortraits[2][2] = nullptr;
+		mLoadoutPortraits[2][3] = nullptr;
+	}
 
 public: // Functions
+
+	// The initalize function to create all of the UI Prefabs
+	void initialize(Odyssey::Application* _application);
 
 	// Create the battle log UI 
 	void CreateBattleLog(Odyssey::Scene* _sceneToAddTo);
@@ -116,6 +103,8 @@ public: // Functions
 	// TODO: M3B1 ONLY REFACTOR LATER
 	void ShowCreditsMenu();
 	void HideCreditsMenu();
+	void ShowMainOptions();
+	void HideMainOptions();
 	// TODO: M3B1 ONLY END
 
 	void StatsMenuPrevTurn();
@@ -160,11 +149,13 @@ public: // Functions
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
 	// Update health bar
-	void UpdateCharacterBars(float _deltaTime);
+	void UpdateCharacterBars(double _deltaTime);
+	// Clear the list of bars to update
+	void ClearBarsToUpdateList() { mUpdateCharacterBarsList.clear(); }
 	// Add character's health popup to update list in order from them to be updated
 	void AddHpPopupToUpdateList(Character* _currCharacter, bool _tookDamage, float _changeInHP);
 	// Update health popups
-	void UpdateCharacterHealthPopups(float _deltaTime);
+	void UpdateCharacterHealthPopups(double _deltaTime);
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
 
@@ -228,8 +219,16 @@ public: // Functions
 	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
 	//
 	Odyssey::Rectangle2D** GetLoadoutPortraitBackgrounds() { return mLoadoutPortraitBackground; }
+	//
+	Odyssey::Text2D* GetBackTextOptions() { return mOptionsBack; }
+	//
+	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
 	Odyssey::Sprite2D* GetEnterBattleButton() { return mEnterBattleButton; }
+
+	Odyssey::Sprite2D** GetMainMenuPlusVolumeButtons() { return mMainPlusImage; }
+
+	Odyssey::Sprite2D** GetMainMenuMinusVolumeButtons() { return mMainMinusImage; }
 
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
@@ -264,61 +263,67 @@ public: // Functions
 private: // Varibales
 
 	// Battle Log Object
-	Odyssey::UICanvas* mCombatLogCanvas;
-	Odyssey::Text2D* mBattleLogText;
-	Odyssey::Entity* mBattleLog;
+	Odyssey::UICanvas* mCombatLogCanvas = nullptr;
+	Odyssey::Text2D* mBattleLogText = nullptr;
+	Odyssey::Entity* mBattleLog = nullptr;
 	std::vector<Odyssey::Text2D*> mBattleLogVec;
 	std::vector<Odyssey::Sprite2D*> mCombatCasterIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatSkillIcons;
 	std::vector<Odyssey::Sprite2D*> mCombatTargetIcons;
 
 	// Battle Log Colors
-	DirectX::XMFLOAT3 newCombatLogColor;
+	DirectX::XMFLOAT3 newCombatLogColor = { 0.0f, 0.0f, 0.0f };
 
 	// Menu Entities
-	Odyssey::Entity* mMainMenu;
-	Odyssey::Entity* mTowerSelectMenu;
-	Odyssey::Entity* mTeamSelectMenu;
-	Odyssey::Entity* mLoadoutMenu;
-	Odyssey::Entity* mSaveLoadoutConfermation;
-	Odyssey::Entity* mPauseMenu;
-	Odyssey::Entity* mOptionsMenu;
-	Odyssey::Entity* mStatsMenu;
-	Odyssey::Entity* mCreditsMenu;
+	Odyssey::Entity* mMainMenu = nullptr;
+	Odyssey::Entity* mMainMenuOptions = nullptr;
+	Odyssey::Entity* mTowerSelectMenu = nullptr;
+	Odyssey::Entity* mTeamSelectMenu = nullptr;
+	Odyssey::Entity* mLoadoutMenu = nullptr;
+	Odyssey::Entity* mSaveLoadoutConfermation = nullptr;
+	Odyssey::Entity* mPauseMenu = nullptr;
+	Odyssey::Entity* mOptionsMenu = nullptr;
+	Odyssey::Entity* mStatsMenu = nullptr;
+	Odyssey::Entity* mCreditsMenu = nullptr;
 
 	// Main Menu Items
-	Odyssey::Sprite2D* mApeBackground;
-	Odyssey::Sprite2D* mAnimatedLaser;
-	Odyssey::Text2D* mNewGameText;
-	Odyssey::Text2D* mStatsText;
+	Odyssey::Sprite2D* mApeBackground = nullptr;
+	Odyssey::Sprite2D* mAnimatedLaser = nullptr;
+	Odyssey::Text2D* mNewGameText = nullptr;
+	Odyssey::Text2D* mStatsText = nullptr;
+	Odyssey::Text2D* mOptionsBack = nullptr;
+	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mMainVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
 	// TODO: M3B1 ONLY REFACTOR LATER
-	Odyssey::Text2D* mCreditsText;
-	Odyssey::Text2D* mExitGameText;
-	Odyssey::Text2D* mCreditsBackText;
+	Odyssey::Text2D* mCreditsText = nullptr;
+	Odyssey::Text2D* mExitGameText = nullptr;
+	Odyssey::Text2D* mCreditsBackText = nullptr;
+	Odyssey::Text2D* mMainOptionsText = nullptr;
 	// TODO: M3B1 ONLY END
 
 	// Tower Menu Items
-	Odyssey::Text2D* mTowerSelectTitle;
+	Odyssey::Text2D* mTowerSelectTitle = nullptr;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
-	Odyssey::UICanvas* mTowerInfoCanvas;
+	Odyssey::UICanvas* mTowerInfoCanvas = nullptr;
 
 	// Team Menu Items
 	// Enter Battle Button
-	Odyssey::Sprite2D* mEnterBattleButton;
+	Odyssey::Sprite2D* mEnterBattleButton = nullptr;
 	//Load Loadout Button
-	Odyssey::Sprite2D* mLoadLoadoutButton;
+	Odyssey::Sprite2D* mLoadLoadoutButton = nullptr;
 	//Save Loadout Button
-	Odyssey::Sprite2D* mSaveLoadoutButton;
+	Odyssey::Sprite2D* mSaveLoadoutButton = nullptr;
 	//Loadout Buttons
 	Odyssey::Sprite2D* mLoadoutButtons[3];
 	//Loadout pop-up
-	Odyssey::Rectangle2D* mLoadoutPortraitBackground[3];
+	Odyssey::Rectangle2D* mLoadoutPortraitBackground[3] = { nullptr, nullptr, nullptr };
 	//Loadout Character Portraits
 	Odyssey::Sprite2D* mLoadoutPortraits[3][3];
 	//Save Confermation Buttons
-	Odyssey::Sprite2D* mSaveConfermationButtons[2];
+	Odyssey::Sprite2D* mSaveConfermationButtons[2] = {nullptr, nullptr};
 	//Loadout Cancel Button
-	Odyssey::Text2D* mCancelLoadoutButton;
+	Odyssey::Text2D* mCancelLoadoutButton = nullptr;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots
@@ -327,35 +332,35 @@ private: // Varibales
 	std::vector<Odyssey::Sprite2D*> mShowInfoButtons;
 
 	// Pause Menu Items
-	Odyssey::Rectangle2D* mBlackBackground;
-	Odyssey::Rectangle2D* mSmallerBlackBackground;
-	Odyssey::Text2D* mPauseTitle;
-	Odyssey::Rectangle2D* mResumeBackground;
-	Odyssey::Text2D* mResumeText;
-	Odyssey::Rectangle2D* mOptionsBackground;
-	Odyssey::Text2D* mOptionsText;
-	Odyssey::Rectangle2D* mMainMenuBackground;
-	Odyssey::Text2D* mMainMenuText;
+	Odyssey::Rectangle2D* mBlackBackground = nullptr;
+	Odyssey::Rectangle2D* mSmallerBlackBackground = nullptr;
+	Odyssey::Text2D* mPauseTitle = nullptr;
+	Odyssey::Rectangle2D* mResumeBackground = nullptr;
+	Odyssey::Text2D* mResumeText = nullptr;
+	Odyssey::Rectangle2D* mOptionsBackground = nullptr;
+	Odyssey::Text2D* mOptionsText = nullptr;
+	Odyssey::Rectangle2D* mMainMenuBackground = nullptr;
+	Odyssey::Text2D* mMainMenuText = nullptr;
 
 	// Options Menu Items
-	Odyssey::Text2D* mOptionsTitle;
-	Odyssey::Text2D* mVolumeText;
-	Odyssey::Rectangle2D* mVolumeBar[4];
-	Odyssey::Sprite2D* mPlusImage[4];
-	Odyssey::Sprite2D* mMinusImage[4];
-	Odyssey::Text2D* mBackButtonText;
+	Odyssey::Text2D* mOptionsTitle = nullptr;
+	Odyssey::Text2D* mVolumeText = nullptr;
+	Odyssey::Rectangle2D* mVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
+	Odyssey::Sprite2D* mPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Text2D* mBackButtonText = nullptr;
 
 	//Stats Menu Items
 	unsigned int mStatMenuCurrentLevel = 1;
 	unsigned int mStatMenuCurrentRound = 1;
 	unsigned int mStatMenuCurrentTurn = 1;
-	Odyssey::Text2D* mStatsBackButtonText;
-	Odyssey::Sprite2D* mStatsPrevButtonTurn;
-	Odyssey::Sprite2D* mStatsNextButtonTurn;
-	Odyssey::Sprite2D* mStatsPrevButtonRound;
-	Odyssey::Sprite2D* mStatsNextButtonRound;
-	Odyssey::Sprite2D* mStatsPrevButtonLevel;
-	Odyssey::Sprite2D* mStatsNextButtonLevel;
+	Odyssey::Text2D* mStatsBackButtonText = nullptr;
+	Odyssey::Sprite2D* mStatsPrevButtonTurn = nullptr;
+	Odyssey::Sprite2D* mStatsNextButtonTurn = nullptr;
+	Odyssey::Sprite2D* mStatsPrevButtonRound = nullptr;
+	Odyssey::Sprite2D* mStatsNextButtonRound = nullptr;
+	Odyssey::Sprite2D* mStatsPrevButtonLevel = nullptr;
+	Odyssey::Sprite2D* mStatsNextButtonLevel = nullptr;
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -405,9 +410,18 @@ private: // Functions
 	void IncreaseDialogVolume();
 
 	// Skill Icon Creation Fucntions
-	void SetupSkillIcons(Odyssey::Entity* _objToAddTo, DirectX::XMFLOAT2 _hudPosition);
-	//void SetupStatusEffects(Odyssey::Entity* _objToAddTo, Character* _newCharacter, DirectX::XMFLOAT2 _hudPosition, Odyssey::Entity* _newHud);
+	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
+	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
+
+	// Application
+	Odyssey::Application* mApplication = nullptr;
+
+	// Prefab Maps
+	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
+
+	// Prefab Creation Functions
+	Odyssey::Entity*  CreatePauseMenuPrefab();
 };

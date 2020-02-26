@@ -10,6 +10,7 @@ MainMenuController::MainMenuController(Odyssey::Application* application)
 {
 	mApplication = application;
 	mRect = nullptr;
+	mPaladinCharacter = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> MainMenuController::clone() const
@@ -19,12 +20,14 @@ std::shared_ptr<Odyssey::Component> MainMenuController::clone() const
 
 void MainMenuController::initialize()
 {
-	RedAudioManager::Instance().Stop("BackgroundBattle");
+	RedAudioManager::Instance().StopGroup("BackgroundBattle");
 	RedAudioManager::Instance().Stop("TorchBurningQuietly");
 	RedAudioManager::Instance().LoopRandom("BackgroundMenu");
 
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
+	GameUIManager::getInstance().GetOptionsButtonMain()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowMainOptions);
+
 	if (StatTracker::Instance().GetLevelSize() > 0) 
 	{
 		GameUIManager::getInstance().GetStatsText()->setColor(DirectX::XMFLOAT3(255.0f, 255.0f, 255.0f));
@@ -40,7 +43,7 @@ void MainMenuController::initialize()
 	// TODO: M3B1 ONLY END
 
 	// Animating bool
-	mAnimatingLaser = true;
+	mAnimatingLaser = false;
 
 	// Create a paladin and add him to the main menu scene
 	mPaladinCharacter = nullptr;
@@ -50,6 +53,7 @@ void MainMenuController::initialize()
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
+	mPaladinCharacter->getChildren()[1]->setVisible(false);
 }
 
 void MainMenuController::update(double deltaTime)
@@ -63,7 +67,7 @@ void MainMenuController::update(double deltaTime)
 	if (mAnimatingLaser)
 	{
 		// Set the fill of the logo based on the (totalTime / waitTime)
-		float fillRatio = totalTime / (waitTime - 0.5f); // Give some padding
+		float fillRatio = static_cast<float>(totalTime / (waitTime - 0.5f)); // Give some padding
 
 		// If the fillRatio is at 100%, stop animating
 		if (fillRatio >= 1.0f)
@@ -105,6 +109,11 @@ void MainMenuController::onDestroy()
 	// TODO: M3B1 ONLY REFACTOR LATER
 	GameUIManager::getInstance().GetCreditsText()->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetExitGameText()->unregisterCallback("onMouseClick");
+
+	for (int i = 0; i < 4; i++) {
+		GameUIManager::getInstance().GetMainMenuPlusVolumeButtons()[i]->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuMinusVolumeButtons()[i]->unregisterCallback("onMouseClick");
+	}
 	// TODO: M3B1 ONLY END
 }
 

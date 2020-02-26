@@ -64,6 +64,22 @@ std::string Skills::GetAnimationId()
 	return mAnimationId;
 }
 
+std::string Skills::GetSoundEffectName()
+{
+	return mSoundEffectPath;
+}
+
+float Skills::GetSoundEffectTiming()
+{
+	return mSoundEffectTiming;
+}
+
+void Skills::SetSoundEffect(std::string newSoundEffect, float newSoundTiming)
+{
+	mSoundEffectPath = newSoundEffect;
+	mSoundEffectTiming = newSoundTiming;
+}
+
 // Return animation timing
 float Skills::GetAnimationTiming()
 {

@@ -29,12 +29,16 @@ protected:
 	float mMpCost;
 	// Animation time for when effects such as hit animation or particle effects should go out
 	float mAnimationTime;
+	// Sound effect timing
+	float mSoundEffectTiming;
 	// ratio from 0.0f - 1.0f on chance the status effect will be applied
 	float mStatusEffectChance;
 	// Name of skill
 	std::wstring mSkillName;
 	// Animation ID
 	std::string mAnimationId;
+	// Sound Effect
+	std::string mSoundEffectPath;
 	// Status Effect Attached to skill
 	std::shared_ptr<StatusEffect> mStatusEffect;
 	// Particle effect if the skill has it 
@@ -66,6 +70,12 @@ public:
 	std::wstring GetSkillName();
 	// Gets the Animation ID
 	std::string GetAnimationId();
+	// Get the sound effect path
+	std::string GetSoundEffectName();
+	// Get the timing of the sound effect
+	float GetSoundEffectTiming();
+	// Set sound effect name
+	void SetSoundEffect(std::string newSoundEffect, float newSoundTiming);
 	// Get TypeID
 	GameplayTypes::SKILLTYPE GetSkillTypeId();
 	// Get isAOE
