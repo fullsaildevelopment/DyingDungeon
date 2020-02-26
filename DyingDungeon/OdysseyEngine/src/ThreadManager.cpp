@@ -61,7 +61,6 @@ namespace Odyssey
 		mTickInterval = time;
 		mTimer.Restart();
 	}
-
 	void ThreadManager::updateScene()
 	{
 		while (mShuttingDown == false)
@@ -73,6 +72,7 @@ namespace Odyssey
 				mActiveScene = mNextScene;
 				mNextScene = nullptr;
 				mSceneChanged = false;
+				EventManager::getInstance().publish(new EnableRenderingEvent());
 			}
 			mLock.unlock(LockState::Write);
 

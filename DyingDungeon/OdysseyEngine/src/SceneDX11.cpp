@@ -173,7 +173,7 @@ namespace Odyssey
 				Component* component = mComponentList[i];
 				if (component->isActive() && component->getEntity()->isActive())
 				{
-					component->update(mDeltaTime);
+					component->update(mDeltaTime * 10.0f);
 				}
 			}
 		}

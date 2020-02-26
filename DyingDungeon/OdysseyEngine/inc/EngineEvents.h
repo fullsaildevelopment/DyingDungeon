@@ -213,4 +213,13 @@ namespace Odyssey
 			priority = EventPriority::Immediate;
 		}
 	};
+
+	class EnableRenderingEvent : public Event
+	{
+	public:
+		EnableRenderingEvent()
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
 }

@@ -35,6 +35,7 @@ namespace Odyssey
 		 */
 		void onCommandReceive(CommandReceiveEvent* evnt);
 
+		void onEnableRendering(EnableRenderingEvent* evnt);
 		/**
 		 *	Event callback notifying the application to shutdown.
 		 *	@param[in] evnt The event parameters.
@@ -132,5 +133,7 @@ namespace Odyssey
 		bool mIsShutdown;
 		std::vector<std::shared_ptr<Entity>> mPrefabs;
 		static HCURSOR mCursor;
+		float mTimeScale = 5.0f;
+		bool mIsRendering;
 	};
 }
