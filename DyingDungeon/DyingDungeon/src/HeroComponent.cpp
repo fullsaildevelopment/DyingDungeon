@@ -131,7 +131,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The paladin is a guardian of divine power and a protector of the righteous. Utilize the paladin's skills to protect your team and bring evil to bear.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -259,7 +259,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The mage possesses an ancient knowledge of the elemental forces. These skills can be used to inflict tremendous damage on all enemies in your path.";
+		mDescription = L"A vengeful mage from the Forest of Gelmeur, seeking revenge for her parents. She unleashes destruction on her enemies with magic, but lacks defensive capabilities.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills // kills in 5, can take 6
@@ -369,7 +369,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The bard supports their party with the plethora of songs they know. Using music they will buff allies and debuff enemies, and remove harmful effects from the party.";
+		mDescription = L"A tavern bard, sick of her old life. She seeks fame and fortune. She supports and heals her allies using her many songs.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -414,7 +414,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mName = L"Warrior";
 
 		// Set the character subname
-		mSubName = L"Off-Tank";
+		mSubName = L"Berserker";
 
 		// Set the portaits path
 		mPortrait = L"assets/images/WarriorPortrait.png";
@@ -495,7 +495,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The warrior is beefy and strong. Use his nearly endless pool of health to soak up raw damage, while dealing out debilitating  attacks.";
+		mDescription = L"An ex royal guard and a drunkard, seeking redemption in battle. He rushes headfirst into battle, unleashing devastating attacks with his axe.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -609,15 +609,15 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
-		//tempAnimationData.mAnimationNickName = "Skill_4";
-		//tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
-		//tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The monk works to cripple the enemy through multiple types of debuffs. The Monk has a high damage and speed but low defensive stats, excelling at damage output and team utility.";
+		mDescription = L"One of Ganfaul’s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but won’t last long without support.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
