@@ -170,6 +170,10 @@ public: // Functions
 
 	// Add a cliackable entity to target enemies or allies
 	void AddClickableElementToList(Odyssey::Entity* _clickableUI) { mClickableUIList.push_back(_clickableUI); }
+	// Clear the clickable list
+	void ClearClickableCharacterList() { mClickableUIList.clear(); }
+	// Set up the clickable ui callbacks
+	void SetupClickableCharacterUI();
 
 	//Updates
 	void UpdateStatsMenu();
@@ -430,12 +434,22 @@ private: // Functions
 	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
 	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
+	// Character select callbacks
+	void Character1Callback();
+	void Character2Callback();
+	void Character3Callback();
+	void Character4Callback();
+	void Character5Callback();
+	void Character6Callback();
+
+private: // Other stuff
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);
 
 	// Application
 	Odyssey::Application* mApplication = nullptr;
 
+private: // Prefab stuff
 	// Prefab Maps
 	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
 	std::map<ClickableCharacterUI, Odyssey::Entity*> mClickableUIPrefabMap;

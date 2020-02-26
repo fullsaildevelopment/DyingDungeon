@@ -927,7 +927,7 @@ void setupSceneTwo()
 	gMainCamera->addComponent<CameraController>();
 
 	// SCENE
-	Odyssey::RenderManager::getInstance().importScene(gSceneTwo, "assets/models/TestArena.dxm");
+	//Odyssey::RenderManager::getInstance().importScene(gSceneTwo, "assets/models/TestArena.dxm");
 
 	// FIRE PARTICLE EFFECTS
 	Odyssey::Entity* fire1 = gSceneTwo->createEntity();

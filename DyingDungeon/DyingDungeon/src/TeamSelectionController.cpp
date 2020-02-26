@@ -35,6 +35,9 @@ void TeamSelectionController::initialize()
 	// Don't display some of the characters
 	TurnOffOtherModels();
 
+	// Clear the clickable character UI elements
+	GameUIManager::getInstance().ClearClickableCharacterList();
+
 	// Register callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
 

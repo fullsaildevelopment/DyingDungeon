@@ -1081,6 +1081,39 @@ void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey
 	hudElements->ChangeHealthNumber(std::to_wstring((int)_newCharacter->GetHP()) + L"/" + std::to_wstring((int)_newCharacter->GetMaxHP()));
 }
 
+void GameUIManager::SetupClickableCharacterUI()
+{
+	for (int i = 0; i < mClickableUIList.size(); i++)
+	{
+		Odyssey::Rectangle2D* rect = mClickableUIList[i]->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
+
+		if (i == 0)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character1Callback);
+		}
+		else if (i == 1)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character2Callback);
+		}
+		else if (i == 2)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character3Callback);
+		}
+		else if (i == 3)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character4Callback);
+		}
+		else if (i == 4)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character5Callback);
+		}
+		else if (i == 5)
+		{
+			rect->registerCallback("onMouseClick", this, &GameUIManager::Character6Callback);
+		}
+	}
+}
+
 void GameUIManager::UpdateStatsMenu()
 {
 	if (StatTracker::Instance().GetLevelSize() > 0) {
@@ -1732,6 +1765,31 @@ void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMF
 	newHud->GetProvokeBuff()->setVisible(false);
 	newHud->GetRegenBuff()->setVisible(false);
 	newHud->GetShieldBuff()->setVisible(false);
+}
+
+void GameUIManager::Character1Callback()
+{
+	bool callback1 = true;
+}
+
+void GameUIManager::Character2Callback()
+{
+}
+
+void GameUIManager::Character3Callback()
+{
+}
+
+void GameUIManager::Character4Callback()
+{
+}
+
+void GameUIManager::Character5Callback()
+{
+}
+
+void GameUIManager::Character6Callback()
+{
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)

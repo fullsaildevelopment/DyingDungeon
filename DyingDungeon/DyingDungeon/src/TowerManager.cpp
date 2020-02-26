@@ -251,6 +251,9 @@ void TowerManager::CreateBattleInstance()
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 		mAllCharacters.push_back(mEnemyTeam[i]);
 
+	// Set up clickable character UI
+	GameUIManager::getInstance().SetupClickableCharacterUI();
+
 	// Create the battle instance
 	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
 
