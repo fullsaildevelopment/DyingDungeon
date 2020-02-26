@@ -2516,7 +2516,7 @@ Odyssey::Entity* GameUIManager::CreateClickableUIPrefab(DirectX::XMFLOAT2 _click
 	// Add the rectangle to the pause menu canvas
 	Odyssey::Rectangle2D* rect = canvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	rect->setOpacity(BackgroundBigOpacity);
+	rect->setOpacity(0.0f);
 
 	return mClickableUI;
 }
