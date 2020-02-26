@@ -95,6 +95,8 @@ private: // Functions
 	void DestroyBattleInstance();
 	void TogglePauseMenu();
 	void ShowOptionsMenu();
+	void ShowControlScreen();
+	void HideControlScreen();
 	void GoToMainMenu();
 
 	// Create the heros and all of their elements

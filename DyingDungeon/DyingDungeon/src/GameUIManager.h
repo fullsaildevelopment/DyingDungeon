@@ -270,7 +270,11 @@ public: // Functions
 	// Get the rectangle buttons from the pause menu
 	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
 	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
+	Odyssey::Rectangle2D* GetOptionsVolumeButton() { return mOptionsVolumeBackground; }
+	Odyssey::Rectangle2D* GetOptionsControlsButton() { return mOptionsControlsBackground; }
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
+	Odyssey::Sprite2D* GetControlsImage() { return mOptionsControlsImage; }
+	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
 
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() { return mCharacterHudList; }
@@ -375,9 +379,15 @@ private: // Varibales
 	Odyssey::Rectangle2D* mResumeBackground = nullptr;
 	Odyssey::Text2D* mResumeText = nullptr;
 	Odyssey::Rectangle2D* mOptionsBackground = nullptr;
+	Odyssey::Rectangle2D* mOptionsVolumeBackground = nullptr;
+	Odyssey::Rectangle2D* mOptionsControlsBackground = nullptr;
 	Odyssey::Text2D* mOptionsText = nullptr;
+	Odyssey::Text2D* mOptionsVolumeText = nullptr;
+	Odyssey::Text2D* mOptionsControlText = nullptr;
+	Odyssey::Text2D* mOptionsControlBackText = nullptr;
 	Odyssey::Rectangle2D* mMainMenuBackground = nullptr;
 	Odyssey::Text2D* mMainMenuText = nullptr;
+	Odyssey::Sprite2D* mOptionsControlsImage = nullptr;
 
 	// Options Menu Items
 	Odyssey::Text2D* mOptionsTitle = nullptr;
