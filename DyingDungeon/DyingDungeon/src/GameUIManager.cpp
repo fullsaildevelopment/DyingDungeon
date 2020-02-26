@@ -2385,7 +2385,7 @@ void GameUIManager::ClearCombatLog()
 	for (int i = 0; i < mCombatTargetIcons.size(); i++)
 		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 
-	for (int i = (int)mBattleLogVec.size() - 1; i > 0; i--)
+	for (int i = (int)mBattleLogVec.size() - 1; i >= 0; i--)
 	{
 		mBattleLogVec[i]->setText(L"");
 	}
