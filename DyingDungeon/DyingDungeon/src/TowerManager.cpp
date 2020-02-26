@@ -367,8 +367,9 @@ void TowerManager::GoToMainMenu()
 	// Turn off battle music
 	RedAudioManager::Instance().Stop("BackgroundBattle");
 
-	delete mCurrentBattle;
-	mCurrentBattle = nullptr;
+	// Destory the battle instance
+	DestroyBattleInstance();
+
 	mIsPaused = true;
 	// Switch to main menu scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));

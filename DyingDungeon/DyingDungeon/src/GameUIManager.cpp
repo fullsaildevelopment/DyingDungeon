@@ -4,6 +4,8 @@
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
 #include "HeroComponent.h"
+#include "CombatManager.h"
+#include "EventManager.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1875,27 +1877,32 @@ void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMF
 
 void GameUIManager::Character1Callback()
 {
-	bool callback1 = true;
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero1);
 }
 
 void GameUIManager::Character2Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero2);
 }
 
 void GameUIManager::Character3Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero3);
 }
 
 void GameUIManager::Character4Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy1);
 }
 
 void GameUIManager::Character5Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy2);
 }
 
 void GameUIManager::Character6Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy3);
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
@@ -2516,7 +2523,7 @@ Odyssey::Entity* GameUIManager::CreateClickableUIPrefab(DirectX::XMFLOAT2 _click
 	// Add the rectangle to the pause menu canvas
 	Odyssey::Rectangle2D* rect = canvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	rect->setOpacity(0.0f);
+	rect->setOpacity(BackgroundBigOpacity);
 
 	return mClickableUI;
 }
