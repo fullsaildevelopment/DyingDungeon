@@ -51,5 +51,7 @@ private:
 
 	// Used to detrim what kind of move the AI should make
 	GameplayTypes::SKILLTYPE mMoveOverride;
+
+private: // Functions
 };
 

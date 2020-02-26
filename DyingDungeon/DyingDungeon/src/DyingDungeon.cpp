@@ -137,9 +137,7 @@ int playGame()
 	// Create the tower selection menu
 	GameUIManager::getInstance().CreateTowerSelectMenuCanvas(gTowerSelectScene);
 
-
 	// Set up the team selection screen
-	// I need to setupGameInterafce before this gets called because that is where the canvases are getting added to the gGameMenu.
 	setupTeamSelectMenu(application.get());
 
 	// Create Scene One
@@ -929,7 +927,7 @@ void setupSceneTwo()
 	gMainCamera->addComponent<CameraController>();
 
 	// SCENE
-	Odyssey::RenderManager::getInstance().importScene(gSceneTwo, "assets/models/TestArena.dxm");
+	//Odyssey::RenderManager::getInstance().importScene(gSceneTwo, "assets/models/TestArena.dxm");
 
 	// FIRE PARTICLE EFFECTS
 	Odyssey::Entity* fire1 = gSceneTwo->createEntity();

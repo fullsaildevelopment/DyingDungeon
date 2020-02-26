@@ -1333,8 +1333,7 @@ void HeroComponent::initialize()
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 }
 
-// Skill Call backs for clickable UI //
-//////////////////////////////////////////////
+// Skill Call backs for clickable UI
 void HeroComponent::Skill1Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
@@ -1399,4 +1398,5 @@ void HeroComponent::Skill4Callback()
 		}
 	}
 }
-//////////////////////////////////////////////
+
+// Character Call backs for clickable character UI
