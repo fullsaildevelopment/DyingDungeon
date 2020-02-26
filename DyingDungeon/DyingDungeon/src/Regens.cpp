@@ -1,5 +1,6 @@
 #include "Regens.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Regens::Regens(float ammountOfEffect, int duration, Character* target)
 {
@@ -8,16 +9,21 @@ Regens::Regens(float ammountOfEffect, int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Regen.png";
 }
 Regens::~Regens()
 {
+	mTypeId = EFFECTTYPE::Regen;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
-void Regens::Apply(Character& target)
+void Regens::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Regens>(mAmountOfEffect, mDuration, &target);
-	target.AddStatusEffect(newStatusEffect);
+	target.AddStatusEffect(newStatusEffect, &caster);
 	return;
 }
 void Regens::Remove()

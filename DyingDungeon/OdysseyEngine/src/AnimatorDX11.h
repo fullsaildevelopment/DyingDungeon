@@ -7,18 +7,18 @@ namespace Odyssey
 {
 	// Forward declaration
 	class Buffer;
-	class RenderDevice;
 
 	class AnimatorDX11 : public Animator
 	{
 		CLASS_DECLARATION(AnimatorDX11)
-
+	public:
+		virtual std::shared_ptr<Component> clone() const;
 	public: // Rule of 3
 		/**
 		 *	Construct an AnimatorDX11 component.
 		 *	@param[in] renderDevice: A reference to the render device used to create and bind rendering resources.
 		 */
-		AnimatorDX11(RenderDevice& renderDevice);
+		AnimatorDX11();
 
 	public: // Interface
 		/**
@@ -127,7 +127,7 @@ namespace Odyssey
 		void interpolateJointMatrix(DirectX::XMFLOAT4X4& prevTransform, DirectX::XMFLOAT4X4& nextTransform, float ratio, DirectX::XMFLOAT4X4& outTransform);
 
 	private: // Members
-		std::shared_ptr<Buffer> mAnimationBuffer;
+		int mAnimationBuffer;
 		AnimationBuffer mAnimationData;
 		std::vector<Joint> mSkeleton;
 	};

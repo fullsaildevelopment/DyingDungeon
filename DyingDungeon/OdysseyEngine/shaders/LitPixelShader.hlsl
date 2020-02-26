@@ -19,17 +19,17 @@ struct LightOutput
 
 // Forward declarations - Light Calculations
 LightOutput calculateLighting(float3 viewNormal, float3 surfaceNormal, float3 worldPosition, float4 lightViewPosition);
-LightOutput calculateDirectionalLight(ShaderLight light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition);
-LightOutput calculatePointLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
-LightOutput calculateSpotLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
+LightOutput calculateDirectionalLight(Light light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition);
+LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
+LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal);
 
 float calculateShadowFactor(float3 lightDirection, float3 surfaceNormal, float4 shadowPos);
 
 // Forward declarations - Helper Functions
-float4 calculateDiffuse(ShaderLight light, float3 lightVector, float3 surfaceNormal);
-float4 calculateSpecular(ShaderLight light, float3 viewVector, float3 lightVector, float3 surfaceNormal);
-float calculateAttenuation(ShaderLight light, float distance);
-float calculateSpot(ShaderLight light, float3 lightVector);
+float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal);
+float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, float3 surfaceNormal);
+float calculateAttenuation(Light light, float distance);
+float calculateSpot(Light light, float3 lightVector);
 
 float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 {
@@ -54,7 +54,7 @@ float4 main(PIXEL_SHADER_INPUT input) : SV_TARGET
 	// Sample the specular texture if one is bound
     if (mat.hasSpecularTexture)
     {
-        //texSpecular = txSpecular.Sample(samLinear, input.tex);
+        texSpecular = txSpecular.Sample(samLinear, input.tex);
     }
 
 	// If a normal map is bound, transform the surface normal accordingly
@@ -135,14 +135,20 @@ LightOutput calculateLighting(float3 viewNormal, float3 surfaceNormal, float3 wo
 }
 
 // Calculates the diffuse and specular lighting of a directional light
-LightOutput calculateDirectionalLight(ShaderLight light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition)
+LightOutput calculateDirectionalLight(Light light, float3 viewVector, float3 surfaceNormal, float4 lightViewPosition)
 {
     LightOutput output;
 
 	// Negate and normalize the light's direction
     float3 lightVector = -normalize(light.worldDirection.xyz);
 	// Calculate the shadow factor of the directional light
-    float shadowFactor = calculateShadowFactor(lightVector, surfaceNormal, lightViewPosition);
+	float shadowFactor = 1.0f;
+
+	if (mat.receiveShadows == 1)
+	{
+		shadowFactor = calculateShadowFactor(lightVector, surfaceNormal, lightViewPosition);
+	}
+	
 	// Calculate the diffuse of the directional light with the shadow factor multiplied in
     output.diffuse = calculateDiffuse(light, lightVector, surfaceNormal) * shadowFactor;
     output.specular = light.color * calculateSpecular(light, viewVector, lightVector, surfaceNormal) * shadowFactor;
@@ -201,7 +207,7 @@ float calculateShadowFactor(float3 lightDirection, float3 surfaceNormal, float4 
 }
 
 // Calculates the diffuse and specular lighting of a point light
-LightOutput calculatePointLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
+LightOutput calculatePointLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
 {
     LightOutput output;
 
@@ -221,7 +227,7 @@ LightOutput calculatePointLight(ShaderLight light, float3 viewVector, float3 wor
 }
 
 // Calculates the diffuse and specular lighting of a spot light
-LightOutput calculateSpotLight(ShaderLight light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
+LightOutput calculateSpotLight(Light light, float3 viewVector, float3 worldPos, float3 surfaceNormal)
 {
     LightOutput output;
 
@@ -242,7 +248,7 @@ LightOutput calculateSpotLight(ShaderLight light, float3 viewVector, float3 worl
 }
 
 // Calculates the total specular lighting of any given light type
-float4 calculateSpecular(ShaderLight light, float3 viewVector, float3 lightVector, float3 surfaceNormal)
+float4 calculateSpecular(Light light, float3 viewVector, float3 lightVector, float3 surfaceNormal)
 {
 	// Calculate the half vector of the light vector and view vector
     float3 R = reflect(-lightVector, surfaceNormal);
@@ -259,7 +265,7 @@ float4 calculateSpecular(ShaderLight light, float3 viewVector, float3 lightVecto
 }
 
 // Calculates the total diffuse lighting of any given light type
-float4 calculateDiffuse(ShaderLight light, float3 lightVector, float3 surfaceNormal)
+float4 calculateDiffuse(Light light, float3 lightVector, float3 surfaceNormal)
 {
 	// Calculate the intensity of the light using the dot between the surface normal and the light vector while factoring in the intensity of the light itself
     float intensity = max(0.0f, dot(surfaceNormal, lightVector));
@@ -268,7 +274,7 @@ float4 calculateDiffuse(ShaderLight light, float3 lightVector, float3 surfaceNor
 }
 
 // Calculates the attenuation factor of any point/spot light
-float calculateAttenuation(ShaderLight light, float distance)
+float calculateAttenuation(Light light, float distance)
 {
 	// Calculate the attenuation of the light based on the distance and the light's range
     float attenuation = (1.0f - saturate(distance / light.range));
@@ -277,7 +283,7 @@ float calculateAttenuation(ShaderLight light, float distance)
 }
 
 // Calculates the spot factor of any spot light
-float calculateSpot(ShaderLight light, float3 lightVector)
+float calculateSpot(Light light, float3 lightVector)
 {
 	// Calculate the min and max cos of the light's cone
     float minCos = cos(light.cone);

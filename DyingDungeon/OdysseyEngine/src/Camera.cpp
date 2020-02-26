@@ -7,6 +7,10 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Camera)
 
+	std::shared_ptr<Component> Camera::clone() const
+	{
+		return std::make_shared<Camera>(*this);
+	}
 	Camera::Camera()
 	{
 		// Create a frustum and set default projection values

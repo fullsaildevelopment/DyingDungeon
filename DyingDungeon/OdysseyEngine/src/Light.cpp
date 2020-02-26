@@ -7,9 +7,16 @@ namespace Odyssey
 {
 	CLASS_DEFINITION(Component, Light)
 
+	std::shared_ptr<Component> Light::clone() const
+	{
+		return std::make_shared<Light>(*this);
+	}
+
 	Light::Light()
 	{
-
+		mTransform = nullptr;
+		mPosition = { 0.0f, 0.0f, 0.0f, 1.0f };
+		mDirection = { 0.0f, 0.0f, 0.0f, 0.0f };
 	}
 
 	void Light::initialize()
@@ -32,7 +39,7 @@ namespace Odyssey
 		DirectX::XMFLOAT3 color = DirectX::XMFLOAT3(mColor.x, mColor.y, mColor.z);
 
 		// Draw a sphere at the position of the light with a radius of matching the range of the light
-		DebugManager::getInstance().addSphere(position, range, color);
+		//DebugManager::getInstance().addSphere(position, range, color);
 	}
 
 	void Light::buildLightTransform(DirectX::XMFLOAT3& sceneCenter, float sceneRadius, DirectX::XMFLOAT4X4& lightTransform)

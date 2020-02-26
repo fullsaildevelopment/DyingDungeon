@@ -42,7 +42,8 @@ namespace Odyssey
 
 		// Copy the shape and apply the fill to the width
 		D2D_RECT_F fillShape = mShape;
-		fillShape.right -= (mDimensions.x * (1.0f - mFill));
+		float width = fillShape.right - fillShape.left;
+		fillShape.right = mShape.left + (width * mFill);
 
 		// Draw the filled rectangle
 		context->FillRectangle(&fillShape, mBrush.Get());

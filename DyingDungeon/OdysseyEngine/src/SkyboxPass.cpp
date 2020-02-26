@@ -9,7 +9,7 @@
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "RenderWindow.h"
@@ -17,14 +17,9 @@
 
 namespace Odyssey
 {
-	SkyboxPass::SkyboxPass(std::shared_ptr<RenderDevice> renderDevice, Microsoft::WRL::ComPtr<ID3D11DeviceContext> context, std::shared_ptr<RenderWindow> renderWindow)
+	SkyboxPass::SkyboxPass()
 	{
-		mDeviceContext = context;
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
-
-		mRenderWindow = std::static_pointer_cast<RenderWindowDX11>(renderWindow);
-		mRenderState = renderDevice->createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
+		mRenderState = RenderManager::getInstance().createRenderState(Topology::TriangleList, CullMode::CULL_NONE, FillMode::FILL_SOLID, true, true, false);
 
 		D3D11_INPUT_ELEMENT_DESC vShaderLayout[] =
 		{
@@ -36,18 +31,23 @@ namespace Odyssey
 			{ "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_SINT, 0, 64, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 80, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
-		mVertexShader = renderDevice->createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/SkyboxVertexShader.cso", vShaderLayout, 7);
-		mPixelShader = renderDevice->createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/SkyboxPixelShader.cso", nullptr);
+		mVertexShader = RenderManager::getInstance().createShader(ShaderType::VertexShader, "../OdysseyEngine/shaders/SkyboxVertexShader.cso", vShaderLayout, 7);
+		mPixelShader = RenderManager::getInstance().createShader(ShaderType::PixelShader, "../OdysseyEngine/shaders/SkyboxPixelShader.cso", nullptr);
 	}
 
 	void SkyboxPass::preRender(RenderArgs& args, RenderPackage& renderPackage)
 	{
-		// Update the buffer
-		updatePerFrameBuffer(mDeviceContext, args.perFrame, args.perFrameBuffer);
-		mRenderWindow->get3DRenderTarget()->bind(mDeviceContext);
-		mRenderState->bind(mDeviceContext);
-		mVertexShader->bind(mDeviceContext);
-		mPixelShader->bind(mDeviceContext);
+		// Update the per frame buffer
+		updatePerFrameBuffer(args.context, args.perFrame, args.perFrameBuffer);
+
+		// Bind the active window as the render target
+		args.activeWindow->get3DRenderTarget()->bind(args.context);
+
+		// Bind the render state and vertex/pixel shaders
+		RenderManager& renderManager = RenderManager::getInstance();
+		renderManager.getRenderState(mRenderState)->bind(args.context);
+		renderManager.getShader(mVertexShader)->bind(args.context);
+		renderManager.getShader(mPixelShader)->bind(args.context);
 	}
 
 	void SkyboxPass::render(RenderArgs& args, RenderPackage& renderPackage)
@@ -57,17 +57,18 @@ namespace Odyssey
 
 		// Get the object's global transform and set the MVP acoordingly
 		args.perObject.world = renderPackage.skybox.transform->getLocalTransform();
+
 		// Update and bind the constant buffer
-		updatePerObjectBuffer(mDeviceContext, args.perObject, args.perObjectBuffer);
+		updatePerObjectBuffer(args.context, args.perObject, args.perObjectBuffer);
 
 		// Draw the skybox
 		if (renderPackage.skybox.meshRenderer)
 		{
-			renderPackage.skybox.meshRenderer->bind(mDeviceContext);
-			mDeviceContext->DrawIndexed(renderPackage.skybox.meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
+			renderPackage.skybox.meshRenderer->bind(args.context);
+			args.context->DrawIndexed(renderPackage.skybox.meshRenderer->getMesh()->getNumberOfIndices(), 0, 0);
 		}
 
 		// Clear the depth of the render targets
-		mRenderWindow->get3DRenderTarget()->clearDepth(mDeviceContext);
+		args.activeWindow->get3DRenderTarget()->clearDepth(args.context);
 	}
 }

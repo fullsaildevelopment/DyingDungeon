@@ -15,9 +15,10 @@ public:
 		std::string profile = "";
 		std::string name = "";
 		GameplayTypes::HEROID characterIDs[3] = {GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin, GameplayTypes::HEROID::Paladin};
+		int index[3];
 	};
 private:
-	std::vector<Loadout> loadouts;
+	std::map<std::string,Loadout> loadouts;
 	std::string m_saveProfile;
 	//unsigned int loadoutCount;
 private:
@@ -57,9 +58,8 @@ public:
 	/// <summary>
 	/// Calls all nessesary save functions needed to save a game state
 	/// </summary>
-	/// <param name="saveProfile">Profile name under which to save the state in</param>
 	/// <returns>bool of wheather the file saved properly</returns>
-	bool SaveGame(std::string saveProfile);
+	bool SaveGame();
 	/// <summary>
 	/// Calls all nessesary load functions needed to load a game state
 	/// </summary>
@@ -73,7 +73,8 @@ public:
 	/// <param name="characterID_0">Hero id for the first character in the loadout</param>
 	/// <param name="characterID_1">Hero id for the second character in the loadout</param>
 	/// <param name="characterID_2">Hero id for the third character in the loadout</param>
-	void AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID_0, GameplayTypes::HEROID characterID_1, GameplayTypes::HEROID characterID_2);
+	void AddLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID[3], unsigned int index[3]);
+	void OverrideLoadOut(std::string loadoutName, GameplayTypes::HEROID characterID[3], unsigned int index[3]);
 	/// <summary>
 	/// Saves all loadouts to binary files
 	/// </summary>
@@ -95,11 +96,14 @@ public:
 	/// </summary>
 	/// <param name="saveProfile"></param>
 	void SetSaveProfile(std::string saveProfile);
+	void CreateProfileDirectory();
 	/// <summary>
 	/// Getter for the current save profile name
 	/// </summary>
 	/// <returns>name of current save profile</returns>
 	std::string GetSaveProfile();
+	SaveLoad::Loadout GetLoadOut(unsigned int index);
+	SaveLoad::Loadout GetLoadOut(std::string loadout_name);
 private:
 	SaveLoad();
 };

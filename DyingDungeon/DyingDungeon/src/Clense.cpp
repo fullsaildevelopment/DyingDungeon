@@ -9,15 +9,22 @@ Clense::Clense(int duration, Character* target)
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
 	mStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Clense.png";
 }
 
 Clense::~Clense()
 {
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
+	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
+	mStatId = STATS::None;
 }
 
-void Clense::Apply(Character& target)
+void Clense::Apply(Character& caster, Character& target)
 {
-	target.ClearStatusEffects();
+	target.ClearBadStatusEffects();
 }
 
 void Clense::Remove()

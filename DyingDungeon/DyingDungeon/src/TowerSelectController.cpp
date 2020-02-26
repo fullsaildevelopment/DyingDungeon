@@ -12,11 +12,16 @@ TowerSelectController::TowerSelectController(Odyssey::Application* application)
 	mRect = nullptr;
 }
 
+std::shared_ptr<Odyssey::Component> TowerSelectController::clone() const
+{
+	return std::make_shared<TowerSelectController>(*this);
+}
+
 void TowerSelectController::initialize()
 {
 	//RedAudioManager::Instance().Play("BackgroundMenu");
 	// Turn on the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), true);
 
 	// Don't show the tower info canvas
@@ -59,7 +64,7 @@ void TowerSelectController::initialize()
 	mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
 	mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
 	// Have the fifth door take you to the Scene2
-	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToScene2);
+	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
 	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
 	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 }
@@ -77,7 +82,7 @@ void TowerSelectController::update(double deltaTime)
 		Door4Animation(deltaTime);
 	if (mDoorList[4].mDoOpenDoorAnimation || mDoorList[4].mDoCloseDoorAnimation)
 		Door5Animation(deltaTime);
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::M))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
 		if (!RedAudioManager::Instance().isMuted())
 		{
@@ -87,33 +92,6 @@ void TowerSelectController::update(double deltaTime)
 		{
 			RedAudioManager::Instance().Unmute();
 		}
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad7))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad9))
-	{
-
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad4))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad6))
-	{
-
-	}
-
-	if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad1))
-	{
-
-	}
-	else if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::NumPad3))
-	{
-
 	}
 }
 
@@ -140,7 +118,7 @@ void TowerSelectController::onDestroy()
 void TowerSelectController::GoToTeamSelection()
 {
 	// Turn off the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	// Switch to the team select scene
@@ -150,7 +128,7 @@ void TowerSelectController::GoToTeamSelection()
 void TowerSelectController::GoToScene2()
 {
 	// Turn off the tower select canvas
-	std::shared_ptr<Odyssey::Entity> towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	// Switch to the team select scene
@@ -480,23 +458,25 @@ void TowerSelectController::Door5Animation(double _deltaTime)
 void TowerSelectController::SetNextDoorImage(Door _doorToChange)
 {
 	DirectX::XMFLOAT2 deminsions = _doorToChange.doorImage->getDimensions();
+	UINT x = (UINT)deminsions.x;
+	UINT y = (UINT)deminsions.y;
 
 	switch (_doorToChange.mDoorImageIndex)
 	{
 		case 1:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-1.png", x, y);
 			break;
 		case 2:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-2.png", x, y);
 			break;
 		case 3:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-3.png", x, y);
 			break;
 		case 4:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-4.png", x, y);
 			break;
 		case 5:
-			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", deminsions.x, deminsions.y);
+			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", x, y);
 			break;
 	}
 }

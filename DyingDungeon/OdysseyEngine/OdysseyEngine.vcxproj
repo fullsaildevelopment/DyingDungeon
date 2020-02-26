@@ -22,6 +22,7 @@
     <ClInclude Include="inc\AABB.h" />
     <ClInclude Include="inc\Animator.h" />
     <ClInclude Include="inc\Application.h" />
+    <ClInclude Include="inc\BlendState.h" />
     <ClInclude Include="inc\Buffer.h" />
     <ClInclude Include="inc\Callback.h" />
     <ClInclude Include="inc\Camera.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="inc\Component.h" />
     <ClInclude Include="inc\DebugManager.h" />
     <ClInclude Include="inc\DebugPass.h" />
+    <ClInclude Include="inc\DepthState.h" />
     <ClInclude Include="inc\EngineEvents.h" />
     <ClInclude Include="inc\EngineIncludes.h" />
     <ClInclude Include="inc\Entity.h" />
@@ -50,6 +52,7 @@
     <ClInclude Include="inc\Rectangle2D.h" />
     <ClInclude Include="inc\RenderDevice.h" />
     <ClInclude Include="inc\RenderIncludes.h" />
+    <ClInclude Include="inc\RenderManager.h" />
     <ClInclude Include="inc\RenderPass.h" />
     <ClInclude Include="inc\RenderPipeline.h" />
     <ClInclude Include="inc\RenderState.h" />
@@ -75,6 +78,7 @@
     <ClInclude Include="src\EngineProfiler.h" />
     <ClInclude Include="src\RenderWindowDX11.h" />
     <ClInclude Include="src\SceneDX11.h" />
+    <ClInclude Include="src\ScriptDataLoader.h" />
     <ClInclude Include="src\ThreadManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -82,12 +86,14 @@
     <ClCompile Include="src\Animator.cpp" />
     <ClCompile Include="src\AnimatorDX11.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\BlendState.cpp" />
     <ClCompile Include="src\Buffer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ClearRenderTargetPass.cpp" />
     <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\DebugManager.cpp" />
     <ClCompile Include="src\DebugPass.cpp" />
+    <ClCompile Include="src\DepthState.cpp" />
     <ClCompile Include="src\EngineProfiler.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
@@ -103,6 +109,7 @@
     <ClCompile Include="src\ReadWriteLock.cpp" />
     <ClCompile Include="src\Rectangle2D.cpp" />
     <ClCompile Include="src\RenderDevice.cpp" />
+    <ClCompile Include="src\RenderManager.cpp" />
     <ClCompile Include="src\RenderPass.cpp" />
     <ClCompile Include="src\RenderPipeline.cpp" />
     <ClCompile Include="src\RenderState.cpp" />
@@ -112,6 +119,7 @@
     <ClCompile Include="src\SamplerState.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneDX11.cpp" />
+    <ClCompile Include="src\ScriptDataLoader.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShadowPass.cpp" />
     <ClCompile Include="src\SkyboxPass.cpp" />

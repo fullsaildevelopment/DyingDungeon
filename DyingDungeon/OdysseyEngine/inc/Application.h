@@ -1,6 +1,5 @@
 #pragma once
 #include "EngineIncludes.h"
-#include "RenderDevice.h"
 #include "RenderPipeline.h"
 #include "EngineEvents.h"
 #include "..\src\EngineProfiler.h"
@@ -12,6 +11,7 @@ namespace Odyssey
 	class RenderPass;
 	class RenderWindow;
 	class RenderWindowDX11;
+	class Scene;
 	class SceneDX11;
 
 	class Application
@@ -42,6 +42,17 @@ namespace Odyssey
 		 */
 		void onShutdown(EngineShutdownEvent* evnt);
 
+		void onShutdownApplication(ShutdownApplicationEvent* evnt);
+
+		void onUIScale(UIScaleEvent* evnt);
+
+		void onCreatePrefab(CreatePrefabEvent* evnt);
+
+		void onSpawnEntity(SpawnEntityEvent* evnt);
+
+		void onDestroyEntity(DestroyEntityEvent* evnt);
+
+		void onChangeMouseCursor(ChangeMouseCursorEvent* evnt);
 		/**
 		 *	Static callback for render window message handling.
 		 *	@param[in] hwnd The render window's handle.
@@ -54,29 +65,19 @@ namespace Odyssey
 
 	public: // Interface
 		/**
-		 *	Get a raw pointer to the RenderDevice object associated with the application.
-		 *	The RenderDevice is used for object and resource creation.
-		 *	@param[in] void
-		 *	@return Render* The raw pointer to the RenderDevice object.
-		 */
-		RenderDevice* getRenderDevice();
-
-		/**
 		 *	Create a new window for rendering objects.
 		 *	@param[in] title The title of the window.
 		 *	@param[in] windowWidth The desired width of the window.
 		 *	@param[in] windowHeight The desired height of the window.
 		 *	@return shared_ptr<RenderWindow> The pointer to the created RenderWindow object.
 		 */
-		std::shared_ptr<RenderWindow> createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight);
+		RenderWindow* createRenderWindow(const std::wstring& title, int windowWidth, int windowHeight);
 
-		/**
-		 *	Add a scene to the scene map.
-		 *	@param[in] name The name identifier of the scene.
-		 *	@param[in] scene The scene object.
-		 *	@return void
-		 */
-		void addScene(std::string name, std::shared_ptr<Scene> scene);
+		Entity* createPrefab();
+
+		Scene* createScene(std::string name);
+
+		Scene* createScene(std::string name, DirectX::XMFLOAT3 center, float radius);
 
 		/**
 		 *	Add a rendering pass to the rendering pipeline.
@@ -108,6 +109,8 @@ namespace Odyssey
 		 */
 		void stop();
 
+	private:
+		void setupRenderPipeline();
 	private: // Members
 		// Threading Management
 		bool mIsMultithreading;
@@ -124,9 +127,10 @@ namespace Odyssey
 		std::map<std::string, std::shared_ptr<SceneDX11>> mSceneMap;
 		std::shared_ptr<SceneDX11> mActiveScene;
 		// Rendering Management
-		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::shared_ptr<RenderPipeline> mRenderPipeline;
 		bool mIsRunning;
 		bool mIsShutdown;
+		std::vector<std::shared_ptr<Entity>> mPrefabs;
+		static HCURSOR mCursor;
 	};
 }

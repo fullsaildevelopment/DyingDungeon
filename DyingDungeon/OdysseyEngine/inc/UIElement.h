@@ -78,19 +78,15 @@ namespace Odyssey
 		template<class T>
 		void registerCallback(std::string function, T* instance, void(T::* memberFunction)())
 		{
-			mLock.lock(LockState::Write);
 			mCallbackMap[function] = std::make_shared<CallbackHandler<T>>(instance, memberFunction);
-			mLock.unlock(LockState::Write);
 		}
 
 		void unregisterCallback(std::string function)
 		{
-			mLock.lock(LockState::Write);
 			if (mCallbackMap.count(function) != 0)
 			{
 				mCallbackMap.erase(function);
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 	public: // Interface
@@ -265,6 +261,7 @@ namespace Odyssey
 		DirectX::XMFLOAT2 mScale;
 		DirectX::XMFLOAT2 mDimensions;
 		DirectX::XMFLOAT4 mColor;
+		DirectX::XMFLOAT2 mScreenScale;
 		UICanvas* mCanvas;
 		std::map<std::string, std::shared_ptr<AbstractCallbackHandler>> mCallbackMap;
 		ReadWriteLock mLock;

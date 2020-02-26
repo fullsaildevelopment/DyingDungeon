@@ -1,14 +1,13 @@
 #include "Buffer.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
-	Buffer::Buffer(std::shared_ptr<RenderDevice> renderDevice, BufferBindFlag bindFlag, size_t count, UINT stride, const void* data)
+	Buffer::Buffer(BufferBindFlag bindFlag, size_t count, UINT stride, const void* data)
 		: mBuffer(nullptr), mBindFlag(bindFlag), mCount(count), mStride(stride), mOffset(0)
 	{
 		// Get the device and device context
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
+		mDevice = RenderManager::getInstance().getDX11Device();
 
 		// Create the buffer description with the parameter bind flag and calculated byte width
 		D3D11_BUFFER_DESC bufferDesc;

@@ -1,6 +1,7 @@
 #include "EnemyComponent.h"
 #include "Entity.h"
 #include "Transform.h"
+#include "CharacterHUDElements.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -19,7 +20,15 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	mMechPtr = nullptr;
 	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
 	mCurrentState = STATE::NONE;
-	mMoves = AIMoves(static_cast<int>(_enemyID), this);
+	mID = _enemyID;
+	mIsBleeding = false;
+	mBleedTimer = 0;
+	mIsRegenerating = false;
+	mRegenTimer = 0;
+	mStunTimer = 0;
+	mProvokedTimer = 0;
+	mShielding = 0.0f;
+	mShieldTimer = 0;
 	////////////////////////////////////////////////
 
 	// Make a temp variable to contain animation data
@@ -50,9 +59,9 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 40.0f;
+		mBaseDefense = mDefense = 40.0f;
+		mBaseSpeed = mSpeed = 10.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -89,7 +98,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_SpinKick.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
@@ -101,7 +110,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Skill 3
 		tempAnimationData.mAnimationNickName = "Skill_3";
-		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_BasicAttack.dxanim";
+		tempAnimationData.mAnimationPath = "assets/animations/Skeleton/Skeleton_SpinKick.dxanim";
 		tempAnimationData.mIsLooping = true;
 		mAnimations.push_back(tempAnimationData);
 
@@ -111,7 +120,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"One Skelly boi, who wants to rattle your bones";
+		mDescription = L"";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -138,9 +147,9 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 35.0f;
-		mBaseDefense = mDefense = 50.0f;
-		mBaseSpeed = mSpeed = 45.0f;
+		mBaseAttack = mAttack = 60.0f;
+		mBaseDefense = mDefense = 60.0f;
+		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -151,7 +160,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The Big Bad Evil Guy who wants to kill your chickens";
+		mDescription = L"";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the animation paths //
@@ -194,6 +203,361 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
+	case GameplayTypes::ENEMYID::Summoner:
+	{
+		// Set the character Model path
+		mModel = "assets/models/Summoner.dxm";
+
+		// Set the character name
+		mName = L"Della";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/SummonerPortrait.png";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Attack_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Attack_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Attack_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 4
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/Summoner/Summoner_Attack_4.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::MeleeDemon:
+	{
+		// Set the character Model path
+		mModel = "assets/models/MeleeDemon.dxm";
+
+		// Set the character name
+		mName = L"MeleeDemon";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/MeleeDemonPortrait.png";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Stun";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Stun.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Buff.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/MeleeDemon/MeleeDemon_Skill_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::CasterDemon:
+	{
+		// Set the character Model path
+		mModel = "assets/models/CasterDemon.dxm";
+
+		// Set the character name
+		mName = L"CasterDemon";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/CasterDemonPortrait.png";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+		tempAnimationData.mAnimationNickName = "Stun";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Stun.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+		tempAnimationData.mAnimationNickName = "GotBuffed";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Buff.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+		tempAnimationData.mAnimationNickName = "Skill_2";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 3
+		tempAnimationData.mAnimationNickName = "Skill_3";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_3.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 4
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/CasterDemon/CasterDemon_Skill_4.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
+	case GameplayTypes::ENEMYID::EnemyMage:
+	{
+		// Set the character Model path
+		mModel = "assets/models/EnemyMage.dxm";
+
+		// Set the character name
+		mName = L"EnemyMage";
+
+		// Set the character subname
+		mSubName = L"";
+
+		// Set the portaits path
+		mPortrait = L"assets/images/EnemyMagePortrait.png";
+
+		// Set the base HP and current HP
+		mBaseMaxHP = mCurrentHP = 100.0f;
+
+		// Set the base Mana and current Mana
+		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Set the stats for the character //
+		////////////////////////////////////
+		mBaseAttack = mAttack = 20.0f;
+		mBaseDefense = mDefense = 20.0f;
+		mBaseSpeed = mSpeed = 20.0f;
+		////////////////////////////////////
+
+		// Set move overide for AI
+		mMoveOverride = GameplayTypes::SKILLTYPE::ATTACK;
+
+		// Set mechanic pointer
+		mMechPtr = nullptr;
+
+		// Set the description for the character //
+		////////////////////////////////////////////////////////////////////////////////////////////
+		mDescription = L"";
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Set the animation paths //
+		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Idle
+		tempAnimationData.mAnimationNickName = "Idle";
+		tempAnimationData.mAnimationPath = "assets/animations/EnemyMage/EnemyMage_Idle.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Dead
+		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationPath = "assets/animations/EnemyMage/EnemyMage_Death.dxanim";
+		tempAnimationData.mIsLooping = false;
+		mAnimations.push_back(tempAnimationData);
+
+		// Is Stunned
+
+		// Recieves Hit
+		tempAnimationData.mAnimationNickName = "Hit";
+		tempAnimationData.mAnimationPath = "assets/animations/EnemyMage/EnemyMage_Hit.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Recieves Buff
+
+		// Skill 1
+		tempAnimationData.mAnimationNickName = "Skill_1";
+		tempAnimationData.mAnimationPath = "assets/animations/EnemyMage/EnemyMage_Skill_1.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
+
+		// Skill 2
+
+		// Skill 3
+
+		// Skill 4
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		break;
+	}
 	default:
 		break;
 	}
@@ -205,7 +569,7 @@ EnemyComponent::~EnemyComponent()
 }
 
 // Function that allows the player to take thier turn, Character Controler
-bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	// State machine to navigate while its the AI takes its turn.
 	switch (mCurrentState)
@@ -213,8 +577,27 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	// If the AI is stunned manage all his effects and exit the loop.
 	case STATE::STUNNED:
 	{
-		mCurrentState = STATE::NONE;
-		ManageAllEffects();
+		ManageCastedEffects();
+		ManageTOREffects();
+		mStunTimer--;
+		if (mStunTimer <= 0)
+		{
+			if (mCurrentState != STATE::DEAD)
+			{
+				mCurrentState = STATE::NONE;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
+			}
+		}
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
 		return true;
 	}
 	// If the player is not stunned enter the start of his turn, all bleed and regen dots will tick. 
@@ -224,8 +607,8 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		// If i have an additional mechanic do it
 		if(mMechPtr)
 			(this->*mMechPtr)();
-		ManageStatusEffects(mRegens);
-		ManageStatusEffects(mBleeds);
+		ManageCastedEffects();
+		ManageTOREffects();
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -251,7 +634,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 		// Static bool used to track whenever its time to play the recipent animation ie hit or be buffed, or particle effect 
 		static bool particleTriggerButBetter = false;
 		static bool triggerButBetter = false;
+		static bool soundTriggerButBetter = false;
 
+		if (soundTriggerButBetter == false && mMoves.GetMove()->skill->GetSoundEffectTiming() <= mAnimator->getProgress())
+		{
+			RedAudioManager::Instance().PlaySFX(mMoves.GetMove()->skill->GetSoundEffectName().c_str());
+			soundTriggerButBetter = true;
+		}
 		// Fire particle effects when the timming is right
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
@@ -277,20 +666,20 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+					for (Odyssey::Entity* c : playerTeam)
 					{
 						// If they arnt dead play thier animations and particle effects
 						if (c != nullptr && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
 							// Play "Hit" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("Hit");
+							c->getComponent<Odyssey::Animator>()->playClip("Hit");
 
 							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c.get()->getComponent<Odyssey::Transform>()->getPosition();
-							c.get()->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
+							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
+							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
 
 							// Play particle effect
-							c.get()->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->GetPSBlood()->play();
 						}
 					}
 				}
@@ -313,13 +702,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 				if (mMoves.GetMove()->skill->IsAOE())
 				{
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+					for (Odyssey::Entity* c : enemyTeam)
 					{
 						// If the target is not dead, and not the caster
-						if (c != nullptr && c.get()->getComponent<EnemyComponent>() != this && c->getComponent<Character>()->GetState() != STATE::DEAD)
+						if (c != nullptr && c->getComponent<EnemyComponent>() != this && c->getComponent<Character>()->GetState() != STATE::DEAD)
 						{
 							// Play "GotBuffed" animation
-							c.get()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
 						}
 					}
 				}
@@ -349,13 +738,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : playerTeam)
+					for (Odyssey::Entity* c : playerTeam)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -375,13 +764,13 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 					Character* temp = nullptr;
 
 					// For each party member
-					for (std::shared_ptr<Odyssey::Entity> c : enemyTeam)
+					for (Odyssey::Entity* c : enemyTeam)
 					{
 						// If the entity is valid
 						if (c != nullptr)
 						{
 							// Get the character from the entity
-							temp = c.get()->getComponent<Character>();
+							temp = c->getComponent<Character>();
 
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
@@ -399,6 +788,7 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 			// Reset static bools
 			triggerButBetter = false;
 			particleTriggerButBetter = false;
+			soundTriggerButBetter = false;
 
 			// Set current state to finished
 			mCurrentState = STATE::FINISHED;
@@ -409,17 +799,19 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 	// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
-		// Manage all my buffs
-		ManageStatusEffects(mBuffs);
-
-		// Manage all my debuffs
-		ManageStatusEffects(mDebuffs);
-
-		// Manage all my shields
-		ManageStatusEffects(mSheilds);
-
 		// Reset state to default
 		mCurrentState = STATE::NONE;
+
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
 
 		// Return true
 		return true;
@@ -449,11 +841,14 @@ bool EnemyComponent::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> play
 // Function that gets called to set the character state to dead, along with all other necessary variables
 void EnemyComponent::Die()
 {
+	// Play death sound effect
+	RedAudioManager::Instance().PlaySFX(mSoundClips["Death"].c_str());
+
 	// Clear all remaining status effects
 	ClearStatusEffects();
 
 	// Play the death animation
-	mAnimator->playClip("Dead");
+	mEntity->getComponent<Odyssey::Animator>()->playClip("Dead");
 
 	// Stop all active particle effects
 	StopParticleEffects();
@@ -463,7 +858,7 @@ void EnemyComponent::Die()
 }
 
 // Function that sends the state into the inprogress state, queing animations, and setting variables for particle effect locations
-void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> targets)
+void EnemyComponent::BeginAttack(std::vector<Odyssey::Entity*> targets)
 {
 	// Play the skills animation
 	mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
@@ -479,7 +874,7 @@ void EnemyComponent::BeginAttack(std::vector<std::shared_ptr<Odyssey::Entity>> t
 		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 		{
 			// For each entity
-			for (std::shared_ptr<Odyssey::Entity> t : targets)
+			for (Odyssey::Entity* t : targets)
 			{
 				// If valid
 				if (t)
@@ -549,6 +944,11 @@ std::vector<std::shared_ptr<Skills>> EnemyComponent::GetSkills()
 	return mMoves.GetSkillList();
 }
 
+GameplayTypes::ENEMYID EnemyComponent::GetID()
+{
+	return mID;
+}
+
 // Ganfouls game mechanic function
 void EnemyComponent::GanfaulPhaseMechanic()
 {
@@ -570,3 +970,14 @@ void EnemyComponent::GanfaulPhaseMechanic()
 	}
 }
 
+std::shared_ptr<Odyssey::Component> EnemyComponent::clone() const
+{
+	return std::make_shared<EnemyComponent>(*this);
+}
+
+// Init function called when object loads into scene
+void EnemyComponent::initialize()
+{
+	mAnimator = mEntity->getComponent<Odyssey::Animator>();
+	mMoves = AIMoves(static_cast<int>(mID), this);
+}

@@ -56,7 +56,7 @@ namespace Odyssey
 	private: // Members
 		typedef std::vector<std::shared_ptr<AbstractEventHandler>> EventHandlerList;
 		std::map<std::type_index, std::shared_ptr<EventHandlerList>> mSubscribers;
-		std::map<std::type_index, Event*> mCommands;
+		std::map<std::type_index, std::vector<Event*>> mCommands;
 		bool mPublishCommands;
 		bool mIsShutdown;
 
@@ -69,13 +69,30 @@ namespace Odyssey
 		template<typename EventType>
 		void publish(EventType* evnt)
 		{
+			// Don't accept new events if shutting down.
+			if (mIsShutdown)
+			{
+				delete evnt;
+				evnt = nullptr;
+				return;
+			}
+
 			// Check if the event is a command and if we are not currently publishing commands
-			if (mPublishCommands == false && isCommand(evnt))
+			bool isSceneChange = (typeid(EventType) == typeid(SceneChangeEvent));
+
+			if (isSceneChange || (mPublishCommands == false && isCommand(evnt)))
 			{
 				// Store the command and publish the command receive event
 				// The command receive event will trigger a process commands event allowing us to process commands next frame
-				mCommands[typeid(EventType)] = evnt;
-				publish(new CommandReceiveEvent());
+				if (mCommands.count(typeid(EventType)))
+				{
+					mCommands[typeid(EventType)].push_back(evnt);
+					publish(new CommandReceiveEvent());
+				}
+				else
+				{
+					mCommands[(typeid(EventType))].push_back(evnt);
+				}
 			}
 			else
 			{

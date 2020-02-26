@@ -3,6 +3,7 @@
 #include "Keycode.h"
 #include <memory>
 #include <string>
+#include <DirectXMath.h>
 
 namespace Odyssey
 {
@@ -108,6 +109,16 @@ namespace Odyssey
 		}
 	};
 
+	class ShutdownApplicationEvent : public Event
+	{
+	public:
+		ShutdownApplicationEvent()
+		{
+			priority = EventPriority::Immediate;
+		}
+
+	};
+
 	class EngineShutdownEvent : public Event
 	{
 	public:
@@ -141,24 +152,63 @@ namespace Odyssey
 		}
 	};
 
-	class Component;
-	class ComponentAddEvent : public Event
+	class UIScaleEvent : public Event
 	{
 	public:
-		Component* component;
+		float* xScale;
+		float* yScale;
 
-		ComponentAddEvent(Component* componentAdded) : component(componentAdded)
+		UIScaleEvent(float* screenX, float* screenY) : xScale(screenX), yScale(screenY)
 		{
 			priority = EventPriority::Immediate;
 		}
 	};
 
-	class ComponentRemoveEvent : public Event
+	class Entity;
+
+	class SpawnEntityEvent : public Event
 	{
 	public:
-		Component* component;
+		Entity* prefab;
+		Entity** entity;
+		DirectX::XMVECTOR position;
+		DirectX::XMVECTOR rotation;
 
-		ComponentRemoveEvent(Component* componentRemoved) : component(componentRemoved)
+		SpawnEntityEvent(Entity* spawnPrefab, Entity** outEntity, DirectX::XMVECTOR spawnPosition, DirectX::XMVECTOR spawnRotation) 
+			: prefab(spawnPrefab), entity(outEntity), position(spawnPosition), rotation(spawnRotation)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class DestroyEntityEvent : public Event
+	{
+	public:
+		Entity* entity;
+
+		DestroyEntityEvent(Entity* spawnEntity) : entity(spawnEntity)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class CreatePrefabEvent : public Event
+	{
+	public:
+		Entity** entity;
+
+		CreatePrefabEvent(Entity** prefabEntity) : entity(prefabEntity)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
+
+	class ChangeMouseCursorEvent : public Event
+	{
+	public:
+		const wchar_t* filename;
+
+		ChangeMouseCursorEvent(const wchar_t* file) : filename(file)
 		{
 			priority = EventPriority::Immediate;
 		}

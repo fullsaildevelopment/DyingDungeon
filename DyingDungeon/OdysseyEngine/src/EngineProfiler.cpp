@@ -70,16 +70,22 @@ namespace Odyssey
 
 	void EngineProfiler::onDebugInput(KeypressEvent* evnt)
 	{
+		static bool create = true;
 		if (evnt->keyCode == KeyCode::F7)
 		{
-			if (mDebugCanvas == nullptr)
+			if (create)
 			{
+				// Don't recreate the canvas again
+				create = false;
+
+				// Create the canvas
 				createDebugCanvas();
+
+				// Notify the sprite2d pass to render this debug canvas
+				EventManager::getInstance().publish(new DebugEngine(mDebugCanvas));
 			}
-			else
-			{
-				mDebugCanvas->setActive(!mDebugCanvas->isActive());
-			}
+			
+			mDebugCanvas->setActive(!mDebugCanvas->isActive());
 			mOutputStats = mDebugCanvas->isActive();
 		}
 	}
@@ -111,7 +117,7 @@ namespace Odyssey
 		defaultText.italic = false;
 		defaultText.fontSize = (height) / 15.0f;
 		defaultText.textAlignment = Odyssey::TextAlignment::Left;
-		defaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Left;
+		defaultText.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 		defaultText.fontName = L"Verdana";
 
 		// Create the canvas
@@ -146,9 +152,6 @@ namespace Odyssey
 
 		// Initialize the canvas
 		mDebugCanvas->initialize();
-
-		// Notify the sprite2d pass to render this debug canvas
-		EventManager::getInstance().publish(new DebugEngine(mDebugCanvas));
 	}
 
 	void EngineProfiler::updateDebugCanvas()

@@ -4,6 +4,7 @@
 #include "RenderTypes.h"
 #include "EngineEvents.h"
 #include "ReadWriteLock.h"
+#include <atomic>
 
 namespace Odyssey
 {
@@ -12,13 +13,12 @@ namespace Odyssey
 	class UICanvas;
 	class MeshRenderer;
 	class Light;
-	class RenderDevice;
 
 	class SceneDX11 : public Scene
 	{
 	public:
-		SceneDX11(std::shared_ptr<RenderDevice> renderDevice);
-		SceneDX11(std::shared_ptr<RenderDevice> renderDevice, DirectX::XMFLOAT3 center, float radius);
+		SceneDX11();
+		SceneDX11(DirectX::XMFLOAT3 center, float radius);
 		~SceneDX11() = default;
 	public:
 		/**
@@ -28,6 +28,9 @@ namespace Odyssey
 		 */
 		void initialize();
 
+		Entity* spawnEntity(Entity* spawnPrefab, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
+
+		void destroyEntity(Entity* entity);
 		/**
 		 *	Update the components of each entity contained within the scene.
 		 *	@param[in] void
@@ -56,9 +59,12 @@ namespace Odyssey
 
 		float getSceneRadius();
 
-		void getRenderPackage(RenderPackage& renderPackage);
+		RenderPackage getRenderPackage();
+	private:
+		void flushDestroyList();
 
 	private:
-		ReadWriteLock mLock;
+		std::vector<Entity*> mDestroyList;
+		bool mShutdown = true;
 	};
 }

@@ -10,16 +10,19 @@
 #include "StatusEvents.h"
 #include "UICanvas.h"
 #include "Rectangle2D.h"
+#include "Character.h"
 class StatTracker
 {
 public:
 	enum class Action { None = -1, Attack, Defend, Aid };
+	typedef std::pair<std::string, unsigned int> CHARACTER_STAT;
 	struct Turn
 	{
 		std::string characterName = "";
+		unsigned int unique_id = 0;
 		float attackModifier = 0.0f;
 		//std::vector<std::string> targetNames;
-		std::vector <std::pair<std::string, float>> targets;
+		std::vector <std::pair<CHARACTER_STAT, float>> targets;
 		uint32_t round = 1;
 		float value = 0.0f;
 		EFFECTTYPE effect = EFFECTTYPE::None;
@@ -34,7 +37,9 @@ public:
 		uint32_t turnCount = 1;
 		uint32_t rounds = 1;
 		std::vector<StatTracker::Turn> turns;
-		std::pair<std::string, std::wstring> characters[3];
+		std::pair<CHARACTER_STAT, std::wstring> characters[3];
+		Character* character_pointers[3];
+		//unsigned int unique_id[3];
 	};
 
 private:
@@ -67,6 +72,7 @@ public:
 	/// </summary>
 	/// <returns>returns a the current level number by refrence</returns
 	unsigned int& GetLevelCount();
+	unsigned int GetStatCount(unsigned int id, unsigned int level, Action stat);
 	/// <summary>
 	/// Getter to retreve the number of levels 
 	/// </summary>
@@ -107,6 +113,7 @@ public:
 	/// </summary>
 	/// <param name="ctdEvent"></param>
 	void LogTakeDamageEvent(CharacterTakeDamage* ctdEvent);
+	unsigned int GetUniqueID(Character* character);
 	/// <summary>
 	/// Function is called when the Heal event is brodcasted, to log information from the event
 	/// </summary>
@@ -165,6 +172,13 @@ public:
 	/// <param name="turn"></param>
 	/// <returns></returns>
 	std::vector<std::string> GetTargetList(unsigned int level, unsigned int turn);
+	/// <summary>
+	/// Getter for the first turn of a sepcified round in a specified level
+	/// </summary>
+	/// <param name="level"></param>
+	/// <param name="round"></param>
+	/// <returns></returns>
+	unsigned int GetFirstTurn(unsigned int level, unsigned int round);
 
 	//Formats a float to a string with two decimal places
 	/// <summary>
@@ -229,6 +243,7 @@ private:
 	/// <param name="stat">he stat of which the count is requested</param>
 	/// <returns></returns>
 	unsigned int GetStatCount(std::string name, Action stat);
+	unsigned int GetStatCount(unsigned int id, Action stat);
 	/// <summary>
 	/// Getter for a vector of player names found in the logged statistics
 	/// </summary>
@@ -259,6 +274,8 @@ private:
 	/// <param name="level">The level of which the damage output should be retreaved from</param>
 	/// <returns>The amount of damage output by a character</returns>
 	float CalculateDamageDealt(std::string name, unsigned int level);
+
+	float CalculateDamageDealt(unsigned int id, unsigned int level, bool a);
 
 	//Calculation functinos to see how much damage a character landed
 	/// <summary>
@@ -308,6 +325,8 @@ private:
 	/// <returns></returns>
 	float CalculateDamageTaken(std::string name, unsigned int level);
 
+	float CalculateDamageTaken(unsigned int id, unsigned int level);
+
 	//Calculate the percentage of damage that a character landed
 	/// <summary>
 	/// Calculation of percent of damage landed from the damage output
@@ -322,6 +341,8 @@ private:
 	/// <returns>The percentage of damage landed from a specific character in a specific level</returns>
 	float CalculatePercentDamageSuccess(std::string name, unsigned int level);
 
+	float CalculatePercentDamageSuccess(unsigned int id, unsigned int level);
+
 	//Calculate the amount of damage a character mitigated
 	/// <summary>
 	/// Calculation of the amount of damage mitigated by the player
@@ -335,6 +356,8 @@ private:
 	/// <param name="level">The level from which the mitigation amount is requested</param>
 	/// <returns>The amount of damage mitigated by the spcified character in spcified level</returns>
 	float CalculateDamageMitigatated(std::string name, unsigned int level);
+
+	float CalculateDamageMitigatated(unsigned int id, unsigned int level);
 
 	//Calculate the amount of health a character has recived
 	/// <summary>
@@ -356,6 +379,8 @@ private:
 	/// <returns>The amount of health recived by a specified character</returns>
 	float CalculateHealthRecived(std::string name, unsigned int level);
 
+	float CalculateHealthRecived(unsigned int id, unsigned int level);
+
 	//Calculate the amount of sheilding a character gives to allies
 	/// <summary>
 	/// Calculation of the amount of sheilding given by the player
@@ -375,6 +400,8 @@ private:
 	/// <param name="level">The level from which the sheilding given amount is requested</param>
 	/// <returns>The amount of sheilding given by a specified character in a specifid level</returns>
 	float CalculateShieldGiven(std::string name, unsigned int level);
+
+	float CalculateShieldGiven(unsigned int id, unsigned int level);
 
 	//Calculate the percentatge of a specific 'stat' used in combat
 	/// <summary>
@@ -406,6 +433,7 @@ private:
 	/// <param name="level">The specified level from which the use percentage is being requested</param>
 	/// <returns>The percentage of the use of the specified Action in a specified character in a specified level</returns>
 	float CalculatePercentageStat(std::string name, Action stat, unsigned int level);
+	float CalculatePercentageStat(unsigned int id, Action stat, unsigned int level);
 	/// <summary>
 	/// Calculation of the percentage of the use of a specific Action for a specified character in a specified level and round
 	/// </summary>

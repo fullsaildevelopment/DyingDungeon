@@ -4,6 +4,7 @@
 #include <vector>
 #include "EngineIncludes.h"
 #include "RenderTypes.h"
+#include "ReadWriteLock.h"
 
 namespace Odyssey
 {
@@ -15,7 +16,6 @@ namespace Odyssey
 	class ParticleSystem;
 	class UICanvas;
 	class UIElement;
-	class RenderDevice;
 
 	class Scene
 	{
@@ -24,21 +24,14 @@ namespace Odyssey
 		~Scene() = default;
 
 	public: // Interface
-		/**
-		 *	Add a light object to the scene.
-		 *	@param[in] light The light object to add.
-		 *	@return void
-		 */
-		void addLight(std::shared_ptr<Entity> light);
+		Entity* createEntity();
 
-		/**
-		 *	Add an entity object to the scene
-		 *	@param[in] entity The entity object to add
-		 *	@return void
-		 */
-		void addEntity(std::shared_ptr<Entity> entity);
+		void addComponent(Component* component);
 
-		void removeEntity(Entity* entity);
+		void addElement(UIElement* element);
+
+		void removeComponent(Component* component);
+
 		/**
 		 *	Get the delta time between frames.
 		 *	@param[in] void
@@ -65,19 +58,17 @@ namespace Odyssey
 		void setSkybox(const char* filename);
 
 	protected: // Members
-		std::shared_ptr<RenderDevice> mRenderDevice;
-		std::shared_ptr<Entity> mMainCamera;
+		Entity* mMainCamera;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
-		std::vector<Light*> mSceneLights;
 		std::vector<Component*> mComponentList;
-		std::shared_ptr<Entity> mSkybox;
+		Entity* mSkybox;
 		Light* mShadowLight;
 		DirectX::XMFLOAT3 mSceneCenter;
 		float mSceneRadius;
 		XTime mXTimer;
 		double mDeltaTime;
 		bool mActive;
+		ReadWriteLock mLock;
 		RenderPackage mRenderPackage;
-		std::map<Entity*, std::vector<Component*>> mComponentMap;
 	};
 }

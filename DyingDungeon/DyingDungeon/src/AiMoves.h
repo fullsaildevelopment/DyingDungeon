@@ -26,26 +26,26 @@ class AIMoves
 		
 		
 		// Called outside to find the best move. Return true if finished.
-		bool FindMove(GameplayTypes::SKILLTYPE ovverride, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		bool FindMove(GameplayTypes::SKILLTYPE ovverride, std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam);
 
 	private:
 		// Itterates through all the skills until we are done. breaking after each one.
-		bool SkillCheck(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		bool SkillCheck(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam);
 		
 		// Scores the current move against all targets
-		void ScoreMove(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		void ScoreMove(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam);
 		
 		// Score the current move if it's a single target attack
-		void ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
+		void ScoreMoveAttack(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam);
 
 		// Score the current move if it's a aoe attack
-		void ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam);
+		void ScoreMoveAttackAOE(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> playerTeam);
 
 		// Socr ethe current move if it's a single target buff
-		void ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		void ScoreMoveBuff(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> enemyTeam);
 		
 		// Score the current move if it's a aoe buff
-		void ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam);
+		void ScoreMoveBuffAOE(std::shared_ptr<Skills> skill, std::vector<Odyssey::Entity*> enemyTeam);
 
 		// Score the moves status effects if any
 		float StatusEffectScore(std::shared_ptr<Skills> skill, Character* target);

@@ -1,19 +1,34 @@
 #pragma once
 #include <vector>
 #include "Entity.h"
-
+#include "Scene.h"
 
 class TeamManager
 {
 public:
 	enum class HeroType
 	{
-		Paladin, Mage
+		Paladin, 
+		Mage, 
+		Bard, 
+		Warrior, 
+		Monk
 	};
 
 	enum class EnemyType
 	{
-		Skeleton, Ganfaul
+		Skeleton,
+		Summoner,
+		MeleeDemon,
+		CasterDemon,
+		Ganfaul
+	};
+
+	struct EnemySetups
+	{
+		EnemyType pEnemyType;
+		DirectX::XMVECTOR pPosition;
+		DirectX::XMVECTOR pRotation;
 	};
 
 public: // Singleton pattern
@@ -29,33 +44,50 @@ private: // Singleton pattern
 
 public: // Functions
 
+	// Create Enemy Team based on the index passed in
+	std::vector<Odyssey::Entity*> CreateEnemyTeam(int _index);
+	// Add a list of enemies to index through
+	void AddEnemiesListToCreate(std::vector<EnemySetups> _enemyEnums) { mEnemiesToCreate.push_back(_enemyEnums); }
+
 	// Add player to the player team
-	void AddCharacterToPlayerTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+	void AddCharacterEnumToPlayerTeam(HeroType _characterHeroType);
 	// Add player to the enemy team
-	void AddCharacterToEnemyTeam(std::shared_ptr<Odyssey::Entity> _characterToAdd);
+	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
+
+	// Clear the players from the player team
+	void ClearPlayerTeamEnumList();
 
 	// Getters
 	// Get the players that were created
-	std::vector<std::shared_ptr<Odyssey::Entity>> GetPlayerTeam() { return mPlayerTeam; }
+	std::vector<HeroType> GetPlayerTeamToCreate() { return mPlayerTeamToCreate; }
 	// Get the enemies that were created
-	std::vector<std::shared_ptr<Odyssey::Entity>> GetEnemyTeam() { return mEnemyTeam; }
-
-	// Get the enemy team enums to determine what charcters we need to create
-	std::vector<TeamManager::EnemyType> GetEnemyTeamToCreate() { return mEnemyTeamToCreate; }
+	std::vector<Odyssey::Entity*> GetEnemyTeam() { return mEnemyTeam; }
+	// Get the list of enemies to create
+	std::vector<std::vector<TeamManager::EnemySetups>> GetEnemiesToCreateList() { return mEnemiesToCreate; }
 
 	// Setters
+	// Set the current tower
+	void SetTheCurrentTower(Odyssey::Entity* _tower) { mCurrentTower = _tower; }
+	// Set the first scene
+	void SetTheFirstScene(Odyssey::Scene* _scene) { mSceneOne = _scene; }
 
 private: // Variables
 
-	// Holds the enum types of the characters we need to create for the enemy team
-	std::vector<TeamManager::EnemyType> mEnemyTeamToCreate;
+	// Hold the multiple list of enums that will need to be created;
+	std::vector<std::vector<TeamManager::EnemySetups>> mEnemiesToCreate;
 
 	// Holds the player characters to add into the Tower Manager
-	std::vector<std::shared_ptr<Odyssey::Entity>> mPlayerTeam;
+	std::vector<HeroType> mPlayerTeamToCreate;
 	// Holds the enemy characters to add into the Tower Manager
-	std::vector<std::shared_ptr<Odyssey::Entity>> mEnemyTeam;
+	std::vector<Odyssey::Entity*> mEnemyTeam;
+
+	// Holds the tower manager entity
+	Odyssey::Entity* mCurrentTower = nullptr;
+
+	// Hold the first scene
+	Odyssey::Scene* mSceneOne = nullptr;
 
 private: // Functions
-
+	
 };
 

@@ -6,6 +6,7 @@
 #include "StatUp.h"
 #include "StatDown.h"
 #include "Stun.h"
+#include "CharacterHUDElements.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -56,7 +57,7 @@ void Character::update(double deltaTime)
 }
 
 // Called by battle instance whenever its time for this character to take its turn
-bool Character::TakeTurn(std::vector<std::shared_ptr<Odyssey::Entity>> playerTeam, std::vector<std::shared_ptr<Odyssey::Entity>> enemyTeam)
+bool Character::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vector<Odyssey::Entity*> enemyTeam)
 {
 	return false;
 }
@@ -70,42 +71,26 @@ void Character::Die()
 // Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
 {
-	// Play sound effect for getting hit
-	RedAudioManager::Instance().PlaySFX("PaladinHit");
-
 	// Calculate damage reduction based on character drffense
 	dmg = dmg - (dmg * GetDefMod());
 
-	// loop through shield vector and reduce the incoming damage by amount of temp health this character has
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-	for (it = mSheilds.begin(); it != mSheilds.end();)
+	// If i have a shield reduce the incoming damage
+	if (mShielding > 0.0f)
 	{
-		dmg -= (*it)->GetAmountOfEffect();
-		if (dmg < 0.0f)
+		mShielding -= dmg;
+		if (mShielding <= 0.0f)
 		{
-			(*it)->SetAmountOfEffect(dmg * -1.0f);
-			dmg = 0.0f;
-			++it;
+			dmg = mShielding * -1.0f;
+			mShielding = 0.0f;
+			mShieldTimer = 0;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
 		else
-		{
-			(*it)->Remove();
-			it = mSheilds.erase(it);
-		}
+			dmg = 0.0f;
 	}
 
 	// Reduce health by the amount of damage that made it through
 	SetHP(GetHP() - dmg);
-
-	// Add the 
-
-	// Pop up battle text that appears over the character whenever something happens to them
-	/*pDmgText->setText(std::to_wstring(dmg).substr(0,5));
-	pDmgText->setColor(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
-	pDmgText->setOpacity(1.0f);*/
-
-	// TODO: Update Combat Log Text Here
-
 
 	// If they run out of Health kill the character
 	if (mCurrentHP <= 0.0f)
@@ -117,13 +102,15 @@ void Character::ReceiveHealing(float healing)
 {
 	// Add healing to current hp
 	SetHP(mCurrentHP + healing);
-	
+
 	// Send off a dumbass event for reds dumbass stat tracking
 	//Odyssey::EventManager::getInstance().publish(new CharacterRecivesHealingEvent(mName, healing));
 
 	// TODO: Update Combat Log Text Here
 
-
+	// If they run out of Health kill the character
+	if (mCurrentHP <= 0.0f)
+		Die();
 }
 
 // Called whenever this character needs to reduce its current mana
@@ -142,6 +129,9 @@ float Character::GetHP()
 // Sets the current HP of the character
 void Character::SetHP(float HP)
 {
+	// Add the health bar for animation
+	GameUIManager::getInstance().AddCharacterHpBarsToUpdateList(this, mCurrentHP, HP);
+
 	// Set the hp to the passed in amount
 	float previousHealth = mCurrentHP;
 	mCurrentHP = HP;
@@ -152,16 +142,13 @@ void Character::SetHP(float HP)
 	else if (mCurrentHP > mBaseMaxHP)
 		mCurrentHP = mBaseMaxHP;
 
-	// Update the UI
-	GameUIManager::getInstance().UpdateCharacterBars(this);
-	 
-	// Check whether or not the character was healed or damaged
-	// Player took damage
-	if (previousHealth > mCurrentHP)
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
-	//Player was healed or not damaged at all
-	else
-		GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
+	//// Check whether or not the character was healed or damaged
+	//// Player took damage
+	//if (previousHealth > mCurrentHP)
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, true, abs(previousHealth - mCurrentHP));
+	////Player was healed or not damaged at all
+	//else
+	//	GameUIManager::getInstance().AddHpPopupToUpdateList(this, false, abs(previousHealth - mCurrentHP));
 }
 
 // Returns the max HP of the character
@@ -179,6 +166,9 @@ float Character::GetMana()
 // Sets the current mana of the character
 void Character::SetMana(float Mana)
 {
+	// Add the health bar for animation
+	GameUIManager::getInstance().AddCharacterMpBarsToUpdateList(this, mCurrentMana, Mana);
+
 	// Set the mp to the passed in amount
 	mCurrentMana = Mana;
 
@@ -187,10 +177,6 @@ void Character::SetMana(float Mana)
 		mCurrentMana = 0.0f;
 	else if (mCurrentMana > mBaseMaxMana)
 		mCurrentMana = mBaseMaxMana;
-
-	// Update the UI
-	// Update the UI
-	GameUIManager::getInstance().UpdateCharacterBars(this);
 }
 
 // Returns the max MP of the character
@@ -205,14 +191,16 @@ float Character::GetAtk()
 	return mAttack;
 }
 
+// Returns the Base Attack stat of the character
 float Character::GetBaseAtk()
 {
 	return mBaseAttack;
 }
 
+// Returns the Attack mod of the character
 float Character::GetAtkMod()
 {
-	return (mAttack - BASEATK) / 500.0f;
+	return (mAttack - BASEATK) / 100.0f;
 }
 
 // Increases the Attack stat of the character
@@ -239,9 +227,10 @@ float Character::GetBaseDef()
 	return mBaseDefense;
 }
 
+// Returns the defense mod of the character
 float Character::GetDefMod()
 {
-	return (mBaseDefense - BASEDEF) / 200.0f;
+	return (mDefense - BASEDEF) / 200.0f;
 }
 
 // Increases the current Defense stat of the character
@@ -268,9 +257,10 @@ float Character::GetBaseSpeed()
 	return mBaseSpeed;
 }
 
+// Returns the Speed mod of the character
 float Character::GetSpdMod()
 {
-	return (mSpeed - BASESPD) / 100.0f;
+	return (mSpeed - BASESPD) / 50.0f;
 }
 
 // Increases the current Speed stat of the character
@@ -345,6 +335,24 @@ void Character::SetName(std::wstring newName)
 	mName = newName;
 }
 
+DirectX::XMFLOAT3 Character::GetThemeColor()
+{
+	return mThemeColor;
+}
+
+// Resets the character back to its base
+void Character::ResetMe()
+{
+	// Update the bars
+	GameUIManager::getInstance().AddCharacterHpBarsToUpdateList(this, mCurrentHP, mBaseMaxHP);
+	GameUIManager::getInstance().AddCharacterMpBarsToUpdateList(this, mCurrentMana, mBaseMaxMana);
+
+	mCurrentHP = mBaseMaxHP;
+	mCurrentMana = mBaseMaxMana;
+	mCurrentState = STATE::NONE;
+	ClearStatusEffects();
+}
+
 // Returns the characters skill list
 std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 {
@@ -352,119 +360,128 @@ std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 }
 
 // Adds a status effect to the character and sorts it putting it in the correct vector
-bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
+bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Character* caster)
 {
 	// Make an iterator to check the characters list to see if it already has the passed in effect
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	std::vector<StatusEffect*>::iterator it;
+
+	// Temp pointer to the target
+	Character* affectedTarget = newEffect->GetRecipient();
 
 	// Switch statment for detirming what vector the effect needs to go into
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
-		// Loop through if i find the effect return false, else add to the vector of efffect
-		for (it = mBleeds.begin(); it != mBleeds.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mBleeds.push_back(newEffect);
+		affectedTarget->mIsBleeding = true;
+		affectedTarget->mBleedTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Regen:
 	{
-		for (it = mRegens.begin(); it != mRegens.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mRegens.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::StatUp:
-	{
-		StatUp* temp = nullptr;
-		for (it = mBuffs.begin(); it != mBuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mBuffs.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::StatDown:
-	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mDebuffs.push_back(newEffect);
+		affectedTarget->mIsRegenerating = true;
+		affectedTarget->mRegenTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Stun:
 	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mDebuffs.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::Shield:
-	{
-		for (it = mSheilds.begin(); it != mSheilds.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-			{
-				(*it)->SetDuration(newEffect->GetDuration());
-				return false;
-			}
-			else
-				it++;
-		}
-		mSheilds.push_back(newEffect);
+		affectedTarget->SetState(STATE::STUNNED);
+		mStunTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Provoke:
 	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		affectedTarget->SetProvoked(caster);
+		mProvokedTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(true);
+		break;
+	}
+	case EFFECTTYPE::Shield:
+	{
+		affectedTarget->mShielding = newEffect->GetAmountOfEffect();
+		affectedTarget->mShieldTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
+		break;
+	}
+	case EFFECTTYPE::StatUp:
+	{
+		std::vector<StatusEffect*>::iterator it;
+		for (it = mSE.begin(); it != mSE.end();)
 		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId())
+			if ((*it)->GetTypeId() == newEffect->GetTypeId() && (*it)->GetAffectedStatId() == newEffect->GetAffectedStatId())
 			{
 				(*it)->Remove();
-				it = mDebuffs.erase(it);
+				it = mSE.erase(it);
 			}
 			else
 				it++;
 		}
-		mDebuffs.push_back(newEffect);
+		mSE.push_back(newEffect.get());
+		switch (newEffect->GetAffectedStatId())
+		{
+		case STATS::Atk:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackUpBuff()->setVisible(true);
+			affectedTarget->IncreaseAtk(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Def:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseUpBuff()->setVisible(true);
+			affectedTarget->IncreaseDef(newEffect->GetAmountOfEffect());	
+			break;
+		}
+		case STATS::Spd:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedUpBuff()->setVisible(true);
+			affectedTarget->IncreaseSpd(newEffect->GetAmountOfEffect());
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	case EFFECTTYPE::StatDown:
+	{
+		std::vector<StatusEffect*>::iterator it;
+		for (it = mSE.begin(); it != mSE.end();)
+		{
+			if ((*it)->GetTypeId() == newEffect->GetTypeId() && (*it)->GetAffectedStatId() == newEffect->GetAffectedStatId())
+			{
+				(*it)->Remove();
+				it = mSE.erase(it);
+			}
+			else
+				it++;
+		}
+		mSE.push_back(newEffect.get());
+		switch (newEffect->GetAffectedStatId())
+		{
+		case STATS::Atk:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(true);
+			affectedTarget->DecreaseAtk(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Def:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(true);
+			affectedTarget->DecreaseDef(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Spd:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(true);
+			affectedTarget->DecreaseSpd(newEffect->GetAmountOfEffect());
+			break;
+		}
+		default:
+			break;
+		}
 		break;
 	}
 	default:
@@ -473,7 +490,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
 	return true;
 }
 
-// Manages status effects of passed in vector of effects, appling effects and removing expired ones
+// Manages status effects of passed in vector of effects, appling effects
 void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& effectList)
 {
 	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires.
@@ -481,96 +498,79 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 
 	for (it = effectList.begin(); it != effectList.end();)
 	{
-		(*it)->Use();
-		if (mCurrentState == STATE::DEAD)
-			return;
-		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			(*it)->Remove();
 			it = effectList.erase(it);
+			continue;
 		}
 		else
-			it++;
+			(*it)->Use();
+		if (mCurrentState == STATE::DEAD)
+			return;
+		it++;
 	}
 }
 
-// Manages all status effects, appling effects and removing expired ones
-bool Character::ManageAllEffects()
+// Manages all status effect casted by this character
+void Character::ManageCastedEffects()
 {
 	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
 	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 
-	//Regens
-	for (it = mRegens.begin(); it != mRegens.end();)
+	// Casted Effects
+	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
 	{
-		(*it)->Use();
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			(*it)->Remove();
-			it = mRegens.erase(it);
+			if (!(*it)->RemoveMe())
+				(*it)->Remove();
+			it = mCastedEffects.erase(it);
 		}
 		else
-			it++;
+			it++;	
 	}
+}
 
-	// Bleeds
-	for (it = mBleeds.begin(); it != mBleeds.end();)
-	{
-		(*it)->Use();
-		if (mCurrentState == STATE::DEAD)
-			return false;
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
-		{
-			(*it)->Remove();
-			it = mBleeds.erase(it);
-		}
-		else
-			it++;
-	}
+// Add a effect to my casted vector
+void Character::AddCastedEffect(std::shared_ptr<StatusEffect> newCastedEffect)
+{
+	mCastedEffects.push_back(newCastedEffect);
+}
 
-	// Buffs
-	for (it = mBuffs.begin(); it != mBuffs.end();)
+// Manages all status effects, appling effects and removing expired ones
+bool Character::ManageTOREffects()
+{
+	if (mIsRegenerating)
 	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
+		ReceiveHealing(0.10f * mBaseMaxHP);
+		mRegenTimer--;
+		if (mRegenTimer <= 0)
 		{
-			(*it)->Remove();
-			it = mBuffs.erase(it);
+			mIsRegenerating = false;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(false);
 		}
-		else
-			it++;
 	}
-
-	// Debuffs
-	for (it = mDebuffs.begin(); it != mDebuffs.end();)
+	if (mIsBleeding)
 	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
+		TakeDamage(0.10f * mBaseMaxHP);
+		mBleedTimer--;
+		if (mBleedTimer <= 0)
 		{
-			(*it)->Remove();
-			it = mDebuffs.erase(it);
+			mIsBleeding = false;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(false);
 		}
-		else
-			it++;
 	}
-	 
-	// Shields
-	for (it = mSheilds.begin(); it != mSheilds.end();)
+	if (mCurrentState == STATE::DEAD)
+		return false;
+	if (mShielding > 0)
 	{
-		(*it)->Use();
-		(*it)->ReduceDuration(1);
-		if ((*it)->GetDuration() <= 0)
+		mShieldTimer--;
+		if (mShieldTimer <= 0)
 		{
-			(*it)->Remove();
-			it = mSheilds.erase(it);
+			mShielding = 0.0f;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
-		else
-			it++;
 	}
 	return true;
 }
@@ -578,11 +578,14 @@ bool Character::ManageAllEffects()
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
-	mDebuffs.clear();
-	mBuffs.clear();
-	mBleeds.clear();
-	mRegens.clear();
-	mSheilds.clear();
+	mCastedEffects.clear();
+}
+
+// Clears all harmful status effects
+void Character::ClearBadStatusEffects()
+{
+	//mDebuffs.clear();
+	//mBleeds.clear();
 }
 
 // Sets the Particle system pointer to a "Hit effect"
@@ -654,6 +657,7 @@ std::wstring Character::GetDescription()
 	return mDescription;
 }
 
+// Retuyrns the path to the characers model
 std::string Character::GetModel()
 {
 	return mModel;
@@ -675,4 +679,14 @@ void Character::SetHudIndex(unsigned int newIndex)
 unsigned int Character::GetHudIndex()
 {
 	return mHudIndex;
+}
+
+void Character::AddSoundClip(std::string soundKey, std::string newSoundName)
+{
+	mSoundClips[soundKey] = newSoundName;
+}
+
+std::string Character::GetSoundClipName(std::string soundKey)
+{
+	return mSoundClips[soundKey];
 }

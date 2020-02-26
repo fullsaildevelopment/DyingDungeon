@@ -1,5 +1,6 @@
 #include "Bleed.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 {
@@ -8,17 +9,22 @@ Bleed::Bleed(float ammountOfEffect, int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Bleed.png";
 }
 
 Bleed::~Bleed()
 {
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
-void Bleed::Apply(Character& target)
+void Bleed::Apply(Character& caster, Character& target)
 {
 	std::shared_ptr<StatusEffect> newStatusEffect;
 	newStatusEffect = std::make_shared<Bleed>(mAmountOfEffect, mDuration, &target);
-	target.AddStatusEffect(newStatusEffect);
+	target.AddStatusEffect(newStatusEffect, &caster);
 	return;
 }
 
@@ -29,8 +35,5 @@ void Bleed::Remove()
 
 void Bleed::Use()
 {
-	float totalBleed = 0;
-	totalBleed = mAmountOfEffect * mRecipient->GetMaxHP();
-	float totalBleedButBetter = totalBleed -  totalBleed * mRecipient->GetDef();
-	mRecipient->TakeDamage(totalBleed);
+	return;
 }

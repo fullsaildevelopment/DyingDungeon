@@ -1,5 +1,6 @@
 #include "Stun.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Stun::Stun(int duration, Character* target)
 {
@@ -8,32 +9,28 @@ Stun::Stun(int duration, Character* target)
 	mDuration = duration;
 	mRecipient = target;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Stun.png";
 }
 Stun::~Stun()
 {
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
+	mAffectedStatId = STATS::None;
 }
-void Stun::Apply(Character& target)
+void Stun::Apply(Character& caster, Character& target)
 {
-	if (target.GetState() != STATE::STUNNED)
-	{
-		std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
-		newStatusEffect = std::make_shared<Stun>(mDuration, &target);
-		target.AddStatusEffect(newStatusEffect);
-		target.SetState(STATE::STUNNED);
-	}
+	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
+	newStatusEffect = std::make_shared<Stun>(mDuration, &target);
+	target.AddStatusEffect(newStatusEffect, &caster);
 	return;
 }
 void Stun::Use()
 {
-	mRecipient->SetState(STATE::STUNNED);
 	return;
 }
 void Stun::Remove()
 {
-	if (mRecipient->GetState() != STATE::DEAD)
-	{
-		mRecipient->SetState(STATE::NONE);
-	}
 	return;
 }

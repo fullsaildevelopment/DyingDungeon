@@ -9,6 +9,8 @@ namespace Odyssey
 	{
 		CLASS_DECLARATION(Transform)
 
+	public:
+			virtual std::shared_ptr<Component> clone() const;
 	public: // Rule of 3
 		Transform();
 		Transform(DirectX::XMFLOAT4X4 worldMatrix);

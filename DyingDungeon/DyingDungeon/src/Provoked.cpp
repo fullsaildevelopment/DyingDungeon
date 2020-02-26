@@ -1,5 +1,6 @@
 #include "Provoked.h"
 #include "Character.h"
+#include "CharacterHUDElements.h"
 
 Provoked::Provoked(int duration, Character* provoker, Character* target)
 {
@@ -9,28 +10,29 @@ Provoked::Provoked(int duration, Character* provoker, Character* target)
 	mRecipient = target;
 	mProvoker = provoker;
 	mAffectedStatId = STATS::None;
+	mEffectIconName = L"assets/images/StatusEffects/Provoke.png";
 }
 
 Provoked::~Provoked()
 {
+	mTypeId = EFFECTTYPE::None;
+	mAmountOfEffect = -1.0f;
+	mDuration = -1;
 	mRecipient = nullptr;
 	mProvoker = nullptr;
+	mAffectedStatId = STATS::None;
 }
 
-void Provoked::Apply(Character& target)
+void Provoked::Apply(Character& caster, Character& target)
 {
-	target.SetProvoked(mProvoker);
 	std::shared_ptr<StatusEffect> newStatusEffect = nullptr;
 	newStatusEffect = std::make_shared<Provoked>(mDuration, mProvoker, &target);
-	target.AddStatusEffect(newStatusEffect);
+	target.AddStatusEffect(newStatusEffect, &caster);
 }
 
 void Provoked::Remove()
 {
-	if (mRecipient->GetProvoked() == mProvoker)
-	{
-		mRecipient->SetProvoked(nullptr);
-	}
+	return;
 }
 
 void Provoked::Use()

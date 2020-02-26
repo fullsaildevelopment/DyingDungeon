@@ -6,86 +6,161 @@
 #include "MeshRenderer.h"
 #include "ParticleSystem.h"
 #include "Transform.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 #include "Light.h"
 #include "AABB.h"
 #include "AnimatorDX11.h"
 
 namespace Odyssey
 {
-	void Scene::addLight(std::shared_ptr<Entity> light)
+	Entity* Scene::createEntity()
 	{
-		// Add the light to the light vector
-		Light* lightPtr = light->getComponent<Light>();
-		mSceneLights.push_back(lightPtr);
+		// Create the entity with this scene
+		std::shared_ptr<Entity> entity = std::make_shared<Entity>(this);
 
-		if (lightPtr->getLightType() == LightType::Directional)
+		// Add it to the list of entities
+		mSceneEntities.push_back(entity);
+
+		// Return the created entity
+		return entity.get();
+	}
+
+	void Scene::addComponent(Component* component)
+	{
+		// Get the component's entity
+		Entity* entity = component->getEntity();
+
+		// Add the component to the list and map
+		mComponentList.push_back(component);
+
+		// Check if this component is an animator
+		if (component->isClassType(Animator::Type))
 		{
-			mShadowLight = lightPtr;
-			mRenderPackage.shadowLight = mShadowLight;
-
-			if (mSceneRadius == 0.0f)
+			// Animators will check their child render objects and update their animator stats
+			for (Entity* child : entity->getChildren())
 			{
-				mSceneRadius = 100.0f;
+				mLock.lock(LockState::Write);
+				// Check if we have added this entity as a render object before
+				for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+				{
+					if (mRenderPackage.renderObjects[i].entity == child)
+					{
+						// Update the contents of the child's render object
+						mRenderPackage.renderObjects[i].animator = child->getRootComponent<AnimatorDX11>();
+					}
+				}
+				mLock.unlock(LockState::Write);
 			}
 		}
 
-		mRenderPackage.sceneLights.push_back(lightPtr);
-	}
-
-	void Scene::addEntity(std::shared_ptr<Entity> entity)
-	{
-		// Add the entity to the entity vector
-		mSceneEntities.push_back(entity);
-
-		for (Component* component : entity->getComponents<Component>())
+		// Check if this entity is renderable
+		if (entity->getComponent<MeshRenderer>())
 		{
-			mComponentList.push_back(component);
-			mComponentMap[entity.get()].push_back(component);
+			// Create a render object
+			RenderObject* renderObject = nullptr;
+
+			mLock.lock(LockState::Write);
+			// Iterate through the render objects and look for the matching entity
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				// Check if this entity already has a render object
+				if (mRenderPackage.renderObjects[i].entity == entity)
+				{
+					// Get the reference to the stored render object
+					renderObject = &mRenderPackage.renderObjects[i];
+					break;
+				}
+			}
+
+			// Check if we did not find a matching render object
+			if (renderObject == nullptr)
+			{
+				// Create an empty render object and assign it to as current render object
+				mRenderPackage.renderObjects.push_back(RenderObject());
+				renderObject = &mRenderPackage.renderObjects[mRenderPackage.renderObjects.size() - 1];
+
+				// Set the new render object's entity
+				renderObject->entity = entity;
+			}
+
+			// Check if this is an animator component
+			if (component->isClassType(Animator::Type))
+			{
+				// Update the render object's components
+				renderObject->aabb = entity->getComponent<AABB>();
+				renderObject->animator = entity->getComponent<AnimatorDX11>();
+				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+				renderObject->transform = entity->getComponent<Transform>();
+			}
+
+			if (component->isClassType(AABB::Type))
+			{
+				// Update the render object's components
+				renderObject->aabb = static_cast<AABB*>(component);
+				renderObject->animator = entity->getComponent<AnimatorDX11>();
+				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+				renderObject->transform = entity->getComponent<Transform>();
+			}
 
 			if (component->isClassType(MeshRenderer::Type))
 			{
-				MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(component);
-
-				RenderObject renderObject;
-				renderObject.aabb = entity->getComponent<AABB>();
-				renderObject.meshRenderer = meshRenderer;
-				renderObject.transform = entity->getComponent<Transform>();
-				renderObject.animator = entity->getRootComponent<AnimatorDX11>();
-				mRenderPackage.renderObjects.push_back(renderObject);
+				// Update the render object's components
+				renderObject->aabb = entity->getComponent<AABB>();
+				renderObject->animator = entity->getComponent<AnimatorDX11>();
+				renderObject->meshRenderer = static_cast<MeshRenderer*>(component);
+				renderObject->transform = entity->getComponent<Transform>();
 			}
 
-			if (component->isClassType(UICanvas::Type))
+			if (component->isClassType(Transform::Type))
 			{
-				// Add it to the vector of UI canvas objects
-				UICanvas* canvas = static_cast<UICanvas*>(component);
-
-				CanvasObject canvasObject;
-				canvasObject.canvas = canvas;
-				canvasObject.entity = entity.get();
-
-				for (UIElement* element : static_cast<UICanvas*>(component)->getElements<UIElement>())
-				{
-					canvasObject.elements.push_back(element);
-				}
-
-				mRenderPackage.canvasObjects.push_back(canvasObject);
+				// Update the render object's components
+				renderObject->aabb = entity->getComponent<AABB>();
+				renderObject->animator = entity->getComponent<AnimatorDX11>();
+				renderObject->meshRenderer = entity->getComponent<MeshRenderer>();
+				renderObject->transform = static_cast<Transform*>(component);
 			}
-
-			if (component->isClassType(ParticleSystem::Type))
-			{
-				ParticleSystem* particleSystem = static_cast<ParticleSystem*>(component);
-
-				VFXObject vfxObject;
-				vfxObject.system = particleSystem;
-				vfxObject.transform = entity->getComponent<Transform>();
-				mRenderPackage.vfxObjects.push_back(vfxObject);
-			}
+			mLock.unlock(LockState::Write);
 		}
 
-		for (std::shared_ptr<Entity> child : entity->getChildren())
+		if (component->isClassType(UICanvas::Type))
 		{
-			addEntity(child);
+			// Add it to the vector of UI canvas objects
+			UICanvas* canvas = static_cast<UICanvas*>(component);
+
+			CanvasObject canvasObject;
+			canvasObject.canvas = canvas;
+			canvasObject.entity = entity;
+
+			for (UIElement* element : static_cast<UICanvas*>(component)->getElements<UIElement>())
+			{
+				canvasObject.elements.push_back(element);
+			}
+
+			mLock.lock(LockState::Write);
+			mRenderPackage.canvasObjects.push_back(canvasObject);
+			mLock.unlock(LockState::Write);
+		}
+
+		if (component->isClassType(ParticleSystem::Type))
+		{
+			ParticleSystem* particleSystem = static_cast<ParticleSystem*>(component);
+
+			VFXObject vfxObject;
+			vfxObject.system = particleSystem;
+			vfxObject.transform = entity->getComponent<Transform>();
+
+			mLock.lock(LockState::Write);
+			mRenderPackage.vfxObjects.push_back(vfxObject);
+			mLock.unlock(LockState::Write);
+		}
+
+		if (component->isClassType(Light::Type))
+		{
+			Light* light = static_cast<Light*>(component);
+
+			mLock.lock(LockState::Write);
+			mRenderPackage.sceneLights.push_back(light);
+			mLock.unlock(LockState::Write);
 		}
 
 		// Check if the entity has a camera component
@@ -93,23 +168,65 @@ namespace Odyssey
 		{
 			// Set this as the main camera
 			mMainCamera = entity;
+
+			mLock.lock(LockState::Write);
 			mRenderPackage.camera = camera;
+			mLock.unlock(LockState::Write);
 		}
 	}
 
-	void Scene::removeEntity(Entity* entity)
+	void Scene::addElement(UIElement* element)
 	{
-		// Remove from the entity list.
-
-		// Get the MR
-		MeshRenderer* meshRenderer = entity->getComponent<MeshRenderer>();
-
-		if (meshRenderer)
+		mLock.lock(LockState::Write);
+		for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
 		{
+			if (element->getCanvas() == mRenderPackage.canvasObjects[i].canvas)
+			{
+				mRenderPackage.canvasObjects[i].elements.push_back(element);
+			}
+		}
+		mLock.unlock(LockState::Write);
+	}
+
+	void Scene::removeComponent(Component* component)
+	{
+		Entity* entity = component->getEntity();
+
+			mLock.lock(LockState::Write);
+		// Remove the component from the component list if it exists
+		auto iter = std::find(mComponentList.begin(), mComponentList.end(), component);
+
+		if (iter != mComponentList.end())
+		{
+			mComponentList.erase(iter);
+		}
+
+		// Check if the component is a mesh renderer
+		if (component->isClassType(MeshRenderer::Type))
+		{
+			MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(component);
+
 			// Iterate through render objects and compare the pointer, if they match remove that render object.
 			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
 			{
 				if (meshRenderer == mRenderPackage.renderObjects[i].meshRenderer)
+				{
+					mRenderPackage.renderObjects.erase(mRenderPackage.renderObjects.begin() + i);
+					i--;
+					break;
+				}
+			}
+		}
+
+		// Check if the component is a transform
+		if (component->isClassType(Transform::Type))
+		{
+			Transform* transform = static_cast<Transform*>(component);
+
+			// Iterate through render objects and compare the pointer, if they match remove that render object.
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				if (transform == mRenderPackage.renderObjects[i].transform)
 				{
 					mRenderPackage.renderObjects.erase(mRenderPackage.renderObjects.begin() + i);
 					break;
@@ -117,12 +234,56 @@ namespace Odyssey
 			}
 		}
 
-		// Get the PS
-		ParticleSystem* particleSystem = entity->getComponent<ParticleSystem>();
+		// Check if the component is a transform
+		if (component->isClassType(AnimatorDX11::Type))
+		{
+			AnimatorDX11* animator = static_cast<AnimatorDX11*>(component);
+
+			// Iterate through render objects and compare the pointer, if they match remove that render object.
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				if (animator == mRenderPackage.renderObjects[i].animator)
+				{
+					mRenderPackage.renderObjects[i].animator = nullptr;
+					break;
+				}
+			}
+		}
+
+		// Check if the component is a transform
+		if (component->isClassType(AABB::Type))
+		{
+			AABB* aabb = static_cast<AABB*>(component);
+
+			// Iterate through render objects and compare the pointer, if they match remove that render object.
+			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
+			{
+				if (aabb == mRenderPackage.renderObjects[i].aabb)
+				{
+					mRenderPackage.renderObjects[i].aabb = nullptr;
+					break;
+				}
+			}
+		}
+
+		if (component->isClassType(UICanvas::Type))
+		{
+			// Iterate through the canvas objects and compare the entity pointer, if they match remove that object.
+			for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
+			{
+				if (mRenderPackage.canvasObjects[i].entity == entity)
+				{
+					mRenderPackage.canvasObjects.erase(mRenderPackage.canvasObjects.begin() + i);
+					break;
+				}
+			}
+		}
 
 		// Iterate through vfx objects and compare the pointer, if they match remove that system.
-		if (particleSystem)
+		if (component->isClassType(ParticleSystem::Type))
 		{
+			ParticleSystem* particleSystem = static_cast<ParticleSystem*>(component);
+
 			for (int i = 0; i < mRenderPackage.vfxObjects.size(); i++)
 			{
 				if (particleSystem == mRenderPackage.vfxObjects[i].system)
@@ -132,21 +293,35 @@ namespace Odyssey
 				}
 			}
 		}
-		// Iterate through the canvas objects and compare the entity pointer, if they match remove that object.
 
-		for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
+		if (component->isClassType(Light::Type))
 		{
-			if (entity == mRenderPackage.canvasObjects[i].entity)
+			Light* light = static_cast<Light*>(component);
+
+			auto iter2 = std::find(mRenderPackage.sceneLights.begin(), mRenderPackage.sceneLights.end(), light);
+
+			if (mRenderPackage.shadowLight == light)
 			{
-				mRenderPackage.canvasObjects.erase(mRenderPackage.canvasObjects.begin() + i);
-				break;
+				mRenderPackage.shadowLight = nullptr;
+			}
+
+			if (iter2 != mRenderPackage.sceneLights.end())
+			{
+				mRenderPackage.sceneLights.erase(iter2);
 			}
 		}
 
-		for (std::shared_ptr<Entity> child : entity->getChildren())
+		// Check if the entity has a camera component
+		if (component->isClassType(Camera::Type))
 		{
-			removeEntity(child.get());
+			Camera* camera = static_cast<Camera*>(component);
+
+			if (camera == mRenderPackage.camera)
+			{
+				mRenderPackage.camera = nullptr;
+			}
 		}
+		mLock.unlock(LockState::Write);
 	}
 
 	double Scene::getDeltaTime()
@@ -158,20 +333,24 @@ namespace Odyssey
 	Light* Scene::getLight(int index)
 	{
 		// Check the index is within the size of the light vector
-		if (mSceneLights.size() > index)
+		Light* light = nullptr;
+
+		mLock.lock(LockState::Read);
+		if (mRenderPackage.sceneLights.size() > index)
 		{
 			// Get the light at the parameter index
-			return mSceneLights[index];
+			light = mRenderPackage.sceneLights[index];
 		}
 
+		mLock.unlock(LockState::Read);
 		// Return nullptr by default
-		return nullptr;
+		return light;
 	}
 
 	Entity* Odyssey::Scene::getMainCamera()
 	{
 		// Return the entity registered with the main camera
-		return mMainCamera.get();
+		return mMainCamera;
 	}
 
 	void Scene::setActive(bool active)
@@ -181,16 +360,19 @@ namespace Odyssey
 
 	void Scene::setSkybox(const char* filename)
 	{
-		std::shared_ptr<Texture> texture = mRenderDevice->createTexture(TextureType::Skybox, filename);
-		std::shared_ptr<Mesh> mesh = mRenderDevice->createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-		std::shared_ptr<Material> material = mRenderDevice->createMaterial(TextureType::Skybox, texture);
+		int texture = RenderManager::getInstance().createTexture(TextureType::Skybox, filename);
+		int mesh = RenderManager::getInstance().createCube(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+		int material = RenderManager::getInstance().createMaterial(TextureType::Skybox, texture);
 
-		mSkybox = std::make_shared<Entity>();
+		mSkybox = createEntity();
+		mSkybox->setScene(nullptr);
 		mSkybox->addComponent<MeshRenderer>(mesh, material);
 		mSkybox->addComponent<Transform>();
 		mSkybox->getComponent<Transform>()->setRotation(0, 45.0f, 0);
 
+		mLock.lock(LockState::Write);
 		mRenderPackage.skybox.meshRenderer = mSkybox->getComponent<MeshRenderer>();
 		mRenderPackage.skybox.transform = mSkybox->getComponent<Transform>();
+		mLock.unlock(LockState::Write);
 	}
 }

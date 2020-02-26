@@ -1,6 +1,9 @@
 #include "Heal.h"
 #include "Character.h"
-// Constructor
+
+
+// Constructors for the diffrent cases of attacks //
+//////////////////////////////////////////////////////////////
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
@@ -9,10 +12,10 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = false;
 }
-
 Heal::Heal(std::wstring skillName, std::string animationId, float animationTiming, float mpCost, float healing, bool isAoe)
 {
 	mSkillTypeId = GameplayTypes::SKILLTYPE::HEAL;
@@ -21,20 +24,35 @@ Heal::Heal(std::wstring skillName, std::string animationId, float animationTimin
 	mAnimationTime = animationTiming;
 	mMpCost = mpCost;
 	mHealing = healing;
+	mStatusEffectChance = 1.0f;
 	mStatusEffect = nullptr;
 	mIsAOE = isAoe;
 }
+//////////////////////////////////////////////////////////////
 
-// Use the heal on the target
+// Function that applies the heal to the passed in target
 void Heal::Use(Character& caster, Character& target)
 {
+	// Apply the heal to the target
 	target.ReceiveHealing(mHealing);
-	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::None, mHealing));
+
+	// Update the combat log
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
-	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD)
+	GameUIManager::getInstance().SetCombatLogTextColor({ 0.0f, 255.0f, 0.0f });
+	GameUIManager::getInstance().UpdateCombatLogText(mStatusEffect->GetAmountOfEffect());
+
+	// Fire off reds event
+	Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::None, mHealing));
+
+	// Play audio "heal" sound effect
+	RedAudioManager::Instance().PlaySFX(target.GetSoundClipName("Healed").c_str()); 
+
+	// If i have a status effect to apply, then apply it
+	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{
-		mStatusEffect->Apply(target);
-		//Alert Reds stuff for stat tracking?
+		mStatusEffect->Apply(caster, target);
+
+		//Alert Reds stuff for stat tracking
 		switch (mStatusEffect->GetTypeId())
 		{
 		case EFFECTTYPE::None:
@@ -43,17 +61,17 @@ void Heal::Use(Character& caster, Character& target)
 		}
 		case EFFECTTYPE::Regen:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
+			Odyssey::EventManager::getInstance().publish(new CharacterHealsEvent(caster.GetName(), &caster, mSkillName, EFFECTTYPE::Regen, (mStatusEffect->GetAmountOfEffect() * mStatusEffect->GetDuration())));
 			break;
 		}
 		case EFFECTTYPE::StatUp:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::StatUp, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		case EFFECTTYPE::Shield:
 		{
-			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), target.GetName(), mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
+			Odyssey::EventManager::getInstance().publish(new CharacterBuffsEvent(caster.GetName(), &caster, target.GetName(), &target, mSkillName, EFFECTTYPE::Shield, mStatusEffect->GetAmountOfEffect()));
 			break;
 		}
 		default:

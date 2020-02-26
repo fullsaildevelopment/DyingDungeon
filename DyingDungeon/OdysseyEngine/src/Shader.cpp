@@ -1,16 +1,13 @@
 #include "Buffer.h"
 #include "Shader.h"
 #include "SamplerState.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
 
 namespace Odyssey
 {
-	Shader::Shader(std::shared_ptr<RenderDevice> renderDevice, ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements)
+	Shader::Shader(ShaderType shaderType, const char* filename, D3D11_INPUT_ELEMENT_DESC* layout, int numberOfElements)
 	{
-		mRenderDevice = renderDevice;
 		mShaderType = shaderType;
-		mDevice = renderDevice->getDevice();
-
 		// Read the shader from the cso file
 		char* byteCode = { 0 };
 		size_t shaderSize = readShaderFile(filename, byteCode);
@@ -20,21 +17,21 @@ namespace Odyssey
 		case ShaderType::PixelShader:
 		{
 			// Create the pixel shader and assert it did not fail
-			HRESULT hr = mDevice->CreatePixelShader(byteCode, shaderSize, nullptr, mPixelShader.GetAddressOf());
+			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreatePixelShader(byteCode, shaderSize, nullptr, mPixelShader.GetAddressOf());
 			assert(!FAILED(hr));
 			break;
 		}
 		case ShaderType::VertexShader:
 		{
 			// Create the vertex shader and assert it did not fail
-			HRESULT hr = mDevice->CreateVertexShader(byteCode, shaderSize, nullptr, mVertexShader.GetAddressOf());
+			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreateVertexShader(byteCode, shaderSize, nullptr, mVertexShader.GetAddressOf());
 			assert(!FAILED(hr));
 
 			// Assert that there is a layout and the number of elements is not 0
 			if (layout && numberOfElements != 0)
 			{
 				// Create the input layout and assert it did not fail
-				hr = mDevice->CreateInputLayout(layout, numberOfElements, byteCode, shaderSize, mInputLayout.GetAddressOf());
+				hr = RenderManager::getInstance().getDX11Device()->CreateInputLayout(layout, numberOfElements, byteCode, shaderSize, mInputLayout.GetAddressOf());
 				assert(!FAILED(hr));
 			}
 
@@ -43,14 +40,14 @@ namespace Odyssey
 		case ShaderType::GeometryShader:
 		{
 			// Create the geometry shader and assert it did not fail
-			HRESULT hr = mDevice->CreateGeometryShader(byteCode, shaderSize, nullptr, mGeometryShader.GetAddressOf());
+			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreateGeometryShader(byteCode, shaderSize, nullptr, mGeometryShader.GetAddressOf());
 			assert(!FAILED(hr));
 			break;
 		}
 		case ShaderType::ComputeShader:
 		{
 			// Create the compute shader and assert it did not fail
-			HRESULT hr = mDevice->CreateComputeShader(byteCode, shaderSize, nullptr, mComputeShader.GetAddressOf());
+			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreateComputeShader(byteCode, shaderSize, nullptr, mComputeShader.GetAddressOf());
 			assert(!FAILED(hr));
 			break;
 		}
@@ -69,9 +66,9 @@ namespace Odyssey
 			context->PSSetShader(mPixelShader.Get(), 0, 0);
 
 			// Iterate through each sampler and bind it
-			for (std::shared_ptr<SamplerState> sampler : samplerList)
+			for (int sampler : samplerList)
 			{
-				sampler->bind(context);
+				RenderManager::getInstance().getSamplerState(sampler)->bind(context);
 			}
 		}
 		else if (mShaderType == ShaderType::VertexShader && mVertexShader.Get())
@@ -93,9 +90,9 @@ namespace Odyssey
 		}
 	}
 
-	void Shader::addSampler(std::shared_ptr<SamplerState> sampler)
+	void Shader::addSampler(int samplerState)
 	{
-		samplerList.push_back(sampler);
+		samplerList.push_back(samplerState);
 	}
 
 	void Shader::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
@@ -105,9 +102,9 @@ namespace Odyssey
 			context->PSSetShader(nullptr, 0, 0);
 
 			// Iterate through each sampler and bind it
-			for (std::shared_ptr<SamplerState> sampler : samplerList)
+			for (int sampler : samplerList)
 			{
-				sampler->unbind(context);
+				RenderManager::getInstance().getSamplerState(sampler)->unbind(context);
 			}
 		}
 		else if (mShaderType == ShaderType::VertexShader && mVertexShader.Get())

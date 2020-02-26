@@ -13,14 +13,6 @@ namespace Odyssey
 	public: // Rule of 3
 		Text2D(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, UINT width, UINT height, std::wstring text, TextProperties textProperties);
 
-	public: // Events
-		/**
-		 *	Event callback to resize the text element
-		 *	@param[in] evnt The event parameters
-		 *	@return void
-		 */
-		void onTextResize(UIElementResizeEvent* evnt);
-
 	public: // Interface
 		/**
 		 *	Render the 2D text to the parameter render target.
@@ -84,6 +76,9 @@ namespace Odyssey
 		 */
 		void setItalicStyle(bool italic);
 
+	protected:
+		virtual void createResource();
+
 	private: // Helpers
 		/**
 		 *	Create the text format resource from a TextProperties object
@@ -107,6 +102,7 @@ namespace Odyssey
 		Microsoft::WRL::ComPtr<IDWriteFactory> mFactory;
 		Microsoft::WRL::ComPtr<IDWriteTextFormat> mFormat;
 		TextProperties mProperties;
+		float baseSize;
 		std::wstring mText;
 	};
 }

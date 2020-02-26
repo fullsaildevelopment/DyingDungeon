@@ -1,24 +1,24 @@
-#include "RenderWindowDX11.h"
-#include "RenderDevice.h"
 #include "EventManager.h"
+#include "RenderManager.h"
+#include "RenderTarget.h"
+#include "RenderWindowDX11.h"
 
 namespace Odyssey
 {
-	RenderWindowDX11::RenderWindowDX11(std::shared_ptr<RenderDevice> renderDevice, HWND& hWnd)
+	RenderWindowDX11::RenderWindowDX11(HWND& hWnd)
 	{
-		mRenderDevice = renderDevice;
-
 		// Get the window properties
 		RECT mainWinRect;
 		GetClientRect(hWnd, &mainWinRect);
 		mProperties.setBounds(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom);
+		mBaseProperties = mProperties;
 
+		// Get the DirectX11 factory
 		Microsoft::WRL::ComPtr<IDXGIFactory2> factory;
-
 		HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory2), &factory);
-
 		assert(!FAILED(hr));
 
+		// Build the swap chain description
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.Width = mProperties.width;
 		swapChainDesc.Height = mProperties.height;
@@ -27,29 +27,35 @@ namespace Odyssey
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.BufferCount = 1;
 		swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-		swapChainDesc.SampleDesc = { 1,0 };
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
+		// Build the swap chain full screen description
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullScreenDesc = {};
-
 		swapChainFullScreenDesc.RefreshRate = queryRefreshRate(mProperties.width, mProperties.height, false);
 		swapChainFullScreenDesc.Windowed = true;
 
+		// Create the swap chain from the window
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
-
-		hr = factory->CreateSwapChainForHwnd(renderDevice->getDevice().Get(), hWnd,
+		hr = factory->CreateSwapChainForHwnd(RenderManager::getInstance().getDX11Device().Get(), hWnd,
 			&swapChainDesc, &swapChainFullScreenDesc, nullptr, swapChain.GetAddressOf());
 		assert(!FAILED(hr));
 
+		// Query the interface for the swap chain 2
 		hr = swapChain.Get()->QueryInterface<IDXGISwapChain2>(mSwapChain.GetAddressOf());
 		assert(!FAILED(hr));
 
+		// Store the window handle
 		mWindowHandle = std::make_shared<HWND>(hWnd);
 
-		mFactory = renderDevice->get2DFactory();
+		// Store the 2D factory
+		mFactory = RenderManager::getInstance().getD2DFactory();
 
-		createRenderTargets();
+		// Create the 3D and 2D render targets
+		createRenderTarget3D();
+		createRenderTarget2D();
 
 		// Subscribe to the resize event
 		EventManager::getInstance().subscribe(this, &RenderWindowDX11::onResize);
@@ -60,9 +66,9 @@ namespace Odyssey
 		mSwapChain->SetFullscreenState(false, nullptr);
 	}
 
-	std::shared_ptr<RenderTarget> RenderWindowDX11::get3DRenderTarget()
+	RenderTarget* RenderWindowDX11::get3DRenderTarget()
 	{
-		return m3DRenderTarget;
+		return RenderManager::getInstance().getRenderTarget(mRenderTarget);
 	}
 
 	Microsoft::WRL::ComPtr<ID2D1Bitmap1> RenderWindowDX11::get2DRenderTarget()
@@ -86,26 +92,29 @@ namespace Odyssey
 	{
 		// Reset the 2D and 3D render targets
 		mBackBuffer.Reset();
-		m3DRenderTarget.reset();
+		RenderManager::getInstance().destroyRenderTarget(mRenderTarget);
+
+		// Get the device context
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
+		RenderManager::getInstance().getDX11Device()->GetImmediateContext(context.GetAddressOf());
 
 		// Clear the output merger of any render targets and flush
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
-		mRenderDevice->getDevice()->GetImmediateContext(context.GetAddressOf());
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
 		context->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
 		context->Flush();
-		mRenderDevice->getDevice2DContext()->SetTarget(nullptr);
+		RenderManager::getInstance().getD2DContext()->SetTarget(nullptr);
 
 		// Resize the swapchain buffers
 		mSwapChain->ResizeBuffers(0, evnt->width, evnt->height, DXGI_FORMAT_UNKNOWN, 0);
 
-		float xScale = (float)evnt->width / (float)mProperties.width;
-		float yScale = (float)evnt->height / (float)mProperties.height;
+		mProperties.screenScaleX = (float)evnt->width / (float)mBaseProperties.width;
+		mProperties.screenScaleY = (float)evnt->height / (float)mBaseProperties.height;
 
-		EventManager::getInstance().publish(new UIElementResizeEvent(xScale, yScale));
+		EventManager::getInstance().publish(new UIElementResizeEvent(mProperties.screenScaleX, mProperties.screenScaleY));
 
 		// Recreate the render targets
-		createRenderTargets();
+		createRenderTarget3D();
+		createRenderTarget2D();
 	}
 
 	void RenderWindowDX11::present()
@@ -113,15 +122,18 @@ namespace Odyssey
 		mSwapChain->Present(0, 0);
 	}
 
-	void RenderWindowDX11::createRenderTargets()
+	void RenderWindowDX11::createRenderTarget3D()
 	{
 		// Generate 3D render target
 		RECT mainWinRect;
 		GetClientRect(*mWindowHandle, &mainWinRect);
 		mProperties.setBounds(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom);
 
-		m3DRenderTarget = mRenderDevice->createRenderTarget(mProperties.width, mProperties.height, true, this);
+		mRenderTarget = RenderManager::getInstance().createRenderTarget(this, true);
+	}
 
+	void RenderWindowDX11::createRenderTarget2D()
+	{
 		// Generate 2D render target
 		Microsoft::WRL::ComPtr<IDXGISurface1> backBufferSurface;
 
@@ -133,8 +145,8 @@ namespace Odyssey
 			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
 			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpi, dpi);
 
-		mRenderDevice->getDevice2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
-		mRenderDevice->getDevice2DContext()->SetTarget(mBackBuffer.Get());
+		RenderManager::getInstance().getD2DContext()->CreateBitmapFromDxgiSurface(backBufferSurface.Get(), &properties, mBackBuffer.GetAddressOf());
+		RenderManager::getInstance().getD2DContext()->SetTarget(mBackBuffer.Get());
 	}
 
 	DXGI_RATIONAL RenderWindowDX11::queryRefreshRate(UINT screenWidth, UINT screenHeight, BOOL vsync)

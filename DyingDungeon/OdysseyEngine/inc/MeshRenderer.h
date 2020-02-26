@@ -14,10 +14,11 @@ namespace Odyssey
 	class MeshRenderer : public Component
 	{
 		CLASS_DECLARATION(MeshRenderer)
-
+	public:
+		virtual std::shared_ptr<Component> clone() const;
 	public: // Rule of 3
 		MeshRenderer();
-		MeshRenderer(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+		MeshRenderer(int meshID, int materialID);
 
 	public: // Interface
 		/**
@@ -25,7 +26,7 @@ namespace Odyssey
 		 *	@param[in] material The mesh renderer's mesh object.
 		 *	@return void
 		 */
-		void setMesh(std::shared_ptr<Mesh> mesh);
+		void setMesh(int meshID);
 
 		/**
 		 *	Get the mesh renderer's mesh object.
@@ -34,16 +35,12 @@ namespace Odyssey
 		 */
 		Mesh* getMesh();
 
-		std::shared_ptr<Mesh> getSMesh()
-		{
-			return mMesh;
-		}
 		/**
 		 *	Set the mesh renderer's material object.
 		 *	@param[in] material The mesh renderer's material object.
 		 *	@return void
 		 */
-		void setMaterial(std::shared_ptr<Material> material);
+		void setMaterial(int materialID);
 
 		/**
 		 *	Get the mesh renderer's material object.
@@ -82,8 +79,8 @@ namespace Odyssey
 
 	private: // Members
 		bool mDebugEnabled;
-		std::shared_ptr<Mesh> mMesh;
-		std::shared_ptr<Material> mMaterial;
+		int mMesh;
+		int mMaterial;
 		ReadWriteLock mLock;
 	};
 }

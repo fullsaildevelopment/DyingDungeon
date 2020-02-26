@@ -3,7 +3,7 @@
 #include "InputManager.h"
 
 // Tristance dumbass typeDef
-typedef std::vector<std::shared_ptr<Odyssey::Entity>> EntityList;
+typedef std::vector<Odyssey::Entity*> EntityList;
 
 class HeroComponent : public Character
 {
@@ -19,6 +19,9 @@ public:
 	// Destructor
 	~HeroComponent();
 
+	// Set up for clickable UI
+	void SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::Sprite2D* _skillImage2, Odyssey::Sprite2D* _skillImage3, Odyssey::Sprite2D* _skillImage4);
+
 	// Function that allows the player to take thier turn, Character Controler
 	virtual bool TakeTurn(EntityList heros, EntityList enemies);
 
@@ -27,23 +30,47 @@ public:
 
 	// Returns the characters skill list
 	virtual std::vector<std::shared_ptr<Skills>> GetSkills();
+
+	// Get the hero id
+	GameplayTypes::HEROID GetID();
+
 private:
+	// Bool for if im cheating or not
+	bool mIsCheating;
+
 	// Pointer to the current skill the player has selected
 	Skills* mCurrentSkill;
 
 	// Pointer to the current target the player has selected
 	Character* mCurrentTarget;
 
+	// Heros Id
+	GameplayTypes::HEROID mID;
+
 	// Function that gets called to manage the state in which the player is selecting a skill to use
-	void SelctionState(EntityList heros, EntityList enemies, int moveIndex);
+	void SelctionState(int moveIndex);
 
 	// Function that gets called to manage the state in which the player is selecting a target to use its skill on 
 	bool SelectTarget(EntityList targets, int& targetIndex);
 
 	// Function that gets called to send the player back to the selection state
-	void ResetToSelection(EntityList heros, EntityList enemies);
+	void ResetToSelection();
 
 	// Function that sends the state into the inprogress state, queing animations, and setting varia bles for particle effect locations
 	void BeginAttack(EntityList targets);
+
+public:
+	virtual std::shared_ptr<Odyssey::Component> clone() const;
+	virtual void initialize();
+private:
+	// List that contains the list ofheros and enemies
+	std::vector<Odyssey::Entity*> mHeroList;
+	std::vector<Odyssey::Entity*> mEnemyList;
+
+	// Skill callbacks
+	void Skill1Callback();
+	void Skill2Callback();
+	void Skill3Callback();
+	void Skill4Callback();
 };
 

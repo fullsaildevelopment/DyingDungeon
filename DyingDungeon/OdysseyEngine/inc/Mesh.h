@@ -11,7 +11,7 @@ namespace Odyssey
 	class Mesh
 	{
 	public: // Constructors
-		Mesh(std::shared_ptr<RenderDevice> renderDevice, std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
+		Mesh(std::vector<Vertex> vertexList, std::vector<unsigned int> indexList);
 		~Mesh() = default;
 	public: // Functions
 		void bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context);
@@ -26,8 +26,8 @@ namespace Odyssey
 	private:
 		std::shared_ptr<RenderDevice> mRenderDevice;
 		std::string mName;
-		std::shared_ptr<Buffer> mVertexBuffer;
-		std::shared_ptr<Buffer> mIndexBuffer;
+		int mVertexBuffer;
+		int mIndexBuffer;
 		int mNumberOfIndices;
 	};
 }

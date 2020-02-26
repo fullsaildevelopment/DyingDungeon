@@ -11,6 +11,7 @@ RedAudio::RedAudio(const char* path, const char* alias)
 	m_segmented = false;
 	m_start = 0;
 	m_volume = 500;
+	m_personal_volume = 1000;
 
 	Open();
 	SetVolume(m_volume);
@@ -154,6 +155,32 @@ void RedAudio::PlayLoop()
 	delete[] out_string;
 }
 
+void RedAudio::PlayLoop(unsigned int volume)
+{
+	Open();
+	SetVolume(volume);
+	//m_personal_volume = true;
+	LPTSTR out_string = LPTSTR(new char[60]);
+	std::string cmd = "play ";
+	cmd.append(m_alias);
+	cmd.append(" repeat notify");
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
+#ifdef DEBUG_AUDIO_CONSOLE_OUT
+	if (strcmp((const char*)out_string, "") != 0) {
+		LPTSTR out_error = LPTSTR(new char[45]);
+		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
+		std::cout << "ERROR: RedAudio-PlayLoop()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+		delete out_error;
+	}
+#endif
+	m_playing = true;
+	m_looping = true;
+	cmd.clear();
+	delete[] in_cmd;
+	delete[] out_string;
+}
+
 void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 {
 	assert(start < end);
@@ -184,8 +211,6 @@ void RedAudio::PlaySegment(unsigned int start, unsigned int end)
 	delete[] in_cmd;
 	delete[] out_string;
 }
-
-
 
 void RedAudio::PlaySegmentLoop(unsigned int start, unsigned int end)
 {
@@ -253,15 +278,58 @@ void RedAudio::PlayInstance() {
 		in_cmd = ConvertCharToWChar(cmd.c_str());
 		mciSendString(in_cmd, NULL, 0, NULL);
 
-		cmd.clear();
+		/*cmd.clear();
 		cmd.append("close ");
 		cmd.append(newAlias);
 		delete[] in_cmd;
 		in_cmd = ConvertCharToWChar(cmd.c_str());
-		mciSendString(in_cmd, NULL, 0, NULL);
+		mciSendString(in_cmd, NULL, 0, NULL);*/
 
 		cmd.clear();
+		newAlias.clear();
 		delete[] in_cmd;
+	//}
+}
+
+void RedAudio::PlayInstance(unsigned int volume) {
+	//if (m_volume > 0) {
+	srand(static_cast<unsigned int>(time(NULL)));
+	std::string cmd = "open ";
+	cmd.append(m_path);
+	cmd.append(" alias ");
+	std::string newAlias = m_alias;
+	newAlias.append(std::to_string((rand() % (999 - 100 + 1) + 100)));
+	cmd.append(newAlias);
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, NULL, 0, NULL);
+
+	cmd = "setaudio ";
+	cmd.append(newAlias);
+	cmd.append(" volume to ");
+	cmd.append(std::to_string(volume));
+	delete[] in_cmd;
+	in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, NULL, 0, NULL);
+
+	//delete cmd;
+	cmd.clear();
+	cmd.append("play ");
+	cmd.append(newAlias);
+	//cmd.append(" wait");
+	delete[] in_cmd;
+	in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, NULL, 0, NULL);
+
+	/*cmd.clear();
+	cmd.append("close ");
+	cmd.append(newAlias);
+	delete[] in_cmd;
+	in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, NULL, 0, NULL);*/
+
+	cmd.clear();
+	newAlias.clear();
+	delete[] in_cmd;
 	//}
 }
 
@@ -288,6 +356,7 @@ void RedAudio::Pause()
 
 void RedAudio::Stop()
 {
+	Open();
 	LPTSTR out_string = LPTSTR(new char[60]);
 	std::string cmd = "stop ";
 	cmd.append(m_alias);
@@ -362,13 +431,14 @@ void RedAudio::SeekEnd()
 void RedAudio::SetVolume(unsigned int volume)
 {
 	//Open();
-	m_volume = volume;
+	m_volume = static_cast<float>(volume /1000.0f) * m_personal_volume;
 	LPTSTR out_string = LPTSTR(new char[60]);
 
 	std::string cmd = "setaudio ";
 	cmd.append(m_alias);
 	cmd.append(" volume to ");
-	cmd.append(std::to_string(volume));
+	cmd.append(std::to_string(m_volume));
+	cmd.append(" wait");
 	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
 	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
 #ifdef DEBUG_AUDIO_CONSOLE_OUT
@@ -378,6 +448,41 @@ void RedAudio::SetVolume(unsigned int volume)
 		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
 	}
 #endif
+	if (m_alias == "BackgroundBattle") 
+	{
+		int i = 0;
+	}
+	cmd.clear();
+	delete[] in_cmd;
+	delete[] out_string;
+}
+
+void RedAudio::SetPersonalVolume(unsigned int volume)
+{
+	float m_master_volume = (static_cast<float>(m_volume) / static_cast<float>(m_personal_volume));
+	m_personal_volume = volume;
+	m_volume = m_master_volume * m_personal_volume;
+
+	LPTSTR out_string = LPTSTR(new char[60]);
+
+	std::string cmd = "setaudio ";
+	cmd.append(m_alias);
+	cmd.append(" volume to ");
+	cmd.append(std::to_string(m_volume));
+	cmd.append(" wait");
+	const wchar_t* in_cmd = ConvertCharToWChar(cmd.c_str());
+	mciSendString(in_cmd, out_string, sizeof(out_string) * 2, NULL);
+#ifdef DEBUG_AUDIO_CONSOLE_OUT
+	if (strcmp((const char*)out_string, "") != 0) {
+		LPTSTR out_error = LPTSTR(new char[45]);
+		mciGetErrorString(std::stoul(out_string), out_error, sizeof(out_error) * 2);
+		std::cout << "ERROR: RedAudio-PlaySegment()-"; std::wcout << out_error; std::cout << "-file:" << m_path << "\n";
+	}
+#endif
+	if (m_alias == "BackgroundBattle")
+	{
+		int i = 0;
+	}
 	cmd.clear();
 	delete[] in_cmd;
 	delete[] out_string;

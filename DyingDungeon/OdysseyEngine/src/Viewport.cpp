@@ -1,20 +1,23 @@
-#include "Viewport.h"
 #include "RenderWindow.h"
-#include "RenderDevice.h"
+#include "RenderManager.h"
+#include "Viewport.h"
 
 namespace Odyssey
 {
-	Viewport::Viewport(std::shared_ptr<RenderDevice> renderDevice, RenderWindow* renderWindow)
+	Viewport::Viewport(RenderWindow* renderWindow)
 	{
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
-
+		// Set the viewport's width and height
 		mWidth = renderWindow->getWidth();
 		mHeight = renderWindow->getHeight();
+
+		// Get the window's upper left position
 		renderWindow->getPosition(mTopLeftX, mTopLeftY);
-		mMinDepth = 0.0f;
+
+		// Default the min and max depth
+		mMinDepth = 0.1f;
 		mMaxDepth = 1.0f;
 
+		// Set the viewport's properties to that of the window
 		mViewport.Height = static_cast<float>(mHeight);
 		mViewport.Width = static_cast<float>(mWidth);
 		mViewport.TopLeftX = static_cast<float>(mTopLeftX);
@@ -23,17 +26,17 @@ namespace Odyssey
 		mViewport.MaxDepth = mMaxDepth;
 	}
 
-	Viewport::Viewport(std::shared_ptr<RenderDevice> renderDevice, UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth)
+	Viewport::Viewport(UINT width, UINT height, UINT topLeftX, UINT topLeftY, float minDepth, float maxDepth)
 	{
-		mRenderDevice = renderDevice;
-		mDevice = renderDevice->getDevice();
-
+		// Store the viewport's properties
 		mWidth = width;
 		mHeight = height;
 		mTopLeftX = topLeftX;
 		mTopLeftY = topLeftY;
 		mMinDepth = minDepth;
 		mMaxDepth = maxDepth;
+
+		// Set the viewport's properties to the parameter values
 		mViewport.Height = static_cast<float>(mHeight);
 		mViewport.Width = static_cast<float>(mWidth);
 		mViewport.TopLeftX = static_cast<float>(mTopLeftX);

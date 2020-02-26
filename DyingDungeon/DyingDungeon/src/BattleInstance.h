@@ -5,15 +5,15 @@
 #include <queue>
 #include <time.h>
 
-typedef std::vector<std::shared_ptr<Odyssey::Entity>> EntityList; //This will contain a list off shared pointer game objects
+typedef std::vector<Odyssey::Entity*> EntityList; //This will contain a list off shared pointer game objects
 
-typedef std::queue<std::shared_ptr<Odyssey::Entity>> EntityQueue; //This will contain a queue off shared pointer game objects
+typedef std::queue<Odyssey::Entity*> EntityQueue; //This will contain a queue off shared pointer game objects
 
 class BattleInstance
 {
 
 public: // Constructors
-	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel);
+	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam);
 
 	enum BattleInstanceCommands
 	{
@@ -29,6 +29,9 @@ public: // Functions
 	//Getters
 	int GetCurrentRound() { return mCurrentRound; }
 
+	// Get the turn indicator entity
+	Odyssey::Entity* GetTurnIndicator() { return mTurnIndicator; }
+
 	//Setters
 
 private: // Varibales
@@ -42,8 +45,8 @@ private: // Varibales
 	EntityQueue mBattleQueue; // Battle Queue that will hodl the order in which players can attack
 
 	// Entitys
-	std::shared_ptr<Odyssey::Entity> mCurrentCharacter; // This will hold the current player who's turn it is
-	std::shared_ptr<Odyssey::Entity> mTurnIndicator; // This will be the object underneath the character who's turn it is
+	Odyssey::Entity* mCurrentCharacter; // This will hold the current player who's turn it is
+	Odyssey::Entity* mTurnIndicator; // This will be the object underneath the character who's turn it is
 
 	// Ints
 	int mTurnCounter = -1;

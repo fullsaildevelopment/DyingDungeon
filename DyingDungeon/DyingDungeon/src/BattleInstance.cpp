@@ -3,18 +3,23 @@
 #include "Transform.h"
 #include "Character.h"
 #include "StatusEvents.h"
+#include "CharacterFactory.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, std::shared_ptr<Odyssey::Entity> _turnIndicatorModel)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 {
+	// Assign the character teams
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
-	mTurnIndicator = _turnIndicatorModel;
+
+	// Spawn the turn indicator
+	Odyssey::Entity* prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mTurnIndicator, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 1.0f }));
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
-	mPlayerTeam.resize(4);
-	mEnemyTeam.resize(4);
+	mPlayerTeam.resize(3);
+	mEnemyTeam.resize(3);
 
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;
@@ -45,10 +50,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, st
 		{
 			// Set all of the healths for each player on the enemy team back to 100 and their dead status to false
 			// This will show a sim of entering a new battle
-			mEnemyTeam[i]->getComponent<Character>()->SetHP(1000);
-			mEnemyTeam[i]->getComponent<Character>()->SetMana(1000);
-			mEnemyTeam[i]->getComponent<Character>()->SetState(STATE::NONE);
-			mEnemyTeam[i]->getComponent<Character>()->ClearStatusEffects();
+			mEnemyTeam[i]->getComponent<Character>()->ResetMe();
 			mEnemyTeam[i]->getComponent<Odyssey::Animator>()->playClip("Idle");
 
 			mAllCharacters.push_back(mEnemyTeam[i]);
@@ -144,7 +146,7 @@ void BattleInstance::GenerateBattleQueue()
 	// Setting Battle Order from highest speed to lowest speed
 	for (int i = 0; i < numOfCharacters; i++)
 	{
-		std::shared_ptr<Odyssey::Entity> highestSpeedCharacter;
+		Odyssey::Entity* highestSpeedCharacter;
 		int indexOfCharacter = -1;
 		float highestSpeed = -1.0f;
 	
@@ -194,7 +196,7 @@ bool BattleInstance::IsTeamAlive(EntityList _teamToCheck)
 void BattleInstance::UpdateCharacterTurnNumbers()
 {
 	EntityQueue tempBattleQueue = mBattleQueue;
-	int startingNum = tempBattleQueue.size();
+	int startingNum = (int)tempBattleQueue.size();
 	int counter = 1;
 
 	//Loop through each character and update it's
@@ -232,5 +234,5 @@ void BattleInstance::SetTurnIndicatorPosition()
 	// Send out event letting the stat tracker know a new player is taking a turn
 	std::wstring characterName = mCurrentCharacter->getComponent<Character>()->GetName();
 	bool isHero = mCurrentCharacter->getComponent<Character>()->IsHero();
-	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mTurnCounter, mCurrentRound, isHero));
+	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mCurrentCharacter->getComponent<Character>(), mTurnCounter, mCurrentRound, isHero));
 }

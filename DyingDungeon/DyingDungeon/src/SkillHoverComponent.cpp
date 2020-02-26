@@ -1,48 +1,125 @@
 #include "SkillHoverComponent.h"
+#include "SkillHUDElements.h"
+#include "EventManager.h"
+#include "Character.h"
 
 CLASS_DEFINITION(Odyssey::Component, SkillHoverComponent)
+
+std::shared_ptr<Odyssey::Component> SkillHoverComponent::clone() const 
+{
+	return std::make_shared<SkillHoverComponent>(*this);
+}
+
 void SkillHoverComponent::initialize()
 {
-	mSprites[0]->registerCallback("onMouseEnter", this, &SkillHoverComponent::callback1);
-	mSprites[1]->registerCallback("onMouseEnter", this, &SkillHoverComponent::callback2);
-	mSprites[2]->registerCallback("onMouseEnter", this, &SkillHoverComponent::callback3);
-	mSprites[3]->registerCallback("onMouseEnter", this, &SkillHoverComponent::callback4);
-	mSprites[0]->registerCallback("onMouseExit", this, &SkillHoverComponent::callback1);
-	mSprites[1]->registerCallback("onMouseExit", this, &SkillHoverComponent::callback2);
-	mSprites[2]->registerCallback("onMouseExit", this, &SkillHoverComponent::callback3);
-	mSprites[3]->registerCallback("onMouseExit", this, &SkillHoverComponent::callback4);
-	mStates.push_back(false);
-	mStates.push_back(false);
-	mStates.push_back(false);
-	mStates.push_back(false);
+	// Enter callbacks
+	mSprites[0]->registerCallback("onMouseEnter", this, &SkillHoverComponent::skill1Enter);
+	mSprites[1]->registerCallback("onMouseEnter", this, &SkillHoverComponent::skill2Enter);
+	mSprites[2]->registerCallback("onMouseEnter", this, &SkillHoverComponent::skill3Enter);
+	mSprites[3]->registerCallback("onMouseEnter", this, &SkillHoverComponent::skill4Enter);
+	// Exit callbacks
+	mSprites[0]->registerCallback("onMouseExit", this, &SkillHoverComponent::skill1Exit);
+	mSprites[1]->registerCallback("onMouseExit", this, &SkillHoverComponent::skill2Exit);
+	mSprites[2]->registerCallback("onMouseExit", this, &SkillHoverComponent::skill3Exit);
+	mSprites[3]->registerCallback("onMouseExit", this, &SkillHoverComponent::skill4Exit);
 }
 
-void SkillHoverComponent::registerSprite(Odyssey::Sprite2D* sprite, Odyssey::UICanvas* canvas)
+void SkillHoverComponent::registerSprite(Odyssey::Sprite2D* sprite)
 {
 	mSprites.push_back(sprite);
-	mCanvas.push_back(canvas);
 }
 
-void SkillHoverComponent::callback1()
+void SkillHoverComponent::skill1Enter()
 {
-	mStates[0] = !mStates[0];
-	mCanvas[0]->setActive(mStates[0]);
+	// Create the skill popup for skill 1
+	CreateSkillHoverPrefab(SkillNumber::Skill1);
 }
 
-void SkillHoverComponent::callback2()
+void SkillHoverComponent::skill2Enter()
 {
-	mStates[1] = !mStates[1];
-	mCanvas[1]->setActive(mStates[1]);
+	// Create the skill popup for skill 2
+	CreateSkillHoverPrefab(SkillNumber::Skill2);
 }
 
-void SkillHoverComponent::callback3()
+void SkillHoverComponent::skill3Enter()
 {
-	mStates[2] = !mStates[2];
-	mCanvas[2]->setActive(mStates[2]);
+	// Create the skill popup for skill 3
+	CreateSkillHoverPrefab(SkillNumber::Skill3);
 }
 
-void SkillHoverComponent::callback4()
+void SkillHoverComponent::skill4Enter()
 {
-	mStates[3] = !mStates[3];
-	mCanvas[3]->setActive(mStates[3]);
+	// Create the skill popup for skill 4
+	CreateSkillHoverPrefab(SkillNumber::Skill4);
+}
+
+void SkillHoverComponent::skill1Exit()
+{
+	DestorySkillHoverPopup(SkillNumber::Skill1);
+}
+
+void SkillHoverComponent::skill2Exit()
+{
+	DestorySkillHoverPopup(SkillNumber::Skill2);
+}
+
+void SkillHoverComponent::skill3Exit()
+{
+	DestorySkillHoverPopup(SkillNumber::Skill3);
+}
+
+void SkillHoverComponent::skill4Exit()
+{
+	DestorySkillHoverPopup(SkillNumber::Skill4);
+}
+
+CharacterFactory::SkillHoverID SkillHoverComponent::GetSkillPopupPos()
+{
+	switch (mHudPositionEnum)
+	{
+		case HudPosition::Left:
+			return CharacterFactory::SkillHoverID::LeftHUD;
+			break;
+		case HudPosition::Middle:
+			return CharacterFactory::SkillHoverID::MiddleHUD;
+			break;
+		case HudPosition::Right:
+			return CharacterFactory::SkillHoverID::RightHUD;
+			break;
+		default:
+			return CharacterFactory::SkillHoverID::LeftHUD;
+			break;
+	}
+}
+
+void SkillHoverComponent::CreateSkillHoverPrefab(SkillNumber _skillNumber)
+{
+	// Enum to position the skill popup in the right spot
+	CharacterFactory::SkillHoverID skillPopupPosition = GetSkillPopupPos();
+
+	// Create the skill popup 
+	Odyssey::Entity* prefab = CharacterFactory::getInstance().GetSkillHoverHUDPrefab(skillPopupPosition);
+	DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mCurrentSkillPopups[_skillNumber], vec, vec));
+
+	// Get the skill hud
+	SkillHUDElements* skillHud = mCurrentSkillPopups[_skillNumber]->getComponent<SkillHUDElements>();
+
+	// Assign the correct elements
+	skillHud->ChangeSkillImage(mCharacterSkills[_skillNumber]->GetSkillIconPath());
+	skillHud->ChangeSkillName(mCharacterSkills[_skillNumber]->GetSkillName());
+	float manaCost = mCharacterSkills[_skillNumber]->GetManaCost();
+	if (manaCost < 0.0f)
+	{
+		manaCost = 0.0f;
+	}
+	skillHud->ChangeManaCost(std::to_wstring((int)manaCost));
+	skillHud->ChangeSkillDescription(mCharacterSkills[_skillNumber]->GetSkillDescription());
+	skillHud->ChangeThemeColor(characterComponent->GetThemeColor()); // Set the color to the character's theme color
+}
+
+void SkillHoverComponent::DestorySkillHoverPopup(SkillNumber _skillNumber)
+{
+	// Destory the skill hover popup
+	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mCurrentSkillPopups[_skillNumber]));
 }
