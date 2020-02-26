@@ -105,6 +105,8 @@ public: // Functions
 	void HideCreditsMenu();
 	void ShowMainOptions();
 	void HideMainOptions();
+	void ShowMainVolume();
+	void HideMainVolume();
 	// TODO: M3B1 ONLY END
 
 	void StatsMenuPrevTurn();
@@ -120,6 +122,10 @@ public: // Functions
 	void StatsMenuPrevRound();
 
 	void HideStatsMenu();
+
+	void ShowControlsGuide();
+
+	void HideControlsGuide();
 
 	// Set the characters HUD Elements
 	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
@@ -219,7 +225,13 @@ public: // Functions
 	//
 	Odyssey::Rectangle2D** GetLoadoutPortraitBackgrounds() { return mLoadoutPortraitBackground; }
 	//
-	Odyssey::Text2D* GetBackTextOptions() { return mOptionsBack; }
+	Odyssey::Text2D* GetBackOptions() { return mOptionsBack; }
+	//
+	Odyssey::Rectangle2D* GetBackButtonOptions() { return mOptionsBackButton; }
+	//
+	Odyssey::Rectangle2D* GetVolumeButtonOptions() { return mOptionsVolume; }
+	//
+	Odyssey::Rectangle2D* GetControlsButtonOptions() { return mOptionsControls; }
 	//
 	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
@@ -275,6 +287,7 @@ private: // Varibales
 
 	// Menu Entities
 	Odyssey::Entity* mMainMenu = nullptr;
+	Odyssey::Entity* mMainMenuVolume = nullptr;
 	Odyssey::Entity* mMainMenuOptions = nullptr;
 	Odyssey::Entity* mTowerSelectMenu = nullptr;
 	Odyssey::Entity* mTeamSelectMenu = nullptr;
@@ -284,6 +297,7 @@ private: // Varibales
 	Odyssey::Entity* mOptionsMenu = nullptr;
 	Odyssey::Entity* mStatsMenu = nullptr;
 	Odyssey::Entity* mCreditsMenu = nullptr;
+	Odyssey::Entity* mMainControls = nullptr;
 
 	// Main Menu Items
 	Odyssey::Sprite2D* mApeBackground = nullptr;
@@ -291,6 +305,10 @@ private: // Varibales
 	Odyssey::Text2D* mNewGameText = nullptr;
 	Odyssey::Text2D* mStatsText = nullptr;
 	Odyssey::Text2D* mOptionsBack = nullptr;
+	Odyssey::Rectangle2D* mOptionsBackButton = nullptr;
+	Odyssey::Rectangle2D* mOptionsVolume = nullptr;
+	Odyssey::Rectangle2D* mOptionsControls = nullptr;
+	Odyssey::Text2D* mMainControlsBack = nullptr;
 	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Rectangle2D* mMainVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
