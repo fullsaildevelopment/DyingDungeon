@@ -392,9 +392,9 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 145.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 180.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Taken", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 215.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Block", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Gained", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Healing Recived", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 285.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Support", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Given", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Healing Done", rewardsTextProperties);
 	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 355.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense Given", rewardsTextProperties);
 
 	rewardsTextProperties.textAlignment = Odyssey::TextAlignment::Center;
