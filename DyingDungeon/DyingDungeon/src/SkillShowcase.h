@@ -3,6 +3,7 @@
 
 class SkillShowcase : public Odyssey::Component
 {
+	CLASS_DECLARATION(SkillShowcase)
 public:
 	virtual void initialize();
 	virtual void update(double deltaTime);
@@ -11,7 +12,20 @@ public:
 
 public:
 	Odyssey::Entity* bard1;
+	Odyssey::Entity* bard1Spawn;
 	Odyssey::Entity* bard2;
+	Odyssey::Entity* bard2Spawn;
 	Odyssey::Entity* bard3;
+	Odyssey::Entity* bard3Spawn;
 	Odyssey::Entity* bard4;
+	Odyssey::Entity* bard4Spawn;
+
+	Odyssey::Entity* paladin1;
+	Odyssey::Entity* paladin1Spawn;
+	Odyssey::Entity* paladin2;
+	Odyssey::Entity* paladin2Spawn;
+	Odyssey::Entity* paladin3;
+	Odyssey::Entity* paladin3Spawn;
+	Odyssey::Entity* paladin4;
+	Odyssey::Entity* paladin4Spawn;
 };

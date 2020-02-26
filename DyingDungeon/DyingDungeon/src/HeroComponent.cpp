@@ -131,7 +131,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The paladin is a guardian of divine power and a protector of the righteous. Utilize the paladin's skills to protect your team and bring evil to bear.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -259,7 +259,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The mage possesses an ancient knowledge of the elemental forces. These skills can be used to inflict tremendous damage on all enemies in your path.";
+		mDescription = L"A vengeful mage from the Forest of Gelmeur, seeking revenge for her parents. She unleashes destruction on her enemies with magic, but lacks defensive capabilities.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills // kills in 5, can take 6
@@ -277,7 +277,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 15 mana.");
 		// Skill 3
-		temp = std::make_shared<Bleed>(0.10f, 3, nullptr);
+		temp = std::make_shared<Bleed>(0.10f, 1, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 30.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("LargeFireball", 0.25f);
@@ -369,7 +369,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The bard supports their party with the plethora of songs they know. Using music they will buff allies and debuff enemies, and remove harmful effects from the party.";
+		mDescription = L"A tavern bard, sick of her old life. She seeks fame and fortune. She supports and heals her allies using her many songs.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -414,7 +414,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mName = L"Warrior";
 
 		// Set the character subname
-		mSubName = L"Off-Tank";
+		mSubName = L"Berserker";
 
 		// Set the portaits path
 		mPortrait = L"assets/images/WarriorPortrait.png";
@@ -495,7 +495,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The warrior is beefy and strong. Use his nearly endless pool of health to soak up raw damage, while dealing out debilitating  attacks.";
+		mDescription = L"An ex royal guard and a drunkard, seeking redemption in battle. He rushes headfirst into battle, unleashing devastating attacks with his axe.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -609,15 +609,15 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Skill 4
-		//tempAnimationData.mAnimationNickName = "Skill_4";
-		//tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_4.dxanim";
-		//tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		tempAnimationData.mAnimationNickName = "Skill_4";
+		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Skill_2.dxanim";
+		tempAnimationData.mIsLooping = true;
+		mAnimations.push_back(tempAnimationData);
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The monk works to cripple the enemy through multiple types of debuffs. The Monk has a high damage and speed but low defensive stats, excelling at damage output and team utility.";
+		mDescription = L"One of Ganfaul’s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but won’t last long without support.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -631,19 +631,19 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 45.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 15.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
 		mSkillList[1]->SetSoundEffect("", 0.25f);
 		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
-		temp = std::make_shared<Provoked>(1, this, nullptr);
+		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("", 0.25f);
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 90.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 30.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");

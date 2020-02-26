@@ -95,7 +95,7 @@ void Attack::Use(Character& caster, Character& target)
 	battleText.append(L" used " + skillName + L" on " + targetName + L" for");
 	GameUIManager::getInstance().UpdateCombatLogIcons(&caster, &target, this);
 	GameUIManager::getInstance().SetCombatLogTextColor({ 255.0f, 0.0f, 0.0f });
-	GameUIManager::getInstance().UpdateCombatLogText(mDamage);
+	GameUIManager::getInstance().UpdateCombatLogText(totalDps);
 	//////////////////////////////////////////////
 
 	// Play audio "hit" sound effect

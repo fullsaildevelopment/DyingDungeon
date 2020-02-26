@@ -43,7 +43,8 @@ void TowerManager::initialize()
 
 	// Set the pause menu button callbacks
 	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	GameUIManager::getInstance().GetOptionsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
 	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
 }
 
@@ -321,6 +322,29 @@ void TowerManager::ShowOptionsMenu()
 	GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
 }
 
+void TowerManager::ShowControlScreen()
+{
+	GameUIManager::getInstance().GetControlsImage()->setVisible(true);
+	GameUIManager::getInstance().GetControlsBackText()->setVisible(true);
+	GameUIManager::getInstance().GetControlsBackText()->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+
+	GameUIManager::getInstance().GetResumeButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetOptionsVolumeButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetOptionsControlsButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetMainMenuButton()->unregisterCallback("onMouseClick");
+}
+
+void TowerManager::HideControlScreen()
+{
+	GameUIManager::getInstance().GetControlsImage()->setVisible(false);
+	GameUIManager::getInstance().GetControlsBackText()->setVisible(false);
+	GameUIManager::getInstance().GetControlsBackText()->unregisterCallback("onMouseClick");
+
+	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+}
 void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);

@@ -25,8 +25,15 @@ namespace Odyssey
 	void Mesh::unbind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
 	{
 		// Bind the vertex and index buffer to the rendering pipeline.
-		RenderManager::getInstance().getBuffer(mVertexBuffer)->unbind(context, 0, ShaderType::VertexShader);
-		RenderManager::getInstance().getBuffer(mIndexBuffer)->unbind(context, 0, ShaderType::VertexShader);
+		if (RenderManager::getInstance().getBuffer(mVertexBuffer))
+		{
+			RenderManager::getInstance().getBuffer(mVertexBuffer)->unbind(context, 0, ShaderType::VertexShader);
+		}
+		
+		if (RenderManager::getInstance().getBuffer(mIndexBuffer))
+		{
+			RenderManager::getInstance().getBuffer(mIndexBuffer)->unbind(context, 0, ShaderType::VertexShader);
+		}
 	}
 
 	Buffer* Mesh::getVertexBuffer()

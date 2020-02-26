@@ -799,15 +799,6 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 	// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
-		// Manage all my buffs
-		//ManageStatusEffects(mBuffs);
-
-		// Manage all my debuffs
-		//ManageStatusEffects(mDebuffs);
-
-		// Manage all my shields
-		//ManageStatusEffects(mSheilds);
-
 		// Reset state to default
 		mCurrentState = STATE::NONE;
 
