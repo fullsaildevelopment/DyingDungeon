@@ -119,16 +119,16 @@ namespace Odyssey
 			{
 				updateLightingBuffer(itr->second, args, renderPackage);
 
-				if (itr->second->animator)
+				if (AnimatorDX11* animator = itr->second->entity->getRootComponent<AnimatorDX11>())
 				{
-					itr->second->animator->bind(args.context);
+					animator->bind(args.context);
 				}
 
 				renderSceneObject(itr->second, args);
 
-				if (itr->second->animator)
+				if (AnimatorDX11* animator = itr->second->entity->getRootComponent<AnimatorDX11>())
 				{
-					itr->second->animator->unbind(args.context);
+					animator->unbind(args.context);
 				}
 			}
 		}

@@ -102,7 +102,7 @@ namespace Odyssey
 			zViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 			zViewDesc.Texture2D.MipSlice = 0;
 			zViewDesc.Flags = 0;
-			zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+			zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 			HRESULT hr = RenderManager::getInstance().getDX11Device()->CreateDepthStencilView(texture, &zViewDesc, mDepthStencilView.GetAddressOf());
 		}
@@ -148,7 +148,7 @@ namespace Odyssey
 			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
 			ZeroMemory(&rtvDesc, sizeof(rtvDesc));
 			rtvDesc.Format = format;
-			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
+			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			rtvDesc.Texture1D.MipSlice = 0;
 
 			RenderManager::getInstance().getDX11Device()->CreateRenderTargetView(rtvTexture, &rtvDesc, mRenderTargetView.GetAddressOf());
@@ -170,7 +170,7 @@ namespace Odyssey
 			if (width == 4096)
 				zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			else
-				zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+				zViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 			zViewDesc.Texture2D.MipSlice = 0;
 

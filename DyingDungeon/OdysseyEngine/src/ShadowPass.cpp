@@ -253,9 +253,9 @@ namespace Odyssey
 		for (RenderObject* renderObject : dynamicList)
 		{
 			// Bind the animator if the object has one
-			if (renderObject->animator)
+			if (AnimatorDX11* animator = renderObject->entity->getRootComponent<AnimatorDX11>())
 			{
-				renderObject->animator->bind(args.context);
+				animator->bind(args.context);
 			}
 
 			// Render the object if the mesh renderer is active
@@ -268,9 +268,9 @@ namespace Odyssey
 			}
 
 			// Unbind the animator if the object has one
-			if (renderObject->animator)
+			if (AnimatorDX11* animator = renderObject->entity->getRootComponent<AnimatorDX11>())
 			{
-				renderObject->animator->unbind(args.context);
+				animator->unbind(args.context);
 			}
 		}
 
@@ -287,9 +287,9 @@ namespace Odyssey
 		for (RenderObject* renderObject : staticList)
 		{
 			// Bind the animator if the object has one
-			if (renderObject->animator)
+			if (AnimatorDX11* animator = renderObject->entity->getRootComponent<AnimatorDX11>())
 			{
-				renderObject->animator->bind(args.context);
+				animator->bind(args.context);
 			}
 
 			// Render the object if the mesh renderer is active
@@ -302,9 +302,9 @@ namespace Odyssey
 			}
 
 			// Unbind the animator if the object has one
-			if (renderObject->animator)
+			if (AnimatorDX11* animator = renderObject->entity->getRootComponent<AnimatorDX11>())
 			{
-				renderObject->animator->unbind(args.context);
+				animator->unbind(args.context);
 			}
 		}
 

@@ -52,6 +52,7 @@ namespace Odyssey
 
 		void onDestroyEntity(DestroyEntityEvent* evnt);
 
+		void onChangeMouseCursor(ChangeMouseCursorEvent* evnt);
 		/**
 		 *	Static callback for render window message handling.
 		 *	@param[in] hwnd The render window's handle.
@@ -130,5 +131,6 @@ namespace Odyssey
 		bool mIsRunning;
 		bool mIsShutdown;
 		std::vector<std::shared_ptr<Entity>> mPrefabs;
+		static HCURSOR mCursor;
 	};
 }

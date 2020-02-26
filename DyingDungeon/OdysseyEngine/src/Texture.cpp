@@ -71,7 +71,7 @@ namespace Odyssey
 		texDesc.Usage = D3D11_USAGE_DEFAULT;
 		texDesc.CPUAccessFlags = 0;
 		texDesc.MiscFlags = 0;
-		texDesc.SampleDesc.Count = 4;
+		texDesc.SampleDesc.Count = 1;
 		if (textureType == TextureType::Render && width == 4096)
 			texDesc.SampleDesc.Count = 1;
 		texDesc.SampleDesc.Quality = 0;
@@ -105,7 +105,7 @@ namespace Odyssey
 		if (DXGI_FORMAT_R24_UNORM_X8_TYPELESS == format)
 			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		else
-			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		shaderResourceViewDesc.Format = format;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;

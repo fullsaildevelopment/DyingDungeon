@@ -30,24 +30,25 @@ namespace Odyssey
 		if (sceneThread.joinable())
 		{
 			mSceneChanged = true;
+			mShuttingDown = true;
 			sceneThread.join();
 		}
 	}
 
 	void ThreadManager::executeSceneThread(std::shared_ptr<SceneDX11> activeScene)
 	{
-		sceneThread = std::thread(&ThreadManager::updateScene, this, activeScene);
+		mLock.lock(LockState::Write);
+		mActiveScene = activeScene;
+		mLock.unlock(LockState::Write);
+		sceneThread = std::thread(&ThreadManager::updateScene, this);
 	}
 
 	void ThreadManager::changeActiveScene(std::shared_ptr<SceneDX11> activeScene)
 	{
-		if (sceneThread.joinable())
-		{
-			mSceneChanged = true;
-			sceneThread.join();
-			mSceneChanged = false;
-			executeSceneThread(activeScene);
-		}
+		mLock.lock(LockState::Write);
+		mNextScene = activeScene;
+		mSceneChanged = true;
+		mLock.unlock(LockState::Write);
 	}
 
 	void ThreadManager::onShutdown(EngineShutdownEvent* evnt)
@@ -61,22 +62,29 @@ namespace Odyssey
 		mTimer.Restart();
 	}
 
-	void ThreadManager::updateScene(std::shared_ptr<SceneDX11> activeScene)
+	void ThreadManager::updateScene()
 	{
-		while (mSceneChanged == false)
+		while (mShuttingDown == false)
 		{
-			if (mShuttingDown == false)
+			// Check if there is a scene change
+			mLock.lock(LockState::Write);
+			if (mSceneChanged)
 			{
-				mTimer.Signal();
+				mActiveScene = mNextScene;
+				mNextScene = nullptr;
+				mSceneChanged = false;
+			}
+			mLock.unlock(LockState::Write);
 
-				if (mTimer.TotalTime() > mTickInterval)
-				{
-					mTimer.Restart();
+			mTimer.Signal();
 
-					EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
+			if (mTimer.TotalTime() > mTickInterval)
+			{
+				mTimer.Restart();
 
-					activeScene->update();
-				}
+				EventManager::getInstance().publish(new ThreadTickEvent("Scene Thread"));
+
+				mActiveScene->update();
 			}
 		}
 	}

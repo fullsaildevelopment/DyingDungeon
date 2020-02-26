@@ -77,6 +77,8 @@ namespace Odyssey
 
 		EventManager::getInstance().subscribe(this, &Application::onSpawnEntity);
 		EventManager::getInstance().subscribe(this, &Application::onDestroyEntity);
+
+		EventManager::getInstance().subscribe(this, &Application::onChangeMouseCursor);
 	}
 
 	Application::~Application()
@@ -148,6 +150,13 @@ namespace Odyssey
 		mActiveScene->destroyEntity(evnt->entity);
 	}
 
+	void Application::onChangeMouseCursor(ChangeMouseCursorEvent* evnt)
+	{
+		auto mCursor = LoadCursorFromFile(evnt->filename);
+		SetCursor(mCursor);
+		SetClassLongPtr(mActiveWindow->getWindowHandle(), GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(mCursor));
+	}
+
 	LRESULT CALLBACK Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
@@ -177,6 +186,10 @@ namespace Odyssey
 				int yPos = GET_Y_LPARAM(lParam);
 				EventManager::getInstance().publish(new MouseInputEvent(xPos, yPos));
 				
+				break;
+			}
+			case WM_SETCURSOR:
+			{
 				break;
 			}
 			case WM_KEYUP:

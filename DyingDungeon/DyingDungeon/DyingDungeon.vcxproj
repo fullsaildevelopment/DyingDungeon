@@ -180,6 +180,7 @@
     <ClCompile Include="src\GameUIManager.cpp" />
     <ClCompile Include="src\Heal.cpp" />
     <ClCompile Include="src\HeroComponent.cpp" />
+    <ClCompile Include="src\LoadingScreenController.cpp" />
     <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\ParticleMover.cpp" />
     <ClCompile Include="src\Provoked.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\SkillHoverComponent.cpp" />
     <ClCompile Include="src\SkillHUDElements.cpp" />
     <ClCompile Include="src\Skills.cpp" />
+    <ClCompile Include="src\SkillShowcase.cpp" />
     <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
     <ClCompile Include="src\StatUp.cpp" />
@@ -220,6 +222,7 @@
     <ClInclude Include="src\GameUIManager.h" />
     <ClInclude Include="src\Heal.h" />
     <ClInclude Include="src\HeroComponent.h" />
+    <ClInclude Include="src\LoadingScreenController.h" />
     <ClInclude Include="src\MainMenuController.h" />
     <ClInclude Include="src\MyTypeDefs.h" />
     <ClInclude Include="src\ParticleMover.h" />
@@ -233,6 +236,7 @@
     <ClInclude Include="src\SkillHoverComponent.h" />
     <ClInclude Include="src\SkillHUDElements.h" />
     <ClInclude Include="src\Skills.h" />
+    <ClInclude Include="src\SkillShowcase.h" />
     <ClInclude Include="src\StatDown.h" />
     <ClInclude Include="src\StatTracker.h" />
     <ClInclude Include="src\StatUp.h" />

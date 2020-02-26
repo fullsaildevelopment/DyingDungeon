@@ -192,6 +192,7 @@ namespace Odyssey
 	{
 		Entity* entity = component->getEntity();
 
+			mLock.lock(LockState::Write);
 		// Remove the component from the component list if it exists
 		auto iter = std::find(mComponentList.begin(), mComponentList.end(), component);
 
@@ -205,17 +206,16 @@ namespace Odyssey
 		{
 			MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(component);
 
-			mLock.lock(LockState::Write);
 			// Iterate through render objects and compare the pointer, if they match remove that render object.
 			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
 			{
 				if (meshRenderer == mRenderPackage.renderObjects[i].meshRenderer)
 				{
 					mRenderPackage.renderObjects.erase(mRenderPackage.renderObjects.begin() + i);
+					i--;
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		// Check if the component is a transform
@@ -223,7 +223,6 @@ namespace Odyssey
 		{
 			Transform* transform = static_cast<Transform*>(component);
 
-			mLock.lock(LockState::Write);
 			// Iterate through render objects and compare the pointer, if they match remove that render object.
 			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
 			{
@@ -233,7 +232,6 @@ namespace Odyssey
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		// Check if the component is a transform
@@ -241,7 +239,6 @@ namespace Odyssey
 		{
 			AnimatorDX11* animator = static_cast<AnimatorDX11*>(component);
 
-			mLock.lock(LockState::Write);
 			// Iterate through render objects and compare the pointer, if they match remove that render object.
 			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
 			{
@@ -251,7 +248,6 @@ namespace Odyssey
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		// Check if the component is a transform
@@ -259,7 +255,6 @@ namespace Odyssey
 		{
 			AABB* aabb = static_cast<AABB*>(component);
 
-			mLock.lock(LockState::Write);
 			// Iterate through render objects and compare the pointer, if they match remove that render object.
 			for (int i = 0; i < mRenderPackage.renderObjects.size(); i++)
 			{
@@ -269,12 +264,10 @@ namespace Odyssey
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		if (component->isClassType(UICanvas::Type))
 		{
-			mLock.lock(LockState::Write);
 			// Iterate through the canvas objects and compare the entity pointer, if they match remove that object.
 			for (int i = 0; i < mRenderPackage.canvasObjects.size(); i++)
 			{
@@ -284,7 +277,6 @@ namespace Odyssey
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		// Iterate through vfx objects and compare the pointer, if they match remove that system.
@@ -292,7 +284,6 @@ namespace Odyssey
 		{
 			ParticleSystem* particleSystem = static_cast<ParticleSystem*>(component);
 
-			mLock.lock(LockState::Write);
 			for (int i = 0; i < mRenderPackage.vfxObjects.size(); i++)
 			{
 				if (particleSystem == mRenderPackage.vfxObjects[i].system)
@@ -301,14 +292,12 @@ namespace Odyssey
 					break;
 				}
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		if (component->isClassType(Light::Type))
 		{
 			Light* light = static_cast<Light*>(component);
 
-			mLock.lock(LockState::Write);
 			auto iter2 = std::find(mRenderPackage.sceneLights.begin(), mRenderPackage.sceneLights.end(), light);
 
 			if (mRenderPackage.shadowLight == light)
@@ -320,7 +309,6 @@ namespace Odyssey
 			{
 				mRenderPackage.sceneLights.erase(iter2);
 			}
-			mLock.unlock(LockState::Write);
 		}
 
 		// Check if the entity has a camera component
@@ -328,13 +316,12 @@ namespace Odyssey
 		{
 			Camera* camera = static_cast<Camera*>(component);
 
-			mLock.lock(LockState::Write);
 			if (camera == mRenderPackage.camera)
 			{
 				mRenderPackage.camera = nullptr;
 			}
-			mLock.unlock(LockState::Write);
 		}
+		mLock.unlock(LockState::Write);
 	}
 
 	double Scene::getDeltaTime()
