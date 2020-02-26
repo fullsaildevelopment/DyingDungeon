@@ -116,6 +116,12 @@
     <ClCompile Include="src\SkillShowcase.cpp">
       <Filter>Source Files\Skills</Filter>
     </ClCompile>
+    <ClCompile Include="src\PurifyMover.cpp">
+      <Filter>Source Files\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JudgementMover.cpp">
+      <Filter>Source Files\Skills</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Converter.h">
@@ -246,6 +252,12 @@
       <Filter>Header Files\Game Management</Filter>
     </ClInclude>
     <ClInclude Include="src\SkillShowcase.h">
+      <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PurifyMover.h">
+      <Filter>Header Files\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JudgementMover.h">
       <Filter>Header Files\Skills</Filter>
     </ClInclude>
   </ItemGroup>

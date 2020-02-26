@@ -205,7 +205,11 @@ namespace Odyssey
 				GetClientRect(hwnd, &mainWinRect);
 
 				// Register the window resize event with the new window bounds
-				EventManager::getInstance().publish(new WindowResizeEvent(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom));
+				if ((mainWinRect.right - mainWinRect.left != 0) && (mainWinRect.bottom - mainWinRect.top != 0))
+				{
+					EventManager::getInstance().publish(new WindowResizeEvent(mainWinRect.left, mainWinRect.right, mainWinRect.top, mainWinRect.bottom));
+				}
+				
 				break;
 			}
 			case WM_CLOSE:
