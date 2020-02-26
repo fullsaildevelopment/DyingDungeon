@@ -72,6 +72,7 @@ public:
 	/// </summary>
 	/// <returns>returns a the current level number by refrence</returns
 	unsigned int& GetLevelCount();
+	unsigned int GetStatCount(unsigned int id, unsigned int level, Action stat);
 	/// <summary>
 	/// Getter to retreve the number of levels 
 	/// </summary>

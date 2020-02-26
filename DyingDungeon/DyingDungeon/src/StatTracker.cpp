@@ -128,6 +128,51 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		}
 
 	}*/
+	for (int i = 0; i < 3; i++) {
+		m_p_canvas->getElements<Odyssey::Sprite2D>()[i]->setSprite(m_levels.back().characters[i].second, m_portrait_width, m_portrait_height);
+
+		std::wstring rewardsText;
+
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.second, raEvent->level, Action::Attack)) + L" times");
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1)*10)]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateDamageDealt(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size()), true), 2));
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 1]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculatePercentDamageSuccess(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2) + L"%");
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 2]->setText(rewardsText);
+		rewardsText.clear();
+		
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.second, raEvent->level, Action::Defend)) + L" times");
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 3]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateDamageTaken(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2));
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 4]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2) + L"%\n");
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 5]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2));
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 6]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.second, raEvent->level, Action::Aid)) + L" times");
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 7]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateHealthRecived(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2));
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 8]->setText(rewardsText);
+		rewardsText.clear();
+
+		rewardsText.append(FormatToPercentageW(CalculateShieldGiven(m_levels.back().characters[i].first.second, static_cast<unsigned int>(m_levels.size())), 2));
+		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 9]->setText(rewardsText);
+		rewardsText.clear();
+	}
 	//OutputStatSheet();
 }
 
@@ -358,6 +403,7 @@ unsigned int StatTracker::GetStatCount(std::string name, Action stat)
 unsigned int StatTracker::GetStatCount(unsigned int id, Action stat)
 {
 	unsigned int count = 0;
+
 	for (unsigned int i = 0; i < m_levels.size(); i++)
 	{
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
@@ -372,6 +418,23 @@ unsigned int StatTracker::GetStatCount(unsigned int id, Action stat)
 	return count;
 }
 
+unsigned int StatTracker::GetStatCount(unsigned int id, unsigned int level, Action stat)
+{
+	unsigned int count = 0;
+	unsigned int index = level - 1;
+	/*for (unsigned int i = 0; i < m_levels.size(); i++)
+	{*/
+		for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
+		{
+			if (m_levels[index].turns[j].unique_id == id && m_levels[index].turns[j].actionType == stat)
+			{
+				count++;
+			}
+		}
+	//}
+
+	return count;
+}
 unsigned int StatTracker::GetRoundCount(unsigned int level)
 {
 	return m_levels[level - 1].rounds;
