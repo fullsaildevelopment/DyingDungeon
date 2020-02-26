@@ -27,6 +27,7 @@ void MainMenuController::initialize()
 	// Register callbacks
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
 	GameUIManager::getInstance().GetOptionsButtonMain()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowMainOptions);
+	
 
 	if (StatTracker::Instance().GetLevelSize() > 0) 
 	{

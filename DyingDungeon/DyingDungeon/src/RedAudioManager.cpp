@@ -32,7 +32,7 @@ RedAudioManager::RedAudioManager()
 	m_volume[3] = 1000;
 	unmutedMaster = 500;
 	m_muted = false;
-	m_default_audio = new RedAudio("assets/audio/SFX/wheres_the_lamb_sauce.mp3", "DEFAULT");
+	m_default_audio = new RedAudio("assets/audio/SFX/wheres_lamb_sauce.mp3", "DEFAULT");
 	m_default_audio->Open();
 }
 

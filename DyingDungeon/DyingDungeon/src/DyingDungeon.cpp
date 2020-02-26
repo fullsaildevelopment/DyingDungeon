@@ -289,7 +289,7 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	// Get a reference to the UI canvas and get the width/height of the screen
 	Odyssey::UICanvas* canvas = gRewardsScreen->getComponent<Odyssey::UICanvas>();
 	// Results Menu
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
+	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height)->setOpacity(0.5f);
 	UINT rewardsImageWidth = width * 0.6f;
 	UINT rewardsImageHeight = height * 0.6f;
 	float rewardsImageX = (width / 2.0f) - (static_cast<float>(rewardsImageWidth) / 2.0f);
@@ -301,9 +301,9 @@ void setupRewardsPrefab(Odyssey::Application* application)
 
 	//Stat Background
 	//protrait backgrounds
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 50)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 60, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
-	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight)+80, rewardsImageY - 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 135.0f + (rewardsImageHeight / 8) - 10.0f, rewardsImageY - 90.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 100.0f + (rewardsImageHeight / 2) + 55.0f, rewardsImageY - 90.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 165.0f + (rewardsImageHeight) - 40.0f, rewardsImageY - 90.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
 	//
 	////attack backgrounds
 	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f, rewardsImageY - 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, 40)->setOpacity(0.8f);
@@ -324,9 +324,9 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	//canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + 2.0f * ((rewardsImageWidth / 4.0f) + 20.0f), rewardsImageY + (rewardsImageHeight * 0.6667f) + 10.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20)->setOpacity(0.8f);
 	//
 	////Character Protraits
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight / 8) + 10, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 190.0f + (rewardsImageHeight / 2) + 60, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
-	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 205.0f + (rewardsImageHeight)+80, rewardsImageY - 10.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 145.0f + (rewardsImageHeight / 8) - 10.0f, rewardsImageY - 80.0f), L"assets/images/Guy.png", rewardsImageHeight /4, rewardsImageHeight /4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 110.0f + (rewardsImageHeight / 2) + 55.0f, rewardsImageY - 80.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
+	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(rewardsImageX + 175.0f + (rewardsImageHeight) - 40.0f, rewardsImageY - 80.0f), L"assets/images/Guy.png", rewardsImageHeight / 4, rewardsImageHeight / 4);
 	//
 	////Stat Text
 	//stat discriptors
@@ -336,16 +336,96 @@ void setupRewardsPrefab(Odyssey::Application* application)
 
 	rewardsTextProperties.fontSize = 16.0f;
 
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 20.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Attack", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 55.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Dealt", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 85.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Landed", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 120.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 155.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Taken", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 185.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Block", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 220.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Gained", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 255.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Support", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 290.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Given", rewardsTextProperties);
-	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 30.0f, rewardsImageY + 325.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense Given", rewardsTextProperties);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 4) + 20, 30);
+
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+	canvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(15.0f, 15.0f, 15.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30);
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 40.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Attack", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 75.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Dealt", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 110.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Landed", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 145.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 180.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Taken", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 215.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Dmg Block", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Gained", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 285.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Support", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Health Given", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 25.0f, rewardsImageY + 355.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 4) + 20, 60, L"Defense Given", rewardsTextProperties);
+
+	rewardsTextProperties.textAlignment = Odyssey::TextAlignment::Center;
+	rewardsTextProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 4) + 30, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + (rewardsImageHeight / 2) + 110, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 40.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 75.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 110.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 145.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 180.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 215.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 250.0f), DirectX::XMFLOAT4(0.0f, 151.0f, 255.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 285.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"0 times", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 320.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + 15.0f + ((rewardsImageHeight / 4) * 3) + 190, rewardsImageY + 15.0f + 355.0f), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageHeight / 3) + 40, 30, L"00.00", rewardsTextProperties);
 	
 	rewardsTextProperties.fontSize = 16.0f;
 	
@@ -362,7 +442,7 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.3333f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 	//canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(rewardsImageX + (3.0f * (rewardsImageWidth / 4)) + 70.0f, rewardsImageY + (7.0f + rewardsImageHeight * 0.6667f)), DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f), (rewardsImageWidth / 4) + 20, (rewardsImageHeight / 4) + 20, L"Aid: NN.NN%\nHeal: NN.NN\nDefence Buff: NN.NN", rewardsTextProperties);
 
-	canvas->setActive(false); // The rewards screen won't show up at the start
+	canvas->setActive(true); // The rewards screen won't show up at the start
 	StatTracker::Instance().SetCanvas(canvas, static_cast<unsigned int>(rewardsImageHeight / 4), static_cast<unsigned int>(rewardsImageHeight / 4));
 }
 
