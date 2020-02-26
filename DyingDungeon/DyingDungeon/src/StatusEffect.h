@@ -23,6 +23,8 @@ protected:
 	STATS mAffectedStatId;
 	// The Icon sprite for the effect
 	std::wstring mEffectIconName;
+	// bool for if i have been removed or not
+	bool mRemoveMe;
 private:
 	// public and private functions
 public:
@@ -51,5 +53,7 @@ public:
 	// mRecipient functions
 	Character* GetRecipient();
 	void SetRecipient(Character * recipient);
+	// Remove me effects
+	bool RemoveMe();
 };
 

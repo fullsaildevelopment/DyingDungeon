@@ -38,6 +38,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
 	mIsCheating = false;
+	mIsBleeding = false;
+	mBleedTimer = 0;
+	mIsRegenerating = false;
+	mRegenTimer = 0;
+	mStunTimer = 0;
+	mProvokedTimer = 0;
+	mShielding = 0.0f;
+	mShieldTimer = 0;
 	mThemeColor = { 0.0f,0.0f,0.0f };
 	////////////////////////////////////////////////
 
@@ -695,9 +703,27 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (enemies[i] != nullptr)
 				mEnemyList[i] = enemies[i];
 		}
-		mCurrentState = STATE::NONE;
 		ManageCastedEffects();
-		ManageAllEffects();
+		ManageTOREffects();
+		mStunTimer--;
+		if (mStunTimer <= 0)
+		{
+			if (mCurrentState != STATE::DEAD)
+			{
+				mCurrentState = STATE::NONE;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
+			}
+		}
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
 		return true;
 	}
 
@@ -716,9 +742,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				mEnemyList[i] = enemies[i];
 		}
 		ManageCastedEffects();
-		ManageAllEffects();
-		//ManageStatusEffects(mRegens);
-		//ManageStatusEffects(mBleeds);
+		ManageTOREffects();
 		if (mCurrentHP <= 0.0f)
 			Die();
 		else
@@ -1021,6 +1045,17 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 		// Reset state to default
 		mCurrentState = STATE::NONE;
+
+		if (mProvoked != nullptr)
+		{
+			mProvokedTimer--;
+			if (mProvokedTimer <= 0)
+			{
+				mProvoked = nullptr;
+				mProvokedTimer = 0;
+				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(false);
+			}
+		}
 
 		// Return true 
 			return true;

@@ -6,6 +6,7 @@
 #include "StatUp.h"
 #include "StatDown.h"
 #include "Stun.h"
+#include "CharacterHUDElements.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -70,27 +71,22 @@ void Character::Die()
 // Called whenever this character needs to take damage
 void Character::TakeDamage(float dmg)
 {
-	// Play sound effect for getting hit
-	RedAudioManager::Instance().PlaySFX("PaladinHit");
-
 	// Calculate damage reduction based on character drffense
 	dmg = dmg - (dmg * GetDefMod());
 
-	// loop through shield vector and reduce the incoming damage by amount of temp health this character has
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
-	for (it = mSheilds.begin(); it != mSheilds.end();)
+	// If i have a shield reduce the incoming damage
+	if (mShielding > 0.0f)
 	{
-		dmg -= (*it)->GetAmountOfEffect();
-		if (dmg < 0.0f)
+		mShielding -= dmg;
+		if (mShielding <= 0.0f)
 		{
-			(*it)->SetAmountOfEffect(dmg * -1.0f);
-			dmg = 0.0f;
-			++it;
+			dmg = mShielding * -1.0f;
+			mShielding = 0.0f;
+			mShieldTimer = 0;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
 		else
-		{
-			it = mSheilds.erase(it);
-		}
+			dmg = 0.0f;
 	}
 
 	// Reduce health by the amount of damage that made it through
@@ -364,97 +360,128 @@ std::vector<std::shared_ptr<Skills>> Character::GetSkills()
 }
 
 // Adds a status effect to the character and sorts it putting it in the correct vector
-bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect)
+bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Character* caster)
 {
 	// Make an iterator to check the characters list to see if it already has the passed in effect
-	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
+	std::vector<StatusEffect*>::iterator it;
+
+	// Temp pointer to the target
+	Character* affectedTarget = newEffect->GetRecipient();
 
 	// Switch statment for detirming what vector the effect needs to go into
 	switch (newEffect->GetTypeId())
 	{
 	case EFFECTTYPE::Bleed:
 	{
-		// Loop through if i find the effect return false, else add to the vector of efffect
-		for (it = mBleeds.begin(); it != mBleeds.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mBleeds.erase(it);
-			else
-				it++;
-		}
-		mBleeds.push_back(newEffect);
+		affectedTarget->mIsBleeding = true;
+		affectedTarget->mBleedTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Regen:
 	{
-		for (it = mRegens.begin(); it != mRegens.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mRegens.erase(it);
-			else
-				it++;
-		}
-		mRegens.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::StatUp:
-	{
-		for (it = mBuffs.begin(); it != mBuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == newEffect->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mBuffs.erase(it);
-			else
-				it++;
-		}
-		mBuffs.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::StatDown:
-	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mDebuffs.erase(it);
-			else
-				it++;
-		}
-		mDebuffs.push_back(newEffect);
+		affectedTarget->mIsRegenerating = true;
+		affectedTarget->mRegenTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Stun:
 	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
-		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId() && (*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mDebuffs.erase(it);
-			else
-				it++;
-		}
-		mDebuffs.push_back(newEffect);
-		break;
-	}
-	case EFFECTTYPE::Shield:
-	{
-		for (it = mSheilds.begin(); it != mSheilds.end();)
-		{
-			if ((*it)->GetAmountOfEffect() == newEffect->GetAmountOfEffect())
-				it = mSheilds.erase(it);
-			else
-				it++;
-		}
-		mSheilds.push_back(newEffect);
+		affectedTarget->SetState(STATE::STUNNED);
+		mStunTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(true);
 		break;
 	}
 	case EFFECTTYPE::Provoke:
 	{
-		for (it = mDebuffs.begin(); it != mDebuffs.end();)
+		affectedTarget->SetProvoked(caster);
+		mProvokedTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetProvokeBuff()->setVisible(true);
+		break;
+	}
+	case EFFECTTYPE::Shield:
+	{
+		affectedTarget->mShielding = newEffect->GetAmountOfEffect();
+		affectedTarget->mShieldTimer = newEffect->GetDuration();
+		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
+		break;
+	}
+	case EFFECTTYPE::StatUp:
+	{
+		std::vector<StatusEffect*>::iterator it;
+		for (it = mSE.begin(); it != mSE.end();)
 		{
-			if ((*it)->GetAffectedStatId() == (*it)->GetAffectedStatId())
-				it = mDebuffs.erase(it);
+			if ((*it)->GetTypeId() == newEffect->GetTypeId() && (*it)->GetAffectedStatId() == newEffect->GetAffectedStatId())
+			{
+				(*it)->Remove();
+				it = mSE.erase(it);
+			}
 			else
 				it++;
 		}
-		mDebuffs.push_back(newEffect);
+		mSE.push_back(newEffect.get());
+		switch (newEffect->GetAffectedStatId())
+		{
+		case STATS::Atk:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackUpBuff()->setVisible(true);
+			affectedTarget->IncreaseAtk(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Def:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseUpBuff()->setVisible(true);
+			affectedTarget->IncreaseDef(newEffect->GetAmountOfEffect());	
+			break;
+		}
+		case STATS::Spd:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedUpBuff()->setVisible(true);
+			affectedTarget->IncreaseSpd(newEffect->GetAmountOfEffect());
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	case EFFECTTYPE::StatDown:
+	{
+		std::vector<StatusEffect*>::iterator it;
+		for (it = mSE.begin(); it != mSE.end();)
+		{
+			if ((*it)->GetTypeId() == newEffect->GetTypeId() && (*it)->GetAffectedStatId() == newEffect->GetAffectedStatId())
+			{
+				(*it)->Remove();
+				it = mSE.erase(it);
+			}
+			else
+				it++;
+		}
+		mSE.push_back(newEffect.get());
+		switch (newEffect->GetAffectedStatId())
+		{
+		case STATS::Atk:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(true);
+			affectedTarget->DecreaseAtk(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Def:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(true);
+			affectedTarget->DecreaseDef(newEffect->GetAmountOfEffect());
+			break;
+		}
+		case STATS::Spd:
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(true);
+			affectedTarget->DecreaseSpd(newEffect->GetAmountOfEffect());
+			break;
+		}
+		default:
+			break;
+		}
 		break;
 	}
 	default:
@@ -473,7 +500,6 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 	{
 		if ((*it)->GetDuration() <= 0)
 		{
-			std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from recipent";
 			it = effectList.erase(it);
 			continue;
 		}
@@ -489,69 +515,77 @@ void Character::ManageStatusEffects(std::vector<std::shared_ptr<StatusEffect>>& 
 void Character::ManageCastedEffects()
 {
 	// For each status effect in the list, use its effect, reduce its duration, then remove if it expires. Repeate for all other status effect vectors.
-	std::vector<StatusEffect*>::iterator it;
+	std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 
 	// Casted Effects
 	for (it = mCastedEffects.begin(); it != mCastedEffects.end();)
 	{
-		if ((*it) == nullptr)
-			it = mCastedEffects.erase(it);
-		else
+		(*it)->ReduceDuration(1);
+		if ((*it)->GetDuration() <= 0)
 		{
-			(*it)->ReduceDuration(1);
-			if ((*it)->GetDuration() <= 0)
-			{
-				std::cout << static_cast<int>((*it)->GetTypeId()) << " has been removed from caster";
-				//(*it)->Remove();
-				it = mCastedEffects.erase(it);
-			}
-			else
-				it++;
-		}		
+			if (!(*it)->RemoveMe())
+				(*it)->Remove();
+			it = mCastedEffects.erase(it);
+		}
+		else
+			it++;	
 	}
 }
 
 // Add a effect to my casted vector
-void Character::AddCastedEffect(StatusEffect* newCastedEffect)
+void Character::AddCastedEffect(std::shared_ptr<StatusEffect> newCastedEffect)
 {
 	mCastedEffects.push_back(newCastedEffect);
 }
 
 // Manages all status effects, appling effects and removing expired ones
-bool Character::ManageAllEffects()
+bool Character::ManageTOREffects()
 {
-	ManageStatusEffects(mRegens);
-	ManageStatusEffects(mBleeds);
+	if (mIsRegenerating)
+	{
+		ReceiveHealing(0.10f * mBaseMaxHP);
+		mRegenTimer--;
+		if (mRegenTimer <= 0)
+		{
+			mIsRegenerating = false;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetRegenBuff()->setVisible(false);
+		}
+	}
+	if (mIsBleeding)
+	{
+		TakeDamage(0.10f * mBaseMaxHP);
+		mBleedTimer--;
+		if (mBleedTimer <= 0)
+		{
+			mIsBleeding = false;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(false);
+		}
+	}
 	if (mCurrentState == STATE::DEAD)
 		return false;
-	ManageStatusEffects(mBuffs);
-	ManageStatusEffects(mDebuffs);
-	ManageStatusEffects(mSheilds);
+	if (mShielding > 0)
+	{
+		mShieldTimer--;
+		if (mShieldTimer <= 0)
+		{
+			mShielding = 0.0f;
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
+		}
+	}
 	return true;
 }
 
 // Clears all status effects from the Character
 void Character::ClearStatusEffects()
 {
-	//std::vector<std::shared_ptr<StatusEffect>>::iterator it;
 	mCastedEffects.clear();
-	mDebuffs.clear();
-	mBuffs.clear();
-	mBleeds.clear();
-	mRegens.clear();
-	mSheilds.clear();
 }
 
 // Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
-	mDebuffs.clear();
-	mBleeds.clear();
-}
-
-bool Character::IsShielded()
-{
-	return !mSheilds.empty();
+	//mDebuffs.clear();
+	//mBleeds.clear();
 }
 
 // Sets the Particle system pointer to a "Hit effect"
