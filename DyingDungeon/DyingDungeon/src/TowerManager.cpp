@@ -354,8 +354,6 @@ void TowerManager::GoToMainMenu()
 	{
 		// Destory the previous player's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the previous player's clickable box
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
 		// Destroy the previous player's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous player's blood particle effect
@@ -363,20 +361,25 @@ void TowerManager::GoToMainMenu()
 		// Destroy the previous player
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 	}
+	mPlayerTeam.clear();
 
 	// Remove the current enemy team from the scene
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		// Destory the previous enemy's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the enemy's clickable box
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous enemy's blood particle effect
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous enemies
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
+
+	// Remove the clickable UI elements
+	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	{
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i]));
 	}
 
 	// Deactivate the rewards screen
@@ -477,13 +480,16 @@ void TowerManager::CreateThePlayerTeam()
 
 		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
-		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
+		// Make sure the bars are filled
+		hudElements->GetHealthBar()->setFill(1.0f);
+		hudElements->GetManaBar()->setFill(1.0f);
 
 		// Clickable UI
 		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
 		heroComp->SetupClickableUI(hudElements->GetSkill1(), hudElements->GetSkill2(), hudElements->GetSkill3(), hudElements->GetSkill4());
 
 		// Assign the character component
+		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
 		hover->characterComponent = newCharacter->getComponent<Character>();
 		// Register the skill sprites for hovering over them
 		hover->registerSprite(hudElements->GetSkill1());

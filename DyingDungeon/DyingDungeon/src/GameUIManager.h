@@ -192,7 +192,10 @@ public: // Functions
 
 	//Getters
 	Odyssey::Entity* GetClickableUIPrefab(ClickableCharacterUI _clickableUIPos) { return mClickableUIPrefabMap[_clickableUIPos]; };
-	std::vector<Odyssey::Entity*> GetClickableUIElements() { return mClickableUIList; }
+	std::vector<Odyssey::Entity*> GetClickableUIElements() 
+	{ 
+		return mClickableUIList; 
+	}
 
 	// Get battle log text
 	Odyssey::Text2D* GetBattleLogText() { return mBattleLogText; }
@@ -277,7 +280,10 @@ public: // Functions
 	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
 
 	// Get the list of all of the character hud canvases
-	std::vector<Odyssey::Entity*> GetCharacterHuds() { return mCharacterHudList; }
+	std::vector<Odyssey::Entity*> GetCharacterHuds() 
+	{ 
+		return mCharacterHudList; 
+	}
 
 	//Setters
 	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }

@@ -676,12 +676,16 @@ void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::S
 {
 	// Set up sprite's callback function for the Skill1Callback
 	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
+	mSkillSprites.push_back(_skillImage1);
 	// Set up sprite's callback function for the Skill2Callback
 	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
+	mSkillSprites.push_back(_skillImage2);
 	// Set up sprite's callback function for the Skill3Callback
 	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
+	mSkillSprites.push_back(_skillImage3);
 	// Set up sprite's callback function for the Skill4Callback
 	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
+	mSkillSprites.push_back(_skillImage4);
 }
 
 // Function that allows the player to take thier turn, Character Controler
@@ -1031,15 +1035,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
-		// Manage all my buffs
-		//ManageStatusEffects(mBuffs);
-
-		// Manage all my debuffs
-		//ManageStatusEffects(mDebuffs);
-
-		// Manage all my shields
-		//ManageStatusEffects(mSheilds);
-
 		// Turns off all targeting and 
 		ResetToSelection();
 
@@ -1111,6 +1106,38 @@ std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 GameplayTypes::HEROID HeroComponent::GetID()
 {
 	return mID;
+}
+
+// Dumb event
+void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
+{
+	if (this->mCurrentState == STATE::SELECTTARGET)
+	{
+		int temp = static_cast<int>(targetIndex->mPlayerToTarget);
+		if (mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::ATTACK && mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::DEBUFF && temp < 3)
+		{
+			mCurrentTarget = mHeroList[temp]->getComponent<Character>();
+			for (Odyssey::Entity* t : mHeroList)
+			{
+				// If the entity if valid and the character is no dead, turn off targeter
+				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			}
+			BeginAttack(mHeroList);
+		}
+		else if((mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF) && temp > 2)
+		{
+			mCurrentTarget = mEnemyList[(temp - 3)]->getComponent<Character>();
+			for (Odyssey::Entity* t : mEnemyList)
+			{
+				// If the entity if valid and the character is no dead, turn off targeter
+				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			}
+			BeginAttack(mEnemyList);
+		}
+	}
+
 }
 
 // Function that gets called to manage the state in which the player is selecting a skill to use
@@ -1366,6 +1393,15 @@ std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
+	Odyssey::EventManager::getInstance().subscribe(this, &HeroComponent::ClickOnEnemy);
+}
+
+void HeroComponent::onDestroy()
+{
+	for (int i = 0; i < mSkillSprites.size(); ++i)
+	{
+		mSkillSprites[i]->unregisterCallback("onMouseClick");
+	}
 }
 
 // Skill Call backs for clickable UI
