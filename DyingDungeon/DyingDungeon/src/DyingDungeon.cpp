@@ -1331,6 +1331,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 
+	// PALADIN SKILLS START HERE
 	// Create the skill 1 prefab
 	showcase->getComponent<SkillShowcase>()->paladin1 = application->createPrefab();
 	// Import the hammer model
@@ -1365,7 +1366,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	// Create the skill 4 prefab
 	showcase->getComponent<SkillShowcase>()->paladin3 = application->createPrefab();
 	showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::Transform>();
-	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 20.0f);
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 15.0f);
 
 	// Add a light to the prefab
 	light = showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::Light>();
@@ -1381,7 +1382,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->setShadowCaster(false);
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
-	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.75f, 0.65f, 0.1f, 1.0f });
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
 	skillVFX = showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
