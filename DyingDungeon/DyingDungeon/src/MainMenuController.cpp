@@ -28,6 +28,8 @@ void MainMenuController::initialize()
 	GameUIManager::getInstance().GetNewGameText()->registerCallback("onMouseClick", this, &MainMenuController::EnterTowerSelectScreen);
 	GameUIManager::getInstance().GetOptionsButtonMain()->registerCallback("onMouseClick", &GameUIManager::getInstance(), &GameUIManager::ShowMainOptions);
 	
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
 
 	if (StatTracker::Instance().GetLevelSize() > 0) 
 	{

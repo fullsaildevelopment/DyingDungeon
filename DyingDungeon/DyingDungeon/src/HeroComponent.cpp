@@ -1409,6 +1409,9 @@ void HeroComponent::Skill1Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
+
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[0]->GetManaCost() <= mCurrentMana)
 		{
