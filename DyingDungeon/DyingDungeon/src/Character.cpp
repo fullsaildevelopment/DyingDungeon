@@ -602,7 +602,7 @@ Odyssey::Entity* Character::GetBloodPrefab()
 
 void Character::SpawnBloodEffect()
 {
-	Odyssey::Transform* tempTransform = getEntity()->getComponent<Odyssey::Transform>();
+	Odyssey::Transform* tempTransform = mEntity->getComponent<Odyssey::Transform>();
 	Odyssey::Entity* bloodEffect = nullptr;
 	DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&tempTransform->getPosition());
 	DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&tempTransform->getEulerRotation());

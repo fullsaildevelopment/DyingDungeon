@@ -75,6 +75,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -200,6 +204,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 150.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 80.0f;
@@ -317,6 +325,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 30.0f;
@@ -427,6 +439,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 75.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -549,6 +565,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
