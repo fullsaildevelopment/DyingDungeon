@@ -776,7 +776,8 @@ void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	//Menu Set-up
 	properties.textAlignment = Odyssey::TextAlignment::Left;
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, graphBackgroundHeight);
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/6));
+	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight/5));
 	position.x += 3;
 	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth - 6, graphBackgroundHeight, L"No Turn Data", properties);
 	properties.textAlignment = Odyssey::TextAlignment::Center;
