@@ -886,7 +886,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			DirectX::XMFLOAT3 tempPos1;
 			DirectX::XMFLOAT3 tempPos2;
 			DirectX::XMVECTOR position = { 0.0f,0.0f,0.0f,0.0f };
-			DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+			DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&mCurrentSkill->GetParticleSystem()->getComponent<Odyssey::Transform>()->getEulerRotation());
 			Odyssey::Entity* temp = nullptr;
 			if (mCurrentSkill->IsAOE())
 			{
