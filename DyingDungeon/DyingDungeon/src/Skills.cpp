@@ -128,7 +128,7 @@ void Skills::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 }
 
 // Return the particlesystems entity
-Odyssey::ParticleSystem* Skills::GetParticleSystem()
+Odyssey::Entity* Skills::GetParticleSystem()
 {
 	return mPS.mPixelEntity;
 }
@@ -146,7 +146,7 @@ float Skills::GetPSFiringTime()
 }
 
 // Set the particle system entity
-void Skills::SetParticleSystem(Odyssey::ParticleSystem* newParticleSystem)
+void Skills::SetParticleSystem(Odyssey::Entity* newParticleSystem)
 {
 	mPS.mPixelEntity = newParticleSystem;
 }
@@ -157,8 +157,23 @@ void Skills::SetParticleOffset(DirectX::XMFLOAT3 newOffset)
 	mPS.mStartingPosOffest = newOffset;
 }
 
+DirectX::XMFLOAT3 Skills::GetParticleOffset()
+{
+	return mPS.mStartingPosOffest;
+}
+
 // Set the particle system firing time
 void Skills::SetParticleFiringTime(float newFiringTime)
 {
 	mPS.mFiringTime = newFiringTime;
+}
+
+void Skills::SetPartilceIsProjectile(bool isProjectile)
+{
+	mPS.mIsProjectile = isProjectile;
+}
+
+bool Skills::SetPartilceIsProjectile()
+{
+	return mPS.mIsProjectile;
 }

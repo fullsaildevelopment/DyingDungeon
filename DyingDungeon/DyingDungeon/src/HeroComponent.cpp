@@ -16,6 +16,7 @@
 #include "Provoked.h"
 #include "Clense.h"
 #include "CharacterHUDElements.h"
+#include "JudgementMover.h"
 #include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
@@ -74,7 +75,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
-
+    
 		// Sound Clips
 		mSoundClips["Hit"] = "MaleHitReaction";
 		mSoundClips["Death"] = "MaleDeath";
@@ -135,7 +136,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddessâ€™ light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -637,7 +638,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"One of Ganfaul’s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but won’t last long without support.";
+		mDescription = L"One of Ganfaulâ€™s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but wonâ€™t last long without support.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -902,13 +903,69 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
-			// Turn particle effect on
-			mCurrentSkill->GetParticleSystem()->getEntity()->setActive(true);
-			mCurrentSkill->GetParticleSystem()->play();
-
-			// If its a projectile particle effect turn on its mover
-			if(!mCurrentSkill->IsAOE())
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			DirectX::XMFLOAT3 tempPos1;
+			DirectX::XMFLOAT3 tempPos2;
+			DirectX::XMVECTOR position = { 0.0f,0.0f,0.0f,0.0f };
+			DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&mCurrentSkill->GetParticleSystem()->getComponent<Odyssey::Transform>()->getEulerRotation());
+			Odyssey::Entity* temp = nullptr;
+			if (mCurrentSkill->IsAOE())
+			{
+				if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
+				{
+					for (Odyssey::Entity* c : enemies)
+					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+				else
+				{
+					for (Odyssey::Entity* c : heros)
+					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+			}
+			else
+			{
+				if (mCurrentSkill->SetPartilceIsProjectile())
+				{
+					tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					tempPos2 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = { tempPos2.x - tempPos1.x,tempPos2.y - tempPos1.y + 3.0f,tempPos2.z - tempPos1.z};
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					temp->getComponent<JudgementMover>()->SetVelocity(tempPos2, 10.0f);
+					if (mID == GameplayTypes::HEROID::Mage)
+						temp->getComponent<JudgementMover>()->SetSpinOnX(false);
+				}
+				else
+				{
+					tempPos1 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+				}
+			}
 
 			// Set static bool to true to prevent repeating this effect
 			particleTrigger = true;
@@ -1131,6 +1188,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 		if (mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::ATTACK && mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::DEBUFF && temp < 3)
 		{
 			mCurrentTarget = mHeroList[temp]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
 			for (Odyssey::Entity* t : mHeroList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
@@ -1142,6 +1201,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 		else if((mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF) && temp > 2)
 		{
 			mCurrentTarget = mEnemyList[(temp - 3)]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
 			for (Odyssey::Entity* t : mEnemyList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
@@ -1319,80 +1380,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 	// Play the skills animation
 	mAnimator->playClip(mCurrentSkill->GetAnimationId());
 
-	// If the skill is an AOE move, and it has a valid particle effect
-	if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
-	{
-		// Make variables to store position data
-		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-
-		// If its an attack loop through all enemies to get an avg position, else loop though all the players
-		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
-		{
-			// TODO: REFACTOR LATER
-			int counter = 0;
-
-			// For each entity
-			for (Odyssey::Entity* t : targets)
-			{
-				// If valid
-				if (t)
-				{
-					// Get the transforms position
-					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
-
-					// Add posititon to variable for each entity //
-					///////////////////////////////////////////////
-					aoeSpawn.x += tempTransform.x;
-					aoeSpawn.y += tempTransform.y;
-					aoeSpawn.z += tempTransform.z;
-					counter++;
-					///////////////////////////////////////////////
-				}
-			}
-
-			// Divid by party size to get the average position //
-			/////////////////////////////////////////////////////
-			aoeSpawn.x /= static_cast<float>(counter);
-			aoeSpawn.y /= static_cast<float>(counter);
-			aoeSpawn.z /= static_cast<float>(counter);
-			/////////////////////////////////////////////////////
-		}
-
-		// Set the skills particle systems postion to be the calculated position
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
-	}
-	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
-	{
-		// Get my entitys position
-		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Add the effects offset to the entitys position to place the projectile in the proper starting position //
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		temp.x += mCurrentSkill->GetPosOffset().x;
-		temp.y += mCurrentSkill->GetPosOffset().y;
-		temp.z += mCurrentSkill->GetPosOffset().z;
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Set the projectiles position to the calculated postition
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-
-		// Get the projectiles target position
-		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Offset the target position by an amount to have it hit about center mass
-		temp2.y += 3.0f;
-
-		// Set the projectiles target position
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-
-		// Use projectiles velocity to calc lifetime to target //
-		/////////////////////////////////////////////////////////
-		DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
-		/////////////////////////////////////////////////////////
-	}
+	// Set up particle information
 
 	// Set the current state to inprogress
 	mCurrentState = STATE::INPROGRESS;
