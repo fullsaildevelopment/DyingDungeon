@@ -157,8 +157,23 @@ void Skills::SetParticleOffset(DirectX::XMFLOAT3 newOffset)
 	mPS.mStartingPosOffest = newOffset;
 }
 
+DirectX::XMFLOAT3 Skills::GetParticleOffset()
+{
+	return mPS.mStartingPosOffest;
+}
+
 // Set the particle system firing time
 void Skills::SetParticleFiringTime(float newFiringTime)
 {
 	mPS.mFiringTime = newFiringTime;
+}
+
+void Skills::SetPartilceIsProjectile(bool isProjectile)
+{
+	mPS.mIsProjectile = isProjectile;
+}
+
+bool Skills::SetPartilceIsProjectile()
+{
+	return mPS.mIsProjectile;
 }

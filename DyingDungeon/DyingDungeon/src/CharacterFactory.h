@@ -130,7 +130,6 @@ private: // Functions
 	void PallySkill1Prefab();
 	void PallySkill2Prefab();
 	void PallySkill3Prefab();
-	void PallySkill4Prefab();
 	//////////////////////////////
 
 	// Particle Creation Functions

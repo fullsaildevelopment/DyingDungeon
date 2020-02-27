@@ -16,6 +16,7 @@
 #include "Provoked.h"
 #include "Clense.h"
 #include "CharacterHUDElements.h"
+#include "JudgementMover.h"
 #include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
@@ -74,6 +75,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
+
+		mSoundClips["Hit"] = "MaleHitReaction";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -880,6 +883,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
+			DirectX::XMFLOAT3 tempPos1;
+			DirectX::XMFLOAT3 tempPos2;
 			DirectX::XMVECTOR position = { 0.0f,0.0f,0.0f,0.0f };
 			DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 			Odyssey::Entity* temp = nullptr;
@@ -889,7 +894,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (Odyssey::Entity* c : enemies)
 					{
-						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
 						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
 					}
 				}
@@ -897,6 +907,12 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (Odyssey::Entity* c : heros)
 					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
 						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
 						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
 					}
@@ -904,8 +920,29 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			}
 			else
 			{
-				position = DirectX::XMLoadFloat3(&(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition()));
-				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+				if (mCurrentSkill->SetPartilceIsProjectile())
+				{
+					tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					tempPos2 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = { tempPos2.x - tempPos1.x,tempPos2.y - tempPos1.y + 3.0f,tempPos2.z - tempPos1.z};
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					temp->getComponent<JudgementMover>()->SetVelocity(tempPos2, 10.0f);
+				}
+				else
+				{
+					tempPos1 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+				}
 			}
 
 			// Set static bool to true to prevent repeating this effect

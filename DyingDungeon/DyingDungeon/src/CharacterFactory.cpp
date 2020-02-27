@@ -259,6 +259,18 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["PallySkill1"]);
 			tempHero->GetSkills()[0]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
 			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[0]->SetPartilceIsProjectile(true);
+
+			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["PallySkill2"]);
+			tempHero->GetSkills()[0]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["PallySkill3"]);
+			tempHero->GetSkills()[0]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
+
+			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["PallySkill3"]);
+			tempHero->GetSkills()[0]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
 
 			// Set up its model
 			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempHero->GetModel().c_str(), true);
@@ -302,15 +314,15 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
 
 			tempHero->GetSkills()[1]->SetParticleSystem(mVXFMap["bardSkill2"]);
-			tempHero->GetSkills()[1]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
+			tempHero->GetSkills()[1]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
 			tempHero->GetSkills()[1]->SetParticleFiringTime(0.1f);
 
 			tempHero->GetSkills()[2]->SetParticleSystem(mVXFMap["bardSkill3"]);
-			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
+			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
 			tempHero->GetSkills()[2]->SetParticleFiringTime(0.1f);
 
 			tempHero->GetSkills()[3]->SetParticleSystem(mVXFMap["bardSkill4"]);
-			tempHero->GetSkills()[3]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
+			tempHero->GetSkills()[3]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
 			tempHero->GetSkills()[3]->SetParticleFiringTime(0.1f);
 
 			// Set up its model
@@ -585,6 +597,8 @@ void CharacterFactory::MakeVXFEffects()
 	BardSkill4Prefab();
 	// Pally Effects
 	PallySkill1Prefab();
+	PallySkill2Prefab();
+	PallySkill3Prefab();
 }
 
 // Bard VXF
@@ -760,16 +774,90 @@ void CharacterFactory::PallySkill1Prefab()
 }
 void CharacterFactory::PallySkill2Prefab()
 {
+	// Create the skill 2 prefab
+	Odyssey::Entity* mSkill = mApplication->createPrefab();
+	mSkill->addComponent<Odyssey::Transform>();
+	mSkill->getComponent<Odyssey::Transform>()->setPosition(20.0f, 7.5f, 10.0f);
+	mSkill->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 180.0f);
 
+	// Add a light to the prefab
+	Odyssey::Light* light = mSkill->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.75f, 0.65f, 0.1f);
+	light->setRange(10.0f);
+	light->setIntensity(0.5f);
+	// Setup the skill 2 vfx
+	mSkill->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Lightning.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.4f, 0.2f), DirectX::XMFLOAT3(0.75f, 0.1f, 0.1f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 15);
+	skillVFX->setEmissionOverLifetime(30);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(1.0f, 1.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.75f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.001f, 0.001f, 0.001f));
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 75);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(0.5f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	mVXFMap["PallySkill2"] = mSkill;
 }
 void CharacterFactory::PallySkill3Prefab()
 {
+	// Create the skill 4 prefab
+	Odyssey::Entity* mSkill = mApplication->createPrefab();
+	mSkill->addComponent<Odyssey::Transform>();
+	mSkill->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 15.0f);
 
-}
-void CharacterFactory::PallySkill4Prefab()
-{
+	// Add a light to the prefab
+	Odyssey::Light* light = mSkill->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(1.0f, 0.8f, 0.1f);
+	light->setRange(10.0f);
+	light->setIntensity(0.5f);
 
+	// Setup the skill 4 vfx
+	mSkill->addComponent<PurifyMover>();
+	mSkill->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
+	Odyssey::RenderManager::getInstance().importModel(mSkill, "assets/models/Magic_Rune.dxm", false);
+	mSkill->getComponent<Odyssey::MeshRenderer>()->setShadowCaster(false);
+	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
+	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
+	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.75f, 0.65f, 0.1f, 1.0f });
+	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
+
+	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.75f, 1.5f);
+	skillVFX->setParticleCount(0, 90);
+	skillVFX->setEmissionOverLifetime(90);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(3.0f, 4.5f);
+	skillVFX->setSize(0.25f, 1.0f);
+	skillVFX->setSizeOverLifetime(0.25f, 1.0f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+
+	mVXFMap["PallySkill3"] = mSkill;
 }
+
 
 
 
