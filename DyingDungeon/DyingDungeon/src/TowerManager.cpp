@@ -115,9 +115,6 @@ void TowerManager::update(double deltaTime)
 				//Check to see if the update returned PLAYER_TEAM_DIED
 				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
 				{
-					std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
-					std::cout << "Your team DIED!!!!!!!\n" << std::endl;
-
 					SetTowerState(NOT_IN_BATTLE);
 					// Go to main menu screen
 					GoToMainMenu();
@@ -141,7 +138,6 @@ void TowerManager::update(double deltaTime)
 				// Check to see if that was our last level for completing the tower
 				if (GetCurrentLevel() > mNumberOfLevels)
 				{
-					std::cout << "You have completed the tower, Congratulations\n" << std::endl;
 					SetTowerState(NOT_IN_BATTLE);
 
 					// Give player some XP
@@ -151,14 +147,11 @@ void TowerManager::update(double deltaTime)
 					{
 						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
-					std::cout << "Player team characters gained " << tempXP << "XP for completing the tower.\n" << std::endl;
 					// Go to main menu screen
 					GoToMainMenu();
 				}
 				else
 				{
-					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
 					// Give player some XP
 					tempXP = 100.0f;
 					// Print how much XP was given to the player
@@ -173,8 +166,6 @@ void TowerManager::update(double deltaTime)
 							currCharacter->SetState(STATE::NONE);
 						}
 					}
-					std::cout << "Player team characters gained " << tempXP << "XP for completing the level.\n" << std::endl;
-
 					// Make a new battle to continue the tower
 					CreateBattleInstance();
 				}
@@ -226,21 +217,15 @@ void TowerManager::CreateBattleInstance()
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
 
-	std::cout << "Created a battle instance\n" << std::endl;
-	std::cout << "- Player Team\n" << std::endl;
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
 	}
 
-	std::cout << "- Enemy Team\n" << std::endl;
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
 	}
-
-	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
 }
 
 void TowerManager::DestroyBattleInstance()
@@ -258,8 +243,6 @@ void TowerManager::DestroyBattleInstance()
 	
 	// Since we destoryed the BattleInstance we will NOT be in combat
 	SetTowerState(NOT_IN_BATTLE);
-
-	std::cout << "Destroyed a battle instance\n" << std::endl;
 }
 
 void TowerManager::TogglePauseMenu()
@@ -427,8 +410,6 @@ void TowerManager::CreateThePlayerTeam()
 			characterToCreate = CharacterFactory::CharacterOptions::Monk;
 			mPlayerRotation = DirectX::XMVectorSet(DirectX::XMVectorGetX(mPlayerRotation), 180.0f, DirectX::XMVectorGetZ(mPlayerRotation), 1.0f);
 		}
-		else
-			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
 
 
 		// Create the character prefab
