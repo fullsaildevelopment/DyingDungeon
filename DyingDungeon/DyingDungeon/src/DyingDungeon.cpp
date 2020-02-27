@@ -93,6 +93,11 @@ void setupSceneOne();
 void setupSceneTwo();
 void setupLoadingScene(Odyssey::Application* application);
 void setupSkillVFX(Odyssey::Application* application);
+void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupMageVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupWarriorVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupMonkVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
@@ -179,6 +184,9 @@ int playGame()
 
 	// BUILD REVIEW ONLY
 	setupSkillVFX(application.get());
+
+	// SET THE CURSOR
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 
 	// Run the application
 	return application->run();
@@ -584,22 +592,27 @@ void setupAudio()
 
 	// Paladin Sound effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",		RedAudioManager::AudioType::SFX);
 
 	// Mage Sound Effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_swish.mp3",						"MagicMissle",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",				RedAudioManager::AudioType::SFX);
 
 	// Bard Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",						RedAudioManager::AudioType::SFX);
 
 	// Warrior Sound Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/three_axe_swing.mp3",					"WarriorTripleAttack",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/single_slash.mp3",						"WarriorSingleAttack",		RedAudioManager::AudioType::SFX);
 
 	// Monk Sound Effects
 
 	// Skeleton Sound Effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3",							"SkeletonPunch",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_death.mp3",						"SkeletonDeath",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_kick.mp3",						"SkeletonAttack1",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_hit.mp3",						"SkeletonHit",				RedAudioManager::AudioType::SFX);
 
 	// Ganfoul sound effects
 
@@ -657,7 +670,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
-  
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",						"Lightning2",				RedAudioManager::AudioType::SFX);
+
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	RedAudioManager::Instance().Mute();
@@ -1214,6 +1228,14 @@ void setupSkillVFX(Odyssey::Application* application)
 	showcase->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 	showcase->addComponent<SkillShowcase>();
 
+	// PALADIN SKILLS START HERE
+	setupBardVFX(application, showcase);
+	setupPaladinVFX(application, showcase);
+}
+
+void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+
 	// Create the skill 1 prefab
 	showcase->getComponent<SkillShowcase>()->bard1 = application->createPrefab();
 	showcase->getComponent<SkillShowcase>()->bard1->addComponent<Odyssey::Transform>();
@@ -1318,7 +1340,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
 	skillVFX = showcase->getComponent<SkillShowcase>()->bard4->addComponent<Odyssey::ParticleSystem>();
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.12f, 1.0f, 0.29f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.75f, 1.5f);
 	skillVFX->setParticleCount(0, 90);
@@ -1330,26 +1352,29 @@ void setupSkillVFX(Odyssey::Application* application)
 	skillVFX->setGravity(1.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+}
 
-	// PALADIN SKILLS START HERE
+void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
 	// Create the skill 1 prefab
 	showcase->getComponent<SkillShowcase>()->paladin1 = application->createPrefab();
 	// Import the hammer model
 	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->paladin1, "assets/models/Hammer.dxm", false);
 	showcase->getComponent<SkillShowcase>()->paladin1->getComponent<Odyssey::Transform>()->setScale(0.05f, 0.05f, 0.05f);
+	showcase->getComponent<SkillShowcase>()->paladin1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
 	// Add the skill mover to the prefab
 	showcase->getComponent<SkillShowcase>()->paladin1->addComponent<JudgementMover>();
 	showcase->getComponent<SkillShowcase>()->paladin1->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 
 	// Add a light to the prefab
-	light = showcase->getComponent<SkillShowcase>()->paladin1->addComponent<Odyssey::Light>();
+	Odyssey::Light* light = showcase->getComponent<SkillShowcase>()->paladin1->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.45f, 0.65f, 0.35f);
 	light->setRange(10.0f);
 	light->setIntensity(1.0f);
 
-	// Setup the skill 3 vfx
-	skillVFX = showcase->getComponent<SkillShowcase>()->paladin1->addComponent<Odyssey::ParticleSystem>();
+	// Setup the skill 1 vfx
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->paladin1->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
@@ -1363,7 +1388,49 @@ void setupSkillVFX(Odyssey::Application* application)
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::SpherePS(0.0f, 0.25f, 0.0f, 0.5f));
 
-	// Create the skill 4 prefab
+	// Create the skill 2 prefab
+	showcase->getComponent<SkillShowcase>()->paladin2 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->paladin2->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->paladin2->getComponent<Odyssey::Transform>()->setPosition(20.0f, 7.5f, 10.0f);
+	showcase->getComponent<SkillShowcase>()->paladin2->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 180.0f);
+
+	// Add a light to the prefab
+	light = showcase->getComponent<SkillShowcase>()->paladin2->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.75f, 0.65f, 0.1f);
+	light->setRange(10.0f);
+	light->setIntensity(0.5f);
+
+	// Setup the skill 2 vfx
+	showcase->getComponent<SkillShowcase>()->paladin2->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	skillVFX = showcase->getComponent<SkillShowcase>()->paladin2->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Lightning.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.4f, 0.2f), DirectX::XMFLOAT3(0.75f, 0.1f, 0.1f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 15);
+	skillVFX->setEmissionOverLifetime(30);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(1.0f, 1.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.75f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.001f, 0.001f, 0.001f));
+	skillVFX = showcase->getComponent<SkillShowcase>()->paladin2->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 75);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(0.5f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	// Create the skill 3 prefab
 	showcase->getComponent<SkillShowcase>()->paladin3 = application->createPrefab();
 	showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::Transform>();
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 15.0f);
@@ -1375,7 +1442,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	light->setRange(10.0f);
 	light->setIntensity(0.5f);
 
-	// Setup the skill 4 vfx
+	// Setup the skill 3 vfx
 	showcase->getComponent<SkillShowcase>()->paladin3->addComponent<PurifyMover>();
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
 	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->paladin3, "assets/models/Magic_Rune.dxm", false);
@@ -1385,7 +1452,42 @@ void setupSkillVFX(Odyssey::Application* application)
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.75f, 0.65f, 0.1f, 1.0f });
 	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
 	skillVFX = showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::ParticleSystem>();
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star2.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.75f, 1.5f);
+	skillVFX->setParticleCount(0, 90);
+	skillVFX->setEmissionOverLifetime(90);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(3.0f, 4.5f);
+	skillVFX->setSize(0.25f, 1.0f);
+	skillVFX->setSizeOverLifetime(0.25f, 1.0f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+
+	// Create the skill 4 prefab
+	showcase->getComponent<SkillShowcase>()->paladin4 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->paladin4->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 20.0f);
+
+	// Add a light to the prefab
+	light = showcase->getComponent<SkillShowcase>()->paladin4->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(1.0f, 0.8f, 0.1f);
+	light->setRange(10.0f);
+	light->setIntensity(0.5f);
+
+	// Setup the skill 4 vfx
+	showcase->getComponent<SkillShowcase>()->paladin4->addComponent<PurifyMover>();
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
+	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->paladin4, "assets/models/Magic_Rune.dxm", false);
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::MeshRenderer>()->setShadowCaster(false);
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.75f, 0.65f, 0.1f, 1.0f });
+	showcase->getComponent<SkillShowcase>()->paladin4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
+	skillVFX = showcase->getComponent<SkillShowcase>()->paladin4->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star2.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.75f, 1.5f);
 	skillVFX->setParticleCount(0, 90);

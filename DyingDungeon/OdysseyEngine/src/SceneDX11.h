@@ -63,10 +63,11 @@ namespace Odyssey
 	private:
 		void flushDestroyList();
 		void flushPrefabList();
-
+		void onSetTimeScale(SetTimeScaleEvent* evnt);
 	private:
 		std::vector<Entity*> mDestroyList;
 		std::vector<std::shared_ptr<Entity>> mPrefabList;
 		bool mShutdown = true;
+		float mTimeScale;
 	};
 }

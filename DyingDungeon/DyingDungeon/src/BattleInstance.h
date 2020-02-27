@@ -32,6 +32,9 @@ public: // Functions
 	// Get the turn indicator entity
 	Odyssey::Entity* GetTurnIndicator() { return mTurnIndicator; }
 
+	// Get the current character
+	Odyssey::Entity* GetCurrentCharacter() { return mCurrentCharacter; }
+
 	//Setters
 
 private: // Varibales

@@ -27,7 +27,7 @@ Character::Character()
 	mHudIndex = 0;
 	mProvoked = nullptr;
 	mAnimator = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mName = L"";
 	mSubName = L"";
@@ -589,22 +589,53 @@ void Character::ClearBadStatusEffects()
 }
 
 // Sets the Particle system pointer to a "Hit effect"
-void Character::SetPSBlood(Odyssey::ParticleSystem* newBloodEffect)
+void Character::SetBloodPrefab(Odyssey::Entity* newBloodEffectPrefab)
 {
-	mBloodParticleEffect = newBloodEffect;
+	mBloodEffectPrefab = newBloodEffectPrefab;
 }
 
 // Returns the Particle system pointer to a "Hit effect"
-Odyssey::ParticleSystem* Character::GetPSBlood()
+Odyssey::Entity* Character::GetBloodPrefab()
 {
-	return mBloodParticleEffect;
+	return mBloodEffectPrefab;
+}
+
+void Character::SpawnBloodEffect()
+{
+	Odyssey::Transform* tempTransform = mEntity->getComponent<Odyssey::Transform>();
+	Odyssey::Entity* bloodEffect = nullptr;
+	DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&tempTransform->getPosition());
+	DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&tempTransform->getEulerRotation());
+
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mBloodEffectPrefab, &bloodEffect, position, rotation));
 }
 
 // Turns all active particle effects to inactive
-void Character::StopParticleEffects()
-{
-
-}
+//void Character::StopParticleEffects()
+//{
+//	// If blood effect is active set to false
+//	if (mBloodParticleEffectPrefab != nullptr)
+//	{
+//		mBloodParticleEffect->stop();
+//		mBloodParticleEffect->setActive(false);
+//	}
+//
+//	// For each skill in the list
+//	for (std::shared_ptr<Skills> S : mSkillList)
+//	{
+//		// If valid
+//		if (S)
+//		{
+//			// If it has a particle effect
+//			if (S->GetParticleSystem() != nullptr)
+//			{
+//				// Stop and set to false
+//				S->GetParticleSystem()->stop();
+//				S->GetParticleSystem()->setActive(false);
+//			}
+//		}
+//	}
+//}
 
 // Returns the character portrait file path
 std::wstring Character::GetPortraitPath()

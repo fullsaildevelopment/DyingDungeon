@@ -33,4 +33,5 @@ private:
 	Odyssey::Entity* mLoadingScreenPrefab;
 	Odyssey::Entity* mLoadingScreen;
 	Odyssey::Sprite2D* mLogo;
+	Odyssey::Text2D* mContinue;
 };

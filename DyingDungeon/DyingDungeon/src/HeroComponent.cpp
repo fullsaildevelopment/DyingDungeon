@@ -33,7 +33,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mProvoked = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mID = id;
 	mHeroList.resize(4);
@@ -75,8 +75,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
-
+    
+		// Sound Clips
 		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +136,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddessâ€™ light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -202,6 +204,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 150.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -320,6 +326,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 30.0f;
@@ -430,6 +440,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 75.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -553,6 +567,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 80.0f;
@@ -620,7 +638,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"One of Ganfaul’s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but won’t last long without support.";
+		mDescription = L"One of Ganfaulâ€™s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but wonâ€™t last long without support.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
@@ -860,6 +878,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
+			// Set the new cursor
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 			ResetToSelection();
 			tempIndex = -1;
 		}
@@ -969,12 +989,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit"); 
 
-							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
-							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
-
 							// Play particle effect
-							c->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->SpawnBloodEffect();
 						}
 					}
 				}
@@ -983,12 +999,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					// Play "Hit" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-					// Set up particle effect location
-					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 					// Play particle effect
-					mCurrentTarget->GetPSBlood()->play();
+					mCurrentTarget->SpawnBloodEffect();
 				}
 			}
 			else
@@ -1149,7 +1161,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 
 	// Stop all active particle effects
-	StopParticleEffects();
+	//StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
@@ -1399,6 +1411,9 @@ void HeroComponent::Skill1Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[0]->GetManaCost() <= mCurrentMana)
 		{
@@ -1413,6 +1428,9 @@ void HeroComponent::Skill1Callback()
 }
 void HeroComponent::Skill2Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();
@@ -1429,6 +1447,9 @@ void HeroComponent::Skill2Callback()
 }
 void HeroComponent::Skill3Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();
@@ -1445,6 +1466,9 @@ void HeroComponent::Skill3Callback()
 }
 void HeroComponent::Skill4Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();

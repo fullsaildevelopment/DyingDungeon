@@ -14,8 +14,16 @@ void LoadingScreenController::initialize()
 {
 	// Show the screen
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mLoadingScreenPrefab, &mLoadingScreen, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
-	
+	Odyssey::TextProperties paragraphProperties;
+	paragraphProperties.fontName = L"Tw Cen MT Condensed";
+	paragraphProperties.fontSize = 18;
+	paragraphProperties.textAlignment = Odyssey::TextAlignment::Left;
+	paragraphProperties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	paragraphProperties.bold = false;
 	mLogo = mLoadingScreen->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Sprite2D>()[11];
+	mContinue = mLoadingScreen->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>()[11];
+	mContinue->setOpacity(0.0f);
+	mCurrentTime = 0.0f;
 }
 
 std::shared_ptr<Odyssey::Component> LoadingScreenController::clone() const
@@ -38,6 +46,19 @@ void LoadingScreenController::update(double deltaTime)
 	// Check if the user is able to move to the next scene
 	if (mCurrentTime == mWaitTime)
 	{
+		static float opacity = 0.0f;
+		static int direction = 1;
+		opacity += deltaTime * direction;
+		opacity = max(0.25f, min(opacity, 1.0f));
+		if (opacity == 0.25f && direction == -1)
+		{
+			direction = 1;
+		}
+		else if (opacity == 1.0f && direction == 1)
+		{
+			direction = -1;
+		}
+		mContinue->setOpacity(opacity);
 		// Allow interaction
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 		{
@@ -156,4 +177,5 @@ void LoadingScreenController::constructLoadingScreen()
 
 	// Odyssey logo
 	canvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 470.0f), odysseyBronze, 250, 250);
+	canvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(500.0f, 600.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 610, 500, L"Press Enter to Continue...", titleProperties);
 }

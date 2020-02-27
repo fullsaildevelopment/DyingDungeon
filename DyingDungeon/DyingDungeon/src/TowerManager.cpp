@@ -51,7 +51,9 @@ void TowerManager::initialize()
 void TowerManager::update(double deltaTime)
 {
 	// Always look for the pause input button
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
+		!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive() &&
+		!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
 	{
 		// Turn the pause menu either on or off
 		TogglePauseMenu();
@@ -109,7 +111,7 @@ void TowerManager::update(double deltaTime)
 				// Destroy the battle instance
 				DestroyBattleInstance();
 				SetTowerState(IN_REWARDS);
-			    Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
+				Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
 				Rewards->setActive(true);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
@@ -202,9 +204,25 @@ void TowerManager::CreateBattleInstance()
 
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
-																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath(),
-																					mPlayerTeam[0]->getComponent<Character>(), mPlayerTeam[1]->getComponent<Character>(), mPlayerTeam[2]->getComponent<Character>()));
+		mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath(),
+		mPlayerTeam[0]->getComponent<Character>(), mPlayerTeam[1]->getComponent<Character>(), mPlayerTeam[2]->getComponent<Character>()));
 
+	// Remove the current enemy team from the scene
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		// Clear the status effects
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
+		// Destory the previous enemy's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous enemy's blood particle effect
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous enemies
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
+	// Clear the previous enemy list
+	mEnemyTeam.clear();
 	// Create the new enemy team before creating the battle
 	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(mCurrentLevel - 1);
 
@@ -216,16 +234,6 @@ void TowerManager::CreateBattleInstance()
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
-
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
-	}
-
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
-	}
 }
 
 void TowerManager::DestroyBattleInstance()
@@ -240,7 +248,7 @@ void TowerManager::DestroyBattleInstance()
 		delete mCurrentBattle;
 		mCurrentBattle = nullptr;
 	}
-	
+
 	// Since we destoryed the BattleInstance we will NOT be in combat
 	SetTowerState(NOT_IN_BATTLE);
 }
@@ -253,6 +261,38 @@ void TowerManager::TogglePauseMenu()
 	// Toggle pause menu canvas
 	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
+
+	// Turn off the hero ui depening if the pause menu is on or off
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
+	}
+
+	// Turn off the enemy ui depening if the pause menu is on or off
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
+	}
+
+	if (pauseMenuCanvas->isActive())
+	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
+		// Set the time scale to 0 on pause
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(0.0f));
+	}
+	else if (mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::SELECTTARGET || mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::INPROGRESS)
+	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+	}
+
+	// If we are turning off the pause menu
+	if (!pauseMenuCanvas->isActive())
+	{
+		// Set the time scale back to 1
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
+	}
 }
 
 void TowerManager::ShowOptionsMenu()
@@ -297,35 +337,22 @@ void TowerManager::GoToMainMenu()
 	// Remove the current player team from the scene
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
-		// Destory the previous player's UI Elements
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the previous player's impact indicator
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-		// Destroy the previous player's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
-		// Destroy the previous player
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
 	}
 	mPlayerTeam.clear();
 
 	// Remove the current enemy team from the scene
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
-		// Destory the previous enemy's UI Elements
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the previous enemy's impact indicator
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-		// Destroy the previous enemy's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
-		// Destroy the previous enemies
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
 	}
+	mEnemyTeam.clear();
 
 	// Remove the clickable UI elements
-	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
-	{
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i]));
-	}
+	//for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	//{
+	//	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i]));
+	//}
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);
@@ -335,7 +362,7 @@ void TowerManager::GoToMainMenu()
 
 	// Set the current level back to 1
 	mCurrentLevel = 1;
-	
+
 	// Turn off battle music
 	RedAudioManager::Instance().Stop("BackgroundBattle");
 
@@ -343,6 +370,8 @@ void TowerManager::GoToMainMenu()
 	DestroyBattleInstance();
 
 	mIsPaused = true;
+	// Set the time scale back to 1
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
 	// Switch to main menu scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }
@@ -448,7 +477,7 @@ void TowerManager::CreateThePlayerTeam()
 		prefab = GameUIManager::getInstance().GetClickableUIPrefab(clickablePos);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &clickableHeroUI, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
 		GameUIManager::getInstance().AddClickableElementToList(clickableHeroUI);
-		
+
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
@@ -459,12 +488,12 @@ void TowerManager::CreateThePlayerTeam()
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
 		// Create the blood effect for the heroes
-		Odyssey::Entity* bloodEffect = nullptr;
-		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
-		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, mPlayerRotation));
+		//Odyssey::Entity* bloodEffect = nullptr;
+		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
+
 		// Assign the blood effect for the heroes
-		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		newCharacter->getComponent<Character>()->SetBloodPrefab(prefab);
 
 		// Set the character's hud index number
 		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());

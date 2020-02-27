@@ -43,3 +43,18 @@ void CharacterHUDElements::ChangeSkill(Skills* _skill, int _numOfSkill)
 			break;
 	}
 }
+
+void CharacterHUDElements::ClearStatusEffects()
+{
+	mAttackUp->setVisible(false);
+	mAttackDown->setVisible(false);
+	mDefenseUp->setVisible(false);
+	mDefenseDown->setVisible(false);
+	mSpeedUp->setVisible(false);
+	mSpeedDown->setVisible(false);
+	mBleedBuff->setVisible(false);
+	mStunBuff->setVisible(false);
+	mProvokeBuff->setVisible(false);
+	mRegenBuff->setVisible(false);
+	mShieldBuff->setVisible(false);
+}
