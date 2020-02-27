@@ -128,7 +128,7 @@ void Skills::SetStatusEffect(std::shared_ptr<StatusEffect> se)
 }
 
 // Return the particlesystems entity
-Odyssey::ParticleSystem* Skills::GetParticleSystem()
+Odyssey::Entity* Skills::GetParticleSystem()
 {
 	return mPS.mPixelEntity;
 }
@@ -146,7 +146,7 @@ float Skills::GetPSFiringTime()
 }
 
 // Set the particle system entity
-void Skills::SetParticleSystem(Odyssey::ParticleSystem* newParticleSystem)
+void Skills::SetParticleSystem(Odyssey::Entity* newParticleSystem)
 {
 	mPS.mPixelEntity = newParticleSystem;
 }

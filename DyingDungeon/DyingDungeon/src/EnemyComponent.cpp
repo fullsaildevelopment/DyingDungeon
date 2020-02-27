@@ -645,12 +645,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
 			// Turn particle effect on
-			mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
-			mMoves.GetMove()->skill->GetParticleSystem()->play();
-
-			// If its a projectile particle effect turn on its mover
-			if (!mMoves.GetMove()->skill->IsAOE())
-				mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			//mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
+			//mMoves.GetMove()->skill->GetParticleSystem()->play();
 
 			// Set static bool to true to prevent repeating this effect
 			particleTriggerButBetter = true;
@@ -869,75 +865,9 @@ void EnemyComponent::BeginAttack(std::vector<Odyssey::Entity*> targets)
 	// Play the skills animation
 	mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
 
-	// If the skill is an AOE move, and it has a valid particle effect
-	if (mMoves.GetMove()->skill->IsAOE() && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
+	if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
 	{
-		// Make variables to store position data
-		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
 
-		// If its an attack loop through all enemies to get an avg position, else loop though all the players
-		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
-		{
-			// For each entity
-			for (Odyssey::Entity* t : targets)
-			{
-				// If valid
-				if (t)
-				{
-					// Get the transforms position
-					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
-
-					// Add posititon to variable for each entity //
-					///////////////////////////////////////////////
-					aoeSpawn.x += tempTransform.x;
-					aoeSpawn.y += tempTransform.y;
-					aoeSpawn.z += tempTransform.z;
-					///////////////////////////////////////////////
-				}
-			}
-
-			// Divid by party size to get the average position //
-			/////////////////////////////////////////////////////
-			aoeSpawn.x /= static_cast<float>(targets.size());
-			aoeSpawn.y /= static_cast<float>(targets.size());
-			aoeSpawn.z /= static_cast<float>(targets.size());
-			/////////////////////////////////////////////////////
-		}
-
-		// Set the skills particle systems postion to be the calculated position
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x, aoeSpawn.y, aoeSpawn.z);
-	}
-	else if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
-	{
-		// Get my entitys position
-		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Add the effects offset to the entitys position to place the projectile in the proper starting position //
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		temp.x += mMoves.GetMove()->skill->GetPosOffset().x;
-		temp.y += mMoves.GetMove()->skill->GetPosOffset().y;
-		temp.z += mMoves.GetMove()->skill->GetPosOffset().z;
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Set the projectiles position to the calculated postition
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-
-		// Get the projectiles target position
-		DirectX::XMFLOAT3 temp2(mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Offset the target position by an amount to have it hit about center mass
-		temp2.y += 3.0f;
-
-		// Set the projectiles target position
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-
-		// Use projectiles velocity to calc lifetime to target //
-		/////////////////////////////////////////////////////////
-		DirectX::XMFLOAT3 tempVelocity = mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
-		/////////////////////////////////////////////////////////
 	}
 
 	// Set the current state to inprogress

@@ -116,6 +116,23 @@ private: // Functions
 	// Create blood particle effect
 	Odyssey::Entity* CreateBloodEffectPrefab();
 
+	// Makes all the VXF prefabs
+	void MakeVXFEffects();
+
+	// Bard Skill Effect Prefabs //
+	void BardSkill1Prefab();
+	void BardSkill2Prefab();
+	void BardSkill3Prefab();
+	void BardSkill4Prefab();
+	//////////////////////////////
+
+	// Pally Skill Effect Prefabs //
+	void PallySkill1Prefab();
+	void PallySkill2Prefab();
+	void PallySkill3Prefab();
+	void PallySkill4Prefab();
+	//////////////////////////////
+
 	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
@@ -129,6 +146,9 @@ private: // Functions
 
 	// Skill Hover Map
 	std::map<SkillHoverID, Odyssey::Entity*> mSkillHoverPrefabMap;
+
+	// VFX Map Because Maps are the best
+	std::map<std::string, Odyssey::Entity*> mVXFMap;
 
 	// Hp Popup 
 	Odyssey::Entity* mHpPopupPrefab = nullptr;
