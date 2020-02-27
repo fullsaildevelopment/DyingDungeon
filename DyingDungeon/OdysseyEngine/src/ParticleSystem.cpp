@@ -590,9 +590,4 @@ namespace Odyssey
 
 		mLock.unlock(LockState::Write);
 	}
-
-	void ParticleSystem::onDestroy()
-	{
-
-	}
 }

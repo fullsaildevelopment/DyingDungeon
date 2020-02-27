@@ -179,7 +179,7 @@ namespace Odyssey
 				if (renderPackage.renderObjects[i].meshRenderer)
 				{
 					// Make sure the mesh renderer is active
-					if (renderPackage.renderObjects[i].meshRenderer->isActive())
+					if (renderPackage.renderObjects[i].meshRenderer->isActive() && renderPackage.renderObjects[i].meshRenderer->isShadowCaster())
 					{
 						// Check if the entity is static or dynamic
 						if (renderPackage.renderObjects[i].meshRenderer->getEntity()->getStatic())

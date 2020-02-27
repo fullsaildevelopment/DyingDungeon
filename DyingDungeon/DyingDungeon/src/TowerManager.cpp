@@ -306,6 +306,7 @@ void TowerManager::HideControlScreen()
 	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
 	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
 }
+
 void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
@@ -429,7 +430,6 @@ void TowerManager::CreateThePlayerTeam()
 		}
 		else
 			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
-
 
 		// Create the character prefab
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);

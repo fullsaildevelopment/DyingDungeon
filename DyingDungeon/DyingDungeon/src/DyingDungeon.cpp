@@ -1312,6 +1312,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	showcase->getComponent<SkillShowcase>()->bard4->addComponent<PurifyMover>();
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
 	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->bard4, "assets/models/Magic_Rune.dxm", false);
+	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->setShadowCaster(false);
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
 	showcase->getComponent<SkillShowcase>()->bard4->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
@@ -1330,7 +1331,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 
-	// Create the skill 3 prefab
+	// Create the skill 1 prefab
 	showcase->getComponent<SkillShowcase>()->paladin1 = application->createPrefab();
 	// Import the hammer model
 	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->paladin1, "assets/models/Hammer.dxm", false);
@@ -1346,7 +1347,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	light->setRange(10.0f);
 	light->setIntensity(1.0f);
 
-	// Setup the skill 1 vfx
+	// Setup the skill 3 vfx
 	skillVFX = showcase->getComponent<SkillShowcase>()->paladin1->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -1360,6 +1361,41 @@ void setupSkillVFX(Odyssey::Application* application)
 	skillVFX->setGravity(2.5f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::SpherePS(0.0f, 0.25f, 0.0f, 0.5f));
+
+	// Create the skill 4 prefab
+	showcase->getComponent<SkillShowcase>()->paladin3 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 20.0f);
+
+	// Add a light to the prefab
+	light = showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(1.0f, 0.8f, 0.1f);
+	light->setRange(10.0f);
+	light->setIntensity(0.5f);
+
+	// Setup the skill 4 vfx
+	showcase->getComponent<SkillShowcase>()->paladin3->addComponent<PurifyMover>();
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::Transform>()->setScale(0.02f, 0.02f, 0.02f);
+	Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->paladin3, "assets/models/Magic_Rune.dxm", false);
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->setShadowCaster(false);
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setAlphaBlend(true);
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setReceiveShadow(false);
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
+	showcase->getComponent<SkillShowcase>()->paladin3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
+	skillVFX = showcase->getComponent<SkillShowcase>()->paladin3->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.75f, 1.5f);
+	skillVFX->setParticleCount(0, 90);
+	skillVFX->setEmissionOverLifetime(90);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(3.0f, 4.5f);
+	skillVFX->setSize(0.25f, 1.0f);
+	skillVFX->setSizeOverLifetime(0.25f, 1.0f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
