@@ -469,13 +469,13 @@ private: // Functions
 	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
 	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
-	// Character select callbacks
-	void Character1Callback();
-	void Character2Callback();
-	void Character3Callback();
-	void Character4Callback();
-	void Character5Callback();
-	void Character6Callback();
+	// Character click callbacks
+	void Character1ClickableCallback();
+	void Character2ClickableCallback();
+	void Character3ClickableCallback();
+	void Character4ClickableCallback();
+	void Character5ClickableCallback();
+	void Character6ClickableCallback();
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER
