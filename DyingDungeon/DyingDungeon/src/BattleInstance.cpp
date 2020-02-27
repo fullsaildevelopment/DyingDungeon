@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "StatusEvents.h"
 #include "CharacterFactory.h"
+#include "CharacterHUDElements.h"
 #include <string>
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
@@ -90,9 +91,16 @@ int BattleInstance::UpdateBattle()
 	// Check to see if both teams have at least one character still alive
 	else if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
+		if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::INPROGRESS && mCurrentCharacter->getComponent<Character>()->IsHero())
+		{
+			mTurnIndicator->setActive(false);
+		}
+
 		// Has the current player taken it's turn yet
 		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
 		{
+			// Turn the turn indicator back on
+			mTurnIndicator->setActive(true);
 			// One turn has been taken
 			mTurnCounter++;
 			// Take the current character out of the front of the line
@@ -216,8 +224,22 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 void BattleInstance::SetTurnIndicatorPosition()
 {
+	// If we have a character and he is a hero
+	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
+	{
+		// Turn on their hud blocker
+		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(true);
+	}
+
 	// The placement of the turn indicator should always be underneath the player who is in the front of the queue
 	mCurrentCharacter = mBattleQueue.front();
+
+	// If we have a character and he is a hero
+	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
+	{
+		// Turn on their hud blocker
+		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
+	}
 
 	// Get the character's position
 	DirectX::XMFLOAT3 characterPosition = mCurrentCharacter->getComponent<Odyssey::Transform>()->getPosition();

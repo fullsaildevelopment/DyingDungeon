@@ -1584,6 +1584,13 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 
 	// Set up the status effects
 	SetupStatusEffects(_gameObjectToAddTo, _hudPosition, true);
+
+	// Set the hud blocker to activate when it's not the hero's turn
+	barWidth = 359;
+	barHeight = 109;
+	color = { 0.0f, 0.0f, 0.0f, 0.5f };
+	//Odyssey::Rectangle2D* hudBlocker = pCanvas->addElement<Odyssey::Rectangle2D>(originalPosition, color, barWidth, barHeight);
+	newHUD->SetHudBlocker(pCanvas->addElement<Odyssey::Rectangle2D>(originalPosition, color, barWidth, barHeight));
 }
 
 // Create enemy character portrait

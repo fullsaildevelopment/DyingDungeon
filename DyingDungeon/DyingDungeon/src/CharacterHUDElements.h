@@ -36,6 +36,7 @@ public:
 	void SetManaBar(Odyssey::Rectangle2D* _rect) { mManaBar = _rect; }
 	void SetManaNumber(Odyssey::Text2D* _text) { mManaNumber = _text; }
 	void SetTurnNumber(Odyssey::Text2D* _text) { mTurnNumber = _text; }
+	void SetHudBlocker(Odyssey::Rectangle2D* _rect) { mHudBlocker = _rect; }
 
 	// Status Effect and Buff Elements
 	void SetAttackUpBuff(Odyssey::Sprite2D* _sprite) { mAttackUp = _sprite; }
@@ -72,6 +73,7 @@ public:
 	Odyssey::Rectangle2D* GetManaBar() { return mManaBar; }
 	Odyssey::Text2D* GetManaNumber() { return mManaNumber; }
 	Odyssey::Text2D* GetTurnNumber() { return mTurnNumber; }
+	Odyssey::Rectangle2D* GetHudBlocker() { return mHudBlocker; }
 
 	// Skills Elements
 	Odyssey::Sprite2D* GetSkill1() { return mSkill1; }
@@ -126,6 +128,7 @@ private: //Variables
 	Odyssey::Rectangle2D* mManaBar = nullptr;
 	Odyssey::Text2D* mManaNumber = nullptr;
 	Odyssey::Text2D* mTurnNumber = nullptr;
+	Odyssey::Rectangle2D* mHudBlocker = nullptr;
 
 	// Skill Elements
 	Odyssey::Sprite2D* mSkill1 = nullptr;
