@@ -62,9 +62,11 @@ namespace Odyssey
 		RenderPackage getRenderPackage();
 	private:
 		void flushDestroyList();
+		void flushPrefabList();
 
 	private:
 		std::vector<Entity*> mDestroyList;
+		std::vector<std::shared_ptr<Entity>> mPrefabList;
 		bool mShutdown = true;
 	};
 }

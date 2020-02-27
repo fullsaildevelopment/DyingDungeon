@@ -192,7 +192,7 @@ namespace Odyssey
 	{
 		Entity* entity = component->getEntity();
 
-			mLock.lock(LockState::Write);
+		mLock.lock(LockState::Write);
 		// Remove the component from the component list if it exists
 		auto iter = std::find(mComponentList.begin(), mComponentList.end(), component);
 
