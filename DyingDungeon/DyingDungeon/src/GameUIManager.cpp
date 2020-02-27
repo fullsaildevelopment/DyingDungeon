@@ -6,6 +6,7 @@
 #include "HeroComponent.h"
 #include "EventManager.h"
 #include "CombatEvents.h"
+#include "TeamManager.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -2544,7 +2545,10 @@ void GameUIManager::Character4ClickableCallback()
 
 void GameUIManager::Character5ClickableCallback()
 {
-	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy2));
+	if (TeamManager::getInstance().GetEnemyTeam().size() == 1)
+		Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy1));
+	else
+		Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy2));
 }
 
 void GameUIManager::Character6ClickableCallback()

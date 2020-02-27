@@ -104,6 +104,9 @@ public:
 	// Change the skill elements
 	void ChangeSkill(Skills* _skill, int _numOfSkill);
 
+	// Clear status effects
+	void ClearStatusEffects();
+
 private: //Variables
 
 	// HUD Position
