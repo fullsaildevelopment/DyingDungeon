@@ -662,7 +662,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
-  
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",						"Lightning2",				RedAudioManager::AudioType::SFX);
+
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	RedAudioManager::Instance().Mute();

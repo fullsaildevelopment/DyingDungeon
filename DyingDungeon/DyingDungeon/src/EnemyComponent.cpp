@@ -57,6 +57,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "SkeletonHit";
+		mSoundClips["Death"] = "SkeletonDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 40.0f;
@@ -145,10 +149,14 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 300.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 60.0f;
-		mBaseDefense = mDefense = 60.0f;
+		mBaseAttack = mAttack = 30.0f;
+		mBaseDefense = mDefense = 30.0f;
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
@@ -222,6 +230,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -313,6 +325,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
@@ -401,6 +417,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -499,6 +519,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
