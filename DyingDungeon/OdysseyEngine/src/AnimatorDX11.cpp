@@ -224,7 +224,8 @@ namespace Odyssey
 		for (unsigned int i = 0; i < numJoints; i++)
 		{
 			// Interpolate between the previous frame and the next frame's joint transforms and store it in the out keyframe
-			interpolateJointMatrix(keyframeA.jointTransforms[i], keyframeB.jointTransforms[i], blendFactor, outKeyframe.jointTransforms[i]);
+			if (outKeyframe.jointTransforms.size() > i)
+				interpolateJointMatrix(keyframeA.jointTransforms[i], keyframeB.jointTransforms[i], blendFactor, outKeyframe.jointTransforms[i]);
 		}
 	}
 

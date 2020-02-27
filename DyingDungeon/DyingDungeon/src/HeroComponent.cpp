@@ -878,7 +878,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
 			// Set the new cursor
-			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 			ResetToSelection();
 			tempIndex = -1;
 		}
