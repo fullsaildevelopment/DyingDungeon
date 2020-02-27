@@ -300,6 +300,40 @@ bool AIMoves::SkillCheck(std::vector<Odyssey::Entity*> playerTeam, std::vector<O
 				break;
 			}
 		}
+
+		// Impact Indicator
+		if (mBestMove->skill->IsAOE() == true)
+		{
+			Character* temp = nullptr;
+			if ((mBestMove->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK) || (mBestMove->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF))
+				for (Odyssey::Entity* c : playerTeam)
+				{
+					// If the entity is valid
+					if (c != nullptr)
+					{
+						// Get the character from the entity
+						temp = c->getComponent<Character>();
+
+						// Turn on impact indicator
+						temp->GetInpactIndicator()->setActive(true);
+					}
+				}
+			else
+				for (Odyssey::Entity* c : enemyTeam)
+				{
+					// If the entity is valid
+					if (c != nullptr)
+					{
+						// Get the character from the entity
+						temp = c->getComponent<Character>();
+
+						// Turn on impact indicator
+						temp->GetInpactIndicator()->setActive(true);
+					}
+				}
+		}
+		else
+			mBestMove->target->GetInpactIndicator()->setActive(true);
 	}
 
 	// Return if we finished or not
@@ -727,6 +761,8 @@ void AIMoves::ResetMove()
 {
 	SetPrevMove();
 	ResetDecidingMoves();
+
+	mBestMove->target->GetInpactIndicator()->setActive(false);
 
 	mBestMove->skill = nullptr;
 	mBestMove->target = nullptr;

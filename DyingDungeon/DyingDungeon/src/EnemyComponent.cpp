@@ -728,7 +728,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			// Depleate the caster mana
 			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
 
-			// If its ment for the hero apply the effect to the hero party, else apply the effect to the enemy party
+			// If its meant for the hero apply the effect to the hero party, else apply the effect to the enemy party
 			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
@@ -749,6 +749,9 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mMoves.GetMove()->skill->Use(*this, *temp);
+
+							// Reset Impact Indicators (AOE ONLY)
+							temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}
@@ -772,17 +775,20 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// Get the character from the entity
 							temp = c->getComponent<Character>();
 
-							// If thier not dead, apply the skills effect to them
+							// If they're not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mMoves.GetMove()->skill->Use(*this, *temp);
+
+							// Reset Impact Indicators (AOE ONLY)
+							temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}
 				else if (mMoves.GetMove()->target != nullptr)
 					mMoves.GetMove()->skill->Use(*this, *mMoves.GetMove()->target);
 			}
-
-			// Reset my move best move
+			
+			// Reset my move best move // Also turns impact indicator off
 			mMoves.ResetMove();
 
 			// Reset static bools
