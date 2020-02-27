@@ -592,22 +592,27 @@ void setupAudio()
 
 	// Paladin Sound effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",		RedAudioManager::AudioType::SFX);
 
 	// Mage Sound Effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_swish.mp3",						"MagicMissle",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",				RedAudioManager::AudioType::SFX);
 
 	// Bard Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",						RedAudioManager::AudioType::SFX);
 
 	// Warrior Sound Effects
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/three_axe_swing.mp3",					"WarriorTripleAttack",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/single_slash.mp3",						"WarriorSingleAttack",		RedAudioManager::AudioType::SFX);
 
 	// Monk Sound Effects
 
 	// Skeleton Sound Effects
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3",							"SkeletonPunch",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_death.mp3",						"SkeletonDeath",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_kick.mp3",						"SkeletonAttack1",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_hit.mp3",						"SkeletonHit",				RedAudioManager::AudioType::SFX);
 
 	// Ganfoul sound effects
 
@@ -665,7 +670,8 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
-  
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",						"Lightning2",				RedAudioManager::AudioType::SFX);
+
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
 	RedAudioManager::Instance().Mute();

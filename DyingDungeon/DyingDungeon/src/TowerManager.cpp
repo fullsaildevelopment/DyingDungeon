@@ -302,7 +302,7 @@ void TowerManager::GoToMainMenu()
 		// Destroy the previous player's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous player's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous player
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 	}
@@ -316,7 +316,7 @@ void TowerManager::GoToMainMenu()
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous enemy's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous enemies
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
 	}
@@ -459,12 +459,12 @@ void TowerManager::CreateThePlayerTeam()
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
 		// Create the blood effect for the heroes
-		Odyssey::Entity* bloodEffect = nullptr;
-		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
-		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, mPlayerRotation));
+		//Odyssey::Entity* bloodEffect = nullptr;
+		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
+		
 		// Assign the blood effect for the heroes
-		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		newCharacter->getComponent<Character>()->SetBloodPrefab(prefab);
 
 		// Set the character's hud index number
 		newCharacter->getComponent<Character>()->SetHudIndex(CharacterFactory::getInstance().GetCharacterHudIndex());

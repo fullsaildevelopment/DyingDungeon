@@ -341,7 +341,7 @@ void TeamSelectionController::EnterBattle()
 	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
+	unsigned int indecies[3] = { static_cast<unsigned int>(mSlot1Index), static_cast<unsigned int>(mSlot2Index), static_cast<unsigned int>(mSlot3Index) };
 	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
   

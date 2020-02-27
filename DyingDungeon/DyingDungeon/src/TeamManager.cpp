@@ -117,13 +117,13 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
 		// Create the blood effect for the enemies
-		Odyssey::Entity* bloodEffect = nullptr;
-		DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position) + 5.0f, DirectX::XMVectorGetZ(position) };
-		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
-		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &bloodEffect, bloodEffectPosition, rotation));
+		//Odyssey::Entity* bloodEffect = nullptr;
+		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position) };
+		
 
 		// Assign the blood effect for the enemies
-		newCharacter->getComponent<Character>()->SetPSBlood(bloodEffect->getComponent<Odyssey::ParticleSystem>());
+		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
+		newCharacter->getComponent<Character>()->SetBloodPrefab(prefab);
 
 		// Set the hud to the init values
 		//newHUD->getComponent< CharacterHUDElements>()->GetHealthBar()->setFill(1.0f);

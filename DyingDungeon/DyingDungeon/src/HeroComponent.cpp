@@ -32,7 +32,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mProvoked = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mID = id;
 	mHeroList.resize(4);
@@ -74,6 +74,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
+
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +204,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 150.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 80.0f;
@@ -317,6 +325,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 30.0f;
@@ -427,6 +439,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 75.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -549,6 +565,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -910,12 +930,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit"); 
 
-							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
-							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
-
 							// Play particle effect
-							c->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->SpawnBloodEffect();
 						}
 					}
 				}
@@ -924,12 +940,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					// Play "Hit" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-					// Set up particle effect location
-					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 					// Play particle effect
-					mCurrentTarget->GetPSBlood()->play();
+					mCurrentTarget->SpawnBloodEffect();
 				}
 			}
 			else
@@ -1090,7 +1102,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 
 	// Stop all active particle effects
-	StopParticleEffects();
+	//StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
