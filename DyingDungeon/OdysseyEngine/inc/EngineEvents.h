@@ -222,4 +222,15 @@ namespace Odyssey
 			priority = EventPriority::Immediate;
 		}
 	};
+
+	class SetTimeScaleEvent : public Event
+	{
+	public:
+		float timeScale = 1.0f;
+
+		SetTimeScaleEvent(float scale) : timeScale(scale)
+		{
+			priority = EventPriority::Immediate;
+		}
+	};
 }

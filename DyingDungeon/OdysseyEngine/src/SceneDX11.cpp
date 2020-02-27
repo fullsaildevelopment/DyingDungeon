@@ -21,6 +21,8 @@ namespace Odyssey
 		mShadowLight = nullptr;
 		mRenderPackage.shadowLight = nullptr;
 		setSkybox("Skybox.dds");
+		mTimeScale = 1.0f;
+		EventManager::getInstance().subscribe(this, &SceneDX11::onSetTimeScale);
 	}
 
 	SceneDX11::SceneDX11(DirectX::XMFLOAT3 center, float radius)
@@ -29,6 +31,8 @@ namespace Odyssey
 		mSceneRadius = radius;
 		mShadowLight = nullptr;
 		setSkybox("Skybox.dds");
+		mTimeScale = 1.0f;
+		EventManager::getInstance().subscribe(this, &SceneDX11::onSetTimeScale);
 	}
 
 	void SceneDX11::initialize()
@@ -173,7 +177,7 @@ namespace Odyssey
 				Component* component = mComponentList[i];
 				if (component->isActive() && component->getEntity()->isActive())
 				{
-					component->update(mDeltaTime);
+					component->update(mDeltaTime * mTimeScale);
 				}
 			}
 		}
@@ -251,5 +255,9 @@ namespace Odyssey
 		{
 			destroyEntity(prefab.get());
 		}
+	}
+	void SceneDX11::onSetTimeScale(SetTimeScaleEvent* evnt)
+	{
+		mTimeScale = evnt->timeScale;
 	}
 }

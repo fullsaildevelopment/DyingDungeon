@@ -32,9 +32,8 @@ void TeamSelectionController::initialize()
 
 	// Create the models and info popups
 	CreateModelsAndPopups();
-
-	// Don't display some of the characters
-	TurnOffOtherModels();
+	// Don't display the characters
+	TurnOffModels();
 
 	// Clear the clickable character UI elements
 	GameUIManager::getInstance().ClearClickableCharacterList();
@@ -86,6 +85,13 @@ void TeamSelectionController::initialize()
 		mSlot3Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+	}
+	else
+	{
+		// Turn on the first character of each list
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 	}
 	//SaveLoad::Instance().LoadLoadOut();
 }
@@ -312,22 +318,22 @@ void TeamSelectionController::CreateModelsAndPopups()
 	}
 }
 
-void TeamSelectionController::TurnOffOtherModels()
+void TeamSelectionController::TurnOffModels()
 {
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot1CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{
 		mSlot1CharacterList[i]->setVisible(false);
 	}
 
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot2CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot2CharacterList.size(); i++)
 	{
 		mSlot2CharacterList[i]->setVisible(false);
 	}
 	
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot3CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot3CharacterList.size(); i++)
 	{
 		mSlot3CharacterList[i]->setVisible(false);
 	}
