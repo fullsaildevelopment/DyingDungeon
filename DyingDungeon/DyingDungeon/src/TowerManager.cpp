@@ -115,9 +115,6 @@ void TowerManager::update(double deltaTime)
 				//Check to see if the update returned PLAYER_TEAM_DIED
 				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
 				{
-					std::cout << "You FAILED to complete the tower, Get Better\n" << std::endl;
-					std::cout << "Your team DIED!!!!!!!\n" << std::endl;
-
 					SetTowerState(NOT_IN_BATTLE);
 					// Go to main menu screen
 					GoToMainMenu();
@@ -141,7 +138,6 @@ void TowerManager::update(double deltaTime)
 				// Check to see if that was our last level for completing the tower
 				if (GetCurrentLevel() > mNumberOfLevels)
 				{
-					std::cout << "You have completed the tower, Congratulations\n" << std::endl;
 					SetTowerState(NOT_IN_BATTLE);
 
 					// Give player some XP
@@ -151,32 +147,11 @@ void TowerManager::update(double deltaTime)
 					{
 						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
-					std::cout << "Player team characters gained " << tempXP << "XP for completing the tower.\n" << std::endl;
 					// Go to main menu screen
 					GoToMainMenu();
 				}
 				else
 				{
-					//// If this is the last level of the tower, spawn the boss
-					//if (mCurrentLevel == mNumberOfLevels)
-					//{
-					//	// Turn off the other enemies
-					//	for (int i = 0; i < mEnemyTeam.size(); i++)
-					//	{
-					//		mEnemyTeam[i]->setActive(false);
-					//		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(false);
-					//		mSkeletonTeam.push_back(mEnemyTeam[i]);
-					//	}
-					//
-					//	// Now active the boos and only add the boss to the enemy list
-					//	mBossCharacter->setActive(true);
-					//	// Turn on Ganny's UI
-					//	GameUIManager::getInstance().GetCharacterHuds()[mBossCharacter->getComponent<Character>()->GetHudIndex()]->pCanvas->setActive(true);
-					//	mEnemyTeam.push_back(mBossCharacter);
-					//}
-
-					std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
 					// Give player some XP
 					tempXP = 100.0f;
 					// Print how much XP was given to the player
@@ -191,8 +166,6 @@ void TowerManager::update(double deltaTime)
 							currCharacter->SetState(STATE::NONE);
 						}
 					}
-					std::cout << "Player team characters gained " << tempXP << "XP for completing the level.\n" << std::endl;
-
 					// Make a new battle to continue the tower
 					CreateBattleInstance();
 				}
@@ -232,25 +205,8 @@ void TowerManager::CreateBattleInstance()
 																					mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath(),
 																					mPlayerTeam[0]->getComponent<Character>(), mPlayerTeam[1]->getComponent<Character>(), mPlayerTeam[2]->getComponent<Character>()));
 
-	// Remove the current enemy team from the scene
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		// Destory the previous enemy's UI Elements
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the previous enemy's impact indicator
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-		// Destroy the previous enemy's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
-		// Destroy the previous enemies
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
-	}
-	
 	// Create the new enemy team before creating the battle
 	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(mCurrentLevel - 1);
-
-	// Add all of the new characters from the enemy team to the allCharacters vector
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-		mAllCharacters.push_back(mEnemyTeam[i]);
 
 	// Set up clickable character UI
 	GameUIManager::getInstance().SetupClickableCharacterUI();
@@ -261,21 +217,15 @@ void TowerManager::CreateBattleInstance()
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
 
-	std::cout << "Created a battle instance\n" << std::endl;
-	std::cout << "- Player Team\n" << std::endl;
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		Character* myChar = mPlayerTeam[i]->getComponent<Character>();
 	}
 
-	std::cout << "- Enemy Team\n" << std::endl;
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
 		Character* myChar = mEnemyTeam[i]->getComponent<Character>();
 	}
-
-	std::cout << "The current level is " << mCurrentLevel << "\n" << std::endl;
-
 }
 
 void TowerManager::DestroyBattleInstance()
@@ -293,8 +243,6 @@ void TowerManager::DestroyBattleInstance()
 	
 	// Since we destoryed the BattleInstance we will NOT be in combat
 	SetTowerState(NOT_IN_BATTLE);
-
-	std::cout << "Destroyed a battle instance\n" << std::endl;
 }
 
 void TowerManager::TogglePauseMenu()
@@ -305,10 +253,6 @@ void TowerManager::TogglePauseMenu()
 	// Toggle pause menu canvas
 	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
-
-	// Loop through all of the characters and toggle their animator
-	for (int i = 0; i < mAllCharacters.size(); i++)
-		mAllCharacters[i]->getComponent<Odyssey::Animator>()->setActive(!mAllCharacters[i]->getComponent<Odyssey::Animator>()->isActive());
 }
 
 void TowerManager::ShowOptionsMenu()
@@ -466,8 +410,6 @@ void TowerManager::CreateThePlayerTeam()
 			characterToCreate = CharacterFactory::CharacterOptions::Monk;
 			mPlayerRotation = DirectX::XMVectorSet(DirectX::XMVectorGetX(mPlayerRotation), 180.0f, DirectX::XMVectorGetZ(mPlayerRotation), 1.0f);
 		}
-		else
-			std::cout << "Not the correct hero type so we defaulted to Paladin in TowerManager.cpp Init()";
 
 
 		// Create the character prefab
