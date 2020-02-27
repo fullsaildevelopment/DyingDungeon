@@ -173,7 +173,7 @@ namespace Odyssey
 				Component* component = mComponentList[i];
 				if (component->isActive() && component->getEntity()->isActive())
 				{
-					component->update(mDeltaTime * 10.0f);
+					component->update(mDeltaTime);
 				}
 			}
 		}
@@ -181,6 +181,8 @@ namespace Odyssey
 
 	void SceneDX11::onDestroy()
 	{
+		mDestroyList.clear();
+
 		for (int i = 0; i < mComponentList.size(); i++)
 		{
 			// Update the component
@@ -234,6 +236,7 @@ namespace Odyssey
 		{
 			for (Component* component : mDestroyList[i]->getComponents<Component>())
 			{
+				component->onDestroy();
 				removeComponent(component);
 			}
 		}

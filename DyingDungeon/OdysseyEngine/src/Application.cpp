@@ -96,10 +96,6 @@ namespace Odyssey
 		// Set the new active scene
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
-			if (mActiveScene)
-			{
-				mActiveScene->onDestroy();
-			}
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set

@@ -69,7 +69,10 @@ namespace Odyssey
 			mLock.lock(LockState::Write);
 			if (mSceneChanged)
 			{
+				mActiveScene->onDestroy();
+
 				mActiveScene = mNextScene;
+
 				mNextScene = nullptr;
 				mSceneChanged = false;
 				EventManager::getInstance().publish(new EnableRenderingEvent());
