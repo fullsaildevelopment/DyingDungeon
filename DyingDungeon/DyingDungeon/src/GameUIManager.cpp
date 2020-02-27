@@ -4,8 +4,8 @@
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
 #include "HeroComponent.h"
-#include "CombatManager.h"
 #include "EventManager.h"
+#include "CombatEvents.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1900,32 +1900,32 @@ void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMF
 
 void GameUIManager::Character1Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero1);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Hero1));
 }
 
 void GameUIManager::Character2Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero2);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Hero2));
 }
 
 void GameUIManager::Character3Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero3);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Hero3));
 }
 
 void GameUIManager::Character4Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy1);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy1));
 }
 
 void GameUIManager::Character5Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy2);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy2));
 }
 
 void GameUIManager::Character6Callback()
 {
-	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy3);
+	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy3));
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)

@@ -354,8 +354,6 @@ void TowerManager::GoToMainMenu()
 	{
 		// Destory the previous player's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the previous player's clickable box
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i]));
 		// Destroy the previous player's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous player's blood particle effect
@@ -370,14 +368,18 @@ void TowerManager::GoToMainMenu()
 	{
 		// Destory the previous enemy's UI Elements
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		// Destroy the enemy's clickable box
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i + 3])); // Plus 3 to skip the player boxes
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous enemy's blood particle effect
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous enemies
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
+
+	// Remove the clickable UI elements
+	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	{
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetClickableUIElements()[i]));
 	}
 
 	// Deactivate the rewards screen
