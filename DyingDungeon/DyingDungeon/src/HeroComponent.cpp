@@ -932,6 +932,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					position = DirectX::XMLoadFloat3(&(tempPos1));
 					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
 					temp->getComponent<JudgementMover>()->SetVelocity(tempPos2, 10.0f);
+					if (mID == GameplayTypes::HEROID::Mage)
+						temp->getComponent<JudgementMover>()->SetSpinOnX(false);
 				}
 				else
 				{
@@ -1174,6 +1176,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 		if (mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::ATTACK && mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::DEBUFF && temp < 3)
 		{
 			mCurrentTarget = mHeroList[temp]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
 			for (Odyssey::Entity* t : mHeroList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
@@ -1185,6 +1189,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 		else if((mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF) && temp > 2)
 		{
 			mCurrentTarget = mEnemyList[(temp - 3)]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
 			for (Odyssey::Entity* t : mEnemyList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter

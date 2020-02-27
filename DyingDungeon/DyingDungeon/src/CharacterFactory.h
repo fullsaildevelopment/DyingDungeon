@@ -132,6 +132,10 @@ private: // Functions
 	void PallySkill3Prefab();
 	//////////////////////////////
 
+	// Mage Skill Effect Prefabs //
+	void MageSkill1Prefab();
+	//////////////////////////////
+
 	// Particle Creation Functions
 	Odyssey::ParticleSystem* setUpFireButBetter(Odyssey::Scene* _sceneToAddTo);
 	Odyssey::ParticleSystem* setUpFireStorm(Odyssey::Scene* _sceneToAddTo);
