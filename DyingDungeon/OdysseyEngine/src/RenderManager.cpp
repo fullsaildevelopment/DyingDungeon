@@ -339,14 +339,19 @@ namespace Odyssey
 
 	Buffer* RenderManager::getBuffer(int ID)
 	{
-		// Check for out of bounds
-		if (ID >= mBuffers.size())
+		// Create storage for the buffer
+		Buffer* buffer = nullptr;
+		
+		// Check if the ID is in range
+		mLock.lock(LockState::Write);
+		if (ID < mBuffers.size())
 		{
-			return nullptr;
+			// Get the stored buffer
+			buffer = mBuffers[ID].get();
 		}
+		mLock.unlock(LockState::Write);
 
-		// Return the raw pointer stored at the ID index
-		return mBuffers[ID].get();
+		return buffer;
 	}
 
 	Mesh* RenderManager::getMesh(int ID)
@@ -471,11 +476,13 @@ namespace Odyssey
 
 	void RenderManager::destroyBuffer(int ID)
 	{
+		mLock.lock(LockState::Write);
 		if (ID < mBuffers.size())
 		{
 			mBufferIDs.push(ID);
 			mBuffers[ID] = nullptr;
 		}
+		mLock.unlock(LockState::Write);
 	}
 
 	void RenderManager::destroyRenderTarget(int ID)

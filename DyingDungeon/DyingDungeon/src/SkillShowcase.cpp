@@ -33,6 +33,9 @@ void SkillShowcase::update(double deltaTime)
 		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		position = DirectX::XMLoadFloat3(&(bard1->getComponent<Odyssey::Transform>()->getPosition()));
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin1, &paladin1Spawn, position, rotation));
+
+		position = DirectX::XMLoadFloat3(&(bard1->getComponent<Odyssey::Transform>()->getPosition()));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin3, &paladin3Spawn, position, rotation));
 	}
 }
 

@@ -181,6 +181,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 1 Characters
 	bool makeSlot1Characters = true;
+	// Clear slot 1 list
+	mSlot1CharacterList.clear();
 	if (makeSlot1Characters)
 	{
 		// Paladin
@@ -225,6 +227,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 2 Characters
 	bool makeSlot2Characters = true;
+	// Clear slot 2 list
+	mSlot2CharacterList.clear();
 	if (makeSlot2Characters)
 	{
 		// Mage
@@ -269,6 +273,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 3 Characters
 	bool makeSlot3Characters = true;
+	// Clear slot 3 list
+	mSlot3CharacterList.clear();
 	if (makeSlot3Characters)
 	{
 		// Bard

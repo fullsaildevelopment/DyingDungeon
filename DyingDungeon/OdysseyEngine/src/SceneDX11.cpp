@@ -73,7 +73,7 @@ namespace Odyssey
 		}
 		
 		entity->setScene(this);
-		mSceneEntities.push_back(entity);
+		mPrefabList.push_back(entity);
 
 		// Initialize the entity's components
 		for (Component* component : entity->getComponents<Component>())
@@ -92,7 +92,7 @@ namespace Odyssey
 			{
 				childComponent->initialize();
 			}
-			mSceneEntities.push_back(child);
+			mPrefabList.push_back(child);
 			entity->addChild(child.get());
 		}
 
@@ -181,6 +181,10 @@ namespace Odyssey
 
 	void SceneDX11::onDestroy()
 	{
+		flushPrefabList();
+		flushDestroyList();
+		mPrefabList.clear();
+
 		for (int i = 0; i < mComponentList.size(); i++)
 		{
 			// Update the component
@@ -234,9 +238,18 @@ namespace Odyssey
 		{
 			for (Component* component : mDestroyList[i]->getComponents<Component>())
 			{
+				component->onDestroy();
 				removeComponent(component);
 			}
 		}
 		mDestroyList.clear();
+	}
+
+	void SceneDX11::flushPrefabList()
+	{
+		for (std::shared_ptr<Entity> prefab : mPrefabList)
+		{
+			destroyEntity(prefab.get());
+		}
 	}
 }

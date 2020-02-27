@@ -112,9 +112,6 @@
     <ClCompile Include="src\AiKnowledge.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\CombatManager.cpp">
-      <Filter>Source Files\Game Management</Filter>
-    </ClCompile>
     <ClCompile Include="src\DyingDungeon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -249,9 +246,6 @@
     <ClInclude Include="src\AiKnowledge.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="src\CombatManager.h">
-      <Filter>Header Files\Game Management</Filter>
-    </ClInclude>
     <ClInclude Include="src\DyingDungeon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -268,6 +262,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\MyTypeDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CombatEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

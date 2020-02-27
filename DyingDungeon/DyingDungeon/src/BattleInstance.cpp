@@ -69,7 +69,6 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 
 	// Set the current round to round 1 at the start
 	mCurrentRound = 1;
-	std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
 	// No turns have been completed yet
 	mTurnCounter = 0;
 }
@@ -110,7 +109,6 @@ int BattleInstance::UpdateBattle()
 			{
 				// Increase the round
 				mCurrentRound++;
-				std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
 				// Set the turn counter for this new round back to zero
 				mTurnCounter = 0;
 			}
@@ -118,9 +116,6 @@ int BattleInstance::UpdateBattle()
 	}
 	else
 	{
-		// The current battle has ended, at least one team is completely dead
-		std::cout << "The battle has ended!\n" << std::endl;
-
 		// Check again to see if it was the player's team that died
 		if (!IsTeamAlive(mPlayerTeam))
 		{

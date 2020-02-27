@@ -19,6 +19,7 @@ namespace Odyssey
 		mIsActive = false;
 		mMaterial = -1;
 		mMesh = -1;
+		mShadowCaster = true;
 	}
 
 	MeshRenderer::MeshRenderer(int meshID, int materialID)
@@ -32,6 +33,7 @@ namespace Odyssey
 		// Store the new Mesh and Material
 		mMesh = meshID;
 		mMaterial = materialID;
+		mShadowCaster = true;
 	}
 
 	void MeshRenderer::setMesh(int meshID)
@@ -86,6 +88,16 @@ namespace Odyssey
 		mLock.unlock(LockState::Read);
 
 		return material;
+	}
+
+	void MeshRenderer::setShadowCaster(bool shadowCaster)
+	{
+		mShadowCaster = shadowCaster;
+	}
+
+	bool MeshRenderer::isShadowCaster()
+	{
+		return mShadowCaster;
 	}
 
 	void MeshRenderer::bind(Microsoft::WRL::ComPtr<ID3D11DeviceContext> context)
