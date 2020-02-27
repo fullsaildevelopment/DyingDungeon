@@ -56,7 +56,7 @@ void MainMenuController::initialize()
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
-	mPaladinCharacter->getChildren()[1]->setVisible(false);
+	//mPaladinCharacter->getChildren()[1]->setVisible(false);
 }
 
 void MainMenuController::update(double deltaTime)

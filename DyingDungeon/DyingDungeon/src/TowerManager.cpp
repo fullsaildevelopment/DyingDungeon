@@ -51,7 +51,9 @@ void TowerManager::initialize()
 void TowerManager::update(double deltaTime)
 {
 	// Always look for the pause input button
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P))
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) && 
+		!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive() &&
+		!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
 	{
 		// Turn the pause menu either on or off
 		TogglePauseMenu();
@@ -271,6 +273,26 @@ void TowerManager::TogglePauseMenu()
 	{
 		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
 	}
+
+	if (pauseMenuCanvas->isActive())
+	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
+		// Set the time scale to 0 on pause
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(0.0f));
+	}
+	else if (mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::SELECTTARGET || mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::INPROGRESS)
+	{
+		// Set the new cursor
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+	}
+
+	// If we are turning off the pause menu
+	if (!pauseMenuCanvas->isActive())
+	{
+		// Set the time scale back to 1
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
+	}
 }
 
 void TowerManager::ShowOptionsMenu()
@@ -315,14 +337,6 @@ void TowerManager::GoToMainMenu()
 	// Remove the current player team from the scene
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
-		//// Destory the previous player's UI Elements
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]));
-		//// Destroy the previous player's impact indicator
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-		//// Destroy the previous player's blood particle effect
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
-		//// Destroy the previous player
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mPlayerTeam[i]));
 		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
 	}
 	mPlayerTeam.clear();
@@ -330,14 +344,6 @@ void TowerManager::GoToMainMenu()
 	// Remove the current enemy team from the scene
 	for (int i = 0; i < mEnemyTeam.size(); i++)
 	{
-	//	// Destory the previous enemy's UI Elements
-	//	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
-	//	// Destroy the previous enemy's impact indicator
-	//	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
-	//	// Destroy the previous enemy's blood particle effect
-	//	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
-	//	// Destroy the previous enemies
-	//	Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
 		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
 	}
 	mEnemyTeam.clear();
