@@ -15,7 +15,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	mEXP = 0.0f;
 	mCurrentLevel = 0;
 	mProvoked = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mMechPtr = nullptr;
 	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
@@ -674,12 +674,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
-							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 							// Play particle effect
-							c->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->SpawnBloodEffect();
 						}
 					}
 				}
@@ -688,12 +684,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 					// Play "Hit" animation
 					mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-					// Set up particle effect location
-					DirectX::XMFLOAT3 t = mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mMoves.GetMove()->target->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 					// Play particle effect
-					mMoves.GetMove()->target->GetPSBlood()->play();
+					mMoves.GetMove()->target->SpawnBloodEffect();
 				}
 			}
 			else
@@ -857,7 +849,7 @@ void EnemyComponent::Die()
 	mEntity->getComponent<Odyssey::Animator>()->playClip("Dead");
 
 	// Stop all active particle effects
-	StopParticleEffects();
+	//StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;

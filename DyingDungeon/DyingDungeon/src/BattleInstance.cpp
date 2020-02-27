@@ -35,7 +35,7 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 				// Play an attack animation at the beginning of each battle
 				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
 
-				mPlayerTeam[i]->getComponent<Character>()->StopParticleEffects();
+				//mPlayerTeam[i]->getComponent<Character>()->StopParticleEffects();
 
 				// Put him into the mAllCharacters list
 				mAllCharacters.push_back(mPlayerTeam[i]);

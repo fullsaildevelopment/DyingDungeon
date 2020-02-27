@@ -182,10 +182,13 @@ public:
 	bool IsShielded();
 
 	// Sets the Particle system pointer to a "Hit effect"
-	void SetPSBlood(Odyssey::ParticleSystem* newBloodEffect);
+	void SetBloodPrefab(Odyssey::Entity* newBloodEffectPrefab);
 
 	// Returns the Particle system pointer to a "Hit effect"
-	Odyssey::ParticleSystem* GetPSBlood();
+	Odyssey::Entity* GetBloodPrefab();
+
+	// Spawn Blood Effect At Character's Position
+	void SpawnBloodEffect();
 
 	// Turns all active particle effects to inactive
 	void StopParticleEffects();
@@ -340,7 +343,7 @@ protected:
 	STATE mCurrentState;
 
 	// Pointer to the particle system used for "getting hit" effects
-	Odyssey::ParticleSystem* mBloodParticleEffect;
+	Odyssey::Entity* mBloodEffectPrefab;
 
 	public:
 	// entity used for targeting 
