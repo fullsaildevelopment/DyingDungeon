@@ -4,6 +4,8 @@
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
 #include "HeroComponent.h"
+#include "CombatManager.h"
+#include "EventManager.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1899,27 +1901,32 @@ void GameUIManager::SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMF
 
 void GameUIManager::Character1Callback()
 {
-	bool callback1 = true;
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero1);
 }
 
 void GameUIManager::Character2Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero2);
 }
 
 void GameUIManager::Character3Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Hero3);
 }
 
 void GameUIManager::Character4Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy1);
 }
 
 void GameUIManager::Character5Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy2);
 }
 
 void GameUIManager::Character6Callback()
 {
+	CombatManager::getInstance().SetCharacterToAttack(CombatManager::CharacterToAttack::Enemy3);
 }
 
 Odyssey::UICanvas* GameUIManager::SetupInfoPopup(Odyssey::Entity* _objToAddTo, Character* _character, DirectX::XMFLOAT2 _popupPosition)
@@ -2409,7 +2416,7 @@ void GameUIManager::ClearCombatLog()
 	for (int i = 0; i < mCombatTargetIcons.size(); i++)
 		mCombatTargetIcons[i]->setSprite(L"assets/images/Blank.png", spriteSize, spriteSize);
 
-	for (int i = (int)mBattleLogVec.size() - 1; i > 0; i--)
+	for (int i = (int)mBattleLogVec.size() - 1; i >= 0; i--)
 	{
 		mBattleLogVec[i]->setText(L"");
 	}
