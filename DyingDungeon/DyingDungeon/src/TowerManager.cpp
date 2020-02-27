@@ -289,6 +289,7 @@ void TowerManager::HideControlScreen()
 	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
 	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
 }
+
 void TowerManager::GoToMainMenu()
 {
 	SetTowerState(NOT_IN_BATTLE);
@@ -410,7 +411,6 @@ void TowerManager::CreateThePlayerTeam()
 			characterToCreate = CharacterFactory::CharacterOptions::Monk;
 			mPlayerRotation = DirectX::XMVectorSet(DirectX::XMVectorGetX(mPlayerRotation), 180.0f, DirectX::XMVectorGetZ(mPlayerRotation), 1.0f);
 		}
-
 
 		// Create the character prefab
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(characterToCreate);
