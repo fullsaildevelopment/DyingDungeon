@@ -215,7 +215,7 @@ void TowerManager::CreateBattleInstance()
 		// Destroy the previous enemy's impact indicator
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
 		// Destroy the previous enemy's blood particle effect
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
 		// Destroy the previous enemies
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
 	}
@@ -259,6 +259,18 @@ void TowerManager::TogglePauseMenu()
 	// Toggle pause menu canvas
 	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
+
+	// Turn off the hero ui depening if the pause menu is on or off
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
+	}
+
+	// Turn off the enemy ui depening if the pause menu is on or off
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
+	}
 }
 
 void TowerManager::ShowOptionsMenu()

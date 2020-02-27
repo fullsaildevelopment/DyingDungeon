@@ -857,6 +857,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
+			// Set the new cursor
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
 			ResetToSelection();
 			tempIndex = -1;
 		}
@@ -1402,7 +1404,7 @@ void HeroComponent::Skill1Callback()
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
 
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[0]->GetManaCost() <= mCurrentMana)
@@ -1418,6 +1420,9 @@ void HeroComponent::Skill1Callback()
 }
 void HeroComponent::Skill2Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();
@@ -1434,6 +1439,9 @@ void HeroComponent::Skill2Callback()
 }
 void HeroComponent::Skill3Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();
@@ -1450,6 +1458,9 @@ void HeroComponent::Skill3Callback()
 }
 void HeroComponent::Skill4Callback()
 {
+	// Set the new cursor
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
 		ResetToSelection();

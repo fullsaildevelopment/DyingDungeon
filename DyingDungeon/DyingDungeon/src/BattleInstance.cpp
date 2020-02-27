@@ -99,6 +99,8 @@ int BattleInstance::UpdateBattle()
 		// Has the current player taken it's turn yet
 		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
 		{
+			// Set the new cursor
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic2.cur"));
 			// Turn the turn indicator back on
 			mTurnIndicator->setActive(true);
 			// One turn has been taken
