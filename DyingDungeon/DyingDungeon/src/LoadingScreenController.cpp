@@ -24,6 +24,7 @@ void LoadingScreenController::initialize()
 	mContinue = mLoadingScreen->getComponent<Odyssey::UICanvas>()->getElements<Odyssey::Text2D>()[11];
 	mContinue->setOpacity(0.0f);
 	mCurrentTime = 0.0f;
+	mWaitTime = 2.5f;
 }
 
 std::shared_ptr<Odyssey::Component> LoadingScreenController::clone() const
@@ -33,9 +34,6 @@ std::shared_ptr<Odyssey::Component> LoadingScreenController::clone() const
 
 void LoadingScreenController::update(double deltaTime)
 {
-	static float opacity = 1.0f;
-	static int direction = -1;
-
 	// Update the current time
 	mCurrentTime += deltaTime;
 	mCurrentTime = min(mWaitTime, mCurrentTime);
@@ -50,6 +48,7 @@ void LoadingScreenController::update(double deltaTime)
 		static int direction = 1;
 		opacity += deltaTime * direction;
 		opacity = max(0.25f, min(opacity, 1.0f));
+
 		if (opacity == 0.25f && direction == -1)
 		{
 			direction = 1;
@@ -58,11 +57,14 @@ void LoadingScreenController::update(double deltaTime)
 		{
 			direction = -1;
 		}
+
 		mContinue->setOpacity(opacity);
 		// Allow interaction
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
 		{
 			Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent(mNextScene));
+			opacity = 0.0f;
+			direction = 1;
 		}
 	}
 }
