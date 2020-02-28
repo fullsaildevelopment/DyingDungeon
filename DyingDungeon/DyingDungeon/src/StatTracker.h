@@ -165,6 +165,10 @@ public:
 	/// <returns></returns>
 	std::string GetCharacterName(unsigned int level, unsigned int turn);
 
+	std::wstring GetCharacterPortrait(unsigned int level, unsigned int unique_id);
+	float GetTargetDebuffValue(unsigned int level, unsigned int turn, unsigned int unique_id);
+	float GetTargetBuffValue(unsigned int level, unsigned int turn, unsigned int unique_id);
+
 	/// <summary>
 	/// Returns a list of targets from a specific level and turn
 	/// </summary>
