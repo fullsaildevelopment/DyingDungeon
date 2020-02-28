@@ -167,7 +167,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 25.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("SpellCasting",0.25f);
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
@@ -297,7 +297,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("MagicZap", 0.25f);
 		mSkillList[3]->SetStatusChance(0.33f);
-		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 30 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 25 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -413,7 +413,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("MagicalVanish", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, ridding them of any harmful status effects. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Does nothing but looks cool :D");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -540,7 +540,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 45.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack by 33%, hitting target for 45 damage. Cost 30 mana.");
+		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage, hitting the target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
@@ -655,7 +655,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 15.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
 		mSkillList[1]->SetSoundEffect("", 0.25f);
-		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
+		mSkillList[1]->SetSkillDescription(L"dealing 15 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
@@ -667,7 +667,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 30.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
+		mSkillList[3]->SetSkillDescription(L"dealing 30 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
