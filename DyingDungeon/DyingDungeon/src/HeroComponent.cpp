@@ -929,9 +929,9 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					{
 						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
 						tempPos2 = mCurrentSkill->GetParticleOffset();
-						tempPos1.x += tempPos2.x;
-						tempPos1.y += tempPos2.y;
-						tempPos1.z += tempPos2.z;
+						tempPos1.x += tempPos2.x + 0.5f;
+						tempPos1.y += tempPos2.y + 0.5f;
+						tempPos1.z += tempPos2.z + 0.5f;
 						position = DirectX::XMLoadFloat3(&(tempPos1));
 						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
 						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));

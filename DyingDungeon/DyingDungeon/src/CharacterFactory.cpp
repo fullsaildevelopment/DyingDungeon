@@ -629,11 +629,11 @@ void CharacterFactory::BardSkill1Prefab()
 	mBardSkill->setStatic(false);
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star2.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.5f, 0.3f, 0.6f), DirectX::XMFLOAT3(0.2f, 0.4f, 0.5f));
-	skillVFX->setLifetime(0.5f, 1.0f);
+	skillVFX->setLifetime(0.75f, 1.5f);
 	skillVFX->setParticleCount(100, 100);
 	skillVFX->setEmissionOverLifetime(0);
-	skillVFX->setDuration(0.75f);
-	skillVFX->setSpeed(2.5f, 5.0f);
+	skillVFX->setDuration(1.5f);
+	skillVFX->setSpeed(3.0f, 5.0f);
 	skillVFX->setSize(0.25f, 0.5f);
 	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
 	skillVFX->setGravity(4.0f);
@@ -663,7 +663,7 @@ void CharacterFactory::BardSkill2Prefab()
 	skillVFX->setLifetime(1.0f, 1.5f);
 	skillVFX->setParticleCount(0, 15);
 	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(3.0f);
+	skillVFX->setDuration(2.0f);
 	skillVFX->setSpeed(1.5f, 2.25f);
 	skillVFX->setSize(0.75f, 1.0f);
 	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
@@ -694,7 +694,7 @@ void CharacterFactory::BardSkill3Prefab()
 	skillVFX->setLifetime(1.0f, 1.5f);
 	skillVFX->setParticleCount(0, 15);
 	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(3.0f);
+	skillVFX->setDuration(2.0f);
 	skillVFX->setSpeed(1.5f, 2.25f);
 	skillVFX->setSize(0.75f, 1.0f);
 	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
@@ -709,7 +709,7 @@ void CharacterFactory::BardSkill4Prefab()
 	// Create the skill 4 prefab
 	Odyssey::Entity* mBardSkill = mApplication->createPrefab();
 	mBardSkill->addComponent<Odyssey::Transform>();
-	mBardSkill->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 15.0f);
+	mBardSkill->getComponent<Odyssey::Transform>()->setPosition(20.0f, 3.0f, 15.0f);
 
 	// Add a light to the prefab
 	Odyssey::Light* light = mBardSkill->addComponent<Odyssey::Light>();
@@ -728,7 +728,7 @@ void CharacterFactory::BardSkill4Prefab()
 	mBardSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setDiffuseColor({ 0.12f, 1.0f, 0.29f, 1.0f });
 	mBardSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
 	Odyssey::ParticleSystem* skillVFX = mBardSkill->addComponent<Odyssey::ParticleSystem>();
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.12f, 1.0f, 0.29f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.75f, 1.5f);
 	skillVFX->setParticleCount(0, 90);
@@ -763,14 +763,14 @@ void CharacterFactory::PallySkill1Prefab()
 	light->setRange(10.0f);
 	light->setIntensity(1.0f);
 
-	// Setup the skill 3 vfx
+	// Setup the skill 1 vfx
 	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
 	skillVFX->setParticleCount(0, 50);
 	skillVFX->setEmissionOverLifetime(75);
-	skillVFX->setDuration(4.0f);
+	skillVFX->setDuration(2.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
@@ -792,9 +792,10 @@ void CharacterFactory::PallySkill2Prefab()
 	Odyssey::Light* light = mSkill->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
 	light->setColor(0.75f, 0.65f, 0.1f);
-	light->setRange(10.0f);
+	light->setRange(20.0f);
 	light->setIntensity(0.5f);
-	// Setup the skill 2 vfx
+
+	// Strike 1
 	mSkill->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
 	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Lightning.png");
@@ -808,7 +809,7 @@ void CharacterFactory::PallySkill2Prefab()
 	skillVFX->setSizeOverLifetime(0.5f, 0.75f);
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
-	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.001f, 0.001f, 0.001f));
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, -1.0f, 0.001f, 0.001f, 0.001f));
 	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -821,8 +822,63 @@ void CharacterFactory::PallySkill2Prefab()
 	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
-	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, -1.0f, 0.01f, 0.01f, 0.01f));
 
+	// Strike 2
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Lightning.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.4f, 0.2f), DirectX::XMFLOAT3(0.75f, 0.1f, 0.1f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 15);
+	skillVFX->setEmissionOverLifetime(30);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(1.0f, 1.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.75f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(-1.0f, 0.0f, 0.0f, 0.001f, 0.001f, 0.001f));
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 75);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(0.5f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(-1.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	// Strike 3
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Lightning.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.4f, 0.2f), DirectX::XMFLOAT3(0.75f, 0.1f, 0.1f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 15);
+	skillVFX->setEmissionOverLifetime(30);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(1.0f, 1.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.75f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(1.0f, 0.0f, 0.0f, 0.001f, 0.001f, 0.001f));
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Electric.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(2.0f, 2.0f);
+	skillVFX->setParticleCount(0, 75);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(8.5f, 9.0f);
+	skillVFX->setSize(0.5f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.25f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(1.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
 	mVXFMap["PallySkill2"] = mSkill;
 }
 void CharacterFactory::PallySkill3Prefab()
@@ -850,7 +906,7 @@ void CharacterFactory::PallySkill3Prefab()
 	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setShader("../OdysseyEngine/shaders/UnlitPixelShader.cso");
 
 	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Purify.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.75f, 1.5f);
 	skillVFX->setParticleCount(0, 90);
@@ -912,9 +968,6 @@ void CharacterFactory::MageSkill1Prefab()
 
 	mVXFMap["MageSkill1"] = mSkill;
 }
-
-
-
 
 // TODO: THIS IS OTHER STUFF WE WILL MAKE INTO PREFABS
 //Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)
