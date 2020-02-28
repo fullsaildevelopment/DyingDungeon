@@ -1362,6 +1362,28 @@ std::string StatTracker::GetCharacterName(unsigned int level, unsigned int turn)
 	return m_levels[level - 1].turns[turn - 1].characterName;
 }
 
+std::wstring StatTracker::GetCharacterPortrait(unsigned int level, unsigned int unique_id)
+{
+	for (int i = 0; i < 3; i++) {
+		if (m_levels[level - 1].characters[i].first.second == unique_id)
+		{
+			return m_levels[level - 1].characters[i].second;
+		}
+	}
+	return L"assets/images/Guy.png";
+}
+
+float StatTracker::GetTargetDebuffValue(unsigned int level, unsigned int turn, unsigned int unique_id)
+{
+	for (int i = 0; i < m_levels[level - 1].turns[turn - 1].targets.size(); i++)
+	{
+		if (m_levels[level - 1].turns[turn - 1].targets[i].first.first.substr(0, 6) != "DEBUFF" && m_levels[level - 1].turns[turn - 1].targets[i].first.second == unique_id) {
+			return m_levels[level - 1].turns[turn - 1].targets[i].second;
+		}
+	}
+	return 0.0f;
+}
+
 std::vector<std::string> StatTracker::GetTargetList(unsigned int level, unsigned int turn)
 {
 	std::vector<std::string> temp_name;
