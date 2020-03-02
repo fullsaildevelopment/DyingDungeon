@@ -584,8 +584,23 @@ void Character::ClearStatusEffects()
 // Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
-	//mDebuffs.clear();
-	//mBleeds.clear();
+	mBleedTimer = 0;
+	mIsBleeding = false;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(false);
+
+	std::vector<StatusEffect*>::iterator it;
+
+	for (it = mSE.begin(); it != mSE.end();)
+	{
+		if ((*it)->GetTypeId() == EFFECTTYPE::Provoke || (*it)->GetTypeId() == EFFECTTYPE::Bleed || (*it)->GetTypeId() == EFFECTTYPE::StatDown || (*it)->GetTypeId() == EFFECTTYPE::Stun)
+		{
+			if (!(*it)->RemoveMe())
+				(*it)->Remove();
+			it = mSE.erase(it);
+		}
+		else
+			it++;
+	}
 }
 
 // Sets the Particle system pointer to a "Hit effect"
@@ -609,33 +624,6 @@ void Character::SpawnBloodEffect()
 
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mBloodEffectPrefab, &bloodEffect, position, rotation));
 }
-
-// Turns all active particle effects to inactive
-//void Character::StopParticleEffects()
-//{
-//	// If blood effect is active set to false
-//	if (mBloodParticleEffectPrefab != nullptr)
-//	{
-//		mBloodParticleEffect->stop();
-//		mBloodParticleEffect->setActive(false);
-//	}
-//
-//	// For each skill in the list
-//	for (std::shared_ptr<Skills> S : mSkillList)
-//	{
-//		// If valid
-//		if (S)
-//		{
-//			// If it has a particle effect
-//			if (S->GetParticleSystem() != nullptr)
-//			{
-//				// Stop and set to false
-//				S->GetParticleSystem()->stop();
-//				S->GetParticleSystem()->setActive(false);
-//			}
-//		}
-//	}
-//}
 
 // Returns the character portrait file path
 std::wstring Character::GetPortraitPath()
