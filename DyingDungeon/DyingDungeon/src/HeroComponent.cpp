@@ -468,7 +468,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
-		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationNickName = "Stun";
 		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
@@ -483,7 +483,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		tempAnimationData.mAnimationNickName = "GotBuffed";
 		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Buff.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -594,7 +594,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
-		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationNickName = "Stun";
 		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
