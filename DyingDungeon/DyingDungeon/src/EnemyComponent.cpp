@@ -609,6 +609,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			if (mCurrentState != STATE::DEAD)
 			{
 				mCurrentState = STATE::NONE;
+				mEntity->getComponent<Odyssey::Animator>()->playClip("Idle");
 				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 			}
 		}

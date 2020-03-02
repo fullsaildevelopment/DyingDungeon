@@ -388,6 +388,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Charact
 	case EFFECTTYPE::Stun:
 	{
 		affectedTarget->SetState(STATE::STUNNED);
+		affectedTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Stun");
 		mStunTimer = newEffect->GetDuration();
 		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(true);
 		break;

@@ -736,6 +736,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (mCurrentState != STATE::DEAD)
 			{
 				mCurrentState = STATE::NONE;
+				mEntity->getComponent<Odyssey::Animator>()->playClip("Idle");
 				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 			}
 		}
