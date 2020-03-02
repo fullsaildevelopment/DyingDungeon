@@ -22,18 +22,16 @@ void CharacterHUDElements::update(double deltaTime)
 
 			//Check if we need to fade away or com back to full opacity
 			if (mFadingDown[i])
-				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mDeltaOpacity * -deltaTime);
+				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mOpacitySpeed * -deltaTime);
 			else
-				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mDeltaOpacity * deltaTime);
+				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mOpacitySpeed * deltaTime);
 
 			// Set opacity
 			mSkillBackgroundList[i]->setOpacity(newOpacity);
 
 			// Check to see if we reached 0.0f or 1.0f to reverse the effect
 			if (mSkillBackgroundList[i]->getOpacity() <= 0.0f || mSkillBackgroundList[i]->getOpacity() >= 1.0f)
-			{
-				mFadingDown[i] != mFadingDown[i];
-			}
+				mFadingDown[i] = !mFadingDown[i];
 		}
 	}
 }

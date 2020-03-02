@@ -1957,8 +1957,13 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	float xAnchor = _hudPosition.x + 134.0f;
 	float yAnchor = _hudPosition.y + 24.0f;
 
+	// Skill Background sizes
+	float bgPadding = 4.0f;
+	UINT bgWidth = 60;
+	UINT bgHeight = 54;
+
 	// Skill1 Background
-	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
 	// Don't show the background at the start
 	newHud->GetSkillBackgroundList()[0]->setVisible(false);
 	// Skill1 Icon
@@ -1967,7 +1972,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	xAnchor += 56.5f;
 
 	// Skill2 Background
-	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
 	// Don't show the background at the start
 	newHud->GetSkillBackgroundList()[1]->setVisible(false);
 	// Skill2 Icon
@@ -1977,7 +1982,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	xAnchor += 56.5f;
 
 	// Skill3 Background
-	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
 	// Don't show the background at the start
 	newHud->GetSkillBackgroundList()[2]->setVisible(false);
 	// Skill3 Icon
@@ -1987,7 +1992,7 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	xAnchor += 56.5f;
 
 	// Skill4 Background
-	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
 	// Don't show the background at the start
 	newHud->GetSkillBackgroundList()[3]->setVisible(false);
 	// Skill4 Icon

@@ -147,7 +147,7 @@ private: //Variables
 
 	// Skill Backgrounds
 	std::vector<Odyssey::Rectangle2D*> mSkillBackgroundList;
-	float mDeltaOpacity = 0.2f;
+	float mOpacitySpeed = 2.0f;
 	bool mFadingDown[4] = { true, true, true, true };
 
 	// Status Effect and Buff Elements
