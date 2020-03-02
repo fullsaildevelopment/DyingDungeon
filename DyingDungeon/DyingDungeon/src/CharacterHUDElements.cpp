@@ -13,6 +13,29 @@ void CharacterHUDElements::initialize()
 
 void CharacterHUDElements::update(double deltaTime)
 {
+	for (int i = 0; i < mSkillBackgroundList.size(); i++)
+	{
+		if (mSkillBackgroundList[i] != nullptr)
+		{
+			// Save the opacity
+			float newOpacity = 0.0f;
+
+			//Check if we need to fade away or com back to full opacity
+			if (mFadingDown[i])
+				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mDeltaOpacity * -deltaTime);
+			else
+				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mDeltaOpacity * deltaTime);
+
+			// Set opacity
+			mSkillBackgroundList[i]->setOpacity(newOpacity);
+
+			// Check to see if we reached 0.0f or 1.0f to reverse the effect
+			if (mSkillBackgroundList[i]->getOpacity() <= 0.0f || mSkillBackgroundList[i]->getOpacity() >= 1.0f)
+			{
+				mFadingDown[i] != mFadingDown[i];
+			}
+		}
+	}
 }
 
 void CharacterHUDElements::onDestroy()
@@ -41,6 +64,14 @@ void CharacterHUDElements::ChangeSkill(Skills* _skill, int _numOfSkill)
 			break;
 		default:
 			break;
+	}
+}
+
+void CharacterHUDElements::ChangeSkillBackgroundColors(DirectX::XMFLOAT3 _newColor)
+{
+	for (int i = 0; i < mSkillBackgroundList.size(); i++)
+	{
+		mSkillBackgroundList[i]->setColor(_newColor);
 	}
 }
 

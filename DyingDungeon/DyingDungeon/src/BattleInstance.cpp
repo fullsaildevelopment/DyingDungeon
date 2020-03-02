@@ -35,11 +35,10 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 			{
 				// Play an attack animation at the beginning of each battle
 				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
-
-				//mPlayerTeam[i]->getComponent<Character>()->StopParticleEffects();
-
 				// Put him into the mAllCharacters list
 				mAllCharacters.push_back(mPlayerTeam[i]);
+				// Turn on their hud blocker
+				GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(true);
 			}
 		}
 	}
@@ -239,7 +238,7 @@ void BattleInstance::SetTurnIndicatorPosition()
 	// If we have a character and he is a hero
 	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
 	{
-		// Turn on their hud blocker
+		// Turn off their hud blocker
 		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
 	}
 

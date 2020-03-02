@@ -1262,6 +1262,9 @@ void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[1].get(), 2);
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[2].get(), 3);
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[3].get(), 4);
+
+		// Update skill background colors
+		hudElements->ChangeSkillBackgroundColors(_newCharacter->GetThemeColor());
 	}
 
 	hudElements->ChangePortrait(_newCharacter->GetPortraitPath());
@@ -1954,23 +1957,39 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	float xAnchor = _hudPosition.x + 134.0f;
 	float yAnchor = _hudPosition.y + 24.0f;
 
+	// Skill1 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[0]->setVisible(false);
 	// Skill1 Icon
 	newHud->SetSkill1(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill2 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[1]->setVisible(false);
 	// Skill2 Icon
 	newHud->SetSkill2(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill3 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[2]->setVisible(false);
 	// Skill3 Icon
 	newHud->SetSkill3(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill4 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - 2.0f, yAnchor - 2.0f), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, 56, 49));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[3]->setVisible(false);
 	// Skill4 Icon
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 }
@@ -2718,4 +2737,3 @@ void GameUIManager::Character6ClickableCallback()
 {
 	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy3));
 }
-

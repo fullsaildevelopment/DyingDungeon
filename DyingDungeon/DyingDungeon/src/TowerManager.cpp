@@ -487,10 +487,6 @@ void TowerManager::CreateThePlayerTeam()
 		impactIndicator->setActive(false);
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
 
-		// Create the blood effect for the heroes
-		//Odyssey::Entity* bloodEffect = nullptr;
-		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
-
 		// Assign the blood effect for the heroes
 		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
 		newCharacter->getComponent<Character>()->SetBloodPrefab(prefab);

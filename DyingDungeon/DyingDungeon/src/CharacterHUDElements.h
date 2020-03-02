@@ -57,6 +57,9 @@ public:
 	void SetSkill3(Odyssey::Sprite2D* _sprite) { mSkill3 = _sprite; }
 	void SetSkill4(Odyssey::Sprite2D* _sprite) { mSkill4 = _sprite; }
 
+	// Skill Backgrounds
+	void SetSkillBackgrounds(Odyssey::Rectangle2D* _rect) { mSkillBackgroundList.push_back(_rect); }
+
 	// Getters
 
 	// HUD Elements
@@ -80,6 +83,9 @@ public:
 	Odyssey::Sprite2D* GetSkill2() { return mSkill2; }
 	Odyssey::Sprite2D* GetSkill3() { return mSkill3; }
 	Odyssey::Sprite2D* GetSkill4() { return mSkill4; }
+
+	// Skill Backgrounds
+	std::vector<Odyssey::Rectangle2D*> GetSkillBackgroundList() { return mSkillBackgroundList; }
 
 	// Status Effect and Buff Elements
 	Odyssey::Sprite2D* GetAttackUpBuff() { return mAttackUp; }
@@ -105,6 +111,9 @@ public:
 
 	// Change the skill elements
 	void ChangeSkill(Skills* _skill, int _numOfSkill);
+
+	// Change the skill background colors
+	void ChangeSkillBackgroundColors(DirectX::XMFLOAT3 _newColor);
 
 	// Clear status effects
 	void ClearStatusEffects();
@@ -135,6 +144,11 @@ private: //Variables
 	Odyssey::Sprite2D* mSkill2 = nullptr;
 	Odyssey::Sprite2D* mSkill3 = nullptr;
 	Odyssey::Sprite2D* mSkill4 = nullptr;
+
+	// Skill Backgrounds
+	std::vector<Odyssey::Rectangle2D*> mSkillBackgroundList;
+	float mDeltaOpacity = 0.2f;
+	bool mFadingDown[4] = { true, true, true, true };
 
 	// Status Effect and Buff Elements
 	Odyssey::Sprite2D* mAttackUp = nullptr;
