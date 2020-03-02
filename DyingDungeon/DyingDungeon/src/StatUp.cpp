@@ -56,6 +56,8 @@ void StatUp::Apply(Character& caster,Character& target)
 
 void StatUp::Remove()
 {
+	if (mRecipient == nullptr)
+		return;
 	mRemoveMe = true;
 	switch (mStatId)
 	{

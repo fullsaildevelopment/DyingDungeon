@@ -56,6 +56,8 @@ void StatDown::Apply(Character& caster, Character& target)
 
 void StatDown::Remove()
 {
+	if (mRecipient == nullptr)
+		return;
 	mRemoveMe = true;
 	switch (mStatId)
 	{
