@@ -1732,7 +1732,6 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	newHUD->GetShieldBar()->setFill(0.0f);
 	
 	// Create and assign the mana bar
-	position.x -= 5.0f;
 	position.y += (float)barHeight + 1.5f;
 	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
 	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
