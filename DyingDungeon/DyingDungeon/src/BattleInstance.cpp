@@ -128,7 +128,7 @@ int BattleInstance::UpdateBattle()
 		// Get the list of skill bg rectangles
 		std::vector<Odyssey::Rectangle2D*> bgRects = GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList();
 		// Turn off the skill selected indicator rectangles
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < bgRects.size(); i++)
 		{
 			bgRects[i]->setVisible(false);
 		}

@@ -1725,6 +1725,12 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	properties.fontSize = 10.5f;
 	position.x += 5.0f;
 	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
+	
+	// Create and assing shield bar
+	position.x -= 5.0f;
+	newHUD->SetShieldBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f), barWidth, barHeight));
+	newHUD->GetShieldBar()->setFill(0.0f);
+	
 	// Create and assign the mana bar
 	position.x -= 5.0f;
 	position.y += (float)barHeight + 1.5f;
@@ -2383,7 +2389,13 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 {
 	// If the turn number is 666, that means he is dead and the text needs to be set to X
 	if (_turnNumber == 666)
+	{
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(L"X");
+		// Deplete the health bar
+		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthBar()->setFill(0.0f);
+		// Set the HP to zero when they die
+		_currCharacter->SetHP(0.0f);
+	}
 	else
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
