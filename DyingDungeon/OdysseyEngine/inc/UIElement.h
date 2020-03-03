@@ -228,6 +228,8 @@ namespace Odyssey
 
 		void setFill(float fill);
 
+		float getFill();
+
 		void setVisible(bool visible);
 
 		bool isVisible();

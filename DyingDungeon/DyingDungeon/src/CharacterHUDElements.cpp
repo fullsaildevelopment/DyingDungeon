@@ -13,6 +13,7 @@ void CharacterHUDElements::initialize()
 
 void CharacterHUDElements::update(double deltaTime)
 {
+	// Update Skill Background Flashing
 	for (int i = 0; i < mSkillBackgroundList.size(); i++)
 	{
 		// Check if we have the rectangles and if they are visible
@@ -21,7 +22,7 @@ void CharacterHUDElements::update(double deltaTime)
 			// Save the opacity
 			float newOpacity = 0.0f;
 
-			//Check if we need to fade away or com back to full opacity
+			//Check if we need to fade away or come back to full opacity
 			if (mFadingDown[i])
 				newOpacity = mSkillBackgroundList[i]->getOpacity() + (mOpacitySpeed * -deltaTime);
 			else
@@ -35,6 +36,50 @@ void CharacterHUDElements::update(double deltaTime)
 				mFadingDown[i] = !mFadingDown[i];
 		}
 	}
+
+	// Check if the health bar is low where we need to indicate to the user
+	if (mHealthBar->getFill() <= 0.25f)
+	{
+		// Save the opacity
+		float newOpacity = 0.0f;
+	
+		//Check if we need to fade away or come back to full opacity
+		if (mHpBarFadingDown)
+			newOpacity = mHealthBar->getOpacity() + (mBarOpacitySpeed * -deltaTime);
+		else
+			newOpacity = mHealthBar->getOpacity() + (mBarOpacitySpeed * deltaTime);
+	
+		// Set opacity
+		mHealthBar->setOpacity(newOpacity);
+	
+		// Check to see if we reached 0.0f or 1.0f to reverse the effect
+		if (mHealthBar->getOpacity() <= 0.0f || mHealthBar->getOpacity() >= 1.0f)
+			mHpBarFadingDown = !mHpBarFadingDown;
+	}
+	else
+		mHealthBar->setOpacity(1.0f);
+
+	// Check if the mana bar is low where we need to indicate to the user
+	if (mManaBar->getFill() <= 0.25f)
+	{
+		//Save the opacity
+		float newOpacity = 0.0f;
+		
+		//Check if we need to fade away or come back to full opacity
+		if (mMpBarFadingDown)
+			newOpacity = mManaBar->getOpacity() + (mBarOpacitySpeed * -deltaTime);
+		else
+			newOpacity = mManaBar->getOpacity() + (mBarOpacitySpeed * deltaTime);
+		
+		// Set opacity
+		mManaBar->setOpacity(newOpacity);
+		
+		// Check to see if we reached 0.0f or 1.0f to reverse the effect
+		if (mManaBar->getOpacity() <= 0.0f || mManaBar->getOpacity() >= 1.0f)
+			mMpBarFadingDown = !mMpBarFadingDown;
+	}
+	else
+		mManaBar->setOpacity(1.0f);
 }
 
 void CharacterHUDElements::onDestroy()

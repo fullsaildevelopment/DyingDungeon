@@ -138,6 +138,9 @@ private: //Variables
 	Odyssey::Text2D* mManaNumber = nullptr;
 	Odyssey::Text2D* mTurnNumber = nullptr;
 	Odyssey::Rectangle2D* mHudBlocker = nullptr;
+	float mBarOpacitySpeed = 5.0f;
+	bool mHpBarFadingDown = true;
+	bool mMpBarFadingDown = true;
 
 	// Skill Elements
 	Odyssey::Sprite2D* mSkill1 = nullptr;
