@@ -33,6 +33,7 @@ public:
 	void SetSpeedNumber(Odyssey::Text2D* _text) { mSpeedNumber = _text; }
 	void SetHealthBar(Odyssey::Rectangle2D* _rect) { mHealthBar = _rect; }
 	void SetHealthNumber(Odyssey::Text2D* _text) { mHealthNumber = _text; }
+	void SetShieldBar(Odyssey::Rectangle2D* _rect) { mShieldBar = _rect; }
 	void SetManaBar(Odyssey::Rectangle2D* _rect) { mManaBar = _rect; }
 	void SetManaNumber(Odyssey::Text2D* _text) { mManaNumber = _text; }
 	void SetTurnNumber(Odyssey::Text2D* _text) { mTurnNumber = _text; }
@@ -73,6 +74,7 @@ public:
 	Odyssey::Text2D* GetSpeedNumber() { return mSpeedNumber; }
 	Odyssey::Rectangle2D* GetHealthBar() { return mHealthBar; }
 	Odyssey::Text2D* GetHealthNumber() { return mHealthNumber; }
+	Odyssey::Rectangle2D* GetShieldBar() { return mShieldBar; }
 	Odyssey::Rectangle2D* GetManaBar() { return mManaBar; }
 	Odyssey::Text2D* GetManaNumber() { return mManaNumber; }
 	Odyssey::Text2D* GetTurnNumber() { return mTurnNumber; }
@@ -134,6 +136,7 @@ private: //Variables
 	Odyssey::Text2D* mSpeedNumber = nullptr;
 	Odyssey::Rectangle2D* mHealthBar = nullptr;
 	Odyssey::Text2D* mHealthNumber = nullptr;
+	Odyssey::Rectangle2D* mShieldBar = nullptr;
 	Odyssey::Rectangle2D* mManaBar = nullptr;
 	Odyssey::Text2D* mManaNumber = nullptr;
 	Odyssey::Text2D* mTurnNumber = nullptr;
