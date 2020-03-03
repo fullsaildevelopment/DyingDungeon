@@ -1729,6 +1729,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Create and assing shield bar
 	position.x -= 5.0f;
 	newHUD->SetShieldBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f), barWidth, barHeight));
+	newHUD->GetShieldBar()->setFill(0.0f);
 	
 	// Create and assign the mana bar
 	position.x -= 5.0f;
