@@ -225,12 +225,26 @@ float Character::GetAtkMod()
 void Character::IncreaseAtk(float statIncrease)
 {
 	mAttack += (mBaseAttack * statIncrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
+	if (mAttack > mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mAttack < mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mAttack == mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the Attack stat of the character
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= (mBaseAttack * statDecrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
+	if (mAttack > mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mAttack < mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mAttack == mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Returns the Defense stat of the character
@@ -255,12 +269,26 @@ float Character::GetDefMod()
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
+	if (mDefense > mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mDefense < mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mDefense == mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the current Defense stat of the character
 void Character::DecreaseDef(float statDecrease)
 {
 	mDefense -= (mBaseDefense * statDecrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
+	if (mDefense > mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mDefense < mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mDefense == mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Returns the current Speed stat of the character
@@ -285,12 +313,26 @@ float Character::GetSpdMod()
 void Character::IncreaseSpd(float statIncrease)
 {
 	mSpeed += (mBaseSpeed * statIncrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
+	if (mSpeed > mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mSpeed < mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mSpeed == mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the current Speed stat of the character
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= (mBaseSpeed * statDecrease);
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
+	if (mSpeed > mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mSpeed < mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mSpeed == mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Adds Exp to the character
