@@ -1720,18 +1720,20 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Create and assign the health bar
 	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
 	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+
+	// Create and assing shield bar
+	color = { 116.0f, 71.0f, 201.0f, 1.0f };
+	newHUD->SetShieldBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight));
+	newHUD->GetShieldBar()->setFill(0.0f);
+
 	// Create the text for the health numbers of the character
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.fontSize = 10.5f;
 	position.x += 5.0f;
 	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
 	
-	// Create and assing shield bar
-	position.x -= 5.0f;
-	newHUD->SetShieldBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f), barWidth, barHeight));
-	newHUD->GetShieldBar()->setFill(0.0f);
-	
 	// Create and assign the mana bar
+	position.x -= 5.0f;
 	position.y += (float)barHeight + 1.5f;
 	newHUD->SetManaBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mManaBarColor, barWidth, barHeight));
 	newHUD->GetManaBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
@@ -1739,6 +1741,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	position.x += 5.0f;
 	newHUD->SetManaNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
+
 
 	// Position where the turn number will be located
 	position = originalPosition;
