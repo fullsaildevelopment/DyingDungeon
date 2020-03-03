@@ -2252,6 +2252,29 @@ void GameUIManager::AddCharacterMpBarsToUpdateList(Character* _currCharacter, fl
 	mUpdateCharacterBarsList.push_back(manaBarToUpdate);
 }
 
+// Add character shield bar to update list
+void GameUIManager::AddCharacterShieldBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount)
+{
+	// Create new bar to update pointer
+	std::shared_ptr<AnimatingBar> barToUpdate = std::make_shared<AnimatingBar>();
+
+	// Add its elements
+	barToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBar();
+	//barToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthNumber();
+	barToUpdate->pMaxValue = _currCharacter->GetMaxHP();
+	barToUpdate->pCurrValue = _previousHpAmount;
+	barToUpdate->pNewValue = _newHpAmount;
+
+	// Set took damage book
+	barToUpdate->pTookDamage = true;
+	// Check if they were actually granted health
+	if (_newHpAmount > _previousHpAmount)
+		barToUpdate->pTookDamage = false;
+
+	// Add the health bar to the update list if there is any change
+	mUpdateCharacterBarsList.push_back(barToUpdate);
+}
+
 // Animate the bars
 void GameUIManager::UpdateCharacterBars(double _deltaTime)
 {
@@ -2283,7 +2306,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 				// Set the bar to the target fill
 				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
 				// Set the text of the bar
-				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+					mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
 				// Remove the bar from being updated
 				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
 				continue;
@@ -2297,7 +2321,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 				// Set the bar to the target fill
 				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
 				// Set the text of the bar
-				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+					mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
 				// Remove the bar from being updated
 				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
 				continue;
@@ -2326,7 +2351,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 		// Get the new ratio and set the fill and set the text
 		float newRatio = mUpdateCharacterBarsList[i]->pCurrValue / maxValue;
 		mUpdateCharacterBarsList[i]->pBar->setFill(newRatio);
-		mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)mUpdateCharacterBarsList[i]->pCurrValue) + L"/" + std::to_wstring((int)maxValue));
+		if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+			mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)mUpdateCharacterBarsList[i]->pCurrValue) + L"/" + std::to_wstring((int)maxValue));
 	}
 
 	//// Get the ratio from current health and max health
