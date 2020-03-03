@@ -161,6 +161,8 @@ int playGame()
 	setupRewardsPrefab(application.get());
 	// Set up the tower manager
 	setupTowerManager();
+	// Set the current tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTowerManager(gCurrentTower);
 	// Set up the enemies that the player will battle
 	setupEnemiesToCreate();
 	//TeamManager::getInstance().initialize();

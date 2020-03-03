@@ -124,6 +124,9 @@
     <ClCompile Include="src\Converter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TowerSelectionPrefabFactory.cpp">
+      <Filter>Source Files\PrefabMaker</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\RedAudio.h">
@@ -267,6 +270,9 @@
     <ClInclude Include="src\CombatEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TowerSelectionPrefabFactory.h">
+      <Filter>Header Files\PrefabMaker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\small.ico">
@@ -336,6 +342,12 @@
     </Filter>
     <Filter Include="Source Files\VFX">
       <UniqueIdentifier>{f4e7471e-4388-406c-a1f9-528ec2c53d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PrefabMaker">
+      <UniqueIdentifier>{a3836ed0-7ddd-4382-9048-f522dfb6cb29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PrefabMaker">
+      <UniqueIdentifier>{4a12ea36-aeaa-4b2d-93a5-11ffeb7f5dd5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

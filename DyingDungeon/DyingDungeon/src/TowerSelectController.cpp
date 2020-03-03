@@ -51,20 +51,20 @@ void TowerSelectController::initialize()
 		SetNextDoorImage(mDoorList[i]);
 	}
 
-	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel1);
 	mDoorList[0].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor1State);
 	mDoorList[0].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor1State);
-	mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel2);
 	mDoorList[1].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor2State);
 	mDoorList[1].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor2State);
-	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
 	mDoorList[2].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor3State);
 	mDoorList[2].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor3State);
-	mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
 	mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
 	mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
 	// Have the fifth door take you to the Scene2
-	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
 	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
 	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 }
@@ -115,11 +115,40 @@ void TowerSelectController::onDestroy()
 	mDoorList[4].doorImage->unregisterCallback("onMouseExit");
 }
 
-void TowerSelectController::GoToTeamSelection()
+void TowerSelectController::GoToTeamSelectionWithLevel1()
 {
 	// Turn off the tower select canvas
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(1);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel2()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(2);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel3()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(3);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
