@@ -15,7 +15,8 @@ void CharacterHUDElements::update(double deltaTime)
 {
 	for (int i = 0; i < mSkillBackgroundList.size(); i++)
 	{
-		if (mSkillBackgroundList[i] != nullptr)
+		// Check if we have the rectangles and if they are visible
+		if (mSkillBackgroundList[i] != nullptr && mSkillBackgroundList[i]->isVisible())
 		{
 			// Save the opacity
 			float newOpacity = 0.0f;

@@ -1123,8 +1123,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			}
 		}
 
+		// Get the list of skill bg rectangles
+		std::vector<Odyssey::Rectangle2D*> bgRects = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList();
+		// Turn off the skill selected indicator rectangles
+		for (int i = 0; i < 4; i++)
+		{
+			bgRects[i]->setVisible(false);
+		}
+
 		// Return true 
-			return true;
+		return true;
 
 		break;
 	}
@@ -1417,9 +1425,6 @@ void HeroComponent::Skill1Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[0]->GetManaCost() <= mCurrentMana)
 		{
@@ -1439,9 +1444,6 @@ void HeroComponent::Skill2Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-
 		ResetToSelection();
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[1]->GetManaCost() <= mCurrentMana)
@@ -1461,9 +1463,6 @@ void HeroComponent::Skill3Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-
 		ResetToSelection();
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[2]->GetManaCost() <= mCurrentMana)
@@ -1483,9 +1482,6 @@ void HeroComponent::Skill4Callback()
 {
 	if (mCurrentState == STATE::SELECTMOVE || mCurrentState == STATE::SELECTTARGET)
 	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-
 		ResetToSelection();
 		// If i have enough mana to use the skill take me to the target selection state
 		if (mSkillList[3]->GetManaCost() <= mCurrentMana)
@@ -1501,5 +1497,3 @@ void HeroComponent::Skill4Callback()
 		}
 	}
 }
-
-// Character Call backs for clickable character UI

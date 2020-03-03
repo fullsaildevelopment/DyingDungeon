@@ -281,14 +281,8 @@ void TowerManager::TogglePauseMenu()
 		// Set the time scale to 0 on pause
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(0.0f));
 	}
-	else if (mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::SELECTTARGET || mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::INPROGRESS)
-	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-	}
-
-	// If we are turning off the pause menu
-	if (!pauseMenuCanvas->isActive())
+	// else if we are turning off the pause menu
+	else if (!pauseMenuCanvas->isActive())
 	{
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));

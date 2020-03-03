@@ -477,6 +477,10 @@ private: // Functions
 	void Character5ClickableCallback();
 	void Character6ClickableCallback();
 
+	// Character hover callbacks
+	void CharacterEnterHoverCallback();
+	void CharacterExitHoverCallback();
+
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER
 	Odyssey::UICanvas* CreatePopup(Odyssey::Entity* entity);

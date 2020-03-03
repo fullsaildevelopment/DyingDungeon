@@ -7,6 +7,7 @@
 #include "StatDown.h"
 #include "Stun.h"
 #include "CharacterHUDElements.h"
+#include "SkillHoverComponent.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -177,6 +178,23 @@ void Character::SetMana(float Mana)
 		mCurrentMana = 0.0f;
 	else if (mCurrentMana > mBaseMaxMana)
 		mCurrentMana = mBaseMaxMana;
+
+	// Update the hero's skill sprites if they'll be able to use them or not
+	if (this->IsHero())
+	{
+		// Get sprite vector
+		std::vector<Odyssey::Sprite2D*> skillImages = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<SkillHoverComponent>()->GetSkillSprites();
+		
+		// Check each skill to see if the character has enoung mana to perform skill
+		for (int i = 0; i < skillImages.size(); i++)
+		{
+			// If the skill cost more mana than what the character has, make the sprite a lower opacity
+			if (mSkillList[i]->GetManaCost() > mCurrentMana)
+				skillImages[i]->setOpacity(0.3f);
+			else
+				skillImages[i]->setOpacity(1.0f);
+		}
+	}
 }
 
 // Returns the max MP of the character

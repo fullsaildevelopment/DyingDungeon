@@ -1302,6 +1302,10 @@ void GameUIManager::SetupClickableCharacterUI()
 		{
 			rect->registerCallback("onMouseClick", this, &GameUIManager::Character6ClickableCallback);
 		}
+
+		// Assign on hover and on exit callbacks
+		rect->registerCallback("onMouseEnter", this, &GameUIManager::CharacterEnterHoverCallback);
+		rect->registerCallback("onMouseExit", this, &GameUIManager::CharacterExitHoverCallback);
 	}
 }
 
@@ -2741,4 +2745,16 @@ void GameUIManager::Character5ClickableCallback()
 void GameUIManager::Character6ClickableCallback()
 {
 	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy3));
+}
+
+void GameUIManager::CharacterEnterHoverCallback()
+{
+	// Set the cursor to the sword
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+}
+
+void GameUIManager::CharacterExitHoverCallback()
+{
+	// Set the cursor to the basic pointer
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 }

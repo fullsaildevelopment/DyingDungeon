@@ -45,6 +45,8 @@ public:
 	// Hold the character component
 	Character* characterComponent;
 
+	// Get the skill sprites
+	std::vector<Odyssey::Sprite2D*> GetSkillSprites() { return mSprites; }
 
 private:
 	// Hold the current prefab object
