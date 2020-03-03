@@ -23,6 +23,9 @@ public:
 private:
 	Odyssey::Application* mApplication = nullptr;
 
+	// Current info popup objects
+	Odyssey::Entity* mLevelInfoPopups[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
+
 	struct Door
 	{
 		// The door image

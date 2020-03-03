@@ -1,4 +1,5 @@
 #include "TowerSelectController.h"
+#include "TowerSelectionPrefabFactory.h"
 #include "InputManager.h"
 #include "RedAudioManager.h"
 #include "EventManager.h"
@@ -172,8 +173,12 @@ void TowerSelectController::ChangeDoor1State()
 		mDoorList[0].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
+		// Create the info prefab
+		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
 		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		//GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
 	}
 	else
 	{
@@ -181,8 +186,11 @@ void TowerSelectController::ChangeDoor1State()
 		mDoorList[0].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
+		// Destroy the info popup
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[0]));
+
 		// Hide the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		//GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 	}
 
 	// Flip the bool for next time
