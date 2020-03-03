@@ -320,7 +320,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/MeleeDemonPortrait.png";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxHP = mCurrentHP = 150.0f;
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
@@ -331,9 +331,9 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 60.0f;
+		mBaseDefense = mDefense = 40.0f;
+		mBaseSpeed = mSpeed = 15.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -413,7 +413,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/CasterDemonPortrait.png";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxHP = mCurrentHP = 125.0f;
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
@@ -424,9 +424,9 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
+		mBaseAttack = mAttack = 40.0f;
 		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseSpeed = mSpeed = 30.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -609,6 +609,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			if (mCurrentState != STATE::DEAD)
 			{
 				mCurrentState = STATE::NONE;
+				mEntity->getComponent<Odyssey::Animator>()->playClip("Idle");
 				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 			}
 		}

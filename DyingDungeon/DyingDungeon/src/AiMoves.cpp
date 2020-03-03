@@ -119,7 +119,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			mSkillList.push_back(std::make_shared<Buffs>(L"Def Down", "Skill_2", 0.25f, 15.0f, StatusEffect, false));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
 			// Skill 3 
-			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
