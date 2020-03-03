@@ -87,7 +87,10 @@ void Character::TakeDamage(float dmg)
 			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
 		else
+		{
+			GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, (mShielding - dmg));
 			dmg = 0.0f;
+		}
 	}
 
 	// Reduce health by the amount of damage that made it through
@@ -225,6 +228,8 @@ float Character::GetAtkMod()
 void Character::IncreaseAtk(float statIncrease)
 {
 	mAttack += (mBaseAttack * statIncrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
 	if (mAttack > mBaseAttack)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -238,6 +243,8 @@ void Character::IncreaseAtk(float statIncrease)
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= (mBaseAttack * statDecrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
 	if (mAttack > mBaseAttack)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -269,6 +276,8 @@ float Character::GetDefMod()
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
 	if (mDefense > mBaseDefense)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -282,6 +291,8 @@ void Character::IncreaseDef(float statIncrease)
 void Character::DecreaseDef(float statDecrease)
 {
 	mDefense -= (mBaseDefense * statDecrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
 	if (mDefense > mBaseDefense)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -313,6 +324,8 @@ float Character::GetSpdMod()
 void Character::IncreaseSpd(float statIncrease)
 {
 	mSpeed += (mBaseSpeed * statIncrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
 	if (mSpeed > mBaseSpeed)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -326,6 +339,8 @@ void Character::IncreaseSpd(float statIncrease)
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= (mBaseSpeed * statDecrease);
+	if (!mHero)
+		return;
 	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
 	if (mSpeed > mBaseSpeed)
 		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
@@ -462,6 +477,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Charact
 	}
 	case EFFECTTYPE::Shield:
 	{
+		GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, newEffect->GetAmountOfEffect());
 		affectedTarget->mShielding = newEffect->GetAmountOfEffect();
 		affectedTarget->mShieldTimer = newEffect->GetDuration();
 		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
@@ -629,6 +645,7 @@ bool Character::ManageTOREffects()
 		mShieldTimer--;
 		if (mShieldTimer <= 0)
 		{
+			GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, 0.0f);
 			mShielding = 0.0f;
 			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
