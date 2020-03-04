@@ -415,6 +415,18 @@ private: // Varibales
 	Odyssey::Sprite2D* mStatsNextButtonRound = nullptr;
 	Odyssey::Sprite2D* mStatsPrevButtonLevel = nullptr;
 	Odyssey::Sprite2D* mStatsNextButtonLevel = nullptr;
+	Odyssey::Sprite2D* mStatsPortraits[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mStatsPortraitBackground[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mStatsBannerBackground[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Text2D* mStatsHeaderBlocks[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Text2D* mActiveCharacterTurnAction = nullptr;
+	Odyssey::Text2D* mActiveCharacterMove = nullptr;
+	Odyssey::Text2D* mActiveCharacterBuffDebuff = nullptr;
+	Odyssey::Text2D* mActiveCharacterBuffDebuffValue = nullptr;
+	Odyssey::Text2D* mTargetDamage[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterBuffDebuff[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterBuffDebuffValue[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterDamageMitigated[3] = {nullptr, nullptr, nullptr};
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };

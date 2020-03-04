@@ -45,10 +45,10 @@ bool SaveLoad::SaveStats(std::string saveName)
 				file.write((const char*)&size_t, sizeof(uint32_t));
 
 				for (unsigned int k = 0; k < size_t; k++) {
-					uint32_t sizeName = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.size());
+					uint32_t sizeName = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.characterName.size());
 					file.write((const char*)&sizeName, sizeof(uint32_t));
-					file.write(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.c_str(), sizeName);
-					file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.second, sizeof(unsigned int));
+					file.write(StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.characterName.c_str(), sizeName);
+					file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.unique_id, sizeof(unsigned int));
 					file.write((const char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].second, sizeof(float));
 				}
 
@@ -82,10 +82,10 @@ bool SaveLoad::SaveStats(std::string saveName)
 
 			for  (unsigned int l = 0; l < 3; l++) {
 				
-				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.first.size());
+				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.characterName.size());
 				file.write((const char*)&size_cn,sizeof(uint32_t));
-				file.write(StatTracker::Instance().GetLevel(i).characters[l].first.first.c_str(), size_cn);
-				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.second, sizeof(unsigned int));
+				file.write(StatTracker::Instance().GetLevel(i).characters[l].first.characterName.c_str(), size_cn);
+				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.unique_id, sizeof(unsigned int));
 				
 				/*uint32_t size_cp = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].second.size()) * 2;
 				file.write((const char*)&size_cp, sizeof(uint32_t));
@@ -142,9 +142,9 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 				for (unsigned int k = 0; k < size_t; k++) {
 					uint32_t sizeName = 0;
 					file.read((char*)&sizeName, sizeof(uint32_t));
-					StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first.resize(sizeName);
-					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.first[0], sizeName);
-					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.second, sizeof(unsigned int));
+					StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.characterName.resize(sizeName);
+					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.characterName[0], sizeName);
+					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].first.unique_id, sizeof(unsigned int));
 					file.read((char*)&StatTracker::Instance().GetLevel(i).turns[j].targets[k].second, sizeof(float));
 				}
 
@@ -181,10 +181,10 @@ bool SaveLoad::LoadStats(std::string loadFileName)
 			
 			for (unsigned int l = 0; l < 3; l++) {
 
-				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.first.size());
+				uint32_t size_cn = static_cast<uint32_t>(StatTracker::Instance().GetLevel(i).characters[l].first.characterName.size());
 				file.read((char*)&size_cn, sizeof(uint32_t));
-				file.read((char*)&StatTracker::Instance().GetLevel(i).characters[l].first.first[0], size_cn);
-				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.second, sizeof(unsigned int));
+				file.read((char*)&StatTracker::Instance().GetLevel(i).characters[l].first.characterName[0], size_cn);
+				file.write((const char*)&StatTracker::Instance().GetLevel(i).characters[l].first.unique_id, sizeof(unsigned int));
 
 				/*uint32_t size_cp = 0;
 				file.read((char*)&size_cp, sizeof(uint32_t));
