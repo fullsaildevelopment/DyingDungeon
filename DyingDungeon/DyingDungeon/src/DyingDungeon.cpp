@@ -722,7 +722,7 @@ void setupSceneOne()
 	// Set up the directional light
 	Odyssey::Light* light = gScene1Lights[0]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Directional);
-	light->setColor(0.65f, 0.3f, 0.15f);
+	light->setColor(0.3f, 0.3f, 0.5f);
 	light->setIntensity(1.0f);
 	light->setRange(0.0f);
 	light->setSpotAngle(0.0f);
@@ -736,7 +736,7 @@ void setupSceneOne()
 	// Set up the ambient light
 	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.65f, 0.3f, 0.15f);
+	light->setColor(0.3f, 0.3f, 0.5f);
 	light->setIntensity(0.55f);
 	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
@@ -755,22 +755,28 @@ void setupSceneOne()
 	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
+	// Fire color
+	//DirectX::XMFLOAT3 fireColor = { 0.65f, 0.3f, 0.15f };
+	DirectX::XMFLOAT3 fireColor = { 0.6f, 0.3f, 0.2f };
+	float torchInstensity = 2.5f;
+	float torchRange = 15.0f;
+
 	// Create the fire entity
 	Odyssey::Entity* fire1 = gSceneOne->createEntity();
-
+	
 	// Set the transform position and rotation
 	fire1->addComponent<Odyssey::Transform>();
 	fire1->getComponent<Odyssey::Transform>()->setPosition(-9.0f, 5.571f, 2.075f);
 	fire1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, -15.0f);
-
+	
 	// Set the light's values
 	light = fire1->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.2f);
-	light->setRange(10.0f);
+	light->setColor(fireColor);
+	light->setIntensity(torchInstensity);
+	light->setRange(torchRange);
 	light->setSpotAngle(0.0f);
-
+	
 	// Create the particle system
 	fire1->addComponent<Odyssey::ParticleSystem>();
 	fire1->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
@@ -786,20 +792,20 @@ void setupSceneOne()
 
 	// Create the fire entity
 	Odyssey::Entity* fire2 = gSceneOne->createEntity();
-
+	
 	// Set the transform position and rotation
 	fire2->addComponent<Odyssey::Transform>();
 	fire2->getComponent<Odyssey::Transform>()->setPosition(-9.0f, 5.571f, 11.175f);
 	fire2->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, -15.0f);
-
+	
 	// Set the light's values
 	light = fire2->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.2f);
-	light->setRange(10.0f);
+	light->setColor(fireColor);
+	light->setIntensity(torchInstensity);
+	light->setRange(torchRange);
 	light->setSpotAngle(0.0f);
-
+	
 	// Create the particle system
 	fire2->addComponent<Odyssey::ParticleSystem>();
 	fire2->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
@@ -815,20 +821,20 @@ void setupSceneOne()
 
 	// Create the fire entity
 	Odyssey::Entity* fire3 = gSceneOne->createEntity();
-
+	
 	// Set the transform position and rotation
 	fire3->addComponent<Odyssey::Transform>();
 	fire3->getComponent<Odyssey::Transform>()->setPosition(-4.545f, 5.0f, 40.9f);
 	fire3->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
-
+	
 	// Set the light's values
 	light = fire3->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.28f);
-	light->setRange(15.0f);
+	light->setColor(fireColor);
+	light->setIntensity(torchInstensity);
+	light->setRange(torchRange);
 	light->setSpotAngle(0.0f);
-
+	
 	// Create the particle system
 	fire3->addComponent<Odyssey::ParticleSystem>();
 	fire3->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
@@ -844,18 +850,18 @@ void setupSceneOne()
 
 	// Create the fire entity
 	Odyssey::Entity* fire4 = gSceneOne->createEntity();
-
+	
 	// Set the transform position and rotation
 	fire4->addComponent<Odyssey::Transform>();
 	fire4->getComponent<Odyssey::Transform>()->setPosition(-11.075f, 5.0f, 40.9f);
 	fire4->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
-
+	
 	// Set the light's values
 	light = fire4->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(0.28f);
-	light->setRange(15.0f);
+	light->setColor(fireColor);
+	light->setIntensity(torchInstensity);
+	light->setRange(torchRange);
 	light->setSpotAngle(0.0f);
 
 	// Create the particle system
@@ -871,12 +877,76 @@ void setupSceneOne()
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.09f, 30.0f, 30.0f));
 
+	// Create the table candle entity
+	Odyssey::Entity* tableCandle = gSceneOne->createEntity();
+	
+	// Set the transform position and rotation
+	tableCandle->addComponent<Odyssey::Transform>();
+	tableCandle->getComponent<Odyssey::Transform>()->setPosition(7.492f, 1.964f, 16.716f);
+	tableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+	
+	// Set the light's values
+	light = tableCandle->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(fireColor);
+	light->setIntensity(1.1f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
+
+	// Create the table candle entity
+	Odyssey::Entity* bigTableCandle = gSceneOne->createEntity();
+	
+	// Set the transform position and rotation
+	bigTableCandle->addComponent<Odyssey::Transform>();
+	bigTableCandle->getComponent<Odyssey::Transform>()->setPosition(-8.95f, 4.076f, 27.416f);
+	bigTableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+	
+	// Set the light's values
+	light = bigTableCandle->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(fireColor);
+	light->setIntensity(1.5f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
+
+	// Create the table candle entity
+	Odyssey::Entity* topLight = gSceneOne->createEntity();
+
+	// Set the transform position and rotation
+	topLight->addComponent<Odyssey::Transform>();
+	topLight->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.169f, 15.364f);
+	topLight->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+
+	// Set the light's values
+	light = topLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
+
+	// Create the table candle entity
+	Odyssey::Entity* backLight = gSceneOne->createEntity();
+
+	// Set the transform position and rotation
+	backLight->addComponent<Odyssey::Transform>();
+	backLight->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.169f, 0.364f);
+	backLight->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+
+	// Set the light's values
+	light = backLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
+
 	Odyssey::Entity* fog = gSceneOne->createEntity();
 	fog->addComponent<Odyssey::Transform>();
 	fog->getComponent<Odyssey::Transform>()->setPosition(0, 0, 0);
 	fog->addComponent<Odyssey::ParticleSystem>();
 	fog->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Smoke.jpg");
-	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.075f, 0.05f, 0.05f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.125f, 0.1f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
 	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
 	fog->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(60);
