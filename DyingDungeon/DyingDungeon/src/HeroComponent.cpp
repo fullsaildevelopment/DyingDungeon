@@ -309,7 +309,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mModel = "assets/models/Bard.dxm";
 
 		// Set the character name
-		mName = L"TheBestClassToEverExist";
+		mName = L"Bard";
 
 		// Set the character subname
 		mSubName = L"Literal God";

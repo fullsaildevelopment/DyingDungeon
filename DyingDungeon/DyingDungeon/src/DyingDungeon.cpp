@@ -8,6 +8,7 @@
 //Game UI Manager
 #include "GameUIManager.h"
 #include "TeamManager.h"
+#include "TowerSelectionPrefabFactory.h"
 
 // Game Includes
 #include "TowerManager.h"
@@ -103,7 +104,7 @@ void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
 void setupRewardsPrefab(Odyssey::Application* application);
 void setupTowerManager();
-void setupEnemiesToCreate();
+void setupEnemiesToCreate(Odyssey::Application* application);
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
 
@@ -161,8 +162,10 @@ int playGame()
 	setupRewardsPrefab(application.get());
 	// Set up the tower manager
 	setupTowerManager();
+	// Set the current tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTowerManager(gCurrentTower);
 	// Set up the enemies that the player will battle
-	setupEnemiesToCreate();
+	setupEnemiesToCreate(application.get());
 	//TeamManager::getInstance().initialize();
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
@@ -484,7 +487,7 @@ void setupTowerManager()
 	gCurrentTower->getComponent<TowerManager>()->scene = gSceneOne;
 }
 
-void setupEnemiesToCreate()
+void setupEnemiesToCreate(Odyssey::Application* application)
 {
 	//Set the current tower in the TeamManager 
 	TeamManager::getInstance().SetTheCurrentTower(gCurrentTower);
@@ -536,6 +539,10 @@ void setupEnemiesToCreate()
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
 		// Clear the new enemy list 
 		newEnemies.clear();
 	}
@@ -565,6 +572,10 @@ void setupEnemiesToCreate()
 		newEnemies.push_back(levelTwoEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
 		// Clear the new enemy list 
 		newEnemies.clear();
 	}
@@ -582,6 +593,10 @@ void setupEnemiesToCreate()
 		newEnemies.push_back(levelThreeEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
 		// Clear the new enemy list 
 		newEnemies.clear();
 	}

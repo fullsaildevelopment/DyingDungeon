@@ -1,4 +1,5 @@
 #include "TowerSelectController.h"
+#include "TowerSelectionPrefabFactory.h"
 #include "InputManager.h"
 #include "RedAudioManager.h"
 #include "EventManager.h"
@@ -51,22 +52,22 @@ void TowerSelectController::initialize()
 		SetNextDoorImage(mDoorList[i]);
 	}
 
-	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel1);
 	mDoorList[0].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor1State);
 	mDoorList[0].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor1State);
-	mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[1].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel2);
 	mDoorList[1].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor2State);
 	mDoorList[1].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor2State);
-	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
+	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
 	mDoorList[2].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor3State);
 	mDoorList[2].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor3State);
-	mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-	mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
-	mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
+	//mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
+	//mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
+	//mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
 	// Have the fifth door take you to the Scene2
-	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelection);
-	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
-	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
+	//mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
+	//mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
+	//mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -115,11 +116,40 @@ void TowerSelectController::onDestroy()
 	mDoorList[4].doorImage->unregisterCallback("onMouseExit");
 }
 
-void TowerSelectController::GoToTeamSelection()
+void TowerSelectController::GoToTeamSelectionWithLevel1()
 {
 	// Turn off the tower select canvas
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(1);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel2()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(2);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel3()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(3);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
@@ -143,8 +173,10 @@ void TowerSelectController::ChangeDoor1State()
 		mDoorList[0].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
-		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		// Create the info prefab
+		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
 	}
 	else
 	{
@@ -152,8 +184,8 @@ void TowerSelectController::ChangeDoor1State()
 		mDoorList[0].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
-		// Hide the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		// Destroy the info popup
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[0]));
 	}
 
 	// Flip the bool for next time
@@ -168,8 +200,10 @@ void TowerSelectController::ChangeDoor2State()
 		mDoorList[1].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
-		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		// Create the info prefab
+		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[1], vec, vec));
 	}
 	else
 	{
@@ -177,8 +211,8 @@ void TowerSelectController::ChangeDoor2State()
 		mDoorList[1].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
-		// Hide the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		// Destroy the info popup
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[1]));
 	}
 
 	// Flip the bool for next time
@@ -193,8 +227,10 @@ void TowerSelectController::ChangeDoor3State()
 		mDoorList[2].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
-		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		// Create the info prefab
+		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[2], vec, vec));
 	}
 	else
 	{
@@ -202,8 +238,8 @@ void TowerSelectController::ChangeDoor3State()
 		mDoorList[2].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
-		// Hide the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		// Destroy the info popup
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[2]));
 	}
 
 	// Flip the bool for next time
@@ -218,8 +254,10 @@ void TowerSelectController::ChangeDoor4State()
 		mDoorList[3].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
-		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		// Create the info prefab
+		//DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		//Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door4);
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[3], vec, vec));
 	}
 	else
 	{
@@ -227,8 +265,8 @@ void TowerSelectController::ChangeDoor4State()
 		mDoorList[3].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
-		// Hide the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		// Destroy the info popup
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[3]));
 	}
 
 	// Flip the bool for next time
@@ -243,8 +281,10 @@ void TowerSelectController::ChangeDoor5State()
 		mDoorList[4].mDoOpenDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorOpen");
 
-		// Show the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(true);
+		// Create the info prefab
+		//DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
+		//Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door5);
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[4], vec, vec));
 	}
 	else
 	{
@@ -252,8 +292,8 @@ void TowerSelectController::ChangeDoor5State()
 		mDoorList[4].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
-		// False the tower info canvas
-		GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
+		// Destroy the info popup
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[4]));
 	}
 
 	// Flip the bool for next time

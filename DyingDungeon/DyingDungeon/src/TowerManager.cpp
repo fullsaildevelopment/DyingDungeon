@@ -197,9 +197,6 @@ void TowerManager::update(double deltaTime)
 
 void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
-	// Set the current level to 1
-	mCurrentLevel = 1;
-
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
