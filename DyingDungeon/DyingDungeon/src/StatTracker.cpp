@@ -148,7 +148,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 2]->setText(rewardsText);
 		rewardsText.clear();
 		
-		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, raEvent->level, Action::Defend)) + L" time(s)");
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size()), Action::Defend)) + L" time(s)");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 3]->setText(rewardsText);
 		rewardsText.clear();
 
@@ -164,7 +164,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 6]->setText(rewardsText);
 		rewardsText.clear();
 
-		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, raEvent->level, Action::Aid)) + L" time(s)");
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size()), Action::Aid)) + L" time(s)");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 7]->setText(rewardsText);
 		rewardsText.clear();
 
