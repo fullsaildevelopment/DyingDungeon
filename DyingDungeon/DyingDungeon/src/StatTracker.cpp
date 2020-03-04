@@ -136,7 +136,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 
 		std::wstring rewardsText;
 
-		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, raEvent->level, Action::Attack)) + L" time(s)");
+		rewardsText.append(std::to_wstring(GetStatCount(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size()), Action::Attack)) + L" time(s)");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1)*10)]->setText(rewardsText);
 		rewardsText.clear();
 
