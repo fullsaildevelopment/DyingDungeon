@@ -202,7 +202,7 @@ void TowerSelectController::ChangeDoor2State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door2);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[1], vec, vec));
 	}
 	else
