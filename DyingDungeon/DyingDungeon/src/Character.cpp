@@ -7,6 +7,7 @@
 #include "StatDown.h"
 #include "Stun.h"
 #include "CharacterHUDElements.h"
+#include "SkillHoverComponent.h"
 
 CLASS_DEFINITION(Component, Character)
 
@@ -86,7 +87,10 @@ void Character::TakeDamage(float dmg)
 			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
 		else
+		{
+			GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, (mShielding - dmg));
 			dmg = 0.0f;
+		}
 	}
 
 	// Reduce health by the amount of damage that made it through
@@ -177,6 +181,23 @@ void Character::SetMana(float Mana)
 		mCurrentMana = 0.0f;
 	else if (mCurrentMana > mBaseMaxMana)
 		mCurrentMana = mBaseMaxMana;
+
+	// Update the hero's skill sprites if they'll be able to use them or not
+	if (this->IsHero())
+	{
+		// Get sprite vector
+		std::vector<Odyssey::Sprite2D*> skillImages = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<SkillHoverComponent>()->GetSkillSprites();
+		
+		// Check each skill to see if the character has enoung mana to perform skill
+		for (int i = 0; i < skillImages.size(); i++)
+		{
+			// If the skill cost more mana than what the character has, make the sprite a lower opacity
+			if (mSkillList[i]->GetManaCost() > mCurrentMana)
+				skillImages[i]->setOpacity(0.3f);
+			else
+				skillImages[i]->setOpacity(1.0f);
+		}
+	}
 }
 
 // Returns the max MP of the character
@@ -207,12 +228,30 @@ float Character::GetAtkMod()
 void Character::IncreaseAtk(float statIncrease)
 {
 	mAttack += (mBaseAttack * statIncrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
+	if (mAttack > mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mAttack < mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mAttack == mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the Attack stat of the character
 void Character::DecreaseAtk(float statDecrease)
 {
 	mAttack -= (mBaseAttack * statDecrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setText(std::to_wstring(static_cast<int>(mAttack)));
+	if (mAttack > mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mAttack < mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mAttack == mBaseAttack)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Returns the Defense stat of the character
@@ -237,12 +276,30 @@ float Character::GetDefMod()
 void Character::IncreaseDef(float statIncrease)
 {
 	mDefense += (mBaseDefense * statIncrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
+	if (mDefense > mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mDefense < mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mDefense == mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the current Defense stat of the character
 void Character::DecreaseDef(float statDecrease)
 {
 	mDefense -= (mBaseDefense * statDecrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setText(std::to_wstring(static_cast<int>(mDefense)));
+	if (mDefense > mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mDefense < mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mDefense == mBaseDefense)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Returns the current Speed stat of the character
@@ -267,12 +324,30 @@ float Character::GetSpdMod()
 void Character::IncreaseSpd(float statIncrease)
 {
 	mSpeed += (mBaseSpeed * statIncrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
+	if (mSpeed > mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mSpeed < mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mSpeed == mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Decreases the current Speed stat of the character
 void Character::DecreaseSpd(float statDecrease)
 {
 	mSpeed -= (mBaseSpeed * statDecrease);
+	if (!mHero)
+		return;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setText(std::to_wstring(static_cast<int>(mSpeed)));
+	if (mSpeed > mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 0.0f,255.0f,0.0f });
+	if (mSpeed < mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,0.0f,0.0f });
+	if (mSpeed == mBaseSpeed)
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedNumber()->setColor({ 255.0f,255.0f,255.0f });
 }
 
 // Adds Exp to the character
@@ -388,6 +463,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Charact
 	case EFFECTTYPE::Stun:
 	{
 		affectedTarget->SetState(STATE::STUNNED);
+		affectedTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Stun");
 		mStunTimer = newEffect->GetDuration();
 		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(true);
 		break;
@@ -401,6 +477,7 @@ bool Character::AddStatusEffect(std::shared_ptr<StatusEffect> newEffect, Charact
 	}
 	case EFFECTTYPE::Shield:
 	{
+		GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, newEffect->GetAmountOfEffect());
 		affectedTarget->mShielding = newEffect->GetAmountOfEffect();
 		affectedTarget->mShieldTimer = newEffect->GetDuration();
 		GameUIManager::getInstance().GetCharacterHuds()[affectedTarget->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(true);
@@ -568,6 +645,7 @@ bool Character::ManageTOREffects()
 		mShieldTimer--;
 		if (mShieldTimer <= 0)
 		{
+			GameUIManager::getInstance().AddCharacterShieldBarsToUpdateList(this, mShielding, 0.0f);
 			mShielding = 0.0f;
 			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBuff()->setVisible(false);
 		}
@@ -584,8 +662,25 @@ void Character::ClearStatusEffects()
 // Clears all harmful status effects
 void Character::ClearBadStatusEffects()
 {
-	//mDebuffs.clear();
-	//mBleeds.clear();
+	mBleedTimer = 0;
+	mIsBleeding = false;
+	GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetBleedBuff()->setVisible(false);
+
+	std::vector<StatusEffect*>::iterator it;
+
+	for (it = mSE.begin(); it != mSE.end();)
+	{
+		if ((*it) == nullptr)
+			continue;
+		if ((*it)->GetTypeId() == EFFECTTYPE::Provoke || (*it)->GetTypeId() == EFFECTTYPE::Bleed || (*it)->GetTypeId() == EFFECTTYPE::StatDown || (*it)->GetTypeId() == EFFECTTYPE::Stun)
+		{
+			if (!(*it)->RemoveMe())
+				(*it)->Remove();
+			it = mSE.erase(it);
+		}
+		else
+			it++;
+	}
 }
 
 // Sets the Particle system pointer to a "Hit effect"
@@ -609,33 +704,6 @@ void Character::SpawnBloodEffect()
 
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mBloodEffectPrefab, &bloodEffect, position, rotation));
 }
-
-// Turns all active particle effects to inactive
-//void Character::StopParticleEffects()
-//{
-//	// If blood effect is active set to false
-//	if (mBloodParticleEffectPrefab != nullptr)
-//	{
-//		mBloodParticleEffect->stop();
-//		mBloodParticleEffect->setActive(false);
-//	}
-//
-//	// For each skill in the list
-//	for (std::shared_ptr<Skills> S : mSkillList)
-//	{
-//		// If valid
-//		if (S)
-//		{
-//			// If it has a particle effect
-//			if (S->GetParticleSystem() != nullptr)
-//			{
-//				// Stop and set to false
-//				S->GetParticleSystem()->stop();
-//				S->GetParticleSystem()->setActive(false);
-//			}
-//		}
-//	}
-//}
 
 // Returns the character portrait file path
 std::wstring Character::GetPortraitPath()

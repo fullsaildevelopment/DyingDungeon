@@ -1262,6 +1262,9 @@ void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[1].get(), 2);
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[2].get(), 3);
 		hudElements->ChangeSkill(_newCharacter->GetSkills()[3].get(), 4);
+
+		// Update skill background colors
+		hudElements->ChangeSkillBackgroundColors(_newCharacter->GetThemeColor());
 	}
 
 	hudElements->ChangePortrait(_newCharacter->GetPortraitPath());
@@ -1299,6 +1302,10 @@ void GameUIManager::SetupClickableCharacterUI()
 		{
 			rect->registerCallback("onMouseClick", this, &GameUIManager::Character6ClickableCallback);
 		}
+
+		// Assign on hover and on exit callbacks
+		rect->registerCallback("onMouseEnter", this, &GameUIManager::CharacterEnterHoverCallback);
+		rect->registerCallback("onMouseExit", this, &GameUIManager::CharacterExitHoverCallback);
 	}
 }
 
@@ -1713,11 +1720,18 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	// Create and assign the health bar
 	newHUD->SetHealthBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, mHealthBarColor, barWidth, barHeight));
 	newHUD->GetHealthBar()->enableColorLerp(DirectX::XMFLOAT3(255.0f, 0.0f, 0.0f));
+
+	// Create and assing shield bar
+	color = { 116.0f, 71.0f, 201.0f, 1.0f };
+	newHUD->SetShieldBar(pCanvas->addElement<Odyssey::Rectangle2D>(position, color, barWidth, barHeight));
+	newHUD->GetShieldBar()->setFill(0.0f);
+
 	// Create the text for the health numbers of the character
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.fontSize = 10.5f;
 	position.x += 5.0f;
 	newHUD->SetHealthNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
+	
 	// Create and assign the mana bar
 	position.x -= 5.0f;
 	position.y += (float)barHeight + 1.5f;
@@ -1727,6 +1741,7 @@ void GameUIManager::CreateHeroHud(Odyssey::Entity* _gameObjectToAddTo, DirectX::
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	position.x += 5.0f;
 	newHUD->SetManaNumber(pCanvas->addElement<Odyssey::Text2D>(position, color, barWidth, barHeight, std::to_wstring(0) + L"/" + std::to_wstring(0), properties));
+
 
 	// Position where the turn number will be located
 	position = originalPosition;
@@ -1954,23 +1969,44 @@ void GameUIManager::SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOA
 	float xAnchor = _hudPosition.x + 134.0f;
 	float yAnchor = _hudPosition.y + 24.0f;
 
+	// Skill Background sizes
+	float bgPadding = 4.0f;
+	UINT bgWidth = 60;
+	UINT bgHeight = 54;
+
+	// Skill1 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[0]->setVisible(false);
 	// Skill1 Icon
 	newHud->SetSkill1(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill2 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[1]->setVisible(false);
 	// Skill2 Icon
 	newHud->SetSkill2(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill3 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[2]->setVisible(false);
 	// Skill3 Icon
 	newHud->SetSkill3(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 
 	// Increment the icon
 	xAnchor += 56.5f;
 
+	// Skill4 Background
+	newHud->SetSkillBackgrounds(newHud->GetCanvas()->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(xAnchor - bgPadding, yAnchor - bgPadding), DirectX::XMFLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f }, bgWidth, bgHeight));
+	// Don't show the background at the start
+	newHud->GetSkillBackgroundList()[3]->setVisible(false);
 	// Skill4 Icon
 	newHud->SetSkill4(newHud->GetCanvas()->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(xAnchor, yAnchor), L"assets/images/Guy.png", 52, 45));
 }
@@ -2216,6 +2252,29 @@ void GameUIManager::AddCharacterMpBarsToUpdateList(Character* _currCharacter, fl
 	mUpdateCharacterBarsList.push_back(manaBarToUpdate);
 }
 
+// Add character shield bar to update list
+void GameUIManager::AddCharacterShieldBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount)
+{
+	// Create new bar to update pointer
+	std::shared_ptr<AnimatingBar> barToUpdate = std::make_shared<AnimatingBar>();
+
+	// Add its elements
+	barToUpdate->pBar = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetShieldBar();
+	//barToUpdate->pBarText = mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthNumber();
+	barToUpdate->pMaxValue = _currCharacter->GetMaxHP();
+	barToUpdate->pCurrValue = _previousHpAmount;
+	barToUpdate->pNewValue = _newHpAmount;
+
+	// Set took damage book
+	barToUpdate->pTookDamage = true;
+	// Check if they were actually granted health
+	if (_newHpAmount > _previousHpAmount)
+		barToUpdate->pTookDamage = false;
+
+	// Add the health bar to the update list if there is any change
+	mUpdateCharacterBarsList.push_back(barToUpdate);
+}
+
 // Animate the bars
 void GameUIManager::UpdateCharacterBars(double _deltaTime)
 {
@@ -2247,7 +2306,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 				// Set the bar to the target fill
 				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
 				// Set the text of the bar
-				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+					mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
 				// Remove the bar from being updated
 				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
 				continue;
@@ -2261,7 +2321,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 				// Set the bar to the target fill
 				mUpdateCharacterBarsList[i]->pBar->setFill(targetValue / maxValue);
 				// Set the text of the bar
-				mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
+				if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+					mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)targetValue) + L"/" + std::to_wstring((int)maxValue));
 				// Remove the bar from being updated
 				mUpdateCharacterBarsList.erase(mUpdateCharacterBarsList.begin() + i);
 				continue;
@@ -2290,7 +2351,8 @@ void GameUIManager::UpdateCharacterBars(double _deltaTime)
 		// Get the new ratio and set the fill and set the text
 		float newRatio = mUpdateCharacterBarsList[i]->pCurrValue / maxValue;
 		mUpdateCharacterBarsList[i]->pBar->setFill(newRatio);
-		mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)mUpdateCharacterBarsList[i]->pCurrValue) + L"/" + std::to_wstring((int)maxValue));
+		if(mUpdateCharacterBarsList[i]->pBarText != nullptr)
+			mUpdateCharacterBarsList[i]->pBarText->setText(std::to_wstring((int)mUpdateCharacterBarsList[i]->pCurrValue) + L"/" + std::to_wstring((int)maxValue));
 	}
 
 	//// Get the ratio from current health and max health
@@ -2355,7 +2417,13 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 {
 	// If the turn number is 666, that means he is dead and the text needs to be set to X
 	if (_turnNumber == 666)
+	{
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(L"X");
+		// Deplete the health bar
+		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHealthBar()->setFill(0.0f);
+		// Set the HP to zero when they die
+		_currCharacter->SetHP(0.0f);
+	}
 	else
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
@@ -2719,3 +2787,14 @@ void GameUIManager::Character6ClickableCallback()
 	Odyssey::EventManager::getInstance().publish(new SetNewTargetEvent(SetNewTargetEvent::Player::Enemy3));
 }
 
+void GameUIManager::CharacterEnterHoverCallback()
+{
+	// Set the cursor to the sword
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
+}
+
+void GameUIManager::CharacterExitHoverCallback()
+{
+	// Set the cursor to the basic pointer
+	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
+}

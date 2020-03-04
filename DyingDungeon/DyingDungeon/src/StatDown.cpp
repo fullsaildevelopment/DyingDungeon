@@ -35,6 +35,8 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 
 StatDown::~StatDown()
 {
+	if (mRecipient != nullptr && mRemoveMe == false)
+		Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
 	mDuration = -1;
@@ -54,6 +56,8 @@ void StatDown::Apply(Character& caster, Character& target)
 
 void StatDown::Remove()
 {
+	if (mRecipient == nullptr)
+		return;
 	mRemoveMe = true;
 	switch (mStatId)
 	{

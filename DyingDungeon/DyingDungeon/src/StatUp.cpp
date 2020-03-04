@@ -35,6 +35,8 @@ StatUp::StatUp(float ammountOfEffect, int duration, STATS stat, Character* targe
 
 StatUp::~StatUp()
 {
+	if (mRecipient != nullptr && mRemoveMe == false)
+		Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
 	mDuration = -1;
@@ -54,6 +56,8 @@ void StatUp::Apply(Character& caster,Character& target)
 
 void StatUp::Remove()
 {
+	if (mRecipient == nullptr)
+		return;
 	mRemoveMe = true;
 	switch (mStatId)
 	{

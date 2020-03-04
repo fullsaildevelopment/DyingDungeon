@@ -35,11 +35,10 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 			{
 				// Play an attack animation at the beginning of each battle
 				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
-
-				//mPlayerTeam[i]->getComponent<Character>()->StopParticleEffects();
-
 				// Put him into the mAllCharacters list
 				mAllCharacters.push_back(mPlayerTeam[i]);
+				// Turn on their hud blocker
+				GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(true);
 			}
 		}
 	}
@@ -126,6 +125,14 @@ int BattleInstance::UpdateBattle()
 	}
 	else
 	{
+		// Get the list of skill bg rectangles
+		std::vector<Odyssey::Rectangle2D*> bgRects = GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList();
+		// Turn off the skill selected indicator rectangles
+		for (int i = 0; i < bgRects.size(); i++)
+		{
+			bgRects[i]->setVisible(false);
+		}
+
 		// Check again to see if it was the player's team that died
 		if (!IsTeamAlive(mPlayerTeam))
 		{
@@ -239,7 +246,7 @@ void BattleInstance::SetTurnIndicatorPosition()
 	// If we have a character and he is a hero
 	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
 	{
-		// Turn on their hud blocker
+		// Turn off their hud blocker
 		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
 	}
 

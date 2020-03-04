@@ -45,46 +45,94 @@ void SkillHoverComponent::registerSprite(Odyssey::Sprite2D* sprite)
 
 void SkillHoverComponent::skill1Enter()
 {
-	// Create the skill popup for skill 1
-	CreateSkillHoverPrefab(SkillNumber::Skill1);
+	//// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[0]->getOpacity() == 1.0f)
+	//{
+	// Create skill hover hud if the pause menu is not active
+	if (!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	{
+		// Create the skill popup for skill 1
+		CreateSkillHoverPrefab(SkillNumber::Skill1);
+	}
+	//}
 }
 
 void SkillHoverComponent::skill2Enter()
 {
-	// Create the skill popup for skill 2
-	CreateSkillHoverPrefab(SkillNumber::Skill2);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[1]->getOpacity() == 1.0f)
+	//{
+	// Create skill hover hud if the pause menu is not active
+	if (!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	{
+		// Create the skill popup for skill 2
+		CreateSkillHoverPrefab(SkillNumber::Skill2);
+	}
+	//}
 }
 
 void SkillHoverComponent::skill3Enter()
 {
-	// Create the skill popup for skill 3
-	CreateSkillHoverPrefab(SkillNumber::Skill3);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[2]->getOpacity() == 1.0f)
+	//{
+	// Create skill hover hud if the pause menu is not active
+	if (!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	{
+		// Create the skill popup for skill 3
+		CreateSkillHoverPrefab(SkillNumber::Skill3);
+	}
+	//}
 }
 
 void SkillHoverComponent::skill4Enter()
 {
-	// Create the skill popup for skill 4
-	CreateSkillHoverPrefab(SkillNumber::Skill4);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[3]->getOpacity() == 1.0f)
+	//{
+	// Create skill hover hud if the pause menu is not active
+	if (!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	{
+		// Create the skill popup for skill 4
+		CreateSkillHoverPrefab(SkillNumber::Skill4);
+	}
+	//}
 }
 
 void SkillHoverComponent::skill1Exit()
 {
-	DestorySkillHoverPopup(SkillNumber::Skill1);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[0]->getOpacity() == 1.0f)
+	//{
+		DestorySkillHoverPopup(SkillNumber::Skill1);
+	//}
 }
 
 void SkillHoverComponent::skill2Exit()
 {
-	DestorySkillHoverPopup(SkillNumber::Skill2);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[1]->getOpacity() == 1.0f)
+	//{
+		DestorySkillHoverPopup(SkillNumber::Skill2);
+	//}
 }
 
 void SkillHoverComponent::skill3Exit()
 {
-	DestorySkillHoverPopup(SkillNumber::Skill3);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[2]->getOpacity() == 1.0f)
+	//{
+		DestorySkillHoverPopup(SkillNumber::Skill3);
+	//}
 }
 
 void SkillHoverComponent::skill4Exit()
 {
-	DestorySkillHoverPopup(SkillNumber::Skill4);
+	// Check if the skill is currently a lower opactiy meaning you don't have enough mana
+	//if (mSprites[3]->getOpacity() == 1.0f)
+	//{
+		DestorySkillHoverPopup(SkillNumber::Skill4);
+	//}
 }
 
 CharacterFactory::SkillHoverID SkillHoverComponent::GetSkillPopupPos()

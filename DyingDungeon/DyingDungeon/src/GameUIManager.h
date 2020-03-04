@@ -163,6 +163,7 @@ public: // Functions
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
+	void AddCharacterShieldBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	// Update health bar
 	void UpdateCharacterBars(double _deltaTime);
 	// Clear the list of bars to update
@@ -476,6 +477,10 @@ private: // Functions
 	void Character4ClickableCallback();
 	void Character5ClickableCallback();
 	void Character6ClickableCallback();
+
+	// Character hover callbacks
+	void CharacterEnterHoverCallback();
+	void CharacterExitHoverCallback();
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER

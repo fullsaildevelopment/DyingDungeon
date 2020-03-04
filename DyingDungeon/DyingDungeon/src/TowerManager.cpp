@@ -185,9 +185,6 @@ void TowerManager::update(double deltaTime)
 
 void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
-	// Set the current level to 1
-	mCurrentLevel = 1;
-
 	// Set the number of levels for this tower
 	mNumberOfLevels = _numberOfBattles;
 	mCurrentBattle = nullptr;
@@ -281,14 +278,8 @@ void TowerManager::TogglePauseMenu()
 		// Set the time scale to 0 on pause
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(0.0f));
 	}
-	else if (mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::SELECTTARGET || mCurrentBattle->GetCurrentCharacter()->getComponent<Character>()->GetState() == STATE::INPROGRESS)
-	{
-		// Set the new cursor
-		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Attack.cur"));
-	}
-
-	// If we are turning off the pause menu
-	if (!pauseMenuCanvas->isActive())
+	// else if we are turning off the pause menu
+	else if (!pauseMenuCanvas->isActive())
 	{
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
@@ -486,10 +477,6 @@ void TowerManager::CreateThePlayerTeam()
 		// Assign the impact indicator for the heroes
 		impactIndicator->setActive(false);
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
-
-		// Create the blood effect for the heroes
-		//Odyssey::Entity* bloodEffect = nullptr;
-		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 5.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]) };
 
 		// Assign the blood effect for the heroes
 		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();
