@@ -564,6 +564,10 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 		newEnemies.push_back(levelTwoEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
 		// Clear the new enemy list 
 		newEnemies.clear();
 	}
@@ -581,6 +585,10 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 		newEnemies.push_back(levelThreeEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
 		// Clear the new enemy list 
 		newEnemies.clear();
 	}

@@ -73,7 +73,7 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/SummonerPortrait.png", width, height);
 				break;
 			case TeamManager::EnemyType::Ganfaul:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/GanfaulPortrait.png", width, height);
+				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/GanfaulPortrait.jpg", width, height);
 				break;
 			default:
 				break;
