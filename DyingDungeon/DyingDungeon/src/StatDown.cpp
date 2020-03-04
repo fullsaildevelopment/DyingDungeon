@@ -35,7 +35,7 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 
 StatDown::~StatDown()
 {
-	if (mRecipient != nullptr && mRemoveMe == false)
+	if (mRecipient != nullptr && mRemoveMe == false && mRecipient->GetLevel() == 1)
 		Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
