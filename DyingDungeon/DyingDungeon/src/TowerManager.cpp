@@ -454,6 +454,10 @@ void TowerManager::CreateThePlayerTeam()
 
 		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
+		// Reset the colors of the stats
+		hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
+		hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
+		hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
 		// Make sure the bars are filled
 		hudElements->GetHealthBar()->setFill(1.0f);
 		hudElements->GetManaBar()->setFill(1.0f);
