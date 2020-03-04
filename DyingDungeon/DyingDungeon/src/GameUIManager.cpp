@@ -785,15 +785,15 @@ void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 60.0f, position.y - 45.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Active Character", properties);
 	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 225.0f, position.y - 30.0f), DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth - 225, 5);
 
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(140.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/6));
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(100.0f, 0.0f, 0.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight/5));
-	statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Guy.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight/5) - 20);
+	mStatsBannerBackground[0] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(140.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/6));
+	mStatsPortraitBackground[0] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(100.0f, 0.0f, 0.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight/5));
+	mStatsPortraits[0] = statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Dying_Dungeon_Logo_sharp.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight/5) - 20);
 	properties.fontSize = 17.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Turn Action\tMove       \tBuff/Debuff\tBuff/Debuff Value", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 205.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"None", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 295.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"No Action", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 465.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mStatsHeaderBlocks[0] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Turn Action\tMove       \tBuff/Debuff\tBuff/Debuff Value", properties);
+	mActiveCharacterTurnAction = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 205.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"None", properties);
+	mActiveCharacterMove = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 295.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"No Action", properties);
+	mActiveCharacterBuffDebuff = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 465.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
+	mActiveCharacterBuffDebuffValue = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
 	properties.fontSize = 20.0f;
 
 	
@@ -803,42 +803,42 @@ void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 60.0f, position.y - 45.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Targets", properties);
 	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 135.0f, position.y - 30.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 255.0f, 1.0f), graphBackgroundWidth - 135, 5);
 
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
-	statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Guy.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
+	mStatsBannerBackground[1] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
+	mStatsPortraitBackground[1] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
+	mStatsPortraits[1] = statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Dying_Dungeon_Logo_sharp.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
 
 	properties.fontSize = 17.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mStatsHeaderBlocks[1] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
+	mTargetDamage[0] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterBuffDebuff[0] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
+	mTargetCharacterBuffDebuffValue[0] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterDamageMitigated[0] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
 	properties.fontSize = 20.0f;
 	
 	position.y += 20.0f + (graphBackgroundHeight / 6);
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
-	statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Guy.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
+	mStatsBannerBackground[2] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
+	mStatsPortraitBackground[2] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
+	mStatsPortraits[2] = statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Dying_Dungeon_Logo_sharp.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
 
 	properties.fontSize = 17.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mStatsHeaderBlocks[2] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
+	mTargetDamage[1] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterBuffDebuff[1] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
+	mTargetCharacterBuffDebuffValue[1] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterDamageMitigated[1] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
 	properties.fontSize = 20.0f;
 
 	position.y += 20.0f + (graphBackgroundHeight / 6);
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
-	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
-	statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Guy.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
+	mStatsBannerBackground[3] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 140.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 6));
+	mStatsPortraitBackground[3] = statsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x + 30.0f, position.y - 7.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 100.0f, 1.0f), (graphBackgroundHeight / 5), (graphBackgroundHeight / 5));
+	mStatsPortraits[3] = statsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 40.0f, position.y + 3.0f), L"assets/images/Dying_Dungeon_Logo_sharp.png", (graphBackgroundHeight / 5) - 20, (graphBackgroundHeight / 5) - 20);
 
 	properties.fontSize = 17.0f;
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
-	statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mStatsHeaderBlocks[3] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 180.0f, position.y - 5.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight / 12), L"Damage       Buff/Debuff         Buff/Debuff Value       Damage Mitigated", properties);
+	mTargetDamage[2] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 195.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterBuffDebuff[2] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 285.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"Stat Down", properties);
+	mTargetCharacterBuffDebuffValue[2] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 455.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
+	mTargetCharacterDamageMitigated[2] = statsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 640.0f, position.y + 20.0f), DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), 100, (graphBackgroundHeight / 12), L"00.00", properties);
 	properties.fontSize = 20.0f;
 
 	graphPosition.x = position.x = (screenWidth / 2.0f) - (static_cast<float>(graphBackgroundWidth) / 2.0f);
@@ -851,7 +851,7 @@ void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	position.y -= 50.0f;
 	statsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12));
 	statsMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f), graphBackgroundWidth, (graphBackgroundHeight/12), L"No Level Data", properties);
-	
+
 
 	//Button Set-up
 	position.y = static_cast<float>(graphBackgroundHeight) - 30.0f;
@@ -1311,7 +1311,7 @@ void GameUIManager::SetupClickableCharacterUI()
 
 void GameUIManager::UpdateStatsMenu()
 {
-	if (/*StatTracker::Instance().GetLevelSize() > 0*/false) {
+	if (StatTracker::Instance().GetLevelSize() > 0) {
 		/*if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns.size() < mStatMenuCurrentTurn) 
 		{
 			mStatMenuCurrentTurn = 1;
@@ -1344,7 +1344,61 @@ void GameUIManager::UpdateStatsMenu()
 
 		_turnText.append(L"\n");*/
 
-		switch (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionType)
+		std::wstring buffordebuff;
+		switch (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect)
+		{
+		case EFFECTTYPE::None:
+			buffordebuff = L"None";
+			break;
+		case EFFECTTYPE::Bleed:
+			buffordebuff = L"Bleed";
+			break;
+		case EFFECTTYPE::Regen:
+			buffordebuff = L"Regen";
+			break;
+		case EFFECTTYPE::StatUp:
+			buffordebuff = L"StatUp";
+			break;
+		case EFFECTTYPE::StatDown:
+			buffordebuff = L"StatDown";
+			break;
+		case EFFECTTYPE::Stun:
+			buffordebuff = L"Stun";
+			break;
+		case EFFECTTYPE::Shield:
+			buffordebuff = L"Shield";
+			break;
+		case EFFECTTYPE::Provoke:
+			buffordebuff = L"Provoke";
+			break;
+		case EFFECTTYPE::Clense:
+			buffordebuff = L"Clense";
+			break;
+		default:
+			buffordebuff = L"None";
+			break;
+		}
+
+		mActiveCharacterBuffDebuff->setText(buffordebuff);
+
+		for (int n = 1; n <= 3; n++)
+		{
+			mTargetDamage[3 - n]->setVisible(true);
+			mTargetCharacterBuffDebuff[3 - n]->setVisible(true);
+			mTargetCharacterBuffDebuffValue[3 - n]->setVisible(true);
+			mTargetCharacterDamageMitigated[3 - n]->setVisible(true);
+			mStatsBannerBackground[3 - n + 1]->setVisible(true);
+			mStatsPortraitBackground[3 - n + 1]->setVisible(true);
+			mStatsPortraits[3 - n + 1]->setVisible(true);
+			mStatsHeaderBlocks[3 - n + 1]->setVisible(true);
+			mTargetCharacterBuffDebuff[3 - n]->setText(buffordebuff);
+
+		}
+
+		std::wstring portraitPath = StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].unique_id);
+		mStatsPortraits[0]->setSprite(portraitPath, mStatsPortraits[0]->getDimensions().x, mStatsPortraits[0]->getDimensions().y);
+		StatTracker::Action testAction = StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionType;
+		switch (testAction)
 		{
 		case StatTracker::Action::Attack:
 		{
@@ -1353,128 +1407,144 @@ void GameUIManager::UpdateStatsMenu()
 			//{
 			//	_turnText.append(L"\tTarget " + std::to_wstring(j + 1) + L": " + std::wstring(_targetNames[j].begin(), _targetNames[j].end()) + L"\n\tDamage Mitigated: " + StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().roundf(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].second, 2)) + L"\n\t    Danage Taken: " + StatTracker::Instance().FormatToPercentageW((StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value - (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value * StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].second))) + L"\n\n");
 			//}
-			statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->setSprite(StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].unique_id), statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().x, statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().y);
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[2]->setText(L"Attack");
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[3]->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
-			std::wstring buffordebuff;
-			switch (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect)
-			{
-			case EFFECTTYPE::None:
-				buffordebuff = L"None";
-				break;
-			case EFFECTTYPE::Bleed:
-				buffordebuff = L"Bleed";
-				break;
-			case EFFECTTYPE::Regen:
-				buffordebuff = L"Regen";
-				break;
-			case EFFECTTYPE::StatUp:
-				buffordebuff = L"StatUp";
-				break;
-			case EFFECTTYPE::StatDown:
-				buffordebuff = L"StatDown";
-				break;
-			case EFFECTTYPE::Stun:
-				buffordebuff = L"Stun";
-				break;
-			case EFFECTTYPE::Shield:
-				buffordebuff = L"Shield";
-				break;
-			case EFFECTTYPE::Provoke:
-				buffordebuff = L"Provoke";
-				break;
-			case EFFECTTYPE::Clense:
-				buffordebuff = L"Clense";
-				break;
-			default:
-				buffordebuff = L"None";
-				break;
+			mActiveCharacterTurnAction->setText(L"Attack");
+			mActiveCharacterMove->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
+			//std::vector<float> buffdebuffValue = StatTracker::Instance().GetTargetDebuffBuffValues(mStatMenuCurrentLevel, mStatMenuCurrentTurn);
+			for (int j = 0; j < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets.size(); j++) {
+				portraitPath = StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].first.unique_id);
+				mStatsPortraits[j + 1]->setSprite(portraitPath, mStatsPortraits[j + 1]->getDimensions().x, mStatsPortraits[j + 1]->getDimensions().y);
+				mTargetDamage[j]->setVisible(true);
+				mTargetCharacterBuffDebuff[j]->setVisible(true);
+				mTargetCharacterBuffDebuffValue[j]->setVisible(true);
+				mTargetCharacterDamageMitigated[j]->setVisible(true);
+				mTargetDamage[j]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
+				mTargetCharacterDamageMitigated[j]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].second, 2));
 			}
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[4]->setText(buffordebuff);
+			for (int k = 0; k < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets.size(); k++)
+			{
+				mTargetCharacterBuffDebuffValue[k]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets[k].second * 100.0f, 2) + L"%");
+			}
+			for (int o = 0; o < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].debuffedTargets.size(); o++)
+			{
+				mTargetCharacterBuffDebuffValue[o]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].debuffedTargets[o].second*100.0f, 2) + L"%");
+			}
 
-			int curr_target = 0;
-			for (int j = 7; j < (_targetNames.size()*4) + 7; j+=4) {
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setVisible(true);
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setVisible(true);
-				//statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setVisible(true);
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setVisible(true);
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setText(buffordebuff);
-				//statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[curr_target].second,2));
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[curr_target].second, 2));
-				curr_target++;
+			int temp = (3 - static_cast<int>(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets.size()));
+			for (int m = 1; m <= temp; m++)
+			{
+				mTargetDamage[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuff[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuffValue[3 - m]->setVisible(false);
+				mTargetCharacterDamageMitigated[3 - m]->setVisible(false);
+				mStatsBannerBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraitBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraits[3 - m + 1]->setVisible(false);
+				mStatsHeaderBlocks[3 - m + 1]->setVisible(false);
 			}
 		}
 			break;
 		case StatTracker::Action::Defend:
 		{
-			statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->setSprite(StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].unique_id), statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().x, statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().y);
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[2]->setText(L"Defend");
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[3]->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
+			mActiveCharacterTurnAction->setText(L"Defend");
+			mActiveCharacterMove->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
 			if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect == EFFECTTYPE::Shield)
 			{
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[4]->setText(L"Shield");
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
+				mActiveCharacterBuffDebuff->setText(L"Shield");
+				//statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
 			}
 			else
 			{
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[4]->setText(L"Heal");
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
+				mActiveCharacterBuffDebuff->setText(L"Heal");
+				//statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
 			}
 			//_turnText.append(StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value));
-			for (int j = 7; j < (_targetNames.size() * 4) + 7; j += 4) {
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setVisible(false);
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setVisible(false);
-				//statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setVisible(false);
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setVisible(false);
+			for (int j = 0; j < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets.size(); j++) {
+				portraitPath = StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].first.unique_id);
+				mStatsPortraits[j + 1]->setSprite(portraitPath, mStatsPortraits[j + 1]->getDimensions().x, mStatsPortraits[j + 1]->getDimensions().y);
+				mTargetDamage[j]->setVisible(true);
+				mTargetCharacterBuffDebuff[j]->setVisible(true);
+				mTargetCharacterBuffDebuffValue[j]->setVisible(true);
+				mTargetCharacterDamageMitigated[j]->setVisible(true);
+				mTargetDamage[j]->setText(L"00.00");
+				mTargetCharacterDamageMitigated[j]->setText(L"00.00");
+				mTargetCharacterBuffDebuffValue[j]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets[j].second, 2));
+			}
+			int temp = (3 - static_cast<int>(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets.size()));
+			for (int m = 1; m <= temp; m++)
+			{
+				mTargetDamage[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuff[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuffValue[3 - m]->setVisible(false);
+				mTargetCharacterDamageMitigated[3 - m]->setVisible(false);
+				mStatsBannerBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraitBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraits[3 - m + 1]->setVisible(false);
+				mStatsHeaderBlocks[3 - m + 1]->setVisible(false);
 			}
 		}
 			break;
 		case StatTracker::Action::Aid:
 		{
-			statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->setSprite(StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].unique_id), statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().x, statsMenuCanvas->getElements<Odyssey::Sprite2D>()[0]->getScale().y);
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[2]->setText(L"Aid");
-			statsMenuCanvas->getElements<Odyssey::Text2D>()[3]->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
+			mActiveCharacterTurnAction->setText(L"Aid");
+			mActiveCharacterMove->setText(Converter::ConvertCharToWStr(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].actionName.c_str()));
 			if (StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].effect == EFFECTTYPE::Shield)
 			{
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[4]->setText(L"Shield");
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
-
-				unsigned int curr_target = 0;
-
-				for (int j = 7; j < (_targetNames.size() * 4) + 7; j += 4) {
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setVisible(false);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setText(L"00.00");
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setText(L"Heal");
-					//statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[curr_target].second, 2));
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
-				}
+				mActiveCharacterBuffDebuff->setText(L"Shield");
+				//statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
 			}
 			else
 			{
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[4]->setText(L"Heal");
-				statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
-
-				unsigned int curr_target = 0;
-
-				for (int j = 7; j < (_targetNames.size() * 4) + 7; j += 4) {
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setVisible(false);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setVisible(true);
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j]->setText(L"00.00");
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 1]->setText(L"Heal");
-					//statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 2]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[curr_target].second,2));
-					statsMenuCanvas->getElements<Odyssey::Text2D>()[j + 3]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
-				}
+				mActiveCharacterBuffDebuff->setText(L"Heal");
+				//statsMenuCanvas->getElements<Odyssey::Text2D>()[5]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value, 2));
+			}
+			for (int j = 0; j < StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets.size(); j++) {
+				portraitPath = StatTracker::Instance().GetCharacterPortrait(mStatMenuCurrentLevel, StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].targets[j].first.unique_id);
+				mStatsPortraits[j + 1]->setSprite(portraitPath, mStatsPortraits[j + 1]->getDimensions().x, mStatsPortraits[j + 1]->getDimensions().y);
+				mTargetDamage[j]->setVisible(true);
+				mTargetCharacterBuffDebuff[j]->setVisible(true);
+				mTargetCharacterBuffDebuffValue[j]->setVisible(true);
+				mTargetCharacterDamageMitigated[j]->setVisible(true);
+				mTargetDamage[j]->setText(L"00.00");
+				mTargetCharacterDamageMitigated[j]->setText(L"00.00");
+				mTargetCharacterBuffDebuffValue[j]->setText(Converter::FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets[j].second, 2));
+			}
+			int temp = (3 - static_cast<int>(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].buffedTargets.size()));
+			for (int m = 1; m <= temp; m++)
+			{
+				mTargetDamage[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuff[3 - m]->setVisible(false);
+				mTargetCharacterBuffDebuffValue[3 - m]->setVisible(false);
+				mTargetCharacterDamageMitigated[3 - m]->setVisible(false);
+				mStatsBannerBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraitBackground[3 - m + 1]->setVisible(false);
+				mStatsPortraits[3 - m + 1]->setVisible(false);
+				mStatsHeaderBlocks[3 - m + 1]->setVisible(false);
 			}
 			//_turnText.append(StatTracker::Instance().FormatToPercentageW(StatTracker::Instance().GetLevel(mStatMenuCurrentLevel - 1).turns[mStatMenuCurrentTurn - 1].value));
+
 		}
 			break;
 		default:
+			int test = 0;
+			mActiveCharacterMove->setText(L"None");
+			mActiveCharacterTurnAction->setText(L"None");
+			mActiveCharacterMove->setText(L"None");
+			mActiveCharacterBuffDebuff->setText(L"None");
+			mActiveCharacterBuffDebuffValue->setText(L"00.00");
+
+			for (int n = 1; n <= 3; n++)
+			{
+				mTargetDamage[3 - n]->setVisible(false);
+				mTargetCharacterBuffDebuff[3 - n]->setVisible(false);
+				mTargetCharacterBuffDebuffValue[3 - n]->setVisible(false);
+				mTargetCharacterDamageMitigated[3 - n]->setVisible(false);
+				mStatsBannerBackground[3 - n + 1]->setVisible(false);
+				mStatsPortraitBackground[3 - n + 1]->setVisible(false);
+				mStatsPortraits[3 - n + 1]->setVisible(false);
+				mStatsHeaderBlocks[3 - n + 1]->setVisible(false);
+				mTargetCharacterBuffDebuff[3 - n]->setText(buffordebuff);
+
+			}
 			break;
 		}
 		/*size_t target_size = StatTracker::Instance().GetTargetList(mStatMenuCurrentLevel, mStatMenuCurrentTurn).size();

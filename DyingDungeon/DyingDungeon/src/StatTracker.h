@@ -10,12 +10,17 @@
 #include "StatusEvents.h"
 #include "UICanvas.h"
 #include "Rectangle2D.h"
-#include "Character.h"
+//#include "Character.h"
 class StatTracker
 {
 public:
 	enum class Action { None = -1, Attack, Defend, Aid };
-	typedef std::pair<std::string, unsigned int> CHARACTER_STAT;
+	struct CHARACTER_STAT
+	{
+		std::string characterName = "";
+		unsigned int unique_id = 0;
+		GameplayTypes::HEROID characterClass;
+	};
 	struct Turn
 	{
 		std::string characterName = "";
@@ -23,6 +28,8 @@ public:
 		float attackModifier = 0.0f;
 		//std::vector<std::string> targetNames;
 		std::vector <std::pair<CHARACTER_STAT, float>> targets;
+		std::vector<std::pair<CHARACTER_STAT, float>> debuffedTargets;
+		std::vector<std::pair<CHARACTER_STAT, float>> buffedTargets;
 		uint32_t round = 1;
 		float value = 0.0f;
 		EFFECTTYPE effect = EFFECTTYPE::None;
@@ -166,8 +173,15 @@ public:
 	std::string GetCharacterName(unsigned int level, unsigned int turn);
 
 	std::wstring GetCharacterPortrait(unsigned int level, unsigned int unique_id);
-	float GetTargetDebuffValue(unsigned int level, unsigned int turn, unsigned int unique_id);
-	float GetTargetBuffValue(unsigned int level, unsigned int turn, unsigned int unique_id);
+	std::vector<float> GetTargetDebuffBuffValues(unsigned int level, unsigned int turn);
+
+	std::vector<float> GetTargetDebuffBuffValues(unsigned int level, unsigned int turn, unsigned int unique_id);
+
+	float GetTargetDebuffBuffValue(unsigned int level, unsigned int turn, unsigned int unique_id);
+
+	std::vector<float> GetTargetHeal(unsigned int level, unsigned int turn);
+
+	Odyssey::UICanvas* GetCanvas();
 
 	/// <summary>
 	/// Returns a list of targets from a specific level and turn

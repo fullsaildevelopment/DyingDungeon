@@ -175,6 +175,18 @@ void TowerManager::update(double deltaTime)
 				// Turn off the rewads screen
 				Rewards->setActive(false);
 			}
+			float stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
+			if (stat_opacity <= 0.0f) {
+				float newOpacity = stat_opacity + ((int(deltaTime) % 10) * 0.10f);
+				Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->setOpacity(newOpacity);
+				stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
+			}
+			else if (stat_opacity >= 1.0f)
+			{
+				float newOpacity = stat_opacity - ((int(deltaTime) % 10) * 0.10f);
+				Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->setOpacity(newOpacity);
+				stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
+			}
 		}
 		else if (GetTowerState() == NOT_IN_BATTLE)
 		{
