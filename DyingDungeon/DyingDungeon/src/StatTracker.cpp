@@ -156,7 +156,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 4]->setText(rewardsText);
 		rewardsText.clear();
 
-		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%\n");
+		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 5]->setText(rewardsText);
 		rewardsText.clear();
 
@@ -1061,7 +1061,7 @@ float StatTracker::CalculateHealthRecived()
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
 			for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++) {
-				if ((m_levels[i].turns[j].targets[k].first.characterName.substr(0, 4) == "HEAL") && m_levels[i].turns[j].isPlayer && !(m_levels[i].turns[j].effect == EFFECTTYPE::Shield))
+				if ((m_levels[i].turns[j].buffedTargets[k].first.characterName.substr(0, 4) == "HEAL") && m_levels[i].turns[j].isPlayer && !(m_levels[i].turns[j].effect == EFFECTTYPE::Shield))
 				{
 					total += m_levels[i].turns[j].value * m_levels[i].turns[j].targets.size();
 				}
@@ -1079,7 +1079,7 @@ float StatTracker::CalculateHealthRecived(std::string name)
 		for (unsigned int j = 0; j < m_levels[i].turns.size(); j++)
 		{
 			for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++) {
-				if ((m_levels[i].turns[j].targets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[i].turns[j].targets[k].first.characterName.substr(4, name.size()) == name) && !(m_levels[i].turns[j].effect == EFFECTTYPE::Shield))
+				if ((m_levels[i].turns[j].buffedTargets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[i].turns[j].buffedTargets[k].first.characterName.substr(4, name.size()) == name) && !(m_levels[i].turns[j].effect == EFFECTTYPE::Shield))
 				{
 					total += m_levels[i].turns[j].targets[k].second;
 				}
@@ -1096,9 +1096,9 @@ float StatTracker::CalculateHealthRecived(std::string name, unsigned int level)
 		for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 		{
 			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
-				if ((m_levels[index].turns[j].targets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[index].turns[j].targets[k].first.characterName.substr(4, name.size()) == name) && !(m_levels[index].turns[j].effect == EFFECTTYPE::Shield))
+				if ((m_levels[index].turns[j].buffedTargets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[index].turns[j].buffedTargets[k].first.characterName.substr(4, name.size()) == name) && !(m_levels[index].turns[j].effect == EFFECTTYPE::Shield))
 				{
-					total += m_levels[index].turns[j].targets[k].second;
+					total += m_levels[index].turns[j].buffedTargets[k].second;
 				}
 			}
 		}
@@ -1112,10 +1112,10 @@ float StatTracker::CalculateHealthRecived(unsigned int id, unsigned int level)
 	unsigned int index = level - 1;
 	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
-		for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
-			if ((m_levels[index].turns[j].targets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[index].turns[j].targets[k].first.unique_id == id) && !(m_levels[index].turns[j].effect == EFFECTTYPE::Shield))
+		for (unsigned int k = 0; k < m_levels[index].turns[j].buffedTargets.size(); k++) {
+			if ((m_levels[index].turns[j].buffedTargets[k].first.characterName.substr(0, 4) == "HEAL") && (m_levels[index].turns[j].buffedTargets[k].first.unique_id == id) && !(m_levels[index].turns[j].effect == EFFECTTYPE::Shield))
 			{
-				total += m_levels[index].turns[j].targets[k].second;
+				total += m_levels[index].turns[j].buffedTargets[k].second;
 			}
 		}
 	}
@@ -1132,7 +1132,7 @@ float StatTracker::CalculateShieldGiven()
 		{
 			if (m_levels[i].turns[j].actionType == Action::Aid && m_levels[i].turns[j].isPlayer && m_levels[i].turns[j].effect == EFFECTTYPE::Shield)
 			{
-				total += m_levels[i].turns[j].value * m_levels[i].turns[j].targets.size();
+				total += m_levels[i].turns[j].value * m_levels[i].turns[j].buffedTargets.size();
 			}
 		}
 	}
@@ -1149,7 +1149,7 @@ float StatTracker::CalculateShieldGiven(std::string name)
 			for (unsigned int k = 0; k < m_levels[i].turns[j].targets.size(); k++) {
 				if (m_levels[i].turns[j].actionType == Action::Aid && m_levels[i].turns[j].targets[k].first.characterName == name && m_levels[i].turns[j].effect == EFFECTTYPE::Shield)
 				{
-					total += m_levels[i].turns[j].value * m_levels[i].turns[j].targets.size();
+					total += m_levels[i].turns[j].value * m_levels[i].turns[j].buffedTargets.size();
 				}
 			}
 		}
@@ -1169,7 +1169,7 @@ float StatTracker::CalculateShieldGiven(std::string name, unsigned int level)
 			for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
 				if (m_levels[index].turns[j].actionType == Action::Aid && m_levels[index].turns[j].targets[k].first.characterName == name && m_levels[index].turns[j].effect == EFFECTTYPE::Shield)
 				{
-					total += m_levels[index].turns[j].value * m_levels[index].turns[j].targets.size();
+					total += m_levels[index].turns[j].value * m_levels[index].turns[j].buffedTargets.size();
 				}
 			}
 		}
@@ -1186,10 +1186,10 @@ float StatTracker::CalculateShieldGiven(unsigned int id, unsigned int level)
 	{*/
 	for (unsigned int j = 0; j < m_levels[index].turns.size(); j++)
 	{
-		for (unsigned int k = 0; k < m_levels[index].turns[j].targets.size(); k++) {
-			if (m_levels[index].turns[j].actionType == Action::Aid && m_levels[index].turns[j].targets[k].first.unique_id == id && m_levels[index].turns[j].effect == EFFECTTYPE::Shield)
+		for (unsigned int k = 0; k < m_levels[index].turns[j].buffedTargets.size(); k++) {
+			if (m_levels[index].turns[j].actionType == Action::Aid && m_levels[index].turns[j].buffedTargets[k].first.unique_id == id && m_levels[index].turns[j].effect == EFFECTTYPE::Shield)
 			{
-				total += m_levels[index].turns[j].value * m_levels[index].turns[j].targets.size();
+				total += m_levels[index].turns[j].value * m_levels[index].turns[j].buffedTargets.size();
 			}
 		}
 	}
@@ -1431,7 +1431,7 @@ std::vector<float> StatTracker::GetTargetHeal(unsigned int level, unsigned int t
 	for (int i = 0; i < m_levels[level - 1].turns[turn - 1].targets.size(); i++)
 	{
 		if (m_levels[level - 1].turns[turn - 1].targets[i].first.characterName.substr(0, 4) == "HEAL") {
-			_temp.push_back(m_levels[level - 1].turns[turn - 1].targets[i].second);
+			_temp.push_back(m_levels[level - 1].turns[turn - 1].buffedTargets[i].second);
 		}
 	}
 	return _temp;
