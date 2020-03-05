@@ -52,6 +52,11 @@ public:
 		RightHUD,
 	};
 
+	enum LightObjects
+	{
+		SpotLight
+	};
+
 public: // Functions
 
 	void initialize(Odyssey::Application* _application);
@@ -67,6 +72,7 @@ public: // Functions
 	Odyssey::Entity* GetCharacterPrefab(CharacterOptions _characterType);
 	Odyssey::Entity* GetHUDPrefab(HudID _hudToGet);
 	Odyssey::Entity* GetSkillHoverHUDPrefab(SkillHoverID _hoverHudToGet);
+	Odyssey::Entity* GetLightObjectPrefab(LightObjects _lightObjectToGet);
 	Odyssey::Entity* GetImpactIndicatorPrefab();
 	Odyssey::Entity* GetTurnIndicatorPrefab();
 	Odyssey::Entity* GetBloodEffectPrefab();
@@ -103,6 +109,9 @@ private: // Functions
 
 	// Create skill hover hud
 	Odyssey::Entity* CreateSkillHoverHudPrefab(DirectX::XMFLOAT2 _hudPosition);
+
+	// Create spot light prefab
+	Odyssey::Entity* CreateCharacterSpotLight();
 
 	// Create hp popup
 	Odyssey::Entity* CreateHpPopupPrefab();
@@ -149,6 +158,9 @@ private: // Functions
 
 	// Skill Hover Map
 	std::map<SkillHoverID, Odyssey::Entity*> mSkillHoverPrefabMap;
+
+	// Light Object Map
+	std::map<LightObjects, Odyssey::Entity*> mLightObjectPrefabMap;
 
 	// VFX Map Because Maps are the best
 	std::map<std::string, Odyssey::Entity*> mVXFMap;

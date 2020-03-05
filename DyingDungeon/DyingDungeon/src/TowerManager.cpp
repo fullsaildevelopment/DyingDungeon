@@ -92,6 +92,83 @@ void TowerManager::update(double deltaTime)
 		}
 	}
 
+	// SPOT LIGHT DEBUGGER
+	if (true)
+	{
+		float speed = 0.005f;
+		// INTENSITY
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() - speed);
+			}
+		}
+
+		// RANGE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() - speed);
+			}
+		}
+
+		// ANGLE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() - speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() + speed);
+			}
+		}
+
+		// Transform
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
+			}
+		}
+	}
+
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
@@ -485,6 +562,14 @@ void TowerManager::CreateThePlayerTeam()
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &clickableHeroUI, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
 		GameUIManager::getInstance().AddClickableElementToList(clickableHeroUI);
 
+		// Create the character's spot light
+		Odyssey::Entity* spotLight = nullptr;
+		prefab = CharacterFactory::getInstance().GetLightObjectPrefab(CharacterFactory::LightObjects::SpotLight);
+		// Offset the y pos of the spotlight
+		DirectX::XMVECTOR spotLightPos = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 6.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]), 1.0f };
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &spotLight, spotLightPos, DirectX::XMVECTOR{ 90.0f, 0.0f, 0.0f, 1.0f }));
+		mCharacterSpotLights[i] = spotLight;
+
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
@@ -508,7 +593,7 @@ void TowerManager::CreateThePlayerTeam()
 		// Set the elements of the character's HUD
 		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
 
-		// Add the mudda fricken character in the player list
+		// Add the character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
 }

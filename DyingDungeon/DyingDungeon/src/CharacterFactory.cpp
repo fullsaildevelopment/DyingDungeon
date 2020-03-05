@@ -122,6 +122,10 @@ void CharacterFactory::initialize(Odyssey::Application* _application)
 	// Add the skill hover hud to the skill hover prefab map
 	mSkillHoverPrefabMap[SkillHoverID::RightHUD] = skillHoverHUD;
 
+	// Create Light Object Prefabs
+	Odyssey::Entity* characterSpotLight = CreateCharacterSpotLight();
+	mLightObjectPrefabMap[LightObjects::SpotLight] = characterSpotLight;
+
 	// Create the impact indicator 
 	mImpactIndicatorPrefab = CreateImpactIndicatorPrefab();
 
@@ -197,6 +201,11 @@ Odyssey::Entity* CharacterFactory::GetSkillHoverHUDPrefab(SkillHoverID _hoverHud
 
 	// Return the hud I wanted;
 	return mySkillHoverHud;
+}
+
+Odyssey::Entity* CharacterFactory::GetLightObjectPrefab(LightObjects _lightObjectToGet)
+{
+	return mLightObjectPrefabMap[_lightObjectToGet];
 }
 
 Odyssey::Entity* CharacterFactory::GetImpactIndicatorPrefab() 
@@ -519,6 +528,27 @@ Odyssey::Entity* CharacterFactory::CreateSkillHoverHudPrefab(DirectX::XMFLOAT2 _
 	GameUIManager::getInstance().CreateSkillHoverHud(skillHoverHud, _hudPosition);
 
 	return skillHoverHud;
+}
+
+Odyssey::Entity* CharacterFactory::CreateCharacterSpotLight()
+{
+	// Create the table candle entity
+	Odyssey::Entity* spotLight = mApplication->createPrefab();
+
+	// Set the transform position and rotation
+	spotLight->addComponent<Odyssey::Transform>();
+	spotLight->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
+	spotLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+
+	// Add light to the spot light object and set values
+	Odyssey::Light* light = spotLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Spot);
+	light->setColor(0.8f, 0.8f, 0.8f);
+	light->setIntensity(3.895f);
+	light->setRange(9.05f);
+	light->setSpotAngle(24.7f);
+
+	return spotLight;
 }
 
 Odyssey::Entity* CharacterFactory::CreateHpPopupPrefab()
