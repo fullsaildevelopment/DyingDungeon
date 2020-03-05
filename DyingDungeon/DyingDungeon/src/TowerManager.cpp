@@ -170,7 +170,7 @@ void TowerManager::update(double deltaTime)
 	}
 
 	// SPOT LIGHT DEBUGGER FOR ENEMIES
-	if (false)
+	if (true)
 	{
 		float speed = 0.005f;
 		// INTENSITY
@@ -647,14 +647,13 @@ void TowerManager::CreateThePlayerTeam()
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &spotLight, spotLightPos, DirectX::XMVECTOR{ 90.0f, 0.0f, 0.0f, 1.0f }));
 		mCharacterSpotLights[i] = spotLight;
 
-		// Turn down intensity for the mage
+		// Change spot light for different heroes
 		if (newHeroType == TeamManager::HeroType::Mage)
 		{
 			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);
 			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setRange(12.45);
 			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setSpotAngle(24.69);
 		}
-		// Move spot light up for the Warrior and Monk
 		else if (newHeroType == TeamManager::HeroType::Warrior || newHeroType == TeamManager::HeroType::Monk)
 		{
 			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);

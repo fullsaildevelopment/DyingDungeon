@@ -1,5 +1,7 @@
 #include "TowerSelectController.h"
 #include "TowerSelectionPrefabFactory.h"
+#include "TowerInfoElements.h"
+#include "TeamManager.h"
 #include "InputManager.h"
 #include "RedAudioManager.h"
 #include "EventManager.h"
@@ -175,8 +177,11 @@ void TowerSelectController::ChangeDoor1State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
+
+		// Change enemy sprites and level number
+		ChangeTowerInfoElements(mLevelInfoPopups[0], 1);
 	}
 	else
 	{
@@ -202,8 +207,11 @@ void TowerSelectController::ChangeDoor2State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[1], vec, vec));
+
+		// Change enemy sprites and level number
+		ChangeTowerInfoElements(mLevelInfoPopups[1], 2);
 	}
 	else
 	{
@@ -229,8 +237,11 @@ void TowerSelectController::ChangeDoor3State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door1);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[2], vec, vec));
+
+		// Change enemy sprites and level number
+		ChangeTowerInfoElements(mLevelInfoPopups[2], 3);
 	}
 	else
 	{
@@ -256,8 +267,11 @@ void TowerSelectController::ChangeDoor4State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door4);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[3], vec, vec));
+
+		// Change enemy sprites and level number
+		ChangeTowerInfoElements(mLevelInfoPopups[3], 4);
 	}
 	else
 	{
@@ -283,8 +297,11 @@ void TowerSelectController::ChangeDoor5State()
 
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
-		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefabs(TowerSelectionPrefabFactory::TowerSelectPopupPrefabs::Door5);
+		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[4], vec, vec));
+
+		// Change enemy sprites and level number
+		ChangeTowerInfoElements(mLevelInfoPopups[4], 5);
 	}
 	else
 	{
@@ -518,5 +535,44 @@ void TowerSelectController::SetNextDoorImage(Door _doorToChange)
 		case 5:
 			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", x, y);
 			break;
+	}
+}
+
+void TowerSelectController::ChangeTowerInfoElements(Odyssey::Entity* _newPrefab, int _levelNum)
+{
+	// Change level number and enemy pictures
+	TowerInfoElements* towerInfoElements = _newPrefab->getComponent<TowerInfoElements>();
+	towerInfoElements->ChangeLevelNumber(std::to_wstring(_levelNum));
+
+	// For each sprite, change enemy picture
+	for (int i = 0; i < towerInfoElements->GetEnemySprites().size(); i++)
+	{
+		// Make sure we have charcters in the list to add the pictures
+		if (i < TeamManager::getInstance().GetEnemiesToCreateList()[_levelNum - 1].size())
+		{
+			// Get the enum of the character type
+			switch (TeamManager::getInstance().GetEnemiesToCreateList()[_levelNum - 1][i].pEnemyType)
+			{
+			case TeamManager::EnemyType::Skeleton:
+				towerInfoElements->ChangeEnemySprite(i, L"assets/images/SkeletonPortrait.png");
+				break;
+			case TeamManager::EnemyType::CasterDemon:
+				towerInfoElements->ChangeEnemySprite(i, L"assets/images/CasterDemonPortrait.png");
+				break;
+			case TeamManager::EnemyType::MeleeDemon:
+				towerInfoElements->ChangeEnemySprite(i, L"assets/images/MeleeDemonPortrait.png");
+				break;
+			case TeamManager::EnemyType::Summoner:
+				towerInfoElements->ChangeEnemySprite(i, L"assets/images/SummonerPortrait.png");
+				break;
+			case TeamManager::EnemyType::Ganfaul:
+				towerInfoElements->ChangeEnemySprite(i, L"assets/images/GanfaulPortrait.jpg");
+				break;
+			default:
+				break;
+			}
+		}
+		else
+			towerInfoElements->ChangeEnemySprite(i, L"assets/images/Blank.png");
 	}
 }

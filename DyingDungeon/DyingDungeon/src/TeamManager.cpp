@@ -15,6 +15,11 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	// Clear the enemy team
 	mEnemyTeam.clear();
 
+	// Destory the previous spot lights
+	for (int i = 0; i < mEnemySpotLights.size(); i++)
+	{
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
+	}
 	// Clear spot light prefabs
 	mEnemySpotLights.clear();
 
@@ -126,10 +131,17 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		}
 		else if (enemyType == TeamManager::EnemyType::MeleeDemon || enemyType == TeamManager::EnemyType::CasterDemon)
 		{
-			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.834f);
-			spotLight->getComponent<Odyssey::Light>()->setRange(22.384f);
-			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.9f);
-			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 10.905f, DirectX::XMVectorGetZ(spotLightPos));
+			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.359f);
+			spotLight->getComponent<Odyssey::Light>()->setRange(31.337f);
+			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.89f);
+			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 11.55f, DirectX::XMVectorGetZ(spotLightPos));
+		}
+		else if (enemyType == TeamManager::EnemyType::Ganfaul)
+		{
+			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.41f);
+			spotLight->getComponent<Odyssey::Light>()->setRange(23.934f);
+			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.525f);
+			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 9.48, DirectX::XMVectorGetZ(spotLightPos));
 		}
 		mEnemySpotLights.push_back(spotLight);
 
