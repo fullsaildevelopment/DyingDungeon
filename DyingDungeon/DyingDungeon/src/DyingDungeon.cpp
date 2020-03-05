@@ -877,37 +877,37 @@ void setupSceneOne()
 	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
 	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.09f, 30.0f, 30.0f));
 
-	// Create the table candle entity
-	Odyssey::Entity* tableCandle = gSceneOne->createEntity();
-	
-	// Set the transform position and rotation
-	tableCandle->addComponent<Odyssey::Transform>();
-	tableCandle->getComponent<Odyssey::Transform>()->setPosition(7.492f, 1.964f, 16.716f);
-	tableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
-	
-	// Set the light's values
-	light = tableCandle->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(fireColor);
-	light->setIntensity(1.1f);
-	light->setRange(20.0f);
-	light->setSpotAngle(0.0f);
+	//// Create the table candle entity
+	//Odyssey::Entity* tableCandle = gSceneOne->createEntity();
+	//
+	//// Set the transform position and rotation
+	//tableCandle->addComponent<Odyssey::Transform>();
+	//tableCandle->getComponent<Odyssey::Transform>()->setPosition(7.492f, 1.964f, 16.716f);
+	//tableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+	//
+	//// Set the light's values
+	//light = tableCandle->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(fireColor);
+	//light->setIntensity(1.1f);
+	//light->setRange(20.0f);
+	//light->setSpotAngle(0.0f);
 
-	// Create the table candle entity
-	Odyssey::Entity* bigTableCandle = gSceneOne->createEntity();
-	
-	// Set the transform position and rotation
-	bigTableCandle->addComponent<Odyssey::Transform>();
-	bigTableCandle->getComponent<Odyssey::Transform>()->setPosition(-8.95f, 4.076f, 27.416f);
-	bigTableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
-	
-	// Set the light's values
-	light = bigTableCandle->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(fireColor);
-	light->setIntensity(1.5f);
-	light->setRange(20.0f);
-	light->setSpotAngle(0.0f);
+	//// Create the table candle entity
+	//Odyssey::Entity* bigTableCandle = gSceneOne->createEntity();
+	//
+	//// Set the transform position and rotation
+	//bigTableCandle->addComponent<Odyssey::Transform>();
+	//bigTableCandle->getComponent<Odyssey::Transform>()->setPosition(-8.95f, 4.076f, 27.416f);
+	//bigTableCandle->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+	//
+	//// Set the light's values
+	//light = bigTableCandle->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Point);
+	//light->setColor(fireColor);
+	//light->setIntensity(1.5f);
+	//light->setRange(20.0f);
+	//light->setSpotAngle(0.0f);
 
 	// Create the table candle entity
 	Odyssey::Entity* topLight = gSceneOne->createEntity();

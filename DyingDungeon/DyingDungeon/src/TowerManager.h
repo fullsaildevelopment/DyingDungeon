@@ -65,7 +65,7 @@ private: // Varibales
 	// Vectors
 	EntityList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	EntityList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
-	Odyssey::Entity* mCharacterSpotLights[3];
+	Odyssey::Entity* mCharacterSpotLights[3] = { nullptr, nullptr, nullptr };
 
 	// Queues
 

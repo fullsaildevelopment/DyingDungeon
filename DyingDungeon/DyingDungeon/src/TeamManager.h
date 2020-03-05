@@ -64,6 +64,8 @@ public: // Functions
 	std::vector<Odyssey::Entity*> GetEnemyTeam() { return mEnemyTeam; }
 	// Get the list of enemies to create
 	std::vector<std::vector<TeamManager::EnemySetups>> GetEnemiesToCreateList() { return mEnemiesToCreate; }
+	// Get enemy's spot lights
+	std::vector<Odyssey::Entity*> GetEnemySpotLights() { return mEnemySpotLights; }
 
 	// Setters
 	// Set the current tower
@@ -86,6 +88,9 @@ private: // Variables
 
 	// Hold the first scene
 	Odyssey::Scene* mSceneOne = nullptr;
+
+	// Hold the enemy spot lights
+	std::vector<Odyssey::Entity*> mEnemySpotLights;
 
 private: // Functions
 	

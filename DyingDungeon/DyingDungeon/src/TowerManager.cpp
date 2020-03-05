@@ -92,8 +92,8 @@ void TowerManager::update(double deltaTime)
 		}
 	}
 
-	// SPOT LIGHT DEBUGGER
-	if (true)
+	// SPOT LIGHT DEBUGGER FOR HEROES
+	if (false)
 	{
 		float speed = 0.005f;
 		// INTENSITY
@@ -164,6 +164,83 @@ void TowerManager::update(double deltaTime)
 			for (int i = 0; i < 3; i++)
 			{
 				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
+			}
+		}
+	}
+
+	// SPOT LIGHT DEBUGGER FOR ENEMIES
+	if (false)
+	{
+		float speed = 0.005f;
+		// INTENSITY
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() - speed);
+			}
+		}
+
+		// RANGE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() - speed);
+			}
+		}
+
+		// ANGLE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() - speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() + speed);
+			}
+		}
+
+		// Transform
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
 				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
 			}
 		}
@@ -569,6 +646,22 @@ void TowerManager::CreateThePlayerTeam()
 		DirectX::XMVECTOR spotLightPos = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 6.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]), 1.0f };
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &spotLight, spotLightPos, DirectX::XMVECTOR{ 90.0f, 0.0f, 0.0f, 1.0f }));
 		mCharacterSpotLights[i] = spotLight;
+
+		// Turn down intensity for the mage
+		if (newHeroType == TeamManager::HeroType::Mage)
+		{
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setRange(12.45);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setSpotAngle(24.69);
+		}
+		// Move spot light up for the Warrior and Monk
+		else if (newHeroType == TeamManager::HeroType::Warrior || newHeroType == TeamManager::HeroType::Monk)
+		{
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setRange(30.033f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setSpotAngle(24.96f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), DirectX::XMVectorGetY(spotLightPos) + 9.675f, DirectX::XMVectorGetZ(spotLightPos));
+		}
 
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
