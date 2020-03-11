@@ -1,4 +1,5 @@
 #include "TowerSelectionPrefabFactory.h"
+#include "TowerInfoElements.h"
 
 TowerSelectionPrefabFactory& TowerSelectionPrefabFactory::getInstance()
 {
@@ -10,8 +11,12 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 {
 	// Create the prefab object
 	Odyssey::Entity* newInfoPopup = _application->createPrefab();
+	// Add Tower Info Element Component
+	TowerInfoElements* towerInfoElements = newInfoPopup->addComponent<TowerInfoElements>();
 	// Add a canvas
-	Odyssey::UICanvas* newCanvas = newInfoPopup->addComponent<Odyssey::UICanvas>();
+	towerInfoElements->SetCanvas(newInfoPopup->addComponent<Odyssey::UICanvas>());
+	// Get Canvas
+	Odyssey::UICanvas* newCanvas = towerInfoElements->GetCanvas();
 
 	// Create starting variables
 	UINT width = 500;
@@ -42,7 +47,7 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	newCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: " + std::to_wstring((int)mTowerSelectPopupPrefabs.size() + 1), properties);
+	towerInfoElements->SetLevelNum(newCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: 1", properties));
 
 	// Add in enemies text and icons
 	position.y += static_cast<float>(height) + 10.0f;
@@ -55,30 +60,10 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 	width = 64;
 	height = 64;
 
-	// For each enemy in the enum list
-	for (int i = 0; i < _enemyEnums.size(); i++)
+	// Put three placeholders on prefab
+	for (int i = 0; i < 3; i++)
 	{
-		switch (_enemyEnums[i].pEnemyType)
-		{
-			case TeamManager::EnemyType::Skeleton:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/SkeletonPortrait.png", width, height);
-				break;
-			case TeamManager::EnemyType::CasterDemon:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/CasterDemonPortrait.png", width, height);
-				break;
-			case TeamManager::EnemyType::MeleeDemon:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/MeleeDemonPortrait.png", width, height);
-				break;
-			case TeamManager::EnemyType::Summoner:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/SummonerPortrait.png", width, height);
-				break;
-			case TeamManager::EnemyType::Ganfaul:
-				newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/GanfaulPortrait.jpg", width, height);
-				break;
-			default:
-				break;
-		}
-		
+		towerInfoElements->SetEnemySpriteIntoList(newCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/Guy.png", width, height));
 		position.x += static_cast<float>(width) + 10.0f;
 	}
 
@@ -102,11 +87,11 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 	properties.fontSize = 12.0f;
 	newCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
 	
-	// Decide what popup this is for
-	mTowerSelectPopupPrefabs[TowerSelectPopupPrefabs((int)mTowerSelectPopupPrefabs.size())] = newInfoPopup;
+	// Assign Prefab
+	mTowerSelectPopupPrefab = newInfoPopup;
 }
 
-Odyssey::Entity* TowerSelectionPrefabFactory::GetInfoPrefabs(TowerSelectPopupPrefabs _prefab)
+Odyssey::Entity* TowerSelectionPrefabFactory::GetInfoPrefab()
 {
-	return mTowerSelectPopupPrefabs[_prefab];
+	return mTowerSelectPopupPrefab;
 }

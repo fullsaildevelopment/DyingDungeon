@@ -65,6 +65,7 @@ private: // Varibales
 	// Vectors
 	EntityList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	EntityList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
+	Odyssey::Entity* mCharacterSpotLights[3] = { nullptr, nullptr, nullptr };
 
 	// Queues
 
@@ -76,7 +77,6 @@ private: // Varibales
 	int mNumberOfLevels = 0;
 
 	// Floats
-	//std::shared_ptr<float> mStatitics = std::make_shared<float>();
 
 	// Bools
 	bool mIsPaused = false;

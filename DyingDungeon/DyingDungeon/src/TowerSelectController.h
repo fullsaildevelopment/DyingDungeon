@@ -71,5 +71,8 @@ private: //Functions
 	void Door5Animation(double _deltaTime);
 
 	void SetNextDoorImage(Door _doorToChange);
+
+	// Change tower info elements
+	void ChangeTowerInfoElements(Odyssey::Entity* _newPrefab, int _levelNum);
 };
 

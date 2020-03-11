@@ -92,6 +92,160 @@ void TowerManager::update(double deltaTime)
 		}
 	}
 
+	// SPOT LIGHT DEBUGGER FOR HEROES
+	if (false)
+	{
+		float speed = 0.005f;
+		// INTENSITY
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() - speed);
+			}
+		}
+
+		// RANGE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() - speed);
+			}
+		}
+
+		// ANGLE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() - speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() + speed);
+			}
+		}
+
+		// Transform
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
+			}
+		}
+	}
+
+	// SPOT LIGHT DEBUGGER FOR ENEMIES
+	if (true)
+	{
+		float speed = 0.005f;
+		// INTENSITY
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setIntensity(light->getIntensity() - speed);
+			}
+		}
+
+		// RANGE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() + speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setRange(light->getRange() - speed);
+			}
+		}
+
+		// ANGLE
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() - speed);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
+				light->setSpotAngle(light->getSpotAngle() + speed);
+			}
+		}
+
+		// Transform
+		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
+			}
+		}
+		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
+		{
+			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
+			{
+				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
+				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
+			}
+		}
+	}
+
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
@@ -454,6 +608,10 @@ void TowerManager::CreateThePlayerTeam()
 
 		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
+		// Reset the colors of the stats
+		hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
+		hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
+		hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
 		// Make sure the bars are filled
 		hudElements->GetHealthBar()->setFill(1.0f);
 		hudElements->GetManaBar()->setFill(1.0f);
@@ -481,6 +639,29 @@ void TowerManager::CreateThePlayerTeam()
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &clickableHeroUI, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
 		GameUIManager::getInstance().AddClickableElementToList(clickableHeroUI);
 
+		// Create the character's spot light
+		Odyssey::Entity* spotLight = nullptr;
+		prefab = CharacterFactory::getInstance().GetLightObjectPrefab(CharacterFactory::LightObjects::SpotLight);
+		// Offset the y pos of the spotlight
+		DirectX::XMVECTOR spotLightPos = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 6.0f, DirectX::XMVectorGetZ(mPlayerPositions[i]), 1.0f };
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &spotLight, spotLightPos, DirectX::XMVECTOR{ 90.0f, 0.0f, 0.0f, 1.0f }));
+		mCharacterSpotLights[i] = spotLight;
+
+		// Change spot light for different heroes
+		if (newHeroType == TeamManager::HeroType::Mage)
+		{
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setRange(12.45);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setSpotAngle(24.69);
+		}
+		else if (newHeroType == TeamManager::HeroType::Warrior || newHeroType == TeamManager::HeroType::Monk)
+		{
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setIntensity(1.895f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setRange(30.033f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Light>()->setSpotAngle(24.96f);
+			mCharacterSpotLights[i]->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), DirectX::XMVectorGetY(spotLightPos) + 9.675f, DirectX::XMVectorGetZ(spotLightPos));
+		}
+
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
@@ -504,7 +685,7 @@ void TowerManager::CreateThePlayerTeam()
 		// Set the elements of the character's HUD
 		GameUIManager::getInstance().AssignCharacterHudElements(newCharacter->getComponent<Character>(), newHUD);
 
-		// Add the mudda fricken character in the player list
+		// Add the character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
 }
