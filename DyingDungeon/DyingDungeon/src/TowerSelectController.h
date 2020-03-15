@@ -74,5 +74,9 @@ private: //Functions
 
 	// Change tower info elements
 	void ChangeTowerInfoElements(Odyssey::Entity* _newPrefab, int _levelNum);
+
+
+	// Tutorial Level 
+	void GoToTutorialLevel();
 };
 

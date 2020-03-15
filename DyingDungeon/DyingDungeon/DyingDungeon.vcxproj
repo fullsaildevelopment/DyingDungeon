@@ -206,6 +206,7 @@
     <ClCompile Include="src\TowerManager.cpp" />
     <ClCompile Include="src\TowerSelectController.cpp" />
     <ClCompile Include="src\TowerSelectionPrefabFactory.cpp" />
+    <ClCompile Include="src\TutorialLevel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AiKnowledge.h" />
@@ -257,6 +258,7 @@
     <ClInclude Include="src\TowerManager.h" />
     <ClInclude Include="src\TowerSelectController.h" />
     <ClInclude Include="src\TowerSelectionPrefabFactory.h" />
+    <ClInclude Include="src\TutorialLevel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico" />

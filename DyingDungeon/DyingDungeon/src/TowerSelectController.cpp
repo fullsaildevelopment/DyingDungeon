@@ -167,6 +167,17 @@ void TowerSelectController::GoToScene2()
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene2"));
 }
 
+// Tutorial Level 
+void TowerSelectController::GoToTutorialLevel()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene1"));
+}
+
 void TowerSelectController::ChangeDoor1State()
 {
 	if (mDoorList[0].mDoorIsClosed)
@@ -576,3 +587,4 @@ void TowerSelectController::ChangeTowerInfoElements(Odyssey::Entity* _newPrefab,
 			towerInfoElements->ChangeEnemySprite(i, L"assets/images/Blank.png");
 	}
 }
+
