@@ -600,7 +600,7 @@ void Character::ManageCastedEffects()
 		(*it)->ReduceDuration(1);
 		if ((*it)->GetDuration() <= 0)
 		{
-			if (!(*it)->RemoveMe())
+			if (!(*it)->RemoveMe() && (*it)->GetRecipient() == this)
 				(*it)->Remove();
 			it = mCastedEffects.erase(it);
 		}
