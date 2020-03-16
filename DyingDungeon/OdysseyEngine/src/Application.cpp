@@ -96,6 +96,11 @@ namespace Odyssey
 		// Set the new active scene
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
+			if (mIsMultithreading == false)
+			{
+				mActiveScene->onDestroy();
+			}
+
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set
@@ -105,8 +110,11 @@ namespace Odyssey
 				mActiveScene->initialize();
 
 				// Notify the thread manager to restart the scene thread
-				ThreadManager::getInstance().changeActiveScene(mActiveScene);
-				mIsRendering = false;
+				if (mIsMultithreading)
+				{
+					ThreadManager::getInstance().changeActiveScene(mActiveScene);
+					mIsRendering = false;
+				}
 			}
 		}
 	}
