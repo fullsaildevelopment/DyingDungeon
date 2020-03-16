@@ -32,9 +32,8 @@ void TeamSelectionController::initialize()
 
 	// Create the models and info popups
 	CreateModelsAndPopups();
-
-	// Don't display some of the characters
-	TurnOffOtherModels();
+	// Don't display the characters
+	TurnOffModels();
 
 	// Clear the clickable character UI elements
 	GameUIManager::getInstance().ClearClickableCharacterList();
@@ -86,6 +85,13 @@ void TeamSelectionController::initialize()
 		mSlot3Index = SaveLoad::Instance().GetLoadOut("Last_Loadout").index[2];
 		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 		ChangeSlotName(2, mSlot3CharacterList[mSlot3Index]->getComponent<Character>()->GetName());
+	}
+	else
+	{
+		// Turn on the first character of each list
+		mSlot1CharacterList[mSlot1Index]->setVisible(true);
+		mSlot2CharacterList[mSlot2Index]->setVisible(true);
+		mSlot3CharacterList[mSlot3Index]->setVisible(true);
 	}
 	//SaveLoad::Instance().LoadLoadOut();
 }
@@ -181,6 +187,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 1 Characters
 	bool makeSlot1Characters = true;
+	// Clear slot 1 list
+	mSlot1CharacterList.clear();
 	if (makeSlot1Characters)
 	{
 		// Paladin
@@ -225,6 +233,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 2 Characters
 	bool makeSlot2Characters = true;
+	// Clear slot 2 list
+	mSlot2CharacterList.clear();
 	if (makeSlot2Characters)
 	{
 		// Mage
@@ -269,6 +279,8 @@ void TeamSelectionController::CreateModelsAndPopups()
 
 	// Make Slot 3 Characters
 	bool makeSlot3Characters = true;
+	// Clear slot 3 list
+	mSlot3CharacterList.clear();
 	if (makeSlot3Characters)
 	{
 		// Bard
@@ -306,22 +318,22 @@ void TeamSelectionController::CreateModelsAndPopups()
 	}
 }
 
-void TeamSelectionController::TurnOffOtherModels()
+void TeamSelectionController::TurnOffModels()
 {
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot1CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{
 		mSlot1CharacterList[i]->setVisible(false);
 	}
 
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot2CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot2CharacterList.size(); i++)
 	{
 		mSlot2CharacterList[i]->setVisible(false);
 	}
 	
-	// Turn off every character except the first character in the list
-	for (int i = 1; i < mSlot3CharacterList.size(); i++)
+	// Turn off every character
+	for (int i = 0; i < mSlot3CharacterList.size(); i++)
 	{
 		mSlot3CharacterList[i]->setVisible(false);
 	}
@@ -335,7 +347,7 @@ void TeamSelectionController::EnterBattle()
 	RedAudioManager::Instance().Loop("BackgroundBattle");*/
 
 	GameplayTypes::HEROID ids[3] = { mSlot1CharacterList[mSlot1Index]->getComponent<HeroComponent>()->GetID(), mSlot2CharacterList[mSlot2Index]->getComponent<HeroComponent>()->GetID(), mSlot3CharacterList[mSlot3Index]->getComponent<HeroComponent>()->GetID() };
-	unsigned int indecies[3] = { (unsigned int)mSlot1Index, (unsigned int)mSlot2Index, (unsigned int)mSlot3Index };
+	unsigned int indecies[3] = { static_cast<unsigned int>(mSlot1Index), static_cast<unsigned int>(mSlot2Index), static_cast<unsigned int>(mSlot3Index) };
 	SaveLoad::Instance().AddLoadOut("Last_Loadout", ids, indecies);
 	SaveLoad::Instance().SaveLoadOut();
   

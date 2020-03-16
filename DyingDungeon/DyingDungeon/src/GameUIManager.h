@@ -163,6 +163,7 @@ public: // Functions
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
+	void AddCharacterShieldBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	// Update health bar
 	void UpdateCharacterBars(double _deltaTime);
 	// Clear the list of bars to update
@@ -192,7 +193,10 @@ public: // Functions
 
 	//Getters
 	Odyssey::Entity* GetClickableUIPrefab(ClickableCharacterUI _clickableUIPos) { return mClickableUIPrefabMap[_clickableUIPos]; };
-	std::vector<Odyssey::Entity*> GetClickableUIElements() { return mClickableUIList; }
+	std::vector<Odyssey::Entity*> GetClickableUIElements() 
+	{ 
+		return mClickableUIList; 
+	}
 
 	// Get battle log text
 	Odyssey::Text2D* GetBattleLogText() { return mBattleLogText; }
@@ -277,7 +281,10 @@ public: // Functions
 	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
 
 	// Get the list of all of the character hud canvases
-	std::vector<Odyssey::Entity*> GetCharacterHuds() { return mCharacterHudList; }
+	std::vector<Odyssey::Entity*> GetCharacterHuds() 
+	{ 
+		return mCharacterHudList; 
+	}
 
 	//Setters
 	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }
@@ -408,6 +415,18 @@ private: // Varibales
 	Odyssey::Sprite2D* mStatsNextButtonRound = nullptr;
 	Odyssey::Sprite2D* mStatsPrevButtonLevel = nullptr;
 	Odyssey::Sprite2D* mStatsNextButtonLevel = nullptr;
+	Odyssey::Sprite2D* mStatsPortraits[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mStatsPortraitBackground[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mStatsBannerBackground[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Text2D* mStatsHeaderBlocks[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Text2D* mActiveCharacterTurnAction = nullptr;
+	Odyssey::Text2D* mActiveCharacterMove = nullptr;
+	Odyssey::Text2D* mActiveCharacterBuffDebuff = nullptr;
+	Odyssey::Text2D* mActiveCharacterBuffDebuffValue = nullptr;
+	Odyssey::Text2D* mTargetDamage[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterBuffDebuff[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterBuffDebuffValue[3] = {nullptr, nullptr, nullptr};
+	Odyssey::Text2D* mTargetCharacterDamageMitigated[3] = {nullptr, nullptr, nullptr};
 
 	// Colors
 	DirectX::XMFLOAT4 mTextColor = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -463,13 +482,17 @@ private: // Functions
 	void SetupSkillIcons(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition);
 	void SetupStatusEffects(Odyssey::Entity* _hudEntity, DirectX::XMFLOAT2 _hudPosition, bool _isHero);
 
-	// Character select callbacks
-	void Character1Callback();
-	void Character2Callback();
-	void Character3Callback();
-	void Character4Callback();
-	void Character5Callback();
-	void Character6Callback();
+	// Character click callbacks
+	void Character1ClickableCallback();
+	void Character2ClickableCallback();
+	void Character3ClickableCallback();
+	void Character4ClickableCallback();
+	void Character5ClickableCallback();
+	void Character6ClickableCallback();
+
+	// Character hover callbacks
+	void CharacterEnterHoverCallback();
+	void CharacterExitHoverCallback();
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER

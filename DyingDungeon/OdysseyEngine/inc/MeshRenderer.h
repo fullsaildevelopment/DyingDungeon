@@ -49,6 +49,10 @@ namespace Odyssey
 		 */
 		Material* getMaterial();
 
+		void setShadowCaster(bool shadowCaster);
+
+		bool isShadowCaster();
+
 		/**
 		 *	Set the mesh renderer's debug state.
 		 *	@param[in] The mesh renderer's debug state.
@@ -81,6 +85,7 @@ namespace Odyssey
 		bool mDebugEnabled;
 		int mMesh;
 		int mMaterial;
+		bool mShadowCaster;
 		ReadWriteLock mLock;
 	};
 }

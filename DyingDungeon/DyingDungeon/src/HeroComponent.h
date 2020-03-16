@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "InputManager.h"
+#include "CombatEvents.h"
 
 // Tristance dumbass typeDef
 typedef std::vector<Odyssey::Entity*> EntityList;
@@ -34,6 +35,9 @@ public:
 	// Get the hero id
 	GameplayTypes::HEROID GetID();
 
+	// Listen for tristans dumbass event i hope tristan gets hit by a ostrich
+	void ClickOnEnemy(SetNewTargetEvent* targetIndex);
+
 private:
 	// Bool for if im cheating or not
 	bool mIsCheating;
@@ -62,12 +66,14 @@ private:
 public:
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
+	virtual void onDestroy();
 private:
 	// List that contains the list ofheros and enemies
 	std::vector<Odyssey::Entity*> mHeroList;
 	std::vector<Odyssey::Entity*> mEnemyList;
 
 	// Skill callbacks
+	std::vector<Odyssey::Sprite2D*> mSkillSprites;
 	void Skill1Callback();
 	void Skill2Callback();
 	void Skill3Callback();

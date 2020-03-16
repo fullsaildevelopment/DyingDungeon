@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineIncludes.h"
 #include "RenderIncludes.h"
+#include "ReadWriteLock.h"
 #include "RenderTypes.h"
 #include <stack>
 
@@ -119,5 +120,6 @@ namespace Odyssey
 		std::stack<unsigned int> mRenderTargetIDs;
 		MeshList mMeshes;
 		ShaderList mShaders;
+		ReadWriteLock mLock;
 	};
 }

@@ -15,9 +15,10 @@ public:
 	
 	struct ParticleInfomation
 	{
-		Odyssey::ParticleSystem* mPixelEntity = nullptr;
+		Odyssey::Entity* mPixelEntity = nullptr;
 		DirectX::XMFLOAT3 mStartingPosOffest = { 0.0f,0.0f,0.0f };
 		float mFiringTime = 0.0f;
+		bool mIsProjectile = false;
 	};
 protected:
 	
@@ -84,17 +85,23 @@ public:
 	// Set the status Effect this applies
 	void SetStatusEffect(std::shared_ptr<StatusEffect> se);
 	// Gets the particle effect Entity
-	Odyssey::ParticleSystem* GetParticleSystem();
+	Odyssey::Entity* GetParticleSystem();
 	// Get the particle start pos offset
 	DirectX::XMFLOAT3 GetPosOffset();
 	// Get the particle firing time
 	float GetPSFiringTime();
 	// Set the pointer to a Particle system
-	void SetParticleSystem(Odyssey::ParticleSystem* newParticleSystem);
+	void SetParticleSystem(Odyssey::Entity* newParticleSystem);
 	// Set the starting position offset
 	void SetParticleOffset(DirectX::XMFLOAT3 newOffset);
+	// Get the starting position offset
+	DirectX::XMFLOAT3 GetParticleOffset();
 	// Set the firing timer for the particle effe3ct
 	void SetParticleFiringTime(float newFiringTime);
+	// Set if the particle as a projectile or not
+	void SetPartilceIsProjectile(bool isProjectile);
+	// Get if the particle as a projectile or not
+	bool SetPartilceIsProjectile();
 	// Use the skill
 	virtual void Use(Character& caster, Character& target) = 0;
 	// Set Description

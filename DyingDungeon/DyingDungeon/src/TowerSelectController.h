@@ -14,15 +14,22 @@ public:
 	virtual void initialize();
 	virtual void update(double deltaTime);
 	virtual void onDestroy();
+
+	// Set the current tower manager
+	void SetTowerManager(Odyssey::Entity* _towerManager) { mCurrentTower = _towerManager; }
+
 public:
-	Odyssey::Rectangle2D* mRect;
+	Odyssey::Rectangle2D* mRect = nullptr;
 private:
-	Odyssey::Application* mApplication;
+	Odyssey::Application* mApplication = nullptr;
+
+	// Current info popup objects
+	Odyssey::Entity* mLevelInfoPopups[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	struct Door
 	{
 		// The door image
-		Odyssey::Sprite2D* doorImage;
+		Odyssey::Sprite2D* doorImage = nullptr;
 
 		// Bools
 		bool mDoorIsClosed = true;
@@ -39,9 +46,14 @@ private:
 	// Keep a list of the doors
 	std::vector<Door> mDoorList;
 
+	// Current Tower Manager Object
+	Odyssey::Entity* mCurrentTower = nullptr;
 
 private: //Functions
-	void GoToTeamSelection();
+	void GoToTeamSelectionWithLevel1();
+	void GoToTeamSelectionWithLevel2();
+	void GoToTeamSelectionWithLevel3();
+
 	void GoToScene2();
 
 	// Change the door states on mouse enter and exit events
@@ -59,5 +71,8 @@ private: //Functions
 	void Door5Animation(double _deltaTime);
 
 	void SetNextDoorImage(Door _doorToChange);
+
+	// Change tower info elements
+	void ChangeTowerInfoElements(Odyssey::Entity* _newPrefab, int _levelNum);
 };
 

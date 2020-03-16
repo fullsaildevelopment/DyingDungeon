@@ -16,6 +16,7 @@
 #include "Provoked.h"
 #include "Clense.h"
 #include "CharacterHUDElements.h"
+#include "JudgementMover.h"
 #include <memory>
 
 CLASS_DEFINITION(Character, HeroComponent)
@@ -32,7 +33,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mCurrentSkill = nullptr;
 	mCurrentTarget = nullptr;
 	mProvoked = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mID = id;
 	mHeroList.resize(4);
@@ -74,6 +75,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the characters theme color
 		mThemeColor = {255.0f,203.0f,31.0f};
+    
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the animation paths //
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +136,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddessâ€™ light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -162,7 +167,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
-		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 20.0f, temp, true, true));
+		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 25.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("SpellCasting",0.25f);
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
@@ -199,6 +204,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 150.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -288,7 +297,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("MagicZap", 0.25f);
 		mSkillList[3]->SetStatusChance(0.33f);
-		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 30 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 25 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -300,7 +309,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mModel = "assets/models/Bard.dxm";
 
 		// Set the character name
-		mName = L"TheBestClassToEverExist";
+		mName = L"Bard";
 
 		// Set the character subname
 		mSubName = L"Literal God";
@@ -316,6 +325,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -389,8 +402,8 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 15 mana.");
 		// Skill 3
-		temp = std::make_shared<StatUp>(0.33f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 35.0f));
+		temp = std::make_shared<StatUp>(0.25f, 3, STATS::Atk, nullptr);
+		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 25.0f, true));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("", 0.25f);
@@ -400,7 +413,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("MagicalVanish", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"Wash your allies in a cleansing wave of magic, ridding them of any harmful status effects. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Does nothing but looks cool :D");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -428,9 +441,13 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 75.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 40.0f;
+		mBaseAttack = mAttack = 50.0f;
 		mBaseDefense = mDefense = 50.0f;
 		mBaseSpeed = mSpeed = 30.0f;
 		////////////////////////////////////
@@ -451,7 +468,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
-		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationNickName = "Stun";
 		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
@@ -466,7 +483,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		tempAnimationData.mAnimationNickName = "GotBuffed";
 		tempAnimationData.mAnimationPath = "assets/animations/Warrior/Warrior_Buff.dxanim";
 		tempAnimationData.mIsLooping = true;
-		//mAnimations.push_back(tempAnimationData);
+		mAnimations.push_back(tempAnimationData);
 
 		// Skill 1
 		tempAnimationData.mAnimationNickName = "Skill_1";
@@ -501,13 +518,13 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 17.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
 		mSkillList[0]->SetSoundEffect("", 0.25f);
 		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 25.0f,temp, false));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 15.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
 		mSkillList[1]->SetSoundEffect("", 0.25f);
 		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense 50% and dealing 35 damage. Cost 20 mana.");
@@ -519,11 +536,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[2]->SetStatusChance(0.75f);
 		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit with a 75% chance to provoke. Cost 15 mana.");
 		// Skill 4 
-		temp = std::make_shared<StatUp>(1.0f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 45.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 35.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage upping your attack by 33%, hitting target for 45 damage. Cost 30 mana.");
+		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage, hitting the target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
@@ -550,6 +566,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 80.0f;
@@ -573,7 +593,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mAnimations.push_back(tempAnimationData);
 
 		// Is Stunned
-		tempAnimationData.mAnimationNickName = "Dead";
+		tempAnimationData.mAnimationNickName = "Stun";
 		tempAnimationData.mAnimationPath = "assets/animations/Monk/Monk_Stun.dxanim";
 		tempAnimationData.mIsLooping = false;
 		mAnimations.push_back(tempAnimationData);
@@ -617,36 +637,36 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"One of Ganfaul’s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but won’t last long without support.";
+		mDescription = L"One of Ganfaulâ€™s generals turned rogue, seeking revenge for her sister. She can unleash quick, mighty blows in hand to hand combat, but wonâ€™t last long without support.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 15.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 12.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
 		mSkillList[0]->SetSoundEffect("", 0.25f);
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 15.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 20.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
 		mSkillList[1]->SetSoundEffect("", 0.25f);
-		mSkillList[1]->SetSkillDescription(L"dealing 45 damage and inflicting defense down for 3 turns. Cost 20 mana.");
+		mSkillList[1]->SetSkillDescription(L"dealing 15 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 25.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 15.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
 		mSkillList[2]->SetSoundEffect("", 0.25f);
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 30.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"dealing 90 damage and inflicting bleed for 3 turns. Cost 30 mana.");
+		mSkillList[3]->SetSkillDescription(L"dealing 30 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
@@ -676,12 +696,16 @@ void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::S
 {
 	// Set up sprite's callback function for the Skill1Callback
 	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
+	mSkillSprites.push_back(_skillImage1);
 	// Set up sprite's callback function for the Skill2Callback
 	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
+	mSkillSprites.push_back(_skillImage2);
 	// Set up sprite's callback function for the Skill3Callback
 	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
+	mSkillSprites.push_back(_skillImage3);
 	// Set up sprite's callback function for the Skill4Callback
 	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
+	mSkillSprites.push_back(_skillImage4);
 }
 
 // Function that allows the player to take thier turn, Character Controler
@@ -711,6 +735,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			if (mCurrentState != STATE::DEAD)
 			{
 				mCurrentState = STATE::NONE;
+				mEntity->getComponent<Odyssey::Animator>()->playClip("Idle");
 				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 			}
 		}
@@ -853,6 +878,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Reset back to move selection
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Escape))
 		{
+			// Set the new cursor
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 			ResetToSelection();
 			tempIndex = -1;
 		}
@@ -876,13 +903,69 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 		// Fire particle effects when the timming is right
 		if (mCurrentSkill->GetParticleSystem() != nullptr && !particleTrigger && mAnimator->getProgress() > mCurrentSkill->GetPSFiringTime())
 		{
-			// Turn particle effect on
-			mCurrentSkill->GetParticleSystem()->getEntity()->setActive(true);
-			mCurrentSkill->GetParticleSystem()->play();
-
-			// If its a projectile particle effect turn on its mover
-			if(!mCurrentSkill->IsAOE())
-				mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			DirectX::XMFLOAT3 tempPos1;
+			DirectX::XMFLOAT3 tempPos2;
+			DirectX::XMVECTOR position = { 0.0f,0.0f,0.0f,0.0f };
+			DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&mCurrentSkill->GetParticleSystem()->getComponent<Odyssey::Transform>()->getEulerRotation());
+			Odyssey::Entity* temp = nullptr;
+			if (mCurrentSkill->IsAOE())
+			{
+				if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
+				{
+					for (Odyssey::Entity* c : enemies)
+					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+				else
+				{
+					for (Odyssey::Entity* c : heros)
+					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mCurrentSkill->GetParticleOffset();
+						tempPos1.x += tempPos2.x + 0.5f;
+						tempPos1.y += tempPos2.y + 0.5f;
+						tempPos1.z += tempPos2.z + 0.5f;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+			}
+			else
+			{
+				if (mCurrentSkill->SetPartilceIsProjectile())
+				{
+					tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					tempPos2 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = { tempPos2.x - tempPos1.x,tempPos2.y - tempPos1.y + 3.0f,tempPos2.z - tempPos1.z};
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+					temp->getComponent<JudgementMover>()->SetVelocity(tempPos2, 10.0f);
+					if (mID == GameplayTypes::HEROID::Mage)
+						temp->getComponent<JudgementMover>()->SetSpinOnX(false);
+				}
+				else
+				{
+					tempPos1 = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mCurrentSkill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+				}
+			}
 
 			// Set static bool to true to prevent repeating this effect
 			particleTrigger = true;
@@ -906,12 +989,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit"); 
 
-							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
-							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x,t.y,t.z);
-
 							// Play particle effect
-							c->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->SpawnBloodEffect();
 						}
 					}
 				}
@@ -920,12 +999,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 					// Play "Hit" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-					// Set up particle effect location
-					DirectX::XMFLOAT3 t = mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mCurrentTarget->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 					// Play particle effect
-					mCurrentTarget->GetPSBlood()->play();
+					mCurrentTarget->SpawnBloodEffect();
 				}
 			}
 			else
@@ -1031,15 +1106,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Once here loop through remaining status effects and reset current state
 	case STATE::FINISHED:
 	{
-		// Manage all my buffs
-		//ManageStatusEffects(mBuffs);
-
-		// Manage all my debuffs
-		//ManageStatusEffects(mDebuffs);
-
-		// Manage all my shields
-		//ManageStatusEffects(mSheilds);
-
 		// Turns off all targeting and 
 		ResetToSelection();
 
@@ -1057,8 +1123,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 			}
 		}
 
+		// Get the list of skill bg rectangles
+		std::vector<Odyssey::Rectangle2D*> bgRects = GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList();
+		// Turn off the skill selected indicator rectangles
+		for (int i = 0; i < 4; i++)
+		{
+			bgRects[i]->setVisible(false);
+		}
+
 		// Return true 
-			return true;
+		return true;
 
 		break;
 	}
@@ -1095,7 +1169,7 @@ void HeroComponent::Die()
 	mAnimator->playClip("Dead");
 
 	// Stop all active particle effects
-	StopParticleEffects();
+	//StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
@@ -1111,6 +1185,42 @@ std::vector<std::shared_ptr<Skills>> HeroComponent::GetSkills()
 GameplayTypes::HEROID HeroComponent::GetID()
 {
 	return mID;
+}
+
+// Dumb event
+void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
+{
+	if (this->mCurrentState == STATE::SELECTTARGET)
+	{
+		int temp = static_cast<int>(targetIndex->mPlayerToTarget);
+		if (mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::ATTACK && mCurrentSkill->GetSkillTypeId() != GameplayTypes::SKILLTYPE::DEBUFF && temp < 3)
+		{
+			mCurrentTarget = mHeroList[temp]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
+			for (Odyssey::Entity* t : mHeroList)
+			{
+				// If the entity if valid and the character is no dead, turn off targeter
+				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			}
+			BeginAttack(mHeroList);
+		}
+		else if((mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF) && temp > 2)
+		{
+			mCurrentTarget = mEnemyList[(temp - 3)]->getComponent<Character>();
+			if (mCurrentTarget->GetState() == STATE::DEAD)
+				return;
+			for (Odyssey::Entity* t : mEnemyList)
+			{
+				// If the entity if valid and the character is no dead, turn off targeter
+				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			}
+			BeginAttack(mEnemyList);
+		}
+	}
+
 }
 
 // Function that gets called to manage the state in which the player is selecting a skill to use
@@ -1270,6 +1380,12 @@ void HeroComponent::ResetToSelection()
 
 	// Reset state to select move
 	mCurrentState = STATE::SELECTMOVE;
+
+	// Turn off all of the character's hud selected skill backgrounds
+	for (int i = 0; i < 4; i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[i]->setVisible(false);
+	}
 }
 
 // Function that sends the state into the inprogress state, queing animations, and setting variables for particle effect locations
@@ -1278,80 +1394,7 @@ void HeroComponent::BeginAttack(EntityList targets)
 	// Play the skills animation
 	mAnimator->playClip(mCurrentSkill->GetAnimationId());
 
-	// If the skill is an AOE move, and it has a valid particle effect
-	if (mCurrentSkill->IsAOE() && mCurrentSkill->GetParticleSystem() != nullptr)
-	{
-		// Make variables to store position data
-		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
-
-		// If its an attack loop through all enemies to get an avg position, else loop though all the players
-		if (mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mCurrentSkill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
-		{
-			// TODO: REFACTOR LATER
-			int counter = 0;
-
-			// For each entity
-			for (Odyssey::Entity* t : targets)
-			{
-				// If valid
-				if (t)
-				{
-					// Get the transforms position
-					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
-
-					// Add posititon to variable for each entity //
-					///////////////////////////////////////////////
-					aoeSpawn.x += tempTransform.x;
-					aoeSpawn.y += tempTransform.y;
-					aoeSpawn.z += tempTransform.z;
-					counter++;
-					///////////////////////////////////////////////
-				}
-			}
-
-			// Divid by party size to get the average position //
-			/////////////////////////////////////////////////////
-			aoeSpawn.x /= static_cast<float>(counter);
-			aoeSpawn.y /= static_cast<float>(counter);
-			aoeSpawn.z /= static_cast<float>(counter);
-			/////////////////////////////////////////////////////
-		}
-
-		// Set the skills particle systems postion to be the calculated position
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x,aoeSpawn.y,aoeSpawn.z);
-	}
-	else if (mCurrentTarget != nullptr && mCurrentSkill->GetParticleSystem() != nullptr)
-	{
-		// Get my entitys position
-		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Add the effects offset to the entitys position to place the projectile in the proper starting position //
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		temp.x += mCurrentSkill->GetPosOffset().x;
-		temp.y += mCurrentSkill->GetPosOffset().y;
-		temp.z += mCurrentSkill->GetPosOffset().z;
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Set the projectiles position to the calculated postition
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-
-		// Get the projectiles target position
-		DirectX::XMFLOAT3 temp2(mCurrentTarget->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Offset the target position by an amount to have it hit about center mass
-		temp2.y += 3.0f;
-
-		// Set the projectiles target position
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-
-		// Use projectiles velocity to calc lifetime to target //
-		/////////////////////////////////////////////////////////
-		DirectX::XMFLOAT3 tempVelocity = mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-		mCurrentSkill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
-		/////////////////////////////////////////////////////////
-	}
+	// Set up particle information
 
 	// Set the current state to inprogress
 	mCurrentState = STATE::INPROGRESS;
@@ -1366,6 +1409,15 @@ std::shared_ptr<Odyssey::Component> HeroComponent::clone() const
 void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
+	Odyssey::EventManager::getInstance().subscribe(this, &HeroComponent::ClickOnEnemy);
+}
+
+void HeroComponent::onDestroy()
+{
+	for (int i = 0; i < mSkillSprites.size(); ++i)
+	{
+		mSkillSprites[i]->unregisterCallback("onMouseClick");
+	}
 }
 
 // Skill Call backs for clickable UI
@@ -1382,6 +1434,9 @@ void HeroComponent::Skill1Callback()
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
+
+			// Turn on the skill selected indicator rectangle
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[0]->setVisible(true);
 		}
 	}
 }
@@ -1398,6 +1453,9 @@ void HeroComponent::Skill2Callback()
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
+
+			// Turn on the skill selected indicator rectangle
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[1]->setVisible(true);
 		}
 	}
 }
@@ -1414,6 +1472,9 @@ void HeroComponent::Skill3Callback()
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
+
+			// Turn on the skill selected indicator rectangle
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[2]->setVisible(true);
 		}
 	}
 }
@@ -1430,8 +1491,9 @@ void HeroComponent::Skill4Callback()
 
 			// Change state to target selection
 			mCurrentState = STATE::SELECTTARGET;
+
+			// Turn on the skill selected indicator rectangle
+			GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[3]->setVisible(true);
 		}
 	}
 }
-
-// Character Call backs for clickable character UI

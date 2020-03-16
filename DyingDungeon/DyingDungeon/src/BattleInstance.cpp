@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "StatusEvents.h"
 #include "CharacterFactory.h"
+#include "CharacterHUDElements.h"
 #include <string>
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
@@ -34,11 +35,10 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 			{
 				// Play an attack animation at the beginning of each battle
 				mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("AttackUp");
-
-				mPlayerTeam[i]->getComponent<Character>()->StopParticleEffects();
-
 				// Put him into the mAllCharacters list
 				mAllCharacters.push_back(mPlayerTeam[i]);
+				// Turn on their hud blocker
+				GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(true);
 			}
 		}
 	}
@@ -69,7 +69,6 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 
 	// Set the current round to round 1 at the start
 	mCurrentRound = 1;
-	std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
 	// No turns have been completed yet
 	mTurnCounter = 0;
 }
@@ -91,9 +90,18 @@ int BattleInstance::UpdateBattle()
 	// Check to see if both teams have at least one character still alive
 	else if (IsTeamAlive(mPlayerTeam) && IsTeamAlive(mEnemyTeam))
 	{
+		if (mCurrentCharacter->getComponent<Character>()->GetState() == STATE::INPROGRESS && mCurrentCharacter->getComponent<Character>()->IsHero())
+		{
+			mTurnIndicator->setActive(false);
+		}
+
 		// Has the current player taken it's turn yet
 		if (mCurrentCharacter->getComponent<Character>()->TakeTurn(mPlayerTeam, mEnemyTeam))
 		{
+			// Set the new cursor
+			Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
+			// Turn the turn indicator back on
+			mTurnIndicator->setActive(true);
 			// One turn has been taken
 			mTurnCounter++;
 			// Take the current character out of the front of the line
@@ -110,7 +118,6 @@ int BattleInstance::UpdateBattle()
 			{
 				// Increase the round
 				mCurrentRound++;
-				std::cout << "--------\nRound - " << GetCurrentRound() << "\n--------\n" << std::endl;
 				// Set the turn counter for this new round back to zero
 				mTurnCounter = 0;
 			}
@@ -118,8 +125,13 @@ int BattleInstance::UpdateBattle()
 	}
 	else
 	{
-		// The current battle has ended, at least one team is completely dead
-		std::cout << "The battle has ended!\n" << std::endl;
+		// Get the list of skill bg rectangles
+		std::vector<Odyssey::Rectangle2D*> bgRects = GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList();
+		// Turn off the skill selected indicator rectangles
+		for (int i = 0; i < bgRects.size(); i++)
+		{
+			bgRects[i]->setVisible(false);
+		}
 
 		// Check again to see if it was the player's team that died
 		if (!IsTeamAlive(mPlayerTeam))
@@ -221,8 +233,22 @@ void BattleInstance::UpdateCharacterTurnNumbers()
 
 void BattleInstance::SetTurnIndicatorPosition()
 {
+	// If we have a character and he is a hero
+	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
+	{
+		// Turn on their hud blocker
+		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(true);
+	}
+
 	// The placement of the turn indicator should always be underneath the player who is in the front of the queue
 	mCurrentCharacter = mBattleQueue.front();
+
+	// If we have a character and he is a hero
+	if (mCurrentCharacter && mCurrentCharacter->getComponent<Character>()->IsHero())
+	{
+		// Turn off their hud blocker
+		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
+	}
 
 	// Get the character's position
 	DirectX::XMFLOAT3 characterPosition = mCurrentCharacter->getComponent<Odyssey::Transform>()->getPosition();

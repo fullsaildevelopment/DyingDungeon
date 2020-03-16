@@ -15,7 +15,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	mEXP = 0.0f;
 	mCurrentLevel = 0;
 	mProvoked = nullptr;
-	mBloodParticleEffect = nullptr;
+	mBloodEffectPrefab = nullptr;
 	mImpactIndicator = nullptr;
 	mMechPtr = nullptr;
 	mMoveOverride = GameplayTypes::SKILLTYPE::NONE;
@@ -56,6 +56,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 125.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "SkeletonHit";
+		mSoundClips["Death"] = "SkeletonDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -145,10 +149,14 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 300.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 60.0f;
-		mBaseDefense = mDefense = 60.0f;
+		mBaseAttack = mAttack = 30.0f;
+		mBaseDefense = mDefense = 30.0f;
 		mBaseSpeed = mSpeed = 40.0f;
 		////////////////////////////////////
 
@@ -222,6 +230,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
+
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -308,16 +320,20 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/MeleeDemonPortrait.png";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxHP = mCurrentHP = 150.0f;
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
-		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseAttack = mAttack = 60.0f;
+		mBaseDefense = mDefense = 40.0f;
+		mBaseSpeed = mSpeed = 15.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -397,16 +413,20 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mPortrait = L"assets/images/CasterDemonPortrait.png";
 
 		// Set the base HP and current HP
-		mBaseMaxHP = mCurrentHP = 100.0f;
+		mBaseMaxHP = mCurrentHP = 125.0f;
 
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Death"] = "MaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
-		mBaseAttack = mAttack = 20.0f;
+		mBaseAttack = mAttack = 40.0f;
 		mBaseDefense = mDefense = 20.0f;
-		mBaseSpeed = mSpeed = 20.0f;
+		mBaseSpeed = mSpeed = 30.0f;
 		////////////////////////////////////
 
 		// Set move overide for AI
@@ -500,6 +520,10 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		// Set the base Mana and current Mana
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
+		// Sound Clips
+		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Death"] = "FemaleDeath";
+
 		// Set the stats for the character //
 		////////////////////////////////////
 		mBaseAttack = mAttack = 20.0f;
@@ -585,6 +609,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			if (mCurrentState != STATE::DEAD)
 			{
 				mCurrentState = STATE::NONE;
+				mEntity->getComponent<Odyssey::Animator>()->playClip("Idle");
 				GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetStunBuff()->setVisible(false);
 			}
 		}
@@ -645,12 +670,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
 			// Turn particle effect on
-			mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
-			mMoves.GetMove()->skill->GetParticleSystem()->play();
-
-			// If its a projectile particle effect turn on its mover
-			if (!mMoves.GetMove()->skill->IsAOE())
-				mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->setActive(true);
+			//mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
+			//mMoves.GetMove()->skill->GetParticleSystem()->play();
 
 			// Set static bool to true to prevent repeating this effect
 			particleTriggerButBetter = true;
@@ -674,12 +695,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-							// Set up particle effect location
-							DirectX::XMFLOAT3 t = c->getComponent<Odyssey::Transform>()->getPosition();
-							c->getComponent<Character>()->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 							// Play particle effect
-							c->getComponent<Character>()->GetPSBlood()->play();
+							c->getComponent<Character>()->SpawnBloodEffect();
 						}
 					}
 				}
@@ -688,12 +705,8 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 					// Play "Hit" animation
 					mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
 
-					// Set up particle effect location
-					DirectX::XMFLOAT3 t = mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
-					mMoves.GetMove()->target->GetPSBlood()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(t.x, t.y, t.z);
-
 					// Play particle effect
-					mMoves.GetMove()->target->GetPSBlood()->play();
+					mMoves.GetMove()->target->SpawnBloodEffect();
 				}
 			}
 			else
@@ -728,7 +741,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			// Depleate the caster mana
 			DepleteMana(mMoves.GetMove()->skill->GetManaCost());
 
-			// If its ment for the hero apply the effect to the hero party, else apply the effect to the enemy party
+			// If its meant for the hero apply the effect to the hero party, else apply the effect to the enemy party
 			if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
 			{
 				// If the skill is aoe hit the whole party with it, otherwise hit just the intended target
@@ -749,6 +762,9 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// If thier not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mMoves.GetMove()->skill->Use(*this, *temp);
+
+							// Reset Impact Indicators (AOE ONLY)
+							temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}
@@ -772,17 +788,20 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 							// Get the character from the entity
 							temp = c->getComponent<Character>();
 
-							// If thier not dead, apply the skills effect to them
+							// If they're not dead, apply the skills effect to them
 							if (temp->GetState() != STATE::DEAD)
 								mMoves.GetMove()->skill->Use(*this, *temp);
+
+							// Reset Impact Indicators (AOE ONLY)
+							temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}
 				else if (mMoves.GetMove()->target != nullptr)
 					mMoves.GetMove()->skill->Use(*this, *mMoves.GetMove()->target);
 			}
-
-			// Reset my move best move
+			
+			// Reset my move best move // Also turns impact indicator off
 			mMoves.ResetMove();
 
 			// Reset static bools
@@ -851,7 +870,7 @@ void EnemyComponent::Die()
 	mEntity->getComponent<Odyssey::Animator>()->playClip("Dead");
 
 	// Stop all active particle effects
-	StopParticleEffects();
+	//StopParticleEffects();
 
 	// Set state to dead
 	mCurrentState = STATE::DEAD;
@@ -863,75 +882,9 @@ void EnemyComponent::BeginAttack(std::vector<Odyssey::Entity*> targets)
 	// Play the skills animation
 	mAnimator->playClip(mMoves.GetMove()->skill->GetAnimationId());
 
-	// If the skill is an AOE move, and it has a valid particle effect
-	if (mMoves.GetMove()->skill->IsAOE() && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
+	if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
 	{
-		// Make variables to store position data
-		DirectX::XMFLOAT3 aoeSpawn(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT3 tempTransform(0.0f, 0.0f, 0.0f);
 
-		// If its an attack loop through all enemies to get an avg position, else loop though all the players
-		if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
-		{
-			// For each entity
-			for (Odyssey::Entity* t : targets)
-			{
-				// If valid
-				if (t)
-				{
-					// Get the transforms position
-					tempTransform = t->getComponent<Odyssey::Transform>()->getPosition();
-
-					// Add posititon to variable for each entity //
-					///////////////////////////////////////////////
-					aoeSpawn.x += tempTransform.x;
-					aoeSpawn.y += tempTransform.y;
-					aoeSpawn.z += tempTransform.z;
-					///////////////////////////////////////////////
-				}
-			}
-
-			// Divid by party size to get the average position //
-			/////////////////////////////////////////////////////
-			aoeSpawn.x /= static_cast<float>(targets.size());
-			aoeSpawn.y /= static_cast<float>(targets.size());
-			aoeSpawn.z /= static_cast<float>(targets.size());
-			/////////////////////////////////////////////////////
-		}
-
-		// Set the skills particle systems postion to be the calculated position
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<Odyssey::Transform>()->setPosition(aoeSpawn.x, aoeSpawn.y, aoeSpawn.z);
-	}
-	else if (mMoves.GetMove()->target != nullptr && mMoves.GetMove()->skill->GetParticleSystem() != nullptr)
-	{
-		// Get my entitys position
-		DirectX::XMFLOAT3 temp(mEntity->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Add the effects offset to the entitys position to place the projectile in the proper starting position //
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		temp.x += mMoves.GetMove()->skill->GetPosOffset().x;
-		temp.y += mMoves.GetMove()->skill->GetPosOffset().y;
-		temp.z += mMoves.GetMove()->skill->GetPosOffset().z;
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Set the projectiles position to the calculated postition
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetOrigin(temp);
-
-		// Get the projectiles target position
-		DirectX::XMFLOAT3 temp2(mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition());
-
-		// Offset the target position by an amount to have it hit about center mass
-		temp2.y += 3.0f;
-
-		// Set the projectiles target position
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetTargetPos(temp2);
-
-		// Use projectiles velocity to calc lifetime to target //
-		/////////////////////////////////////////////////////////
-		DirectX::XMFLOAT3 tempVelocity = mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->GetVelocity();
-		float tempLifeTime = sqrtf((powf((temp2.x - temp.x), 2) + powf((temp2.y - temp.y), 2) + powf((temp2.z - temp.z), 2))) / sqrtf((powf(tempVelocity.x, 2) + powf(tempVelocity.y, 2) + powf(tempVelocity.z, 2)));
-		mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->getComponent<ParticleMover>()->SetLifeTime(tempLifeTime + 0.1f);
-		/////////////////////////////////////////////////////////
 	}
 
 	// Set the current state to inprogress

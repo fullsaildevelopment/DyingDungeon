@@ -174,7 +174,6 @@
     <ClCompile Include="src\CharacterFactory.cpp" />
     <ClCompile Include="src\CharacterHUDElements.cpp" />
     <ClCompile Include="src\Clense.cpp" />
-    <ClCompile Include="src\CombatManager.cpp" />
     <ClCompile Include="src\Converter.cpp" />
     <ClCompile Include="src\DyingDungeon.cpp" />
     <ClCompile Include="src\EnemyComponent.cpp" />
@@ -203,8 +202,10 @@
     <ClCompile Include="src\Stun.cpp" />
     <ClCompile Include="src\TeamManager.cpp" />
     <ClCompile Include="src\TeamSelectionController.cpp" />
+    <ClCompile Include="src\TowerInfoElements.cpp" />
     <ClCompile Include="src\TowerManager.cpp" />
     <ClCompile Include="src\TowerSelectController.cpp" />
+    <ClCompile Include="src\TowerSelectionPrefabFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AiKnowledge.h" />
@@ -218,7 +219,7 @@
     <ClInclude Include="src\CharacterFactory.h" />
     <ClInclude Include="src\CharacterHUDElements.h" />
     <ClInclude Include="src\Clense.h" />
-    <ClInclude Include="src\CombatManager.h" />
+    <ClInclude Include="src\CombatEvents.h" />
     <ClInclude Include="src\Converter.h" />
     <ClInclude Include="src\DyingDungeon.h" />
     <ClInclude Include="src\EnemyComponent.h" />
@@ -252,8 +253,10 @@
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TeamManager.h" />
     <ClInclude Include="src\TeamSelectionController.h" />
+    <ClInclude Include="src\TowerInfoElements.h" />
     <ClInclude Include="src\TowerManager.h" />
     <ClInclude Include="src\TowerSelectController.h" />
+    <ClInclude Include="src\TowerSelectionPrefabFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DyingDungeon.ico" />

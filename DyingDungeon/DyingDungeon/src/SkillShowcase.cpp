@@ -29,10 +29,30 @@ void SkillShowcase::update(double deltaTime)
 
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::T))
 	{
+		// Placeholder for spawn position and rotation
 		DirectX::XMVECTOR position = {};
-		DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		position = DirectX::XMLoadFloat3(&(bard1->getComponent<Odyssey::Transform>()->getPosition()));
+		DirectX::XMVECTOR rotation = {};
+
+		// Get the prefab's position and rotation
+		position = DirectX::XMLoadFloat3(&(paladin1->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(paladin1->getComponent<Odyssey::Transform>()->getEulerRotation()));
+
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin1, &paladin1Spawn, position, rotation));
+
+		// Get the prefab's position and rotation
+		position = DirectX::XMLoadFloat3(&(paladin2->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(paladin2->getComponent<Odyssey::Transform>()->getEulerRotation()));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin2, &paladin2Spawn, position, rotation));
+
+		// Get the prefab's position and rotation
+		position = DirectX::XMLoadFloat3(&(paladin3->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(paladin3->getComponent<Odyssey::Transform>()->getEulerRotation()));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin3, &paladin3Spawn, position, rotation));
+
+		// Get the prefab's position and rotation
+		position = DirectX::XMLoadFloat3(&(paladin4->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(paladin4->getComponent<Odyssey::Transform>()->getEulerRotation()));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin4, &paladin4Spawn, position, rotation));
 	}
 }
 

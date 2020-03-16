@@ -119,7 +119,7 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			mSkillList.push_back(std::make_shared<Buffs>(L"Def Down", "Skill_2", 0.25f, 15.0f, StatusEffect, false));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
 			// Skill 3 
-			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
@@ -300,6 +300,40 @@ bool AIMoves::SkillCheck(std::vector<Odyssey::Entity*> playerTeam, std::vector<O
 				break;
 			}
 		}
+
+		// Impact Indicator
+		if (mBestMove->skill->IsAOE() == true)
+		{
+			Character* temp = nullptr;
+			if ((mBestMove->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK) || (mBestMove->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF))
+				for (Odyssey::Entity* c : playerTeam)
+				{
+					// If the entity is valid
+					if (c != nullptr)
+					{
+						// Get the character from the entity
+						temp = c->getComponent<Character>();
+
+						// Turn on impact indicator
+						temp->GetInpactIndicator()->setActive(true);
+					}
+				}
+			else
+				for (Odyssey::Entity* c : enemyTeam)
+				{
+					// If the entity is valid
+					if (c != nullptr)
+					{
+						// Get the character from the entity
+						temp = c->getComponent<Character>();
+
+						// Turn on impact indicator
+						temp->GetInpactIndicator()->setActive(true);
+					}
+				}
+		}
+		else
+			mBestMove->target->GetInpactIndicator()->setActive(true);
 	}
 
 	// Return if we finished or not
@@ -727,6 +761,8 @@ void AIMoves::ResetMove()
 {
 	SetPrevMove();
 	ResetDecidingMoves();
+
+	mBestMove->target->GetInpactIndicator()->setActive(false);
 
 	mBestMove->skill = nullptr;
 	mBestMove->target = nullptr;

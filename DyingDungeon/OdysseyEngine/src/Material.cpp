@@ -222,7 +222,7 @@ namespace Odyssey
 	void Material::setDefaultMaterialProperties()
 	{
 		mLock.lock(LockState::Write);
-		mProperties.mGlobalAmbient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
+		mProperties.mGlobalAmbient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		mProperties.mHasDiffuseTexture = 0;
 		mProperties.mDiffuseColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		mProperties.mHasSpecularTexture = 0;

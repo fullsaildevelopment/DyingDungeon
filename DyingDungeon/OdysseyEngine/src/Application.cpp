@@ -57,6 +57,7 @@ namespace Odyssey
 		// Enable muli-threading by default
 		mIsMultithreading = true;
 		mIsShutdown = false;
+		mIsRendering = true;
 		mTimer.Restart();
 		mTickInterval = 0.0;
 
@@ -79,6 +80,7 @@ namespace Odyssey
 		EventManager::getInstance().subscribe(this, &Application::onDestroyEntity);
 
 		EventManager::getInstance().subscribe(this, &Application::onChangeMouseCursor);
+		EventManager::getInstance().subscribe(this, &Application::onEnableRendering);
 	}
 
 	Application::~Application()
@@ -94,10 +96,6 @@ namespace Odyssey
 		// Set the new active scene
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
-			if (mActiveScene)
-			{
-				mActiveScene->onDestroy();
-			}
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set
@@ -108,6 +106,7 @@ namespace Odyssey
 
 				// Notify the thread manager to restart the scene thread
 				ThreadManager::getInstance().changeActiveScene(mActiveScene);
+				mIsRendering = false;
 			}
 		}
 	}
@@ -116,6 +115,11 @@ namespace Odyssey
 	{
 		// Process event manager commands on the next frame
 		mProcessCommands = true;
+	}
+
+	void Application::onEnableRendering(EnableRenderingEvent* evnt)
+	{
+		mIsRendering = true;
 	}
 
 	void Application::onShutdown(EngineShutdownEvent* evnt)
@@ -443,7 +447,7 @@ namespace Odyssey
 					}
 
 					// Check for an active scene
-					if (mActiveScene)
+					if (mActiveScene && mIsRendering)
 					{
 						// Render the scene
 						mRenderPipeline->render(mActiveWindow.get(), mActiveScene.get());

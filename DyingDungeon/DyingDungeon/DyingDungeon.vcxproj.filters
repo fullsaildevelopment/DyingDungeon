@@ -112,9 +112,6 @@
     <ClCompile Include="src\AiKnowledge.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\CombatManager.cpp">
-      <Filter>Source Files\Game Management</Filter>
-    </ClCompile>
     <ClCompile Include="src\DyingDungeon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,6 +123,12 @@
     </ClCompile>
     <ClCompile Include="src\Converter.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TowerSelectionPrefabFactory.cpp">
+      <Filter>Source Files\PrefabMaker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TowerInfoElements.cpp">
+      <Filter>Source Files\User Interface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,9 +252,6 @@
     <ClInclude Include="src\AiKnowledge.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="src\CombatManager.h">
-      <Filter>Header Files\Game Management</Filter>
-    </ClInclude>
     <ClInclude Include="src\DyingDungeon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -269,6 +269,15 @@
     </ClInclude>
     <ClInclude Include="src\MyTypeDefs.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CombatEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TowerSelectionPrefabFactory.h">
+      <Filter>Header Files\PrefabMaker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TowerInfoElements.h">
+      <Filter>Header Files\User Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +348,12 @@
     </Filter>
     <Filter Include="Source Files\VFX">
       <UniqueIdentifier>{f4e7471e-4388-406c-a1f9-528ec2c53d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PrefabMaker">
+      <UniqueIdentifier>{a3836ed0-7ddd-4382-9048-f522dfb6cb29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PrefabMaker">
+      <UniqueIdentifier>{4a12ea36-aeaa-4b2d-93a5-11ffeb7f5dd5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

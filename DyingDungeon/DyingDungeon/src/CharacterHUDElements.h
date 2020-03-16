@@ -33,9 +33,11 @@ public:
 	void SetSpeedNumber(Odyssey::Text2D* _text) { mSpeedNumber = _text; }
 	void SetHealthBar(Odyssey::Rectangle2D* _rect) { mHealthBar = _rect; }
 	void SetHealthNumber(Odyssey::Text2D* _text) { mHealthNumber = _text; }
+	void SetShieldBar(Odyssey::Rectangle2D* _rect) { mShieldBar = _rect; }
 	void SetManaBar(Odyssey::Rectangle2D* _rect) { mManaBar = _rect; }
 	void SetManaNumber(Odyssey::Text2D* _text) { mManaNumber = _text; }
 	void SetTurnNumber(Odyssey::Text2D* _text) { mTurnNumber = _text; }
+	void SetHudBlocker(Odyssey::Rectangle2D* _rect) { mHudBlocker = _rect; }
 
 	// Status Effect and Buff Elements
 	void SetAttackUpBuff(Odyssey::Sprite2D* _sprite) { mAttackUp = _sprite; }
@@ -56,6 +58,9 @@ public:
 	void SetSkill3(Odyssey::Sprite2D* _sprite) { mSkill3 = _sprite; }
 	void SetSkill4(Odyssey::Sprite2D* _sprite) { mSkill4 = _sprite; }
 
+	// Skill Backgrounds
+	void SetSkillBackgrounds(Odyssey::Rectangle2D* _rect) { mSkillBackgroundList.push_back(_rect); }
+
 	// Getters
 
 	// HUD Elements
@@ -69,15 +74,20 @@ public:
 	Odyssey::Text2D* GetSpeedNumber() { return mSpeedNumber; }
 	Odyssey::Rectangle2D* GetHealthBar() { return mHealthBar; }
 	Odyssey::Text2D* GetHealthNumber() { return mHealthNumber; }
+	Odyssey::Rectangle2D* GetShieldBar() { return mShieldBar; }
 	Odyssey::Rectangle2D* GetManaBar() { return mManaBar; }
 	Odyssey::Text2D* GetManaNumber() { return mManaNumber; }
 	Odyssey::Text2D* GetTurnNumber() { return mTurnNumber; }
+	Odyssey::Rectangle2D* GetHudBlocker() { return mHudBlocker; }
 
 	// Skills Elements
 	Odyssey::Sprite2D* GetSkill1() { return mSkill1; }
 	Odyssey::Sprite2D* GetSkill2() { return mSkill2; }
 	Odyssey::Sprite2D* GetSkill3() { return mSkill3; }
 	Odyssey::Sprite2D* GetSkill4() { return mSkill4; }
+
+	// Skill Backgrounds
+	std::vector<Odyssey::Rectangle2D*> GetSkillBackgroundList() { return mSkillBackgroundList; }
 
 	// Status Effect and Buff Elements
 	Odyssey::Sprite2D* GetAttackUpBuff() { return mAttackUp; }
@@ -104,6 +114,12 @@ public:
 	// Change the skill elements
 	void ChangeSkill(Skills* _skill, int _numOfSkill);
 
+	// Change the skill background colors
+	void ChangeSkillBackgroundColors(DirectX::XMFLOAT3 _newColor);
+
+	// Clear status effects
+	void ClearStatusEffects();
+
 private: //Variables
 
 	// HUD Position
@@ -120,15 +136,25 @@ private: //Variables
 	Odyssey::Text2D* mSpeedNumber = nullptr;
 	Odyssey::Rectangle2D* mHealthBar = nullptr;
 	Odyssey::Text2D* mHealthNumber = nullptr;
+	Odyssey::Rectangle2D* mShieldBar = nullptr;
 	Odyssey::Rectangle2D* mManaBar = nullptr;
 	Odyssey::Text2D* mManaNumber = nullptr;
 	Odyssey::Text2D* mTurnNumber = nullptr;
+	Odyssey::Rectangle2D* mHudBlocker = nullptr;
+	float mBarOpacitySpeed = 5.0f;
+	bool mHpBarFadingDown = true;
+	bool mMpBarFadingDown = true;
 
 	// Skill Elements
 	Odyssey::Sprite2D* mSkill1 = nullptr;
 	Odyssey::Sprite2D* mSkill2 = nullptr;
 	Odyssey::Sprite2D* mSkill3 = nullptr;
 	Odyssey::Sprite2D* mSkill4 = nullptr;
+
+	// Skill Backgrounds
+	std::vector<Odyssey::Rectangle2D*> mSkillBackgroundList;
+	float mOpacitySpeed = 2.0f;
+	bool mFadingDown[4] = { true, true, true, true };
 
 	// Status Effect and Buff Elements
 	Odyssey::Sprite2D* mAttackUp = nullptr;

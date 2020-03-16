@@ -25,6 +25,7 @@ class SkillHoverComponent : public Odyssey::Component
 public:
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
+	virtual void onDestroy();
 	void registerSprite(Odyssey::Sprite2D* sprite);
 	void skill1Enter();
 	void skill2Enter();
@@ -44,6 +45,8 @@ public:
 	// Hold the character component
 	Character* characterComponent;
 
+	// Get the skill sprites
+	std::vector<Odyssey::Sprite2D*> GetSkillSprites() { return mSprites; }
 
 private:
 	// Hold the current prefab object

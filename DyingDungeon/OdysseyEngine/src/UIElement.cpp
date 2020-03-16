@@ -357,6 +357,15 @@ namespace Odyssey
 		mLock.unlock(LockState::Write);
 	}
 
+	float UIElement::getFill()
+	{
+		// Return the fill in a range of 0.0 - 1.0
+		mLock.lock(LockState::Read);
+		float fillAmount = mFill;
+		mLock.unlock(LockState::Read);
+		return mFill;
+	}
+
 	void UIElement::setVisible(bool visible)
 	{
 		mIsVisible = visible;
