@@ -427,6 +427,12 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
 	mDoorImages.push_back(doorImage);
 
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTowerBackButton = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+	properties.fontSize = 50.0f;
+	properties.bold = true;
+
 	// Start creating the tower info popup
 	width = 500;
 	height = 300;
@@ -509,10 +515,16 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontName = L"Tw Cen MT Condensed";
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
 	
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTeamSelectBackButton = teamSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+
 	//Create the save loadout button
 	position.y += 65.0f;
 	position.x -= 140.0f;
 	properties.fontSize = 35.0f;
+	properties.bold = true;
+
 	mSaveLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
 	
@@ -541,13 +553,13 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 		mLoadoutPortraitBackground[i]->setOpacity(0.8f);
 		mLoadoutPortraitBackground[i]->setVisible(false);
 
-		mLoadoutPortraits[i][0] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + static_cast<float>(width / 18), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][0] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + static_cast<float>(width / 18), position.y + static_cast<float>(height / 16)), L"assets/images/Dying_Dungeon_Logo_sharp.png", width / 28, width / 28);
 		mLoadoutPortraits[i][0]->setVisible(false);
 		
-		mLoadoutPortraits[i][1] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*2.0f), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][1] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*2.0f), position.y + static_cast<float>(height / 16)), L"assets/images/Dying_Dungeon_Logo_sharp.png", width / 28, width / 28);
 		mLoadoutPortraits[i][1]->setVisible(false);
 		
-		mLoadoutPortraits[i][2] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*3.0f), position.y + static_cast<float>(height / 16)), L"assets/images/PaladinPortrait.jpg", width / 28, width / 28);
+		mLoadoutPortraits[i][2] = loadoutMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 720.0f + (static_cast<float>(width / 18)*3.0f), position.y + static_cast<float>(height / 16)), L"assets/images/Dying_Dungeon_Logo_sharp.png", width / 28, width / 28);
 		mLoadoutPortraits[i][2]->setVisible(false);
 
 		position.y += 100.0f;
@@ -1066,14 +1078,19 @@ void GameUIManager::HideMainOptions()
 	mMainMenuOptions->setActive(false);
 	mMainMenuOptions->setVisible(false);
 	mOptionsBackButton->unregisterCallback("onMouseClick");
+	mOptionsVolume->unregisterCallback("onMouseClick");
+	mOptionsControls->unregisterCallback("onMouseClick");
+
 }
 
 void GameUIManager::ShowMainVolume()
 {
 	mMainMenuOptions->setActive(false);
 	mMainMenuVolume->setActive(true);
+	mMainMenuVolume->setVisible(true);
 	mMainMenuOptions->setVisible(true);
 	mOptionsBack->registerCallback("onMouseClick", this, &GameUIManager::HideMainVolume);
+
 	mMainPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
 	mMainPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
 	mMainPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);

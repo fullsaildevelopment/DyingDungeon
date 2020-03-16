@@ -71,5 +71,6 @@ private: //Functions
 	void Door5Animation(double _deltaTime);
 
 	void SetNextDoorImage(Door _doorToChange);
+	void GoBackToMainMenu();
 };
 

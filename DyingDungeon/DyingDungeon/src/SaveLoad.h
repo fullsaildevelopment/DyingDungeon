@@ -91,6 +91,9 @@ public:
 	/// <param name="loadoutName">Name of loadout to be loaded</param>
 	/// <returns>bool of wheather the file was loaded in properly</returns>
 	bool LoadLoadOut(std::string loadoutName);
+	void ShutdownSave(Odyssey::ShutdownApplicationEvent* saEvent);
+	bool SaveSettings();
+	bool LoadSettings();
 	/// <summary>
 	/// Setter for the profile instance
 	/// </summary>

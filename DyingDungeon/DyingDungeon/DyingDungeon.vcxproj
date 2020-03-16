@@ -185,6 +185,7 @@
     <ClCompile Include="src\MainMenuController.cpp" />
     <ClCompile Include="src\ParticleMover.cpp" />
     <ClCompile Include="src\Provoked.cpp" />
+    <ClCompile Include="src\PunchMover.cpp" />
     <ClCompile Include="src\PurifyMover.cpp" />
     <ClCompile Include="src\RedAudio.cpp" />
     <ClCompile Include="src\RedAudioManager.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="src\SkillHUDElements.cpp" />
     <ClCompile Include="src\Skills.cpp" />
     <ClCompile Include="src\SkillShowcase.cpp" />
+    <ClCompile Include="src\SpinKickMover.cpp" />
     <ClCompile Include="src\StatDown.cpp" />
     <ClCompile Include="src\StatTracker.cpp" />
     <ClCompile Include="src\StatUp.cpp" />
@@ -232,6 +234,7 @@
     <ClInclude Include="src\MyTypeDefs.h" />
     <ClInclude Include="src\ParticleMover.h" />
     <ClInclude Include="src\Provoked.h" />
+    <ClInclude Include="src\PunchMover.h" />
     <ClInclude Include="src\PurifyMover.h" />
     <ClInclude Include="src\RedAudio.h" />
     <ClInclude Include="src\RedAudioManager.h" />
@@ -243,6 +246,7 @@
     <ClInclude Include="src\SkillHUDElements.h" />
     <ClInclude Include="src\Skills.h" />
     <ClInclude Include="src\SkillShowcase.h" />
+    <ClInclude Include="src\SpinKickMover.h" />
     <ClInclude Include="src\StatDown.h" />
     <ClInclude Include="src\StatTracker.h" />
     <ClInclude Include="src\StatUp.h" />

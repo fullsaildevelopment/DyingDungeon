@@ -127,6 +127,8 @@
     <ClCompile Include="src\TowerSelectionPrefabFactory.cpp">
       <Filter>Source Files\PrefabMaker</Filter>
     </ClCompile>
+    <ClCompile Include="src\SpinKickMover.cpp" />
+    <ClCompile Include="src\PunchMover.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\RedAudio.h">
@@ -273,6 +275,8 @@
     <ClInclude Include="src\TowerSelectionPrefabFactory.h">
       <Filter>Header Files\PrefabMaker</Filter>
     </ClInclude>
+    <ClInclude Include="src\SpinKickMover.h" />
+    <ClInclude Include="src\PunchMover.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\small.ico">

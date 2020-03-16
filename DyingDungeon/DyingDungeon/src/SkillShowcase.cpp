@@ -53,6 +53,11 @@ void SkillShowcase::update(double deltaTime)
 		position = DirectX::XMLoadFloat3(&(paladin4->getComponent<Odyssey::Transform>()->getPosition()));
 		rotation = DirectX::XMLoadFloat3(&(paladin4->getComponent<Odyssey::Transform>()->getEulerRotation()));
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(paladin4, &paladin4Spawn, position, rotation));
+
+		position = DirectX::XMLoadFloat3(&(skeleton1->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(skeleton1->getComponent<Odyssey::Transform>()->getEulerRotation()));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(skeleton1, &skeleton1Spawn, position, rotation));
+
 	}
 }
 

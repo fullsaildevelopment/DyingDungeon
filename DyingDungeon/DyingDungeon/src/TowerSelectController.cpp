@@ -51,7 +51,7 @@ void TowerSelectController::initialize()
 		// Reset the door image
 		SetNextDoorImage(mDoorList[i]);
 	}
-
+	GameUIManager::getInstance().GetTowerSelectBackButton()->registerCallback("onMouseClick", this, &TowerSelectController::GoBackToMainMenu);
 	mDoorList[0].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel1);
 	mDoorList[0].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor1State);
 	mDoorList[0].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor1State);
@@ -98,6 +98,7 @@ void TowerSelectController::update(double deltaTime)
 
 void TowerSelectController::onDestroy()
 {
+	GameUIManager::getInstance().GetTowerSelectBackButton()->unregisterCallback("onMouseClick");
 	mDoorList[0].doorImage->unregisterCallback("onMouseClick");
 	mDoorList[0].doorImage->unregisterCallback("onMouseEnter");
 	mDoorList[0].doorImage->unregisterCallback("onMouseExit");
@@ -519,4 +520,14 @@ void TowerSelectController::SetNextDoorImage(Door _doorToChange)
 			_doorToChange.doorImage->setSprite(L"assets/images/DoorIMages/MedievalDoor-5.png", x, y);
 			break;
 	}
+}
+
+void TowerSelectController::GoBackToMainMenu()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }

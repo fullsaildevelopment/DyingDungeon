@@ -22,6 +22,8 @@
 #include "TeamSelectionController.h"
 #include "StatTracker.h"
 #include "ParticleMover.h"
+#include "SpinKickMover.h"
+#include "PunchMover.h"
 #include "SkillHoverComponent.h"
 #include "SaveLoad.h"
 #include "LoadingScreenController.h"
@@ -96,6 +98,7 @@ void setupLoadingScene(Odyssey::Application* application);
 void setupSkillVFX(Odyssey::Application* application);
 void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMageVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupWarriorVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMonkVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
@@ -664,15 +667,15 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",							"CharacterEntrance",		RedAudioManager::AudioType::SFX);
 
 	// Memes
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",						"NoManaCritical",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_3.mp3",						"NoManaBitch",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_2.mp3",						"NoManaMidium",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_1.mp3",						"NoManaLow",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",						"ForwardAerial",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",							"FBIRade",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",						"NoManaCritical",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_3.mp3",						"NoManaBitch",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_2.mp3",						"NoManaMidium",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_1.mp3",						"NoManaLow",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",						"ForwardAerial",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",							"FBIRade",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
 	// Tower select screen door sounds
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
@@ -690,14 +693,14 @@ void setupAudio()
 	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",		"PlateArmorHit",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",						"LargeFireball",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",						"Lightning2",				RedAudioManager::AudioType::SFX);
 
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
-	RedAudioManager::Instance().Mute();
+	//RedAudioManager::Instance().Mute();
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
 }
 
@@ -1254,6 +1257,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	// PALADIN SKILLS START HERE
 	setupBardVFX(application, showcase);
 	setupPaladinVFX(application, showcase);
+	setupSkeletonVFX(application, showcase);
 }
 
 void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
@@ -1524,6 +1528,33 @@ void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 }
 
+void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	// Create the skill 4 prefab
+	showcase->getComponent<SkillShowcase>()->skeleton1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 25.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<Odyssey::ParticleSystem>();
+	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
+	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
+	showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<PunchMover>(DirectX::XMFLOAT3(20.0f, 2.5f, 25.0f), DirectX::XMFLOAT3(20.0f, 4.5f, 30.0f));
+	//showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
+	skillVFX->setLifetime(0.25f, 0.75f);
+	skillVFX->setParticleCount(0, 10);
+	skillVFX->setEmissionOverLifetime(15);
+	skillVFX->setDuration(120.0f);
+	skillVFX->setSpeed(1.25f, 1.75f);
+	skillVFX->setSize(0.25f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+}
+
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
 {
 	struct tm newTime;
@@ -1558,6 +1589,7 @@ int main()
 
 	SetUnhandledExceptionFilter(DumpOutput);
 	SaveLoad::Instance().CreateProfileDirectory();
+	SaveLoad::Instance().LoadSettings();
 	//StatTracker::Instance().OutputStatSheet();
 	//DumpFile Test
 	/*int test = 120;

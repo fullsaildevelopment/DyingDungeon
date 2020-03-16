@@ -279,6 +279,8 @@ public: // Functions
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
 	Odyssey::Sprite2D* GetControlsImage() { return mOptionsControlsImage; }
 	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
+	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
+	Odyssey::Text2D* GetTeamSelectBackButton() { return  mTeamSelectBackButton; }
 
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() 
@@ -352,6 +354,7 @@ private: // Varibales
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle = nullptr;
+	Odyssey::Text2D* mTowerBackButton = nullptr;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
 	Odyssey::UICanvas* mTowerInfoCanvas = nullptr;
 
@@ -372,6 +375,7 @@ private: // Varibales
 	Odyssey::Sprite2D* mSaveConfermationButtons[2] = {nullptr, nullptr};
 	//Loadout Cancel Button
 	Odyssey::Text2D* mCancelLoadoutButton = nullptr;
+	Odyssey::Text2D* mTeamSelectBackButton = nullptr;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots
