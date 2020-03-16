@@ -15,6 +15,14 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	// Clear the enemy team
 	mEnemyTeam.clear();
 
+	// Destory the previous spot lights
+	for (int i = 0; i < mEnemySpotLights.size(); i++)
+	{
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
+	}
+	// Clear spot light prefabs
+	mEnemySpotLights.clear();
+
 	// Clear the bars to animate before adding in the new enemies
 	GameUIManager::getInstance().ClearBarsToUpdateList();
 	
@@ -106,6 +114,37 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &clickableEnemyUI, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }, DirectX::XMVECTOR{ 0.0f, 0.0f, 0.0f, 0.0f }));
 		GameUIManager::getInstance().AddClickableElementToList(clickableEnemyUI);
 
+		// Create the character's spot light
+		Odyssey::Entity* spotLight = nullptr;
+		prefab = CharacterFactory::getInstance().GetLightObjectPrefab(CharacterFactory::LightObjects::SpotLight);
+		// Offset the y pos of the spotlight
+		DirectX::XMVECTOR spotLightPos = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position) + 6.0f, DirectX::XMVectorGetZ(position), 1.0f };
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &spotLight, spotLightPos, DirectX::XMVECTOR{ 90.0f, 0.0f, 0.0f, 1.0f }));
+
+		// Change spot light for different enemies
+		if (enemyType == TeamManager::EnemyType::Skeleton)
+		{
+			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.834f);
+			spotLight->getComponent<Odyssey::Light>()->setRange(21.204f);
+			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.9f);
+			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 10.905f, DirectX::XMVectorGetZ(spotLightPos));
+		}
+		else if (enemyType == TeamManager::EnemyType::MeleeDemon || enemyType == TeamManager::EnemyType::CasterDemon)
+		{
+			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.359f);
+			spotLight->getComponent<Odyssey::Light>()->setRange(31.337f);
+			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.89f);
+			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 11.55f, DirectX::XMVectorGetZ(spotLightPos));
+		}
+		else if (enemyType == TeamManager::EnemyType::Ganfaul)
+		{
+			spotLight->getComponent<Odyssey::Light>()->setIntensity(1.41f);
+			spotLight->getComponent<Odyssey::Light>()->setRange(23.934f);
+			spotLight->getComponent<Odyssey::Light>()->setSpotAngle(24.525f);
+			spotLight->getComponent<Odyssey::Transform>()->setPosition(DirectX::XMVectorGetX(spotLightPos), 9.48, DirectX::XMVectorGetZ(spotLightPos));
+		}
+		mEnemySpotLights.push_back(spotLight);
+
 		// Create the impact indicator for the enemies
 		Odyssey::Entity* impactIndicator = nullptr;
 		DirectX::XMVECTOR impactIndicatorPosition = position;
@@ -115,11 +154,6 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		// Assign the impact indicator for the enemies
 		impactIndicator->setActive(false);
 		newCharacter->getComponent<Character>()->SetImpactIndicator(impactIndicator);
-
-		// Create the blood effect for the enemies
-		//Odyssey::Entity* bloodEffect = nullptr;
-		//DirectX::XMVECTOR bloodEffectPosition = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position) };
-		
 
 		// Assign the blood effect for the enemies
 		prefab = CharacterFactory::getInstance().GetBloodEffectPrefab();

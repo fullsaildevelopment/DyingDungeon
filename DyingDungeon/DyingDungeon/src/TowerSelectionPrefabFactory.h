@@ -13,15 +13,6 @@ class TowerSelectionPrefabFactory
 {
 public:
 
-	enum TowerSelectPopupPrefabs
-	{
-		Door1, 
-		Door2,
-		Door3,
-		Door4,
-		Door5,
-	};
-
 	// Singleton pattern
 	/**
 	 *	Get the singleton instance of the game ui manager.
@@ -39,12 +30,12 @@ public: // Functions
 	// The initalize function to create all of the UI Prefabs
 	void CreateTowerSelectionPrefab(Odyssey::Application* _application, std::vector<TeamManager::EnemySetups> _enemyEnums);
 
-	// Get the info popup prefab map
-	Odyssey::Entity* GetInfoPrefabs(TowerSelectPopupPrefabs _prefab);
+	// Get the info popup prefab
+	Odyssey::Entity* GetInfoPrefab();
 
 private:
 
-	// Hold the prefabs for each door when hovering over it
-	std::map<TowerSelectPopupPrefabs, Odyssey::Entity*> mTowerSelectPopupPrefabs;
+	// Hold the prefab for the door when hovering over it
+	Odyssey::Entity* mTowerSelectPopupPrefab;
 };
 
