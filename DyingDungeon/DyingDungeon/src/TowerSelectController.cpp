@@ -63,13 +63,12 @@ void TowerSelectController::initialize()
 	mDoorList[2].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
 	mDoorList[2].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor3State);
 	mDoorList[2].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor3State);
-	//mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
-	//mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
-	//mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
-	// Have the fifth door take you to the Scene2
-	//mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel3);
-	//mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
-	//mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
+	mDoorList[3].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel4);
+	mDoorList[3].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor4State);
+	mDoorList[3].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor4State);
+	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel5);
+	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
+	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -152,6 +151,32 @@ void TowerSelectController::GoToTeamSelectionWithLevel3()
 
 	// Set the current level to 1
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(3);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel4()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(4);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+}
+
+void TowerSelectController::GoToTeamSelectionWithLevel5()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	// Set the current level to 1
+	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(5);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
