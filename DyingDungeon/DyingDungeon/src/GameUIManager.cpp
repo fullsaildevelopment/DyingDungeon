@@ -369,12 +369,12 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	/*position.y -= 50.0f;
 	position.x -= 320.0f;*/
 	position.y += 10.0f;
-	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width / 2, height * 2, L"Are you sure you want to overrid?", properties)->setFontSize(40.0f);
-	mSaveVolumeConfermationButtonsMain[1] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
-	mSaveVolumeConfermationButtonsMain[0] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
-	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width / 2, height * 2, L"Are you sure you want to overrid?", properties)->setFontSize(40.0f);
+	//mSaveVolumeConfermationButtonsMain[1] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
+	//mSaveVolumeConfermationButtonsMain[0] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
 
 	mMainSaveVolumeConfermation->setActive(false);
 
