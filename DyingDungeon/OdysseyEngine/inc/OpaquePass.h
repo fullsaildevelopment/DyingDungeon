@@ -14,7 +14,7 @@ namespace Odyssey
 	{
 		struct SceneLighting
 		{
-			ShaderLight sceneLights[12];
+			ShaderLight sceneLights[16];
 			///////////////////////////// 16 x 12 bytes
 			unsigned int numLights;
 			DirectX::XMFLOAT3 camPos;

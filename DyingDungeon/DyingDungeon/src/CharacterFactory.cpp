@@ -272,7 +272,7 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 
 			tempHero->GetSkills()[1]->SetParticleSystem(mVXFMap["PallySkill2"]);
 			tempHero->GetSkills()[1]->SetParticleOffset({ 0.0f, 6.0f, 0.0f });
-			tempHero->GetSkills()[1]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[1]->SetParticleFiringTime(0.5f);
 
 			tempHero->GetSkills()[2]->SetParticleSystem(mVXFMap["PallySkill3"]);
 			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });

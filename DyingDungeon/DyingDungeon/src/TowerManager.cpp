@@ -173,7 +173,7 @@ void TowerManager::update(double deltaTime)
 	}
 
 	// SPOT LIGHT DEBUGGER FOR ENEMIES
-	if (true)
+	if (false)
 	{
 		float speed = 0.005f;
 		// INTENSITY
@@ -278,6 +278,7 @@ void TowerManager::update(double deltaTime)
 				{
 					SetTowerState(IN_REWARDS);
 					Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
+					ToggleCharacterUI(false);
 					Rewards->setActive(true);
 				}
 
@@ -294,6 +295,9 @@ void TowerManager::update(double deltaTime)
 					{
 						// Update to the next level
 						mCurrentLevel = GetCurrentLevel() + 1;
+
+						if (mCurrentLevel > mNumberOfLevels)
+							SetTowerState(NOT_IN_BATTLE);
 					}
 				}
 			}
@@ -313,6 +317,11 @@ void TowerManager::update(double deltaTime)
 					mIsTutorial = false;
 					GoToMainMenu();
 				}
+				else
+				{
+					TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
+				}
+
 				// Check to see if that was our last level for completing the tower
 				else if (GetCurrentLevel() > mNumberOfLevels)
 				{
@@ -325,8 +334,6 @@ void TowerManager::update(double deltaTime)
 					{
 						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
-					// Go to main menu screen
-					GoToMainMenu();
 				}
 				else
 				{
@@ -344,12 +351,20 @@ void TowerManager::update(double deltaTime)
 							currCharacter->SetState(STATE::NONE);
 						}
 					}
-					// Make a new battle to continue the tower
-					CreateBattleInstance();
-				}
 
-				// Turn off the rewads screen
-				Rewards->setActive(false);
+					// Boss Level
+					if (mCurrentLevel == mNumberOfLevels)
+					{
+						// TODO
+						// Switch to the boss scene
+					}
+					else
+						CreateBattleInstance();
+
+					// Turn off the rewads screen
+					Rewards->setActive(false);
+					ToggleCharacterUI(true);
+				}
 			}
 			float stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
 			if (stat_opacity <= 0.0f) {
@@ -366,7 +381,12 @@ void TowerManager::update(double deltaTime)
 		}
 		else if (GetTowerState() == NOT_IN_BATTLE)
 		{
-
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			{
+				Rewards->setActive(false);
+				ToggleCharacterUI(true);
+				GoToMainMenu();
+			}
 		}
 	}
 }
@@ -485,17 +505,7 @@ void TowerManager::TogglePauseMenu()
 	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
 
-	// Turn off the hero ui depening if the pause menu is on or off
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
-
-	// Turn off the enemy ui depening if the pause menu is on or off
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
+	ToggleCharacterUI(!pauseMenuCanvas->isActive());
 
 	if (pauseMenuCanvas->isActive())
 	{
@@ -509,6 +519,21 @@ void TowerManager::TogglePauseMenu()
 	{
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
+	}
+}
+
+void TowerManager::ToggleCharacterUI(bool _onOrOff)
+{
+	// Turn off the hero ui depening if the pause menu is on or off
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
+	}
+
+	// Turn off the enemy ui depening if the pause menu is on or off
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
 	}
 }
 
@@ -750,4 +775,6 @@ void TowerManager::CreateThePlayerTeam()
 		// Add the character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
+
+	TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 }

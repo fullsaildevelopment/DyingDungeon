@@ -189,6 +189,16 @@ void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 	mEnemyTeam.push_back(_characterToAdd);
 }
 
+void TeamManager::UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd)
+{
+	mPlayerTeam.clear();
+
+	for (int i = 0; i < _heroesToAdd.size(); i++)
+	{
+		mPlayerTeam.push_back(_heroesToAdd[i]);
+	}
+}
+
 void TeamManager::ClearPlayerTeamEnumList()
 {
 	mPlayerTeamToCreate.clear();

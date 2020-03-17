@@ -56,6 +56,8 @@ private: //Functions
 	void GoToTeamSelectionWithLevel1();
 	void GoToTeamSelectionWithLevel2();
 	void GoToTeamSelectionWithLevel3();
+	void GoToTeamSelectionWithLevel4();
+	void GoToTeamSelectionWithLevel5();
 
 	void GoToScene2();
 

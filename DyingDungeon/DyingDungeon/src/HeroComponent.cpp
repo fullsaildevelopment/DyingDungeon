@@ -156,7 +156,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 12.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.45f, -20.0f, 12.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
 		mSkillList[0]->SetSoundEffect("PaladinAttack",0.25f);
 		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 12 damage provoking him to hit you. Restores 15 mana.");
@@ -418,6 +418,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		break;
 	}
+
 	case GameplayTypes::HEROID::Warrior:
 	{
 		// Set the character Model path
@@ -543,6 +544,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
+
 	case GameplayTypes::HEROID::Monk:
 	{
 		// Set the character Model path

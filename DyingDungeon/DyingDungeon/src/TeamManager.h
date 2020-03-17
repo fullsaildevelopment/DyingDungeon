@@ -53,6 +53,8 @@ public: // Functions
 	void AddCharacterEnumToPlayerTeam(HeroType _characterHeroType);
 	// Add player to the enemy team
 	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
+	// Add all heroes to the player team
+	void UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd);
 
 	// Clear the players from the player team
 	void ClearPlayerTeamEnumList();
@@ -80,6 +82,8 @@ private: // Variables
 
 	// Holds the player characters to add into the Tower Manager
 	std::vector<HeroType> mPlayerTeamToCreate;
+	// Holds the player characters from the end of each level
+	std::vector < Odyssey::Entity* > mPlayerTeam;
 	// Holds the enemy characters to add into the Tower Manager
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 
