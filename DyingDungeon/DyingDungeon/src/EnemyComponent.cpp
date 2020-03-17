@@ -694,7 +694,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 						{
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit");
-
+							RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Hit").c_str());
 							// Play particle effect
 							c->getComponent<Character>()->SpawnBloodEffect();
 						}
@@ -704,7 +704,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 				{
 					// Play "Hit" animation
 					mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
-
+					RedAudioManager::Instance().PlaySFX(mMoves.GetMove()->target->GetSoundClipName("Hit").c_str());
 					// Play particle effect
 					mMoves.GetMove()->target->SpawnBloodEffect();
 				}

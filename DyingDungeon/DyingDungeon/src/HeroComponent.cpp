@@ -77,7 +77,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mThemeColor = {255.0f,203.0f,31.0f};
     
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Hit"] = "PaladinHitReaction";
 		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the animation paths //
@@ -163,19 +163,19 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Skill 2
 		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 30.0f, 35.0f, 10.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("PaladinAttack",0.25f);
+		mSkillList[1]->SetSoundEffect("Smite",0.25f);
 		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
 		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 25.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("SpellCasting",0.25f);
+		mSkillList[2]->SetSoundEffect("ShieldOfLight",0.25f);
 		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
 		// Skill 4
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("SpellCasting", 0.25f);
+		mSkillList[3]->SetSoundEffect("BlessingOfLight", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"Protects all allies from harm granting them 50% increased defense 3 turns. Costs 15 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
