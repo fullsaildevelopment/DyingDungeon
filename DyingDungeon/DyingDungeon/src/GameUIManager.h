@@ -243,7 +243,15 @@ public: // Functions
 	//
 	Odyssey::Sprite2D** GetSaveConfermationButtons() { return mSaveConfermationButtons; }
 	//
+	Odyssey::Sprite2D** GetSaveVolumeConfermationButtons() { return mSaveVolumeConfermationButtons; }
+	//
+	Odyssey::Sprite2D** GetSaveVolumeConfermationButtonsMain() { return mSaveVolumeConfermationButtonsMain; }
+	//
 	Odyssey::Entity* GetSaveConfermationMenu() { return mSaveLoadoutConfermation; }
+	//
+	Odyssey::Entity* GetSaveVolumeConfermationMenu() { return mSaveVolumeConfermation; }
+	//
+	Odyssey::Entity* GetSaveVolumeConfermationMainMenu() { return mMainSaveVolumeConfermation; }
 	//
 	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
 	//
@@ -279,6 +287,8 @@ public: // Functions
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
 	Odyssey::Sprite2D* GetControlsImage() { return mOptionsControlsImage; }
 	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
+	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
+	Odyssey::Text2D* GetTeamSelectBackButton() { return  mTeamSelectBackButton; }
 
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() 
@@ -324,6 +334,8 @@ private: // Varibales
 	Odyssey::Entity* mTeamSelectMenu = nullptr;
 	Odyssey::Entity* mLoadoutMenu = nullptr;
 	Odyssey::Entity* mSaveLoadoutConfermation = nullptr;
+	Odyssey::Entity* mSaveVolumeConfermation = nullptr;
+	Odyssey::Entity* mMainSaveVolumeConfermation = nullptr;
 	Odyssey::Entity* mPauseMenu = nullptr;
 	Odyssey::Entity* mOptionsMenu = nullptr;
 	Odyssey::Entity* mStatsMenu = nullptr;
@@ -352,6 +364,7 @@ private: // Varibales
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle = nullptr;
+	Odyssey::Text2D* mTowerBackButton = nullptr;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
 	Odyssey::UICanvas* mTowerInfoCanvas = nullptr;
 
@@ -370,8 +383,11 @@ private: // Varibales
 	Odyssey::Sprite2D* mLoadoutPortraits[3][3];
 	//Save Confermation Buttons
 	Odyssey::Sprite2D* mSaveConfermationButtons[2] = {nullptr, nullptr};
+	Odyssey::Sprite2D* mSaveVolumeConfermationButtons[2] = {nullptr, nullptr};
+	Odyssey::Sprite2D* mSaveVolumeConfermationButtonsMain[2] = {nullptr, nullptr};
 	//Loadout Cancel Button
 	Odyssey::Text2D* mCancelLoadoutButton = nullptr;
+	Odyssey::Text2D* mTeamSelectBackButton = nullptr;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots

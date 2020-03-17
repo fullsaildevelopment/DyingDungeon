@@ -360,6 +360,24 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mMainPlusImage[2] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[3] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 
+	mMainSaveVolumeConfermation = _sceneToAddTo->createEntity();
+	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mMainSaveVolumeConfermation->addComponent<Odyssey::UICanvas>();
+
+	position = { (screenWidth / 2.0f) - (static_cast<float>(width / 2) / 2.0f), (screenHeight / 2.0f) - (static_cast<float>(height * 6) / 2.0f) };
+
+	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 2, height * 6)->setOpacity(1.0f);
+	/*position.y -= 50.0f;
+	position.x -= 320.0f;*/
+	position.y += 10.0f;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width / 2, height * 2, L"Are you sure you want to overrid?", properties)->setFontSize(40.0f);
+	//mSaveVolumeConfermationButtonsMain[1] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
+	//mSaveVolumeConfermationButtonsMain[0] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
+
+	mMainSaveVolumeConfermation->setActive(false);
+
 	mMainMenuOptions->setVisible(false);
 	mMainMenuOptions->setActive(false);
 
@@ -426,6 +444,12 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	position.x += width + 50.83f;
 	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
 	mDoorImages.push_back(doorImage);
+
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTowerBackButton = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+	properties.fontSize = 50.0f;
+	properties.bold = true;
 
 	// Start creating the tower info popup
 	width = 500;
@@ -508,11 +532,15 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
-	
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTeamSelectBackButton = teamSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+
 	//Create the save loadout button
 	position.y += 65.0f;
 	position.x -= 140.0f;
 	properties.fontSize = 35.0f;
+	properties.bold = true;
 	mSaveLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
 	
