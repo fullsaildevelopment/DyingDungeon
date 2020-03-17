@@ -327,7 +327,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "BardHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -391,14 +391,14 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Spd, nullptr); 
 		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("ArrowReleaseHit", 0.25f);
+		mSkillList[0]->SetSoundEffect("StarFireArrow", 0.0f);
 		mSkillList[0]->SetStatusChance(0.25f);
 		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage, with a 25% chance to inflict a 50% speed down. Returns 10 mana.");
 		// Skill 2
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.60f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("SongOfMisery", 0.25f);
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 15 mana.");
 		// Skill 3
@@ -406,13 +406,13 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 25.0f, true));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
+		mSkillList[2]->SetSoundEffect("SongOfHope", 0.0f);
 		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving a ally hope, healing for 35 health, and giving a 30% attack up. Costs 20 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("MagicalVanish", 0.25f);
+		mSkillList[3]->SetSoundEffect("Purify", 0.0f);
 		mSkillList[3]->SetSkillDescription(L"Does nothing but looks cool :D");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -916,6 +916,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (Odyssey::Entity* c : enemies)
 					{
+						if (c == nullptr)
+							continue;
 						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
 						tempPos2 = mCurrentSkill->GetParticleOffset();
 						tempPos1.x += tempPos2.x;
@@ -1020,6 +1022,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 						{
 							// Play "GotBuffed" animation
 							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Buffed").c_str());
 						}
 					}
 				}
@@ -1027,6 +1030,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					// Play "GotBuffed" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+					RedAudioManager::Instance().PlaySFX(mCurrentTarget->GetSoundClipName("Buffed").c_str());
 				}
 			}
 			// Set trigger to true to avoid repeating the recipents animation

@@ -326,11 +326,11 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			// Set up heros VXF's
 			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["bardSkill1"]);
 			tempHero->GetSkills()[0]->SetParticleOffset({0.0f, 3.0f, 0.0f});
-			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.6f);
 
 			tempHero->GetSkills()[1]->SetParticleSystem(mVXFMap["bardSkill2"]);
 			tempHero->GetSkills()[1]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
-			tempHero->GetSkills()[1]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[1]->SetParticleFiringTime(0.4f);
 
 			tempHero->GetSkills()[2]->SetParticleSystem(mVXFMap["bardSkill3"]);
 			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
