@@ -13,7 +13,7 @@ class BattleInstance
 {
 
 public: // Constructors
-	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam);
+	BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bool isTutorial);
 
 	enum BattleInstanceCommands
 	{
@@ -36,6 +36,7 @@ public: // Functions
 	Odyssey::Entity* GetCurrentCharacter() { return mCurrentCharacter; }
 
 	//Setters
+	void SetTutorialState(bool state) { mIsTutorial = state; };
 
 private: // Varibales
 
@@ -59,7 +60,7 @@ private: // Varibales
 
 
 	// Bools
-
+	bool mIsTutorial = false;
 
 private: // Functions
 	void GenerateBattleQueue(); // This will generate the battle queue for the character turn orders

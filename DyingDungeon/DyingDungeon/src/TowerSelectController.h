@@ -49,6 +49,9 @@ private:
 	// Current Tower Manager Object
 	Odyssey::Entity* mCurrentTower = nullptr;
 
+	// Tutorial Level Button
+	Odyssey::Sprite2D* mTutorialButton = nullptr;
+
 private: //Functions
 	void GoToTeamSelectionWithLevel1();
 	void GoToTeamSelectionWithLevel2();

@@ -59,6 +59,7 @@ private:
 	Odyssey::UICanvas* m_p_canvas;
 	unsigned int m_portrait_width;
 	unsigned int m_portrait_height;
+	bool mIsTutorial = false;
 
 public:
 	static StatTracker& Instance();
@@ -103,6 +104,8 @@ public:
 	/// </summary>
 	/// <param name="canvas"></param>
 	void SetCanvas(Odyssey::UICanvas* canvas, unsigned int path_width, unsigned int path_height);
+
+	void SetTutorialState(bool state) { mIsTutorial = state; };
 
 	/// <summary>
 	/// clears all the levels stored in the StatTrackers level container

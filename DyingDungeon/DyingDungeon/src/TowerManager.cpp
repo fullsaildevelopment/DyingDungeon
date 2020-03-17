@@ -39,7 +39,10 @@ void TowerManager::initialize()
 	CreateThePlayerTeam();
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
-	CreateBattleInstance();
+	if (!mIsTutorial)
+		CreateBattleInstance();
+	else
+		CreateTutorialInstance();
 
 	// Set the pause menu button callbacks
 	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
@@ -264,9 +267,19 @@ void TowerManager::update(double deltaTime)
 			{
 				// Destroy the battle instance
 				DestroyBattleInstance();
-				SetTowerState(IN_REWARDS);
-				Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
-				Rewards->setActive(true);
+
+				if (mIsTutorial)
+				{
+					SetTowerState(NOT_IN_BATTLE);
+					mIsTutorial = false;
+					GoToMainMenu();
+				}
+				else
+				{
+					SetTowerState(IN_REWARDS);
+					Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
+					Rewards->setActive(true);
+				}
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
 				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
@@ -277,8 +290,11 @@ void TowerManager::update(double deltaTime)
 				}
 				else
 				{
-					// Update to the next level
-					mCurrentLevel = GetCurrentLevel() + 1;
+					if (!mIsTutorial)
+					{
+						// Update to the next level
+						mCurrentLevel = GetCurrentLevel() + 1;
+					}
 				}
 			}
 		}
@@ -291,8 +307,14 @@ void TowerManager::update(double deltaTime)
 				// Create temp xp variable
 				float tempXP = 0.0f;
 
+				if (mIsTutorial)
+				{
+					SetTowerState(NOT_IN_BATTLE);
+					mIsTutorial = false;
+					GoToMainMenu();
+				}
 				// Check to see if that was our last level for completing the tower
-				if (GetCurrentLevel() > mNumberOfLevels)
+				else if (GetCurrentLevel() > mNumberOfLevels)
 				{
 					SetTowerState(NOT_IN_BATTLE);
 
@@ -365,6 +387,8 @@ void TowerManager::CreateBattleInstance()
 	// Clear the combat at the start of each battle log
 	GameUIManager::getInstance().ClearCombatLog();
 
+	StatTracker::Instance().SetTutorialState(false);
+
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
 		mPlayerTeam[0]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[1]->getComponent<Character>()->GetPortraitPath(), mPlayerTeam[2]->getComponent<Character>()->GetPortraitPath(),
@@ -393,7 +417,43 @@ void TowerManager::CreateBattleInstance()
 	GameUIManager::getInstance().SetupClickableCharacterUI();
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, false);
+
+	// Since we created a BattleInstance we will be in combat
+	SetTowerState(IN_BATTLE);
+}
+
+void TowerManager::CreateTutorialInstance()
+{
+	StatTracker::Instance().SetTutorialState(true);
+
+	GameUIManager::getInstance().ClearCombatLog();
+
+	// Remove the current enemy team from the scene
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		// Clear the status effects
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
+		// Destory the previous enemy's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous enemy's blood particle effect
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous enemies
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
+	
+	// Clear the previous enemy list
+	mEnemyTeam.clear();
+	// Create the new enemy team before creating the battle
+	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(0);
+
+	// Set up clickable character UI
+	GameUIManager::getInstance().SetupClickableCharacterUI();
+
+	// Create the battle instance
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, true);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);

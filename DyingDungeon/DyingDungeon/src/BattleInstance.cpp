@@ -5,13 +5,15 @@
 #include "StatusEvents.h"
 #include "CharacterFactory.h"
 #include "CharacterHUDElements.h"
+#include "EnemyComponent.h"
 #include <string>
 
-BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
+BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bool isTutorial)
 {
 	// Assign the character teams
 	mPlayerTeam = _playerTeam;
 	mEnemyTeam = _enemyTeam;
+	mIsTutorial = isTutorial;
 
 	// Spawn the turn indicator
 	Odyssey::Entity* prefab = CharacterFactory::getInstance().GetTurnIndicatorPrefab();
@@ -19,8 +21,21 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 
 	// Resize the vectors to be 4 so we can check for nullptr in our TakeTurn functions
 	// This will help for determining if a slot is even available to attack
+
 	mPlayerTeam.resize(3);
 	mEnemyTeam.resize(3);
+
+	if (!mIsTutorial)
+	{
+		StatTracker::Instance().SetTutorialState(false);
+	}
+	else
+	{
+		StatTracker::Instance().SetTutorialState(true);
+		mPlayerTeam[0]->getComponent<Character>()->SetHP(0);
+		mPlayerTeam[2]->getComponent<Character>()->SetHP(0);
+	}
+	
 
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;
@@ -55,6 +70,14 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam)
 
 			mAllCharacters.push_back(mEnemyTeam[i]);
 		}
+	}
+
+	if (mIsTutorial)
+	{
+		mEnemyTeam[0]->getComponent<Character>()->SetHP(0);
+		mEnemyTeam[2]->getComponent<Character>()->SetHP(0);
+		mEnemyTeam[0]->getComponent<EnemyComponent>()->Die();
+		mEnemyTeam[2]->getComponent<EnemyComponent>()->Die();
 	}
 
 	// Set time to be random
@@ -257,8 +280,11 @@ void BattleInstance::SetTurnIndicatorPosition()
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setPosition(characterPosition.x, characterPosition.y + 0.05f, characterPosition.z);
 	mTurnIndicator->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
 
-	// Send out event letting the stat tracker know a new player is taking a turn
-	std::wstring characterName = mCurrentCharacter->getComponent<Character>()->GetName();
-	bool isHero = mCurrentCharacter->getComponent<Character>()->IsHero();
-	Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mCurrentCharacter->getComponent<Character>(), mTurnCounter, mCurrentRound, isHero));
+	if (!mIsTutorial)
+	{
+		// Send out event letting the stat tracker know a new player is taking a turn
+		std::wstring characterName = mCurrentCharacter->getComponent<Character>()->GetName();
+		bool isHero = mCurrentCharacter->getComponent<Character>()->IsHero();
+		Odyssey::EventManager::getInstance().publish(new TurnStartEvent(characterName, mCurrentCharacter->getComponent<Character>(), mTurnCounter, mCurrentRound, isHero));
+	}
 }
