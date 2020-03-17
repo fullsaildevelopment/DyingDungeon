@@ -577,6 +577,8 @@ void TowerManager::GoToMainMenu()
 	Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
 
+	GameUIManager::getInstance().ClearClickableCharacterList();
+
 	// Set the current level back to 1
 	mCurrentLevel = 1;
 
