@@ -100,6 +100,7 @@ private: // Functions
 
 	void ConfermationNo();
 
+	void GoBackToTowerSelect();
 	// Change the name in the slots
 	void ChangeSlotName(int _slotIndex, std::wstring _name);
 	void onHoverLoadout1();

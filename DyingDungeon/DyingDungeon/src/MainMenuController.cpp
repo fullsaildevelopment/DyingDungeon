@@ -133,3 +133,18 @@ void MainMenuController::ExitGame()
 {
 	Odyssey::EventManager::getInstance().publish(new Odyssey::ShutdownApplicationEvent());
 }
+
+void MainMenuController::ShowVolumeConfermation()
+{
+	 //GameUIManager::getInstance().Get
+}
+
+void MainMenuController::VolumeConfermationYes()
+{
+
+}
+
+void MainMenuController::VolumeConfermationNo()
+{
+
+}
