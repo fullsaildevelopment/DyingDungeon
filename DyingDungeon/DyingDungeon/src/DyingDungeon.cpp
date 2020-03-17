@@ -1644,7 +1644,7 @@ void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showca
 	showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<Odyssey::Transform>();
 	showcase->getComponent<SkillShowcase>()->skeleton2->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 10.0f);
 
-	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<Odyssey::ParticleSystem>();
+	skillVFX = showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<Odyssey::ParticleSystem>();
 	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
 	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
 	showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<PunchMover>(DirectX::XMFLOAT3(20.0f, 2.5f, 10.0f), DirectX::XMFLOAT3(20.0f, 4.5f, 15.0f));

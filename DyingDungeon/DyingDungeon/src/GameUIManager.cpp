@@ -361,7 +361,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mMainPlusImage[3] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 
 	mMainSaveVolumeConfermation = _sceneToAddTo->createEntity();
-	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mSaveLoadoutConfermation->addComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mMainSaveVolumeConfermation->addComponent<Odyssey::UICanvas>();
 
 	position = { (screenWidth / 2.0f) - (static_cast<float>(width / 2) / 2.0f), (screenHeight / 2.0f) - (static_cast<float>(height * 6) / 2.0f) };
 
