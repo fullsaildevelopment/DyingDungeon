@@ -672,7 +672,7 @@ void Character::ClearBadStatusEffects()
 	{
 		if ((*it) == nullptr)
 			continue;
-		if ((*it)->GetTypeId() == EFFECTTYPE::Provoke || (*it)->GetTypeId() == EFFECTTYPE::Bleed || (*it)->GetTypeId() == EFFECTTYPE::StatDown || (*it)->GetTypeId() == EFFECTTYPE::Stun)
+		if ((*it)->GetRecipient() == this && (*it)->GetTypeId() == EFFECTTYPE::Provoke || (*it)->GetTypeId() == EFFECTTYPE::Bleed || (*it)->GetTypeId() == EFFECTTYPE::StatDown || (*it)->GetTypeId() == EFFECTTYPE::Stun)
 		{
 			if (!(*it)->RemoveMe())
 				(*it)->Remove();
