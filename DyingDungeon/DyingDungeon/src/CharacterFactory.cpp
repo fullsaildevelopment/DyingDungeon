@@ -303,8 +303,8 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			HeroComponent* tempHero = newCharacter->addComponent<HeroComponent>(GameplayTypes::HEROID::Mage);
 
 			tempHero->GetSkills()[0]->SetParticleSystem(mVXFMap["MageSkill1"]);
-			tempHero->GetSkills()[0]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
-			tempHero->GetSkills()[0]->SetParticleFiringTime(0.1f);
+			tempHero->GetSkills()[0]->SetParticleOffset({ 1.25f, 3.0f, 1.5f });
+			tempHero->GetSkills()[0]->SetParticleFiringTime(0.5f);
 			tempHero->GetSkills()[0]->SetPartilceIsProjectile(true);
 
 			// Set up its model

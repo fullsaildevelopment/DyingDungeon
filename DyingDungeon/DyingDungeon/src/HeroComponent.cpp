@@ -206,7 +206,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 150.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "MageHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -274,28 +274,28 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -15.0f, 17.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Meteor Shard", "Skill_1", 0.65f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("MagicWoosh", 0.25f);
+		mSkillList[0]->SetSoundEffect("MeteorShard", 0.0f);
 		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 15.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("MagicWoosh", 0.25f);
+		mSkillList[1]->SetSoundEffect("WindSlash", 0.0f);
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 15 mana.");
 		// Skill 3
 		temp = std::make_shared<Bleed>(0.10f, 1, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 30.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("LargeFireball", 0.25f);
+		mSkillList[2]->SetSoundEffect("FireStorm", 0.0f);
 		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Stun>(1,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("MagicZap", 0.25f);
+		mSkillList[3]->SetSoundEffect("LightningBolt", 0.0f);
 		mSkillList[3]->SetStatusChance(0.33f);
 		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 25 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
