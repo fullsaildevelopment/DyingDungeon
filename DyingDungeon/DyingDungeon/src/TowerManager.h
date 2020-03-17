@@ -65,6 +65,7 @@ private: // Varibales
 	// Vectors
 	EntityList mPlayerTeam; // playerTeam will hold the gameObjects associated with the Player's team
 	EntityList mEnemyTeam; // enemyTeam will hold the gameObjects associated with the Overlord's team
+	EntityList mListOfRoomObjects; // Hold the room objects
 	Odyssey::Entity* mCharacterSpotLights[3] = { nullptr, nullptr, nullptr };
 
 	// Queues
@@ -87,6 +88,7 @@ private: // Varibales
 private: // Functions
 	void DestroyBattleInstance();
 	void TogglePauseMenu();
+	void ToggleCharacterUI(bool _onOrOff);
 	void ShowOptionsMenu();
 	void ShowControlScreen();
 	void HideControlScreen();

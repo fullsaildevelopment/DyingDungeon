@@ -521,20 +521,8 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 		TeamManager::EnemySetups levelOneEnemy;
 		// Set enemy properties
 		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
-		levelOneEnemy.pPosition = leftPosition;
-		levelOneEnemy.pRotation = leftRotation;
-		// Add enemy to list
-		newEnemies.push_back(levelOneEnemy);
-		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
-		// Add enemy to list
-		newEnemies.push_back(levelOneEnemy);
-		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
-		levelOneEnemy.pPosition = rightPosition;
-		levelOneEnemy.pRotation = rightRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
@@ -550,22 +538,22 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 	// LEVEL TWO ENEMIES
 	if (true)
 	{
-		// Level Two Enemies
+		// Level One Enemies
 		TeamManager::EnemySetups levelTwoEnemy;
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = leftPosition;
 		levelTwoEnemy.pRotation = leftRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = middlePosition;
 		levelTwoEnemy.pRotation = middleRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = rightPosition;
 		levelTwoEnemy.pRotation = rightRotation;
 		// Add enemy to list
@@ -583,14 +571,80 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 	// LEVEL THREE ENEMIES
 	if (true)
 	{
-		// Level One Enemies
+		// Level Three Enemies
 		TeamManager::EnemySetups levelThreeEnemy;
 		// Set enemy properties
-		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelThreeEnemy.pPosition = leftPosition;
+		levelThreeEnemy.pRotation = leftRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
 		levelThreeEnemy.pPosition = middlePosition;
 		levelThreeEnemy.pRotation = middleRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelThreeEnemy);
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelThreeEnemy.pPosition = rightPosition;
+		levelThreeEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL FOUR ENEMIES
+	if (true)
+	{
+		// Level Four Enemies
+		TeamManager::EnemySetups levelFourEnemy;
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelFourEnemy.pPosition = leftPosition;
+		levelFourEnemy.pRotation = leftRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelFourEnemy.pPosition = middlePosition;
+		levelFourEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelFourEnemy.pPosition = rightPosition;
+		levelFourEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL FIVE ENEMIES
+	if (true)
+	{
+		// Level Five Enemies
+		TeamManager::EnemySetups levelFiveEnemy;
+		// Set enemy properties
+		levelFiveEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelFiveEnemy.pPosition = middlePosition;
+		levelFiveEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFiveEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
 

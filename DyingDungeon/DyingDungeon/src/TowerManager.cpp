@@ -35,6 +35,9 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
+	// Spawn the level 1 room
+	
+
 	// Create the player team
 	CreateThePlayerTeam();
 
@@ -170,7 +173,7 @@ void TowerManager::update(double deltaTime)
 	}
 
 	// SPOT LIGHT DEBUGGER FOR ENEMIES
-	if (true)
+	if (false)
 	{
 		float speed = 0.005f;
 		// INTENSITY
@@ -267,6 +270,7 @@ void TowerManager::update(double deltaTime)
 				SetTowerState(IN_REWARDS);
 				Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
 				Rewards->setActive(true);
+				ToggleCharacterUI(false);
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
 				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
@@ -328,6 +332,7 @@ void TowerManager::update(double deltaTime)
 
 				// Turn off the rewads screen
 				Rewards->setActive(false);
+				ToggleCharacterUI(true);
 			}
 			float stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
 			if (stat_opacity <= 0.0f) {
@@ -425,17 +430,7 @@ void TowerManager::TogglePauseMenu()
 	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
 
-	// Turn off the hero ui depening if the pause menu is on or off
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
-
-	// Turn off the enemy ui depening if the pause menu is on or off
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
+	ToggleCharacterUI(!pauseMenuCanvas->isActive());
 
 	if (pauseMenuCanvas->isActive())
 	{
@@ -449,6 +444,21 @@ void TowerManager::TogglePauseMenu()
 	{
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
+	}
+}
+
+void TowerManager::ToggleCharacterUI(bool _onOrOff)
+{
+	// Turn off the hero ui depening if the pause menu is on or off
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
+	}
+
+	// Turn off the enemy ui depening if the pause menu is on or off
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
 	}
 }
 
