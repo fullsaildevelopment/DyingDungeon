@@ -114,13 +114,16 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			StatusEffect = std::make_shared<Provoked>(1, mCaster, nullptr);
 			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 10.0f, StatusEffect));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			mSkillList[0]->SetSoundEffect("SkeletonPunch", 0.1f);
 			// Skill 2 
 			StatusEffect = std::make_shared<StatDown>(0.35f, 3, STATS::Def, nullptr);
 			mSkillList.push_back(std::make_shared<Attack>(L"Def Down", "Skill_1", 0.25f, 15.0f, 10.0f, StatusEffect, true));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
+			mSkillList[1]->SetSoundEffect("SkeletonPunch", 0.1f);
 			// Skill 3 
 			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_1", 0.25f, 25.0f, 30.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
+			mSkillList[2]->SetSoundEffect("SkeletonPunch", 0.1f);
 			break;
 		}
 		// CasterDemon
