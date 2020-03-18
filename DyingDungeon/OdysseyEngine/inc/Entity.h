@@ -249,7 +249,11 @@ namespace Odyssey
 			// A component type pointer was found so remove it
 			if (success)
 			{
-				mScene->removeComponent(index->get());
+				if (mScene)
+				{
+					mScene->removeComponent(index->get());
+				}
+					
 				mComponents.erase(index);
 			}
 

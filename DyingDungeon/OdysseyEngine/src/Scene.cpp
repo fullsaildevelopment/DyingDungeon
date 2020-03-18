@@ -25,6 +25,16 @@ namespace Odyssey
 		return entity.get();
 	}
 
+	void Scene::setName(const char* name)
+	{
+		mName = name;
+	}
+
+	const char* Scene::getName()
+	{
+		return mName;
+	}
+
 	void Scene::addComponent(Component* component)
 	{
 		// Get the component's entity

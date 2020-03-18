@@ -195,7 +195,7 @@ int playGame()
 	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTeamSelector(gTeamSelectMenu->getComponent<TeamSelectionController>());
 	
 	// Set up multithreading
-	application->setMultithreading(false);
+	application->setMultithreading(true);
 
 	// Play audio
 	setupAudio();

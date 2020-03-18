@@ -274,6 +274,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
+
 		mSkillList.push_back(std::make_shared<Attack>(L"Meteor Shard", "Skill_1", 0.65f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
 		mSkillList[0]->SetSoundEffect("MeteorShard", 0.0f);
