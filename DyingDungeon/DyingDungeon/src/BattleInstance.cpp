@@ -32,6 +32,8 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bo
 	else
 	{
 		StatTracker::Instance().SetTutorialState(true);
+		GameUIManager::getInstance().CreateTutorialCanvas();
+		GameUIManager::getInstance().GetTutorialCanvas()->setActive(true);
 		mPlayerTeam[0]->getComponent<Character>()->SetHP(0);
 		mPlayerTeam[2]->getComponent<Character>()->SetHP(0);
 	}

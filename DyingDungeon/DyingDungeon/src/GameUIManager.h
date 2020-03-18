@@ -136,6 +136,9 @@ public: // Functions
 	void ShowControlsGuide();
 
 	void HideControlsGuide();
+	
+	// Creation of tutorial
+	void CreateTutorialCanvas();
 
 	// Set the characters HUD Elements
 	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
@@ -272,6 +275,9 @@ public: // Functions
 	Odyssey::Sprite2D** GetMainMenuPlusVolumeButtons() { return mMainPlusImage; }
 
 	Odyssey::Sprite2D** GetMainMenuMinusVolumeButtons() { return mMainMinusImage; }
+
+	// Get Tutorial Canvas
+	Odyssey::UICanvas* GetTutorialCanvas() { return mTutorialCanvas; }
 
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
@@ -513,6 +519,42 @@ private: // Functions
 	// Character hover callbacks
 	void CharacterEnterHoverCallback();
 	void CharacterExitHoverCallback();
+
+	// Tutorial Level CallBacks
+	void TutorialPlayerCallBack();
+	void TutorialPlayerUICallBack();
+	void TutorialPlayerSkillsCallBack();
+	void TutorialPlayerBuffsCallBack();
+	void TutorialPlayerStatsCallBack();
+	void TutorialEnemyUICallBack();
+	void TutorialEnemyCallBack();
+	void TutorialEnemyBuffsCallBack();
+	void TutorialLevelCallBack();
+	void TutorialTurnNumberCallBack();
+
+	public:
+	void TutorialTempFixCallBack();
+
+	private:
+	// Tutorial Level Sprites
+	Odyssey::Entity* mTutorialEntity = nullptr;
+
+	Odyssey::UICanvas* mTutorialCanvas = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayer = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerUI = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerSkills = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerBuffs = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerStats = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemyUI = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemy = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemyBuffs = nullptr;
+	Odyssey::Sprite2D* mHighlightLevel = nullptr;
+	Odyssey::Sprite2D* mHighlightTurnNumber = nullptr;
+	Odyssey::Text2D* mTutorialText = nullptr;
+	Odyssey::Rectangle2D* tutorialRect = nullptr;
+
+	// Remove if possible after 3/18
+	Odyssey::Scene* gScene = nullptr;
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER

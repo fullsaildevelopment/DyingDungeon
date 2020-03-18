@@ -17,7 +17,6 @@
 #include "LoadingScreenController.h"
 
 CLASS_DEFINITION(Component, TowerManager)
-
 std::shared_ptr<Odyssey::Component> TowerManager::clone() const
 {
 	return std::make_shared<TowerManager>(*this);
@@ -266,6 +265,9 @@ void TowerManager::update(double deltaTime)
 		// Update the UI bars
 		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
+		if (mIsTutorial && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::J))
+			GameUIManager::getInstance().TutorialTempFixCallBack();
+
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
 		{
@@ -477,7 +479,7 @@ void TowerManager::CreateTutorialInstance()
 	// Clear the previous enemy list
 	mEnemyTeam.clear();
 	// Create the new enemy team before creating the battle
-	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(0);
+	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(1);
 
 	// Set up clickable character UI
 	GameUIManager::getInstance().SetupClickableCharacterUI();
