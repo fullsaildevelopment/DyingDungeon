@@ -18,7 +18,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	// Destory the previous spot lights
 	for (int i = 0; i < mEnemySpotLights.size(); i++)
 	{
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
 	}
 	// Clear spot light prefabs
 	mEnemySpotLights.clear();
