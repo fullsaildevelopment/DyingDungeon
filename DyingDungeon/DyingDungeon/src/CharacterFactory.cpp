@@ -403,6 +403,19 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 
 			newCharacter->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.15f, 0.15f, 0.15f, 1.0f });
 
+			// Set up heros VXF's
+			tempEnemy->GetSkills()[0]->SetParticleSystem(mVXFMap["SkeletonSkill1"]);
+			tempEnemy->GetSkills()[0]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
+			tempEnemy->GetSkills()[0]->SetParticleFiringTime(0.6f);
+
+			tempEnemy->GetSkills()[1]->SetParticleSystem(mVXFMap["SkeletonSkill1"]);
+			tempEnemy->GetSkills()[1]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
+			tempEnemy->GetSkills()[1]->SetParticleFiringTime(0.4f);
+
+			tempEnemy->GetSkills()[2]->SetParticleSystem(mVXFMap["SkeletonSkill3"]);
+			tempEnemy->GetSkills()[2]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
+			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.1f);
+
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
 			{
@@ -640,6 +653,14 @@ void CharacterFactory::MakeVXFEffects()
 	PallySkill3Prefab();
 	// Mage
 	MageSkill1Prefab();
+
+	// Skeleton
+	SkeletonSkill1Prefab();
+	SkeletonSkill3Prefab();
+
+	// Ganfoul
+	GanfaulSkill1Prefab();
+	GanfaulSkill2Prefab();
 }
 
 // Bard VXF
@@ -1042,13 +1063,12 @@ void CharacterFactory::SkeletonSkill3Prefab()
 	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
 	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
 	mSkill->addComponent<SpinKickMover>();
-	//showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
 	skillVFX->setParticleCount(0, 100);
 	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(120.0f);
+	skillVFX->setDuration(3.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
@@ -1123,6 +1143,8 @@ void CharacterFactory::GanfaulSkill2Prefab()
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::CirclePS(-0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+
+	mVXFMap["GanfaulSkill2"] = mSkill;
 }
 // TODO: THIS IS OTHER STUFF WE WILL MAKE INTO PREFABS
 //Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)
