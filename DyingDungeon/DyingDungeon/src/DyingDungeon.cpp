@@ -29,6 +29,7 @@
 #include "PurifyMover.h"
 #include "SpinKickMover.h"
 #include "PunchMover.h"
+#include "BossAttackMover.h"
 #include "JudgementMover.h"
 
 // Engine includes
@@ -101,6 +102,8 @@ void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 void setupMageVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupWarriorVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMonkVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
@@ -699,11 +702,17 @@ void setupAudio()
 	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",									 "DoorClose",				RedAudioManager::AudioType::SFX);
 																											 
 	//Background Sound																						 
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",								 "BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/rage_in_the_darkness.mp3",						 "BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",							 "BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/rage_in_the_darkness.mp3",					 "BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_1.mp3",			 "BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_2.mp3",			 "BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_3.mp3",			 "BackgroundBattle3",		RedAudioManager::AudioType::Background, "BackgroundBattle");
 	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",							 "BackgroundMenu1",			RedAudioManager::AudioType::Background, "BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",								 "BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",						 "BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_1.mp3",				 "BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_2.mp3",				 "BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_3.mp3",				 "BackgroundMenu4",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",								 "BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",						 "BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
 	// Extras
 	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",								 "ArrowHit",				RedAudioManager::AudioType::SFX);
 	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",						 "ElectricBlast",			RedAudioManager::AudioType::SFX);
@@ -718,7 +727,7 @@ void setupAudio()
 
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
-	RedAudioManager::Instance().Mute();
+	//RedAudioManager::Instance().Mute();
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
 }
 
@@ -1345,6 +1354,8 @@ void setupSkillVFX(Odyssey::Application* application)
 	// PALADIN SKILLS START HERE
 	setupBardVFX(application, showcase);
 	setupPaladinVFX(application, showcase);
+	setupSkeletonVFX(application, showcase);
+	setupGanfaulVFX(application, showcase);
 }
 
 void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
@@ -1630,13 +1641,13 @@ void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showca
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
-	skillVFX->setParticleCount(0, 10);
+	skillVFX->setParticleCount(0, 100);
 	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(120.0f);
+	skillVFX->setDuration(7.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
-	skillVFX->setGravity(0.0f);
+	skillVFX->setGravity(1.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
 
@@ -1652,16 +1663,55 @@ void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showca
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
-	skillVFX->setParticleCount(0, 10);
+	skillVFX->setParticleCount(0, 100);
 	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(120.0f);
+	skillVFX->setDuration(7.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+}
 
+void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	// Create the skill 1 prefab
+	showcase->getComponent<SkillShowcase>()->ganfaul1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<BossAttackMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(15.0f, 0.0f, 75.0f), DirectX::XMFLOAT3(75.0f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(8.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(-0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+	
+	/*skillVFX = showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<BossAttackMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(8.0f);
+	skillVFX->setSpeed(1.25f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));*/
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
@@ -1698,6 +1748,7 @@ int main()
 
 	SetUnhandledExceptionFilter(DumpOutput);
 	SaveLoad::Instance().CreateProfileDirectory();
+	SaveLoad::Instance().LoadSettings();
 	//StatTracker::Instance().OutputStatSheet();
 	//DumpFile Test
 	/*int test = 120;

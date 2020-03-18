@@ -581,6 +581,7 @@ void TowerSelectController::ChangeTowerInfoElements(Odyssey::Entity* _newPrefab,
 
 void TowerSelectController::GoBackToMainMenu()
 {
+	RedAudioManager::Instance().StopGroup("BackgroundMenu");
 	// Turn off the tower select canvas
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);

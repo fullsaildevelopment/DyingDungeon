@@ -33,4 +33,7 @@ public:
 	Odyssey::Entity* skeleton1Spawn;
 	Odyssey::Entity* skeleton2;
 	Odyssey::Entity* skeleton2Spawn;
+
+	Odyssey::Entity* ganfaul1;
+	Odyssey::Entity* ganfaul1Spawn;
 };
