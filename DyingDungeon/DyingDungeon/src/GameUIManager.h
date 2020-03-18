@@ -290,6 +290,9 @@ public: // Functions
 	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
 	Odyssey::Text2D* GetTeamSelectBackButton() { return  mTeamSelectBackButton; }
 
+	// Get the tutorial level button
+	Odyssey::Sprite2D* GetTutorialButton() { return mTutorialButton; };
+
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() 
 	{ 
@@ -367,6 +370,7 @@ private: // Varibales
 	Odyssey::Text2D* mTowerBackButton = nullptr;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
 	Odyssey::UICanvas* mTowerInfoCanvas = nullptr;
+	Odyssey::Sprite2D* mTutorialButton = nullptr;
 
 	// Team Menu Items
 	// Enter Battle Button

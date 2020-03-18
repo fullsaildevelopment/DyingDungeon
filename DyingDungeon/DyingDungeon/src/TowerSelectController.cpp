@@ -27,6 +27,9 @@ void TowerSelectController::initialize()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), true);
 
+	// Get tutorial button
+	mTutorialButton = GameUIManager::getInstance().GetTutorialButton();
+
 	// Don't show the tower info canvas
 	GameUIManager::getInstance().GetTowerInfoCanvas()->setActive(false);
 
@@ -70,6 +73,9 @@ void TowerSelectController::initialize()
 	mDoorList[4].doorImage->registerCallback("onMouseClick", this, &TowerSelectController::GoToTeamSelectionWithLevel5);
 	mDoorList[4].doorImage->registerCallback("onMouseEnter", this, &TowerSelectController::ChangeDoor5State);
 	mDoorList[4].doorImage->registerCallback("onMouseExit", this, &TowerSelectController::ChangeDoor5State);
+	
+	// Register Tutorial Level Button
+	mTutorialButton->registerCallback("onMouseClick", this, &TowerSelectController::GoToTutorialLevel);
 }
 
 void TowerSelectController::update(double deltaTime)
@@ -117,6 +123,10 @@ void TowerSelectController::onDestroy()
 	mDoorList[4].doorImage->unregisterCallback("onMouseClick");
 	mDoorList[4].doorImage->unregisterCallback("onMouseEnter");
 	mDoorList[4].doorImage->unregisterCallback("onMouseExit");
+
+	// Tutorial Level
+	mTutorialButton->unregisterCallback("onMouseClick");
+
 }
 
 void TowerSelectController::GoToTeamSelectionWithLevel1()
@@ -124,6 +134,8 @@ void TowerSelectController::GoToTeamSelectionWithLevel1()
 	// Turn off the tower select canvas
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
 
 	// Set the current level to 1
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(1);
@@ -138,6 +150,8 @@ void TowerSelectController::GoToTeamSelectionWithLevel2()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
+	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
+
 	// Set the current level to 1
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(2);
 
@@ -150,6 +164,8 @@ void TowerSelectController::GoToTeamSelectionWithLevel3()
 	// Turn off the tower select canvas
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
 
 	// Set the current level to 1
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(3);
@@ -181,7 +197,7 @@ void TowerSelectController::GoToTeamSelectionWithLevel5()
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(5);
 
 	// Switch to the team select scene
-	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
 }
 
 void TowerSelectController::GoToScene2()
@@ -190,8 +206,29 @@ void TowerSelectController::GoToScene2()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
+	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
+
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene2"));
+}
+
+// Tutorial Level 
+void TowerSelectController::GoToTutorialLevel()
+{
+	// Turn off the tower select canvas
+	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
+	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(true);
+
+	TeamManager::getInstance().ClearPlayerTeamEnumList();
+
+	TeamManager::getInstance().AddCharacterEnumToPlayerTeam(TeamManager::HeroType::Bard);
+	TeamManager::getInstance().AddCharacterEnumToPlayerTeam(TeamManager::HeroType::Paladin);
+	TeamManager::getInstance().AddCharacterEnumToPlayerTeam(TeamManager::HeroType::Monk);
+
+	// Switch to the team select scene
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
 }
 
 void TowerSelectController::ChangeDoor1State()
@@ -604,6 +641,7 @@ void TowerSelectController::ChangeTowerInfoElements(Odyssey::Entity* _newPrefab,
 	}
 }
 
+
 void TowerSelectController::GoBackToMainMenu()
 {
 	// Turn off the tower select canvas
@@ -613,3 +651,4 @@ void TowerSelectController::GoBackToMainMenu()
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("MainMenu"));
 }
+

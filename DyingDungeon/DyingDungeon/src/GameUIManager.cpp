@@ -505,6 +505,17 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	height = 275;
 	properties.fontSize = 12.0f;
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
+	
+	// Setup Tutorial Button
+	position.x = screenWidth - 180;
+	position.y = 10;
+	mTutorialButton = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", 165, 62);
+	position.y += 10;
+	position.x += 27;
+	properties.fontSize = 30;
+	properties.italic = false;
+	towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tutorial", properties);
+
 	// Disable the tower info canvas
 	mTowerInfoCanvas->setActive(false);
 }
@@ -1305,7 +1316,7 @@ void GameUIManager::SetupClickableCharacterUI()
 	for (int i = 0; i < mClickableUIList.size(); i++)
 	{
 		Odyssey::Rectangle2D* rect = mClickableUIList[i]->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
-
+		
 		if (i == 0)
 		{
 			rect->registerCallback("onMouseClick", this, &GameUIManager::Character1ClickableCallback);
