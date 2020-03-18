@@ -443,7 +443,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 75.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Hit"] = "WarriorHitReaction";
 		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
@@ -519,27 +519,27 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.4f, -10.0f, 15.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("", 0.25f);
+		mSkillList[0]->SetSoundEffect("SplittingStrike", 0.1f);
 		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 15.0f,temp, false));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.4f, 20.0f, 15.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("ArmorBuster", 0.15f);
 		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense 50% and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.3f, 15.0f, 20.0f ,temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
+		mSkillList[2]->SetSoundEffect("Cleave", 0.1f);
 		mSkillList[2]->SetStatusChance(0.75f);
 		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit with a 75% chance to provoke. Cost 15 mana.");
 		// Skill 4 
-		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 35.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.3f, 30.0f, 35.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("", 0.25f);
+		mSkillList[3]->SetSoundEffect("Rage", 0.1f);
 		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage, hitting the target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
