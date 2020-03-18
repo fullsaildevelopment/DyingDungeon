@@ -106,7 +106,7 @@ void TowerSelectController::update(double deltaTime)
 
 void TowerSelectController::onDestroy()
 {
-	GameUIManager::getInstance().GetTeamSelectBackButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTowerSelectBackButton()->unregisterCallback("onMouseClick");
 	mDoorList[0].doorImage->unregisterCallback("onMouseClick");
 	mDoorList[0].doorImage->unregisterCallback("onMouseEnter");
 	mDoorList[0].doorImage->unregisterCallback("onMouseExit");
