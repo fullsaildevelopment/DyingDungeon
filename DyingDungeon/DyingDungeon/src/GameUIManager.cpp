@@ -210,34 +210,36 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	// Create title text
 	height = 100;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"The Dying Dungeon", properties);
 
 	// Create new game text 
 	properties.bold = false;
 	properties.fontSize = 40.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	position.x += 200.0f;
 	position.y += 250.0f;
-	width = 200;
+	width = 300;
 	height = 50;
 	// TODO: MAYBE COMMENT THIS IN? LOOKS DUMB
 	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mStatsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Game Statistics", properties);
 
 	// TODO: M3B1 ONLY REFACTOR LATER
 	position.y += 70.0f;
-	width += 70;
-	mMainOptionsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, 60, L"Options", properties);
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	mMainOptionsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Options", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mCreditsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mExitGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Exit Game", properties);
 	// TODO: M3B1 ONLY END
 
@@ -258,31 +260,35 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	position.y -= 160.0f;
+	mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height + 20.0f);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height + 20, L"Options", properties);
 
 	position.y += 115.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the reusume background to the canvas
-	mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.bold = false;
 	properties.fontSize = 30.0f;
+	mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Sound", properties);
 
 	position.y += 75.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the options background to the canvas
-	mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Options text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Controls", properties);
 
 	position.y += 75.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the options background to the canvas
-	mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Options text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
 
 	properties.fontSize = 25.0f;
@@ -303,7 +309,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.bold = false;
 	properties.fontSize = 20.0f;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , 0.0f };
 	//position.y -= 10.0f;
 	position.x += (width / 2.0f) - 40.0f;
 	mVolumeText = mainMenuVolumeCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Volume", properties);

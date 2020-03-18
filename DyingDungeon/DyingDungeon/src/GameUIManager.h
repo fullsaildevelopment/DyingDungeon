@@ -262,11 +262,11 @@ public: // Functions
 	//
 	Odyssey::Text2D* GetBackOptions() { return mOptionsBack; }
 	//
-	Odyssey::Rectangle2D* GetBackButtonOptions() { return mOptionsBackButton; }
+	Odyssey::Sprite2D* GetBackButtonOptions() { return mOptionsBackButton; }
 	//
-	Odyssey::Rectangle2D* GetVolumeButtonOptions() { return mOptionsVolume; }
+	Odyssey::Sprite2D* GetVolumeButtonOptions() { return mOptionsVolume; }
 	//
-	Odyssey::Rectangle2D* GetControlsButtonOptions() { return mOptionsControls; }
+	Odyssey::Sprite2D* GetControlsButtonOptions() { return mOptionsControls; }
 	//
 	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
@@ -357,9 +357,9 @@ private: // Varibales
 	Odyssey::Text2D* mNewGameText = nullptr;
 	Odyssey::Text2D* mStatsText = nullptr;
 	Odyssey::Text2D* mOptionsBack = nullptr;
-	Odyssey::Rectangle2D* mOptionsBackButton = nullptr;
-	Odyssey::Rectangle2D* mOptionsVolume = nullptr;
-	Odyssey::Rectangle2D* mOptionsControls = nullptr;
+	Odyssey::Sprite2D* mOptionsBackButton = nullptr;
+	Odyssey::Sprite2D* mOptionsVolume = nullptr;
+	Odyssey::Sprite2D* mOptionsControls = nullptr;
 	Odyssey::Text2D* mMainControlsBack = nullptr;
 	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
