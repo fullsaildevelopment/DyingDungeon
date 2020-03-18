@@ -116,10 +116,10 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			// Skill 2 
 			StatusEffect = std::make_shared<StatDown>(0.35f, 3, STATS::Def, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Def Down", "Skill_2", 0.25f, 15.0f, StatusEffect, false));
-			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
+			mSkillList.push_back(std::make_shared<Attack>(L"Def Down", "Skill_1", 0.25f, 15.0f, 10.0f, StatusEffect, true));
+			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			// Skill 3 
-			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_3", 0.25f, 25.0f, 30.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"mod hit", "Skill_1", 0.25f, 25.0f, 30.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			break;
 		}
@@ -738,6 +738,10 @@ void AIMoves::UngaAttackDeterminePriority()
 void AIMoves::GanfaulDeterminePriority()
 {
 	mPriorityMove = GameplayTypes::SKILLTYPE::ATTACK;
+}
+
+void AIMoves::MeleeDeterminePriority()
+{
 }
 
 ///////GET FUNCTIONS///////
