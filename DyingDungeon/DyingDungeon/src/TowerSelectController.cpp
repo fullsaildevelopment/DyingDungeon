@@ -179,7 +179,7 @@ void TowerSelectController::GoToTeamSelectionWithLevel5()
 	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(5);
 
 	// Switch to the team select scene
-	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
 }
 
 void TowerSelectController::GoToScene2()

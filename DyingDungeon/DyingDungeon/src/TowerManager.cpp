@@ -35,9 +35,6 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
-	// Spawn the level 1 room
-	
-
 	// Create the player team
 	CreateThePlayerTeam();
 
@@ -283,6 +280,9 @@ void TowerManager::update(double deltaTime)
 				{
 					// Update to the next level
 					mCurrentLevel = GetCurrentLevel() + 1;
+
+					if (mCurrentLevel > mNumberOfLevels)
+						SetTowerState(NOT_IN_BATTLE);
 				}
 			}
 		}
@@ -294,6 +294,8 @@ void TowerManager::update(double deltaTime)
 				mUsedBossCheatCode = false;
 				// Create temp xp variable
 				float tempXP = 0.0f;
+
+				TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 
 				// Check to see if that was our last level for completing the tower
 				if (GetCurrentLevel() > mNumberOfLevels)
@@ -307,8 +309,6 @@ void TowerManager::update(double deltaTime)
 					{
 						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
-					// Go to main menu screen
-					GoToMainMenu();
 				}
 				else
 				{
@@ -326,13 +326,20 @@ void TowerManager::update(double deltaTime)
 							currCharacter->SetState(STATE::NONE);
 						}
 					}
-					// Make a new battle to continue the tower
-					CreateBattleInstance();
-				}
 
-				// Turn off the rewads screen
-				Rewards->setActive(false);
-				ToggleCharacterUI(true);
+					// Boss Level
+					if (mCurrentLevel == mNumberOfLevels)
+					{
+						// TODO
+						// Switch to the boss scene
+					}
+					else
+						CreateBattleInstance();
+
+					// Turn off the rewads screen
+					Rewards->setActive(false);
+					ToggleCharacterUI(true);
+				}
 			}
 			float stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
 			if (stat_opacity <= 0.0f) {
@@ -349,7 +356,12 @@ void TowerManager::update(double deltaTime)
 		}
 		else if (GetTowerState() == NOT_IN_BATTLE)
 		{
-
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			{
+				Rewards->setActive(false);
+				ToggleCharacterUI(true);
+				GoToMainMenu();
+			}
 		}
 	}
 }
@@ -698,4 +710,6 @@ void TowerManager::CreateThePlayerTeam()
 		// Add the character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
+
+	TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 }
