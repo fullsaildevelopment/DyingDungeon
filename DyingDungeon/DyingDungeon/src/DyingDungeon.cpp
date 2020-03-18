@@ -77,7 +77,7 @@ namespace
 	Odyssey::Entity* gPaladin;
 	Odyssey::Entity* gSkeleton;
 	Odyssey::Entity* gSceneOneTower;
-	Odyssey::Entity* gSceneTwoTower;
+	Odyssey::Entity* gSceneBossTower;
 	Odyssey::Entity* gTurnIndicatorModel;
 	//Vectors
 	std::vector<Odyssey::Entity*> gPlayerUnit;
@@ -168,10 +168,10 @@ int playGame()
 	setupRewardsPrefab(application.get());
 	// Set up the tower manager
 	setupTowerManager(gSceneOne, 1);
-	// Set the current tower manager for the tower select screen
-	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTowerManager(gSceneOneTower);
-	// Set the game's current tower
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gSceneOneTower);
+	// Add tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->AddTowerManager(gSceneOneTower);
+	// Add the game's towers
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->AddTowerManager(gSceneOneTower);
 	// Set up the enemies that the player will battle
 	setupEnemiesToCreate(application.get());
 	//TeamManager::getInstance().initialize();
@@ -185,8 +185,14 @@ int playGame()
 	gSceneBoss->setSkybox("Skybox.dds");
 	setupSceneTwo();
 	// Set up the tower manager
-	//setupTowerManager(gSceneBoss, 2);
+	setupTowerManager(gSceneBoss, 2);
+	// Add tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->AddTowerManager(gSceneBossTower);
+	// Add the game's towers
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->AddTowerManager(gSceneBossTower);
 
+	// Assign the team slection controller to the tower selector
+	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTeamSelector(gTeamSelectMenu->getComponent<TeamSelectionController>());
 	
 	// Set up multithreading
 	application->setMultithreading(false);
@@ -497,11 +503,11 @@ void setupTowerManager(Odyssey::Scene* _sceneToAddTo, int _sceneNum)
 			break;
 		case 2:
 			// BOSS SCENE
-			gSceneTwoTower = _sceneToAddTo->createEntity();
-			gSceneTwoTower->addComponent<TowerManager>();
-			gSceneTwoTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
-			gSceneTwoTower->getComponent<TowerManager>()->scene = _sceneToAddTo;
-			gSceneTwoTower->getComponent<TowerManager>()->SetCurrentLevel(5);
+			gSceneBossTower = _sceneToAddTo->createEntity();
+			gSceneBossTower->addComponent<TowerManager>();
+			gSceneBossTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
+			gSceneBossTower->getComponent<TowerManager>()->scene = _sceneToAddTo;
+			gSceneBossTower->getComponent<TowerManager>()->SetCurrentLevel(5);
 			break;
 		default:
 			break;

@@ -17,8 +17,9 @@ public:
 
 	// Setters
 
-	// Set current tower manager
-	void SetTowerManager(Odyssey::Entity* _towerManager) {mCurrentTower = _towerManager; }
+	// Add tower managers
+	void AddTowerManager(Odyssey::Entity* _towerManager) { mCurrentTowers.push_back(_towerManager); }
+	void SetIsBossScene(bool _isBossScene) { mIsBossScene = _isBossScene; }
 
 private:
 	Odyssey::Application* mApplication = nullptr;
@@ -29,6 +30,9 @@ private:
 	// Building Index will keep track of how many charcters have been built
 	int mBuildIndex = 0;
 
+	// holds whether or not it's the boss scene
+	bool mIsBossScene = false;
+
 	// Game scenes that the players will need to get added to
 	std::vector<Odyssey::Scene*> mListOfGameScenes;
 
@@ -36,7 +40,7 @@ private:
 	std::vector<DirectX::XMVECTOR> mPlayerPositions;
 
 	// Hold the tower manager object
-	Odyssey::Entity* mCurrentTower = nullptr;
+	std::vector<Odyssey::Entity*> mCurrentTowers;
 
 	// These vectors will hold the character list for each slot
 	std::vector<Odyssey::Entity*> mSlot1CharacterList;

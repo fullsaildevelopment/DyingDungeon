@@ -48,12 +48,12 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 
 		// Determine the enemy hud we need based on the enemy list
 		// If there is only 1 player on the enemy team to start out with, make sure he is placed in the middle
-		if (i == 0)
+		if (i == 0 && enemies.size() != 1)
 		{
 			hudID = CharacterFactory::HudID::EnemyLeft;
 			clickablePos = GameUIManager::ClickableCharacterUI::EnemyLeft;
 		}
-		else if (i == 1)
+		else if (i == 1 || enemies.size() == 1)
 		{
 			hudID = CharacterFactory::HudID::EnemyMiddle;
 			clickablePos = GameUIManager::ClickableCharacterUI::EnemyMiddle;
@@ -191,12 +191,17 @@ void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 
 void TeamManager::UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd)
 {
-	mPlayerTeam.clear();
+	mPlayerTeamHeroComps.clear();
 
 	for (int i = 0; i < _heroesToAdd.size(); i++)
 	{
-		mPlayerTeam.push_back(_heroesToAdd[i]);
+		mPlayerTeamHeroComps.push_back(_heroesToAdd[i]->getComponent<HeroComponent>());
 	}
+}
+
+HeroComponent* TeamManager::GetUpdatedPlayerTeamHeroComp(int _index)
+{
+	return mPlayerTeamHeroComps[_index];
 }
 
 void TeamManager::ClearPlayerTeamEnumList()

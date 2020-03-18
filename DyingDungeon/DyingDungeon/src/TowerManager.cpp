@@ -14,6 +14,7 @@
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
 #include "SkillHoverComponent.h"
+#include "LoadingScreenController.h"
 
 CLASS_DEFINITION(Component, TowerManager)
 
@@ -35,8 +36,16 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
+	GameUIManager::getInstance().ClearClickableCharacterList();
+
 	// Create the player team
 	CreateThePlayerTeam();
+
+	//for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
+	//{
+	//	HeroComponent* savedHeroComp = TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
+	//}
+	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	if (!mIsTutorial)
@@ -355,8 +364,9 @@ void TowerManager::update(double deltaTime)
 					// Boss Level
 					if (mCurrentLevel == mNumberOfLevels)
 					{
-						// TODO
+						TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 						// Switch to the boss scene
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
 					}
 					else
 						CreateBattleInstance();
@@ -394,8 +404,8 @@ void TowerManager::update(double deltaTime)
 void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
 	// Set the number of levels for this tower
-	mNumberOfLevels = _numberOfBattles;
-	mCurrentBattle = nullptr;
+	//mNumberOfLevels = _numberOfBattles;
+	//mCurrentBattle = nullptr;
 }
 
 void TowerManager::CreateBattleInstance()
@@ -775,6 +785,4 @@ void TowerManager::CreateThePlayerTeam()
 		// Add the character in the player list
 		mPlayerTeam.push_back(newCharacter);
 	}
-
-	TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 }

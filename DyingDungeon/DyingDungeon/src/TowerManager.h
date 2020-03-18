@@ -78,7 +78,7 @@ private: // Varibales
 
 	// Ints
 	int mCurrentLevel = 0;
-	int mNumberOfLevels = 0;
+	int mNumberOfLevels = 5;
 
 	// Floats
 
