@@ -130,9 +130,6 @@
     <ClCompile Include="src\TowerInfoElements.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
-    <ClCompile Include="src\TutorialLevel.cpp">
-      <Filter>Source Files\Game Management</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\RedAudio.h">
@@ -281,9 +278,6 @@
     </ClInclude>
     <ClInclude Include="src\TowerInfoElements.h">
       <Filter>Header Files\User Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TutorialLevel.h">
-      <Filter>Header Files\Game Management</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
