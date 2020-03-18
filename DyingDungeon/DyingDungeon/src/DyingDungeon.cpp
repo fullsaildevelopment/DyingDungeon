@@ -1685,7 +1685,7 @@ void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
 	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<BossAttackMover>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
-	skillVFX->setColor(DirectX::XMFLOAT3(15.0f, 0.0f, 75.0f), DirectX::XMFLOAT3(75.0f, 0.0f, 0.0f));
+	skillVFX->setColor(DirectX::XMFLOAT3(215.0f, 10.0f, 0.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 0.0f));
 	skillVFX->setLifetime(0.75f, 0.75f);
 	skillVFX->setParticleCount(0, 300);
 	skillVFX->setEmissionOverLifetime(75);
