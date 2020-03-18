@@ -916,13 +916,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (Odyssey::Entity* c : enemies)
 					{
-						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
-						tempPos2 = mCurrentSkill->GetParticleOffset();
-						tempPos1.x += tempPos2.x;
-						tempPos1.y += tempPos2.y;
-						tempPos1.z += tempPos2.z;
-						position = DirectX::XMLoadFloat3(&(tempPos1));
-						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+						if (c != nullptr)
+						{
+							tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+							tempPos2 = mCurrentSkill->GetParticleOffset();
+							tempPos1.x += tempPos2.x;
+							tempPos1.y += tempPos2.y;
+							tempPos1.z += tempPos2.z;
+							position = DirectX::XMLoadFloat3(&(tempPos1));
+							Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mCurrentSkill->GetParticleSystem(), &temp, position, rotation));
+						}
 					}
 				}
 				else
@@ -1294,19 +1297,19 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		// Set my temp target storage to the highleted target
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 
-		// Turn on thier targeter
-		mCurrentTarget->mImpactIndicator->setActive(true);
-
-		// if my prev targert doesnt equal my current target
-		if (prevChar != mCurrentTarget)
-		{
-			// If there is an old target, turn off targeter
-			if (prevChar != nullptr)
-				prevChar->mImpactIndicator->setActive(false);
-
-			// Set the old target to mt current one
-			prevChar = mCurrentTarget;
-		}
+		//// Turn on thier targeter
+		//mCurrentTarget->mImpactIndicator->setActive(true);
+		//
+		//// if my prev targert doesnt equal my current target
+		//if (prevChar != mCurrentTarget)
+		//{
+		//	// If there is an old target, turn off targeter
+		//	if (prevChar != nullptr)
+		//		prevChar->mImpactIndicator->setActive(false);
+		//
+		//	// Set the old target to mt current one
+		//	prevChar = mCurrentTarget;
+		//}
 	}
 	else if (mCurrentTarget == nullptr)
 	{
@@ -1314,8 +1317,8 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		for (Odyssey::Entity* t : targets)
 		{
 			// If the entity is valid and  the character is not dead, turn on targeter
-			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-				t->getComponent<Character>()->mImpactIndicator->setActive(true);
+			//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+				//t->getComponent<Character>()->mImpactIndicator->setActive(true);
 		}
 
 		// Set current target to something to avoid repeating this loop

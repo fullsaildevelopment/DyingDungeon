@@ -133,10 +133,12 @@ void TowerSelectController::GoToTeamSelectionWithLevel1()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetTutorialState(false);
 
 	// Set the current level to 1
-	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(1);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetCurrentLevel(1);
+
+	mTeamSelector->SetIsBossScene(false);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
@@ -148,10 +150,12 @@ void TowerSelectController::GoToTeamSelectionWithLevel2()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetTutorialState(false);
 
-	// Set the current level to 1
-	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(2);
+	// Set the current level to 2
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetCurrentLevel(2);
+
+	mTeamSelector->SetIsBossScene(false);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
@@ -163,10 +167,12 @@ void TowerSelectController::GoToTeamSelectionWithLevel3()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetTutorialState(false);
 
-	// Set the current level to 1
-	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(3);
+	// Set the current level to 3
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetCurrentLevel(3);
+
+	mTeamSelector->SetIsBossScene(false);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
@@ -178,8 +184,12 @@ void TowerSelectController::GoToTeamSelectionWithLevel4()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	// Set the current level to 1
-	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(4);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetTutorialState(false);
+
+	// Set the current level to 4
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetCurrentLevel(4);
+
+	mTeamSelector->SetIsBossScene(false);
 
 	// Switch to the team select scene
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
@@ -191,23 +201,15 @@ void TowerSelectController::GoToTeamSelectionWithLevel5()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	// Set the current level to 1
-	mCurrentTower->getComponent<TowerManager>()->SetCurrentLevel(5);
+	mCurrentTowers[1]->getComponent<TowerManager>()->SetTutorialState(false);
+
+	// Set the current level to 5
+	mCurrentTowers[1]->getComponent<TowerManager>()->SetCurrentLevel(5);
+
+	mTeamSelector->SetIsBossScene(true);
 
 	// Switch to the team select scene
-	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
-}
-
-void TowerSelectController::GoToScene2()
-{
-	// Turn off the tower select canvas
-	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
-	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
-
-	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(false);
-
-	// Switch to the team select scene
-	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene2"));
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TeamSelection"));
 }
 
 // Tutorial Level 
@@ -217,7 +219,7 @@ void TowerSelectController::GoToTutorialLevel()
 	Odyssey::Entity* towerSelectMenu = GameUIManager::getInstance().GetTowerSelectMenu();
 	GameUIManager::getInstance().ToggleCanvas(towerSelectMenu->getComponent<Odyssey::UICanvas>(), false);
 
-	mCurrentTower->getComponent<TowerManager>()->SetTutorialState(true);
+	mCurrentTowers[0]->getComponent<TowerManager>()->SetTutorialState(true);
 
 	TeamManager::getInstance().ClearPlayerTeamEnumList();
 
@@ -241,7 +243,7 @@ void TowerSelectController::ChangeDoor1State()
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
-
+		
 		// Change enemy sprites and level number
 		ChangeTowerInfoElements(mLevelInfoPopups[0], 1);
 	}
@@ -370,7 +372,6 @@ void TowerSelectController::ChangeDoor5State()
 		mDoorList[4].mDoOpenDoorAnimation = false;
 		mDoorList[4].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
-
 		// Destroy the info popup
 		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[4]));
 	}
