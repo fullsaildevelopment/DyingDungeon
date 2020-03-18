@@ -569,7 +569,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "MonkHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -646,28 +646,28 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 12.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Jab", "Skill_1", 0.25f, -15.0f, 12.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("", 0.25f);
+		mSkillList[0]->SetSoundEffect("Jab", 0.0f);
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 20.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.15f, 20.0f, 20.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("ArmorBreak", 0.05f);
 		mSkillList[1]->SetSkillDescription(L"dealing 15 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.4f, 15.0f, 15.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
+		mSkillList[2]->SetSoundEffect("PressurePoint", 0.1f);
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 25.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.15f, 30.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("", 0.25f);
+		mSkillList[3]->SetSoundEffect("BreakRibs", 0.1f);
 		mSkillList[3]->SetSkillDescription(L"dealing 30 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
