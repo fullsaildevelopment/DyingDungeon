@@ -323,7 +323,7 @@ void TowerManager::update(double deltaTime)
 				}
 
 				// Check to see if that was our last level for completing the tower
-				else if (GetCurrentLevel() > mNumberOfLevels)
+				if (GetCurrentLevel() > mNumberOfLevels)
 				{
 					SetTowerState(NOT_IN_BATTLE);
 
