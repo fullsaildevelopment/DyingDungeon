@@ -98,10 +98,6 @@ void Attack::Use(Character& caster, Character& target)
 	GameUIManager::getInstance().UpdateCombatLogText(totalDps);
 	//////////////////////////////////////////////
 
-	// Play audio "hit" sound effect
-	RedAudioManager::Instance().PlaySFX(target.GetSoundClipName("Hit").c_str());
-
-
 	// If i have a status effect to apply, then apply it 
 	if (mStatusEffect != nullptr && target.GetState() != STATE::DEAD && RandomChance() <= mStatusEffectChance)
 	{

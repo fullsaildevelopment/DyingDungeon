@@ -17,6 +17,9 @@ private:
 	void EnterTowerSelectScreen();
 	// TODO: M3B1 ONLY REFACTOR LATER
 	void ExitGame();
+	void ShowVolumeConfermation();
+	void VolumeConfermationYes();
+	void VolumeConfermationNo();
 	// TODO: M3B1 ONLY END
 public:
 	Odyssey::Rectangle2D* mRect = nullptr;

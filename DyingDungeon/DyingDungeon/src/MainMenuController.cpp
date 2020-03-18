@@ -118,6 +118,10 @@ void MainMenuController::onDestroy()
 		GameUIManager::getInstance().GetMainMenuMinusVolumeButtons()[i]->unregisterCallback("onMouseClick");
 	}
 	// TODO: M3B1 ONLY END
+	GameUIManager::getInstance().GetOptionsButtonMain()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetBackButtonOptions()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetVolumeButtonOptions()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetControlsButtonOptions()->unregisterCallback("onMouseClick");
 }
 
 void MainMenuController::EnterTowerSelectScreen()
@@ -132,4 +136,19 @@ void MainMenuController::EnterTowerSelectScreen()
 void MainMenuController::ExitGame()
 {
 	Odyssey::EventManager::getInstance().publish(new Odyssey::ShutdownApplicationEvent());
+}
+
+void MainMenuController::ShowVolumeConfermation()
+{
+	 //GameUIManager::getInstance().Get
+}
+
+void MainMenuController::VolumeConfermationYes()
+{
+
+}
+
+void MainMenuController::VolumeConfermationNo()
+{
+
 }

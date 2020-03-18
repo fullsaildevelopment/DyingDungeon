@@ -143,6 +143,11 @@ private: // Functions
 
 	// Mage Skill Effect Prefabs //
 	void MageSkill1Prefab();
+	void SkeletonSkill3Prefab();
+	void GanfaulSkill1Prefab();
+	void GanfaulSkill2Prefab();
+	void SkeletonSkill1Prefab();
+	void SkeletonSkill2Prefab();
 	//////////////////////////////
 
 	// Particle Creation Functions

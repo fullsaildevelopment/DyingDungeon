@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 #include "Scene.h"
+#include "HeroComponent.h"
 
 class TeamManager
 {
@@ -53,6 +54,14 @@ public: // Functions
 	void AddCharacterEnumToPlayerTeam(HeroType _characterHeroType);
 	// Add player to the enemy team
 	void AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd);
+	// Add all heroes to the player team
+	void UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd);
+	// Get the updated player team
+	std::vector<HeroComponent*> GetUpdatedPlayerTeam() { return mPlayerTeamHeroComps; }
+	// Get the updated player team hero comp
+	HeroComponent* GetUpdatedPlayerTeamHeroComp(int _index);
+	// Clear the updated team
+	void ClearUpdatedPlayerTeam() { mPlayerTeamHeroComps.clear(); }
 
 	// Clear the players from the player team
 	void ClearPlayerTeamEnumList();
@@ -80,6 +89,8 @@ private: // Variables
 
 	// Holds the player characters to add into the Tower Manager
 	std::vector<HeroType> mPlayerTeamToCreate;
+	// Holds the player characters from the end of each level
+	std::vector<HeroComponent*> mPlayerTeamHeroComps;
 	// Holds the enemy characters to add into the Tower Manager
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 
