@@ -58,6 +58,9 @@ class AIMoves
 
 		// Ganfaul
 		void GanfaulDeterminePriority();
+
+		//Melee demon
+		void MeleeDeterminePriority();
 		
 		// Member Variables
 		//-------------------------------------------------------//

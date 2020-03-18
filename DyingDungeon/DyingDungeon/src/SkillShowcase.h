@@ -28,4 +28,12 @@ public:
 	Odyssey::Entity* paladin3Spawn;
 	Odyssey::Entity* paladin4;
 	Odyssey::Entity* paladin4Spawn;
+
+	Odyssey::Entity* skeleton1;
+	Odyssey::Entity* skeleton1Spawn;
+	Odyssey::Entity* skeleton2;
+	Odyssey::Entity* skeleton2Spawn;
+
+	Odyssey::Entity* ganfaul1;
+	Odyssey::Entity* ganfaul1Spawn;
 };

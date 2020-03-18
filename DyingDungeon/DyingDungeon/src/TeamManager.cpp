@@ -18,7 +18,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	// Destory the previous spot lights
 	for (int i = 0; i < mEnemySpotLights.size(); i++)
 	{
-		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemySpotLights[i]));
 	}
 	// Clear spot light prefabs
 	mEnemySpotLights.clear();
@@ -47,7 +47,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		Odyssey::Entity* prefab;
 
 		// Determine the enemy hud we need based on the enemy list
-		// If there is only 1 player on the enemy team to start out with, make sur ehe is placed in the middle
+		// If there is only 1 player on the enemy team to start out with, make sure he is placed in the middle
 		if (i == 0 && enemies.size() != 1)
 		{
 			hudID = CharacterFactory::HudID::EnemyLeft;
@@ -187,6 +187,21 @@ void TeamManager::AddCharacterEnumToPlayerTeam(HeroType _characterHeroType)
 void TeamManager::AddCharacterToEnemyTeam(Odyssey::Entity* _characterToAdd)
 {
 	mEnemyTeam.push_back(_characterToAdd);
+}
+
+void TeamManager::UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd)
+{
+	mPlayerTeamHeroComps.clear();
+
+	for (int i = 0; i < _heroesToAdd.size(); i++)
+	{
+		mPlayerTeamHeroComps.push_back(_heroesToAdd[i]->getComponent<HeroComponent>());
+	}
+}
+
+HeroComponent* TeamManager::GetUpdatedPlayerTeamHeroComp(int _index)
+{
+	return mPlayerTeamHeroComps[_index];
 }
 
 void TeamManager::ClearPlayerTeamEnumList()

@@ -136,6 +136,9 @@ public: // Functions
 	void ShowControlsGuide();
 
 	void HideControlsGuide();
+	
+	// Creation of tutorial
+	void CreateTutorialCanvas();
 
 	// Set the characters HUD Elements
 	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
@@ -243,7 +246,15 @@ public: // Functions
 	//
 	Odyssey::Sprite2D** GetSaveConfermationButtons() { return mSaveConfermationButtons; }
 	//
+	Odyssey::Sprite2D** GetSaveVolumeConfermationButtons() { return mSaveVolumeConfermationButtons; }
+	//
+	Odyssey::Sprite2D** GetSaveVolumeConfermationButtonsMain() { return mSaveVolumeConfermationButtonsMain; }
+	//
 	Odyssey::Entity* GetSaveConfermationMenu() { return mSaveLoadoutConfermation; }
+	//
+	Odyssey::Entity* GetSaveVolumeConfermationMenu() { return mSaveVolumeConfermation; }
+	//
+	Odyssey::Entity* GetSaveVolumeConfermationMainMenu() { return mMainSaveVolumeConfermation; }
 	//
 	Odyssey::Sprite2D* GetLoadoutPortraits(unsigned int index_1, unsigned int index_2) { return mLoadoutPortraits[index_1][index_2]; }
 	//
@@ -265,6 +276,9 @@ public: // Functions
 
 	Odyssey::Sprite2D** GetMainMenuMinusVolumeButtons() { return mMainMinusImage; }
 
+	// Get Tutorial Canvas
+	Odyssey::UICanvas* GetTutorialCanvas() { return mTutorialCanvas; }
+
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
 	// Get the options menu		   
@@ -279,6 +293,11 @@ public: // Functions
 	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
 	Odyssey::Sprite2D* GetControlsImage() { return mOptionsControlsImage; }
 	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
+	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
+	Odyssey::Text2D* GetTeamSelectBackButton() { return  mTeamSelectBackButton; }
+
+	// Get the tutorial level button
+	Odyssey::Sprite2D* GetTutorialButton() { return mTutorialButton; };
 
 	// Get the list of all of the character hud canvases
 	std::vector<Odyssey::Entity*> GetCharacterHuds() 
@@ -324,6 +343,8 @@ private: // Varibales
 	Odyssey::Entity* mTeamSelectMenu = nullptr;
 	Odyssey::Entity* mLoadoutMenu = nullptr;
 	Odyssey::Entity* mSaveLoadoutConfermation = nullptr;
+	Odyssey::Entity* mSaveVolumeConfermation = nullptr;
+	Odyssey::Entity* mMainSaveVolumeConfermation = nullptr;
 	Odyssey::Entity* mPauseMenu = nullptr;
 	Odyssey::Entity* mOptionsMenu = nullptr;
 	Odyssey::Entity* mStatsMenu = nullptr;
@@ -352,8 +373,10 @@ private: // Varibales
 
 	// Tower Menu Items
 	Odyssey::Text2D* mTowerSelectTitle = nullptr;
+	Odyssey::Text2D* mTowerBackButton = nullptr;
 	std::vector<Odyssey::Sprite2D*> mDoorImages;
 	Odyssey::UICanvas* mTowerInfoCanvas = nullptr;
+	Odyssey::Sprite2D* mTutorialButton = nullptr;
 
 	// Team Menu Items
 	// Enter Battle Button
@@ -370,8 +393,11 @@ private: // Varibales
 	Odyssey::Sprite2D* mLoadoutPortraits[3][3];
 	//Save Confermation Buttons
 	Odyssey::Sprite2D* mSaveConfermationButtons[2] = {nullptr, nullptr};
+	Odyssey::Sprite2D* mSaveVolumeConfermationButtons[2] = {nullptr, nullptr};
+	Odyssey::Sprite2D* mSaveVolumeConfermationButtonsMain[2] = {nullptr, nullptr};
 	//Loadout Cancel Button
 	Odyssey::Text2D* mCancelLoadoutButton = nullptr;
+	Odyssey::Text2D* mTeamSelectBackButton = nullptr;
 	// The arrow sprites
 	std::vector<Odyssey::Sprite2D*> mTeamSelectionArrows;
 	// The name text slots
@@ -493,6 +519,42 @@ private: // Functions
 	// Character hover callbacks
 	void CharacterEnterHoverCallback();
 	void CharacterExitHoverCallback();
+
+	// Tutorial Level CallBacks
+	void TutorialPlayerCallBack();
+	void TutorialPlayerUICallBack();
+	void TutorialPlayerSkillsCallBack();
+	void TutorialPlayerBuffsCallBack();
+	void TutorialPlayerStatsCallBack();
+	void TutorialEnemyUICallBack();
+	void TutorialEnemyCallBack();
+	void TutorialEnemyBuffsCallBack();
+	void TutorialLevelCallBack();
+	void TutorialTurnNumberCallBack();
+
+	public:
+	void TutorialTempFixCallBack();
+
+	private:
+	// Tutorial Level Sprites
+	Odyssey::Entity* mTutorialEntity = nullptr;
+
+	Odyssey::UICanvas* mTutorialCanvas = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayer = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerUI = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerSkills = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerBuffs = nullptr;
+	Odyssey::Sprite2D* mHighlightPlayerStats = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemyUI = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemy = nullptr;
+	Odyssey::Sprite2D* mHighlightEnemyBuffs = nullptr;
+	Odyssey::Sprite2D* mHighlightLevel = nullptr;
+	Odyssey::Sprite2D* mHighlightTurnNumber = nullptr;
+	Odyssey::Text2D* mTutorialText = nullptr;
+	Odyssey::Rectangle2D* tutorialRect = nullptr;
+
+	// Remove if possible after 3/18
+	Odyssey::Scene* gScene = nullptr;
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER

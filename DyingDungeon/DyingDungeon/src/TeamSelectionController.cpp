@@ -15,7 +15,6 @@ CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
 {
 	mApplication = application;
-	mCurrentTower = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
@@ -40,6 +39,7 @@ void TeamSelectionController::initialize()
 
 	// Register callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
+	GameUIManager::getInstance().GetTeamSelectBackButton()->registerCallback("onMouseClick", this, &TeamSelectionController::GoBackToTowerSelect);
 
 	// Register callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
@@ -107,11 +107,14 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().LoopRandom("BackgroundBattle");
 
 		// Set up the tower manager with how many levels we want
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
+		//mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
 		// Change the scene to the game
 		//Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
-		Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Scene One"));
+		if (!mIsBossScene)
+			Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Scene One"));
+		else
+			Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Boss Scene"));
 	}
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -137,6 +140,7 @@ void TeamSelectionController::onDestroy()
 {
 	// Unregister callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectBackButton()->unregisterCallback("onMouseClick");
 
 	// Unregister callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
@@ -1009,4 +1013,10 @@ void TeamSelectionController::ConfermationNo()
 	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(false);
 	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
+}
+
+void TeamSelectionController::GoBackToTowerSelect()
+{
+	// Change to the tower selection screen
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 }

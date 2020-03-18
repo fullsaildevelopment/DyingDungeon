@@ -66,6 +66,8 @@ void GameUIManager::initialize(Odyssey::Application* _application)
 
 void GameUIManager::CreateBattleLog(Odyssey::Scene* _sceneToAddTo)
 {
+	gScene = _sceneToAddTo;
+
 	// Create the battle log object
 	mBattleLog = _sceneToAddTo->createEntity();
 	mBattleLog->addComponent<Odyssey::UICanvas>();
@@ -360,6 +362,24 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mMainPlusImage[2] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[3] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 
+	mMainSaveVolumeConfermation = _sceneToAddTo->createEntity();
+	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mMainSaveVolumeConfermation->addComponent<Odyssey::UICanvas>();
+
+	position = { (screenWidth / 2.0f) - (static_cast<float>(width / 2) / 2.0f), (screenHeight / 2.0f) - (static_cast<float>(height * 6) / 2.0f) };
+
+	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 2, height * 6)->setOpacity(1.0f);
+	/*position.y -= 50.0f;
+	position.x -= 320.0f;*/
+	position.y += 10.0f;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width / 2, height * 2, L"Are you sure you want to overrid?", properties)->setFontSize(40.0f);
+	//mSaveVolumeConfermationButtonsMain[1] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
+	//mSaveVolumeConfermationButtonsMain[0] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
+
+	mMainSaveVolumeConfermation->setActive(false);
+
 	mMainMenuOptions->setVisible(false);
 	mMainMenuOptions->setActive(false);
 
@@ -427,6 +447,12 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
 	mDoorImages.push_back(doorImage);
 
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTowerBackButton = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+	properties.fontSize = 50.0f;
+	properties.bold = true;
+
 	// Start creating the tower info popup
 	width = 500;
 	height = 300;
@@ -481,6 +507,17 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	height = 275;
 	properties.fontSize = 12.0f;
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
+	
+	// Setup Tutorial Button
+	position.x = screenWidth - 180;
+	position.y = 10;
+	mTutorialButton = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", 165, 62);
+	position.y += 10;
+	position.x += 27;
+	properties.fontSize = 30;
+	properties.italic = false;
+	towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tutorial", properties);
+
 	// Disable the tower info canvas
 	mTowerInfoCanvas->setActive(false);
 }
@@ -508,11 +545,15 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
-	
+	properties.fontSize = 35.0f;
+	properties.bold = false;
+	mTeamSelectBackButton = teamSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+
 	//Create the save loadout button
 	position.y += 65.0f;
 	position.x -= 140.0f;
 	properties.fontSize = 35.0f;
+	properties.bold = true;
 	mSaveLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
 	
@@ -1244,6 +1285,73 @@ void GameUIManager::HideControlsGuide()
 	ShowMainOptions();
 }
 
+void GameUIManager::CreateTutorialCanvas()
+{
+	mTutorialEntity = gScene->createEntity();
+	mTutorialCanvas = mTutorialEntity->addComponent<Odyssey::UICanvas>();
+
+	DirectX::XMFLOAT2 position = { 0, 0 };
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+	UINT imageWidth = screenWidth;
+	UINT imageHeight = screenHeight;
+
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	mHighlightPlayer = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayer.png", imageWidth, imageHeight);
+	mHighlightPlayer->setOpacity(.8f);
+	//mHighlightPlayer->registerCallback("onMouseClick", this, &GameUIManager::TutorialPlayerCallBack);
+	textPosition.x = 396;
+	textPosition.y = 218;
+	mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is you!\nYou can click on yourself after selecting a friendly skill.", properties);
+
+	//mHighlightPlayerUI = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayerUI.png", imageWidth, imageHeight);
+	////mHighlightPlayerUI->setOpacity(.8f);
+	////mHighlightPlayerUI->setVisible(false);
+
+	//mHighlightPlayerSkills = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayerSkills.png", imageWidth, imageHeight);
+	////mHighlightPlayerSkills->setOpacity(.8f);
+	////mHighlightPlayerSkills->setVisible(false);
+	//
+	//mHighlightPlayerBuffs = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayerBuffs.png", imageWidth, imageHeight);
+	////mHighlightPlayerBuffs->setOpacity(.8f);
+	//mHighlightPlayerBuffs->setVisible(false);
+
+	//mHighlightPlayerStats = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayerStats.png", imageWidth, imageHeight);
+	////mHighlightPlayerStats->setOpacity(.8f);
+	//mHighlightPlayerStats->setVisible(false);
+
+	//mHighlightEnemy = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightEnemy.png", imageWidth, imageHeight);
+	////mHighlightEnemy->setOpacity(.8f);
+	//mHighlightEnemy->setVisible(false);
+
+	//mHighlightEnemyUI = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightEnemyUI.png", imageWidth, imageHeight);
+	////mHighlightEnemyUI->setOpacity(.8f);
+	//mHighlightEnemyUI->setVisible(false);
+
+	//mHighlightEnemyBuffs = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightEnemyBuffs.png", imageWidth, imageHeight);
+	////mHighlightEnemyBuffs->setOpacity(.8f);
+	//mHighlightEnemyBuffs->setVisible(false);
+
+	//mHighlightLevel = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightLevel.png", imageWidth, imageHeight);
+	////mHighlightLevel->setOpacity(.8);
+	//mHighlightLevel->setVisible(false);
+
+	//mHighlightTurnNumber = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightTurnNumber.png", imageWidth, imageHeight);
+	////mHighlightTurnNumber->setOpacity(.8f);
+	//mHighlightTurnNumber->setVisible(false);
+
+	mTutorialCanvas->setActive(false);
+}
+
 void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud)
 {
 	// Get the hud elements to assign
@@ -1277,7 +1385,7 @@ void GameUIManager::SetupClickableCharacterUI()
 	for (int i = 0; i < mClickableUIList.size(); i++)
 	{
 		Odyssey::Rectangle2D* rect = mClickableUIList[i]->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
-
+		
 		if (i == 0)
 		{
 			rect->registerCallback("onMouseClick", this, &GameUIManager::Character1ClickableCallback);
@@ -2868,3 +2976,329 @@ void GameUIManager::CharacterExitHoverCallback()
 	// Set the cursor to the basic pointer
 	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 }
+
+void GameUIManager::TutorialPlayerCallBack()
+{
+	// Remove Previous Info
+	//mHighlightPlayer->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	mTutorialCanvas->removeElement<Odyssey::Sprite2D>();
+	//mHighlightPlayer->setVisible(false);
+	DirectX::XMFLOAT2 position = { 0, 0 };
+
+	mHighlightPlayerUI = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayerUI.png", screenWidth, screenHeight);
+	//mHighlightPlayerUI->setOpacity(0.8f);
+
+	//TextPosition and Color
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	// Display Info for UI // Trickle down
+	textPosition.x = 389;
+	textPosition.y = 578;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is where you have access to info such as health, mana, and stats.", properties);
+
+	//mHighlightPlayerUI->setVisible(true);
+	//mHighlightPlayerUI->registerCallback("onMouseClick", this, &GameUIManager::TutorialPlayerUICallBack);
+}
+
+void GameUIManager::TutorialPlayerUICallBack()
+{
+	//mHighlightPlayerUI->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightPlayerUI->setVisible(false);
+
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+	textPosition.x = 389;
+	textPosition.y = 578;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"These are you skills. Hover over them to see what they do. Click to use.", properties);
+
+	//mHighlightPlayerSkills->setVisible(true);
+	//mHighlightPlayerSkills->registerCallback("onMouseClick", this, &GameUIManager::TutorialPlayerSkillsCallBack);
+}
+
+void GameUIManager::TutorialPlayerSkillsCallBack()
+{
+	//mHighlightPlayerSkills->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightPlayerSkills->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+	textPosition.x = 389;
+	textPosition.y = 578;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"These are your real time stats of your champion pay attention\na buff or debuff may cause them to change.", properties);
+
+	//mHighlightPlayerStats->setVisible(true);
+	//mHighlightPlayerStats->registerCallback("onMouseClick", this, &GameUIManager::TutorialPlayerStatsCallBack);
+}
+
+
+void GameUIManager::TutorialPlayerStatsCallBack()
+{
+	//mHighlightPlayerStats->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightPlayerStats->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+	textPosition.x = 389;
+	textPosition.y = 535;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"These are where your buffs and debuff will appear.\nMake sure to pay attention to this.", properties);
+
+	//mHighlightPlayerBuffs->setVisible(true);
+	//mHighlightPlayerBuffs->registerCallback("onMouseClick", this, &GameUIManager::TutorialPlayerBuffsCallBack);
+}
+
+void GameUIManager::TutorialPlayerBuffsCallBack()
+{
+	//mHighlightPlayerBuffs->unregisterCallback("onMouseClick");
+	//mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightPlayerBuffs->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+	textPosition.x = 389;
+	textPosition.y = 578;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is your current turn order. It will help you decipher who is going next", properties);
+
+	//mHighlightTurnNumber->setVisible(true);
+	//mHighlightTurnNumber->registerCallback("onMouseClick", this, &GameUIManager::TutorialTurnNumberCallBack);
+}
+
+void GameUIManager::TutorialTurnNumberCallBack()
+{
+	//mHighlightTurnNumber->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightTurnNumber->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	textPosition.x = 389;
+	textPosition.y = 578;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is your characters level. Level up by completing tower runs.", properties);
+
+	//mHighlightLevel->setVisible(true);
+	//mHighlightEnemy->registerCallback("onMouseClick", this, &GameUIManager::TutorialEnemyCallBack);
+}
+
+void GameUIManager::TutorialLevelCallBack()
+{
+	//mHighlightLevel->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightLevel->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	textPosition.x = 389;
+	textPosition.y = 115;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is the enemy!\nYou can click on them to attack after selecting a skill.", properties);
+
+	//mHighlightEnemy->setVisible(true);
+	//mHighlightEnemy->registerCallback("onMouseClick", this, &GameUIManager::TutorialEnemyCallBack);
+}
+
+void GameUIManager::TutorialEnemyCallBack()
+{
+	//mHighlightEnemy->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightEnemy->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	textPosition.x = 389;
+	textPosition.y = 64;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is where info reguarding the enemy will be displayed.", properties);
+
+	//mHighlightEnemyUI->setVisible(true);
+	//mHighlightEnemyUI->registerCallback("onMouseClick", this, &GameUIManager::TutorialEnemyUICallBack);
+}
+
+void GameUIManager::TutorialEnemyUICallBack()
+{
+	//mHighlightEnemyUI->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightEnemyUI->setVisible(false);
+
+	DirectX::XMFLOAT2 textPosition = DirectX::XMFLOAT2(100.0f, (screenHeight / 4));
+	DirectX::XMFLOAT4 textColor = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
+
+	// Set up text properties
+	Odyssey::TextProperties properties;
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+	properties.textAlignment = Odyssey::TextAlignment::Left;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.fontName = L"Constantia";
+
+	textPosition.x = 389;
+	textPosition.y = 89;
+	//mTutorialCanvas->addElement<Odyssey::Text2D>(textPosition, textColor, 500, 100, L"This is where enemy buffs and debuffs will be displayed.", properties);
+
+	//mHighlightEnemyBuffs->setVisible(true);
+	//mHighlightEnemyBuffs->registerCallback("onMouseClick", this, &GameUIManager::TutorialEnemyBuffsCallBack);
+}
+
+void GameUIManager::TutorialEnemyBuffsCallBack()
+{
+	//mHighlightEnemyBuffs->unregisterCallback("onMouseClick");
+	mTutorialCanvas->removeElement<Odyssey::Text2D>();
+	//mHighlightEnemyBuffs->setVisible(false);
+
+
+	// Finished Tutorial
+	//mTutorialCanvas->setActive(false);
+}
+
+void GameUIManager::TutorialTempFixCallBack()
+{
+	static int counter = 0;
+
+	switch (counter)
+	{
+		case 0:
+		{
+			TutorialPlayerCallBack();
+			counter += 1;
+			break;
+		}
+		case 1:
+		{
+			TutorialPlayerUICallBack();
+			counter += 1;
+			break;
+		}
+		case 2:
+		{
+			TutorialPlayerSkillsCallBack();
+			counter += 1;
+			break;
+		}
+		case 3:
+		{
+			TutorialPlayerStatsCallBack();
+			counter += 1;
+			break;
+		}
+		case 4:
+		{
+			TutorialPlayerBuffsCallBack();
+			counter += 1;
+			break;
+		}
+		case 5:
+		{
+			TutorialTurnNumberCallBack();
+			counter += 1;
+			break;
+		}
+		case 6:
+		{
+			TutorialLevelCallBack();
+			counter += 1;
+			break;
+		}
+		case 7:
+		{
+			TutorialEnemyCallBack();
+			counter += 1;
+			break;
+		}
+		case 8:
+		{
+			TutorialEnemyUICallBack();
+			counter += 1;
+			break;
+		}
+		case 9:
+		{
+			TutorialEnemyBuffsCallBack();
+			counter += 1;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+}
+
+
