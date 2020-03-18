@@ -118,6 +118,7 @@ void MainMenuController::onDestroy()
 		GameUIManager::getInstance().GetMainMenuMinusVolumeButtons()[i]->unregisterCallback("onMouseClick");
 	}
 	// TODO: M3B1 ONLY END
+	GameUIManager::getInstance().GetOptionsButtonMain()->unregisterCallback("onMouseClick");
 }
 
 void MainMenuController::EnterTowerSelectScreen()
