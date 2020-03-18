@@ -1022,7 +1022,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 						{
 							// Play "GotBuffed" animation
 							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
-							RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Buffed").c_str());
+							//RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Buffed").c_str());
 						}
 					}
 				}
@@ -1030,7 +1030,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					// Play "GotBuffed" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
-					RedAudioManager::Instance().PlaySFX(mCurrentTarget->GetSoundClipName("Buffed").c_str());
+					//RedAudioManager::Instance().PlaySFX(mCurrentTarget->GetSoundClipName("Buffed").c_str());
 				}
 			}
 			// Set trigger to true to avoid repeating the recipents animation
