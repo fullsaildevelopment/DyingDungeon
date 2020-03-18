@@ -73,23 +73,28 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 1:
 		{
 			// Skill 1
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.25f, -15.0f, 25.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.50f, -15.0f, 25.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_1.png");
+			mSkillList[0]->SetSoundEffect("SkeletonPunch", 0.15);
 			// Skill 2
 			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"AOE Def Dwn", "Skill_1", 0.25f, 20.0f, 20.0f, StatusEffect, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"AOE Def Dwn", "Skill_1", 0.50f, 20.0f, 20.0f, StatusEffect, true));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_2.png");
+			mSkillList[1]->SetSoundEffect("SkeletonPunch", 0.15);
 			// Skill 3
-			mSkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Skill_1", 0.25f, 50.0f, 45.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"Big Smack", "Skill_1", 0.50f, 50.0f, 45.0f));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_3.png");
+			mSkillList[2]->SetSoundEffect("SkeletonPunch", 0.15);
 			// Skill 4
 			StatusEffect = std::make_shared<StatUp>(0.50f,2,STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Skill_1", 0.25f, 20.0f, StatusEffect, true));
+			mSkillList.push_back(std::make_shared<Buffs>(L"Attack Up", "Skill_1", 0.50f, 20.0f, StatusEffect, true));
 			mSkillList[3]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_4.png");
+			mSkillList[3]->SetSoundEffect("SkeletonPunch", 0.15);
 			// Skill 5
 			StatusEffect = std::make_shared<Regens>(0.15f, 5, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Skill_1",0.15f, 10.0f, StatusEffect,true));
+			mSkillList.push_back(std::make_shared<Buffs>(L"Regen", "Skill_1",0.50f, 10.0f, StatusEffect,true));
 			mSkillList[4]->SetSkillIconPath(L"assets/images/GanfaulAbilities/Ganfaul_Skill_5.png");
+			mSkillList[4]->SetSoundEffect("SkeletonPunch", 0.15);
 			break;
 		}
 		// Summoner
