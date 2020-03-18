@@ -274,10 +274,10 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -15.0f, 17.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Meteor Shard", "Skill_1", 0.60f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
 		mSkillList[0]->SetSoundEffect("MagicWoosh", 0.25f);
-		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
+		mSkillList[0]->SetSkillDescription(L"Send forth a shard of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 15.0f, 15.0f, temp, true));

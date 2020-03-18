@@ -315,6 +315,7 @@ namespace Odyssey
 	Scene* Application::createScene(std::string name)
 	{
 		mSceneMap[name] = std::make_shared<SceneDX11>();
+		mSceneMap[name]->setName(name.c_str());
 
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
@@ -328,6 +329,7 @@ namespace Odyssey
 	Scene* Application::createScene(std::string name, DirectX::XMFLOAT3 center, float radius)
 	{
 		mSceneMap[name] = std::make_shared<SceneDX11>(center, radius);
+		mSceneMap[name]->setName(name.c_str());
 
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
