@@ -194,7 +194,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	Odyssey::UICanvas* mainMenuControlsCanvas = mMainControls->addComponent<Odyssey::UICanvas>();
 
 	// Setup init values
-	UINT width = screenWidth;
+	UINT width = 640;
 	UINT height = screenHeight;
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
@@ -210,7 +210,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	// Create title text
 	height = 100;
-	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 320.0f, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"The Dying Dungeon", properties);
 
 	// Create new game text 
@@ -367,7 +367,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mMainPlusImage[1] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[2] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[3] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-
+	
 	mMainSaveVolumeConfermation = _sceneToAddTo->createEntity();
 	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mMainSaveVolumeConfermation->addComponent<Odyssey::UICanvas>();
 
@@ -411,9 +411,9 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	Odyssey::UICanvas* towerSelectMenuCanvas = mTowerSelectMenu->getComponent<Odyssey::UICanvas>();
 
 	// Initialize variables
-	UINT width = screenWidth; // Width
+	UINT width = 640; // Width
 	UINT height = 50; // Height
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT2 position = { static_cast<float>((screenWidth / 2) - (width / 2)), 50.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
 
@@ -424,6 +424,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
+	towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y - 25.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height + 50);
 	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
 
 	// Create door to click on
