@@ -1112,8 +1112,9 @@ void GameUIManager::HideMainOptions()
 void GameUIManager::ShowMainVolume()
 {
 	mMainMenuOptions->setActive(false);
+	mMainMenuOptions->setVisible(false);
 	mMainMenuVolume->setActive(true);
-	mMainMenuOptions->setVisible(true);
+	mMainMenuVolume->setVisible(true);
 	mOptionsBack->registerCallback("onMouseClick", this, &GameUIManager::HideMainVolume);
 	mMainPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
 	mMainPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
