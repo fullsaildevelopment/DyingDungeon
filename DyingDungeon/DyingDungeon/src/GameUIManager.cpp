@@ -2613,6 +2613,11 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
 
+void GameUIManager::AddClickableElementToList(Odyssey::Entity* _clickableUI)
+{
+	mClickableUIList.push_back(_clickableUI);
+}
+
 void GameUIManager::DecreaseMasterVolume()
 {
 	// Decrease volume with Red's audio manager

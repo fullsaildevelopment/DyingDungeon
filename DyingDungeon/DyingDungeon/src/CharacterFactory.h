@@ -65,6 +65,7 @@ public: // Functions
 
 	//Increase the character hud index
 	void IncreaseCharacterHUDIndex() { mCharacterHudIndex++; }
+	void ResetCharacterHudIndex() { mCharacterHudIndex = 0; }
 	// Get the character hud index
 	unsigned int GetCharacterHudIndex() { return mCharacterHudIndex; }
 

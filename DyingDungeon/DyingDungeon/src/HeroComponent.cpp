@@ -1210,8 +1210,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 			for (Odyssey::Entity* t : mHeroList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
-				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+				//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 			}
 			BeginAttack(mHeroList);
 		}
@@ -1223,8 +1223,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 			for (Odyssey::Entity* t : mEnemyList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
-				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+				//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 			}
 			BeginAttack(mEnemyList);
 		}
@@ -1350,8 +1350,8 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		for (Odyssey::Entity* t : targets)
 		{
 			// If the entity if valid and the character is no dead, turn off targeter
-			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-				t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+				//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 		}
 
 		// Que animations, and set variables for particle effect locations
@@ -1372,16 +1372,16 @@ void HeroComponent::ResetToSelection()
 	for (Odyssey::Entity* e : mEnemyList)
 	{
 		// Turn off targeter
-		if (e != nullptr)
-			e->getComponent<Character>()->mImpactIndicator->setActive(false);
+		//if (e != nullptr)
+			//e->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
 
 	// For each valid entity 
 	for (Odyssey::Entity* h : mHeroList)
 	{
 		// Turn off targeter
-		if(h != nullptr)
-			h->getComponent<Character>()->mImpactIndicator->setActive(false);
+		//if(h != nullptr)
+			//h->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
 	// Reset temp target and skill variables to default
 	mCurrentSkill = nullptr;

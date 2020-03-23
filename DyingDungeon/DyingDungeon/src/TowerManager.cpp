@@ -185,10 +185,6 @@ void TowerManager::update(double deltaTime)
 					mIsTutorial = false;
 					GoToMainMenu();
 				}
-				else
-				{
-					TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
-				}
 
 				// Check to see if that was our last level for completing the tower
 				if (GetCurrentLevel() > mNumberOfLevels)
@@ -223,7 +219,9 @@ void TowerManager::update(double deltaTime)
 					// Boss Level
 					if (mCurrentLevel == mNumberOfLevels)
 					{
+						// Save team
 						TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
+						mEnemyTeam.clear();
 						// Switch to the boss scene
 						Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
 					}
@@ -472,6 +470,7 @@ void TowerManager::GoToMainMenu()
 	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
 
 	GameUIManager::getInstance().ClearClickableCharacterList();
+	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
 	// Set the current level back to 1
 	mCurrentLevel = 1;
@@ -497,11 +496,16 @@ void TowerManager::CreateThePlayerTeam()
 	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+
+	mPlayerTeam.clear();
 	
 	bool createdPlayerTeamPreviously = false;
 	if (TeamManager::getInstance().GetUpdatedPlayerTeam().size() > 0)
 	{
 		createdPlayerTeamPreviously = true;
+		// Reset HUD stuff
+		CharacterFactory::getInstance().ResetCharacterHudIndex();
+		GameUIManager::getInstance().ClearHudList();
 	}
 
 	// Create each player

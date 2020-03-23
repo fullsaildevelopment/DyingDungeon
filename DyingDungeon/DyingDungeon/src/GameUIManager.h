@@ -163,6 +163,7 @@ public: // Functions
 
 	// Add HUD to the character hud list
 	void AddHudToList(Odyssey::Entity* _newHud);
+	void ClearHudList() { mCharacterHudList.clear(); }
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
@@ -177,9 +178,8 @@ public: // Functions
 	void UpdateCharacterHealthPopups(double _deltaTime);
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
-
 	// Add a cliackable entity to target enemies or allies
-	void AddClickableElementToList(Odyssey::Entity* _clickableUI) { mClickableUIList.push_back(_clickableUI); }
+	void AddClickableElementToList(Odyssey::Entity* _clickableUI);
 	// Clear the clickable list
 	void ClearClickableCharacterList() { mClickableUIList.clear(); }
 	// Set up the clickable ui callbacks
