@@ -1243,6 +1243,9 @@ void HeroComponent::SelctionState(int moveIndex)
 
 		// Change state to target selection
 		mCurrentState = STATE::SELECTTARGET;
+
+		// Turn on the skill selected indicator rectangle
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[moveIndex]->setVisible(true);
 	}
 }
 

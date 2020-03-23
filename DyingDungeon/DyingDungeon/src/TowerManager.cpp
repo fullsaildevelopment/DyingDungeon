@@ -506,6 +506,8 @@ void TowerManager::CreateThePlayerTeam()
 		// Reset HUD stuff
 		CharacterFactory::getInstance().ResetCharacterHudIndex();
 		GameUIManager::getInstance().ClearHudList();
+		// This must also be the boss scene
+		mCurrentLevel = mNumberOfLevels;
 	}
 
 	// Create each player
@@ -589,7 +591,9 @@ void TowerManager::CreateThePlayerTeam()
 		else
 		{
 			hudElements->GetHealthBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP());
+			hudElements->GetHealthNumber()->setText(std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP()) + L"/" + std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP()));
 			hudElements->GetManaBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana());
+			hudElements->GetManaNumber()->setText(std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana()) + L"/" + std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana()));
 		}
 
 		// Clickable UI

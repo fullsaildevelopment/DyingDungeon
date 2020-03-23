@@ -34,7 +34,7 @@ void TowerSelectionPrefabFactory::CreateTowerSelectionPrefab(Odyssey::Applicatio
 	// Create the info popup
 	// Background
 	position.x = 640.0f - (static_cast<float>(width) / 2.0f);
-	position.y = 100.0f;
+	position.y = 150.0f;
 	color = { 0.0f, 0.0f, 0.0f, 1.0f };
 	Odyssey::Rectangle2D* rect = newCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	rect->setOpacity(0.8f);
