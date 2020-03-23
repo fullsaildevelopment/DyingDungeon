@@ -28,11 +28,6 @@ void GameUIManager::initialize(Odyssey::Application* _application)
 	// Create the entity to create new UI prefabs
 	Odyssey::Entity* newUIPrefab;
 
-	// Create the pause menu prefab
-	newUIPrefab = CreatePauseMenuPrefab();
-	// Add the new pause menu to the prefab map
-	mUIObjectsPrefabMap[UIObject::PauseMenu] = newUIPrefab;
-
 	// Create the hero clickable UI elements
 	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(300.0f, 300.0f), true);
 	// Add the new clickable ui elements to the prefab map
@@ -703,96 +698,100 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 }
 
 // This is where I will design and add all elements into the pause menu canvas
-void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
+void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesToAddTo)
 {
-	//Create the pause menu pointer
-	mPauseMenu = _sceneToAddTo->createEntity();
-	mPauseMenu->addComponent<Odyssey::UICanvas>();
-	// Get canvas component of the pause menu
-	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->getComponent<Odyssey::UICanvas>();
+	for (int i = 0; i < _scenesToAddTo.size(); i++)
+	{
+		//Create the pause menu pointer
+		Odyssey::Entity* pauseMenu = _scenesToAddTo[i]->createEntity();
+		pauseMenu->addComponent<Odyssey::UICanvas>();
+		// Get canvas component of the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = pauseMenu->getComponent<Odyssey::UICanvas>();
 
-	// Create the rectangle object
-	UINT width = 1920; // Width
-	UINT height = 1080; // Height
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
-	// Add the rectangle to the pause menu canvas
-	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
+		// Create the rectangle object
+		UINT width = 1920; // Width
+		UINT height = 1080; // Height
+		DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+		DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
+		// Add the rectangle to the pause menu canvas
+		mBlackBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Make the rectangle have 50% transparency
+		mBlackBackgrounds[i]->setOpacity(BackgroundBigOpacity);
 
-	// Create the pause menu smaller black rectangle
-	width = 640;
-	height = 360;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	// Add the rectangle to the pause menu canvas
-	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+		// Create the pause menu smaller black rectangle
+		width = 640;
+		height = 360;
+		position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+		// Add the rectangle to the pause menu canvas
+		mSmallerBlackBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mSmallerBlackBackgrounds[i]->setOpacity(BackgroundSmallOpacity);
 
-	// Create Pause Title
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	Odyssey::TextProperties properties;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Tw Cen MT Condensed";
-	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
+		// Create Pause Title
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		Odyssey::TextProperties properties;
+		properties.bold = true;
+		properties.italic = false;
+		properties.fontSize = 60.0f;
+		properties.textAlignment = Odyssey::TextAlignment::Center;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+		properties.fontName = L"Tw Cen MT Condensed";
+		mPauseTitles[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
 
-	// Resume Button
-	width /= (UINT)2.5f;
-	height = 50;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	position.y -= 75.0f;//change back to 50.0f later
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the reusume background to the canvas
-	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Resume text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	properties.bold = false;
-	properties.fontSize = 30.0f;
-	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
+		// Resume Button
+		width /= (UINT)2.5f;
+		height = 50;
+		position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+		position.y -= 75.0f;//change back to 50.0f later
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the reusume background to the canvas
+		mResumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Resume text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		properties.bold = false;
+		properties.fontSize = 30.0f;
+		mResumeTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
 
-	// Options Button
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsVolumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsVolumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
+		// Options Button
+		position.y += 75.0f;
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the options background to the canvas
+		mOptionsVolumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Options text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mOptionsVolumeTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
 
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsControlsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsControlText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
+		position.y += 75.0f;
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the options background to the canvas
+		mOptionsControlsBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Options text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mOptionsControlTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
 
-	// Main Menu Button
-	position.y += 75.0f;
-	color = { 180.0f, 30.0f, 30.0f, 1.0f };
-	// Add the main menu background to the canvas
-	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Main menu text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
+		// Main Menu Button
+		position.y += 75.0f;
+		color = { 180.0f, 30.0f, 30.0f, 1.0f };
+		// Add the main menu background to the canvas
+		mMainMenuBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Main menu text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mMainMenuTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
-	mOptionsControlsImage = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/KeyGuide.png", screenWidth, screenHeight);
-	mOptionsControlsImage->setVisible(false);
+		mOptionsControlsImages[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/KeyGuide.png", screenWidth, screenHeight);
+		mOptionsControlsImages[i]->setVisible(false);
 
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	mOptionsControlBackText = pauseMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), color, width, height, L"Back", properties);
-	mOptionsControlBackText->setVisible(false);
-	properties.textAlignment = Odyssey::TextAlignment::Center;
+		properties.textAlignment = Odyssey::TextAlignment::Left;
+		mOptionsControlBackTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), color, width, height, L"Back", properties);
+		mOptionsControlBackTexts[i]->setVisible(false);
+		properties.textAlignment = Odyssey::TextAlignment::Center;
 
-	// Turn off the canvas when creating it
-	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
+		// Turn off the canvas when creating it
+		ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+		mPauseMenus[i] = pauseMenu;
 
-	// Make options menu
-	CreateOptionsMenu(_sceneToAddTo);
+		// Make options menu
+		CreateOptionsMenu(_scenesToAddTo[i], i);
+	}
 }
 
 void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
@@ -1682,7 +1681,7 @@ void GameUIManager::UpdateStatsMenu()
 }
 
 // This is where I will design and add all elements into the options menu canvas
-void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
+void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 {
 	// Set options menu pointer and add a canvas
 	mOptionsMenu = _sceneToAddTo->createEntity();
@@ -1697,9 +1696,9 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	// Add the rectangle to the options menu canvas
-	mBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mBlackBackgrounds[_index] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
+	mBlackBackgrounds[_index]->setOpacity(BackgroundBigOpacity);
 
 	// Create the pause menu smaller black rectangle
 	width = 640;
@@ -1707,8 +1706,8 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	DirectX::XMFLOAT2 originalPosition = position;
 	// Add the rectangle to the options menu canvas
-	mSmallerBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+	mSmallerBlackBackgrounds[_index] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackgrounds[_index]->setOpacity(BackgroundSmallOpacity);
 
 	// Create options title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -1816,7 +1815,7 @@ void GameUIManager::OptionsBackButton()
 	mOptionsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
 	
 	// Turn on the pause menu's canvas
-	mPauseMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	mPauseMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(true);
 }
 
 // Create hero character portrait
@@ -2838,77 +2837,6 @@ void GameUIManager::UpdateCombatLogText(float damage)
 // Prefab Creation Functions //
 //                           //
 ///////////////////////////////
-Odyssey::Entity* GameUIManager::CreatePauseMenuPrefab()
-{
-	// Create the pause menu prefab
-	mPauseMenu = mApplication->createPrefab();
-	// Add a canvas to the object
-	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->addComponent<Odyssey::UICanvas>();
-
-	// Create the rectangle object
-	UINT width = 1920;
-	UINT height = 1080;
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
-	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	// Add the rectangle to the pause menu canvas
-	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
-
-	// Create the pause menu smaller black rectangle
-	width = 640;
-	height = 360;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	// Add the rectangle to the pause menu canvas
-	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
-
-	// Create Pause Title
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	Odyssey::TextProperties properties;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Tw Cen MT Condensed";
-	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
-
-	// Resume Button
-	width /= (UINT)2.5f;
-	height = 50;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	position.y -= 50.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the reusume background to the canvas
-	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Resume text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	properties.bold = false;
-	properties.fontSize = 30.0f;
-	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
-
-	// Options Button
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
-
-	// Main Menu Button
-	position.y += 75.0f;
-	color = { 180.0f, 30.0f, 30.0f, 1.0f };
-	// Add the main menu background to the canvas
-	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Main menu text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
-
-	return mPauseMenu;
-}
-
 // Clickable functions
 Odyssey::Entity* GameUIManager::CreateClickableUIPrefab(DirectX::XMFLOAT2 _clickableRectPos, bool _isHero)
 {

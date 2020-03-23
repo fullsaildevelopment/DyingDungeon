@@ -40,6 +40,11 @@ void TowerManager::initialize()
 	// Create the player team
 	CreateThePlayerTeam();
 
+	if (mCurrentLevel == mNumberOfLevels)
+		mIsBossScene = true;
+	else
+		mIsBossScene = false;
+
 	for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
 	{
 		HeroComponent* savedHeroComp = &TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
@@ -54,8 +59,9 @@ void TowerManager::initialize()
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetMana(savedHeroComp->GetMana());
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetProvoked(savedHeroComp->GetProvoked());
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetState(savedHeroComp->GetState());
+
+		mIsBossScene = true;
 	}
-	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
 	if (!mIsTutorial)
@@ -64,22 +70,49 @@ void TowerManager::initialize()
 		CreateTutorialInstance();
 
 	// Set the pause menu button callbacks
-	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
-	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
-	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetResumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(0)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetResumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(1)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+
+	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 }
 
 void TowerManager::update(double deltaTime)
 {
-	// Always look for the pause input button
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
-		!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive() &&
-		!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	if (!mIsBossScene)
 	{
-		// Turn the pause menu either on or off
-		TogglePauseMenu();
+		// Always look for the pause input button
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
+			!GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>()->isActive() &&
+			!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+		{
+			// Turn the pause menu either on or off
+			TogglePauseMenu();
+		}
 	}
+	else
+	{
+		// Always look for the pause input button
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
+			!GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>()->isActive() &&
+			!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+		{
+			// Turn the pause menu either on or off
+			TogglePauseMenu();
+		}
+	}
+
 
 	// Toggles the combat canvas
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Tab))
@@ -369,7 +402,13 @@ void TowerManager::TogglePauseMenu()
 	mIsPaused = !mIsPaused;
 
 	// Toggle pause menu canvas
-	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* pauseMenuCanvas = nullptr;
+	// Always look for the pause input button
+	if (!mIsBossScene)
+		pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>();
+	else
+		pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>();
+
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
 
 	ToggleCharacterUI(!pauseMenuCanvas->isActive());
@@ -406,9 +445,18 @@ void TowerManager::ToggleCharacterUI(bool _onOrOff)
 
 void TowerManager::ShowOptionsMenu()
 {
-	// Turn off the pause menu
-	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+	if (!mIsBossScene)
+	{
+		// Turn off the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+	}
+	else
+	{
+		// Turn off the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+	}
 
 	// Turn on the options menu
 	Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>();
@@ -417,26 +465,51 @@ void TowerManager::ShowOptionsMenu()
 
 void TowerManager::ShowControlScreen()
 {
-	GameUIManager::getInstance().GetControlsImage()->setVisible(true);
-	GameUIManager::getInstance().GetControlsBackText()->setVisible(true);
-	GameUIManager::getInstance().GetControlsBackText()->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetControlsImage(0)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(0)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(0)->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+		GameUIManager::getInstance().GetResumeButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuButton(0)->unregisterCallback("onMouseClick");
+	}
+	else
+	{
+		GameUIManager::getInstance().GetControlsImage(1)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(1)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(1)->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+		GameUIManager::getInstance().GetResumeButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuButton(1)->unregisterCallback("onMouseClick");
+	}
 
-	GameUIManager::getInstance().GetResumeButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetOptionsVolumeButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetOptionsControlsButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetMainMenuButton()->unregisterCallback("onMouseClick");
 }
 
 void TowerManager::HideControlScreen()
 {
-	GameUIManager::getInstance().GetControlsImage()->setVisible(false);
-	GameUIManager::getInstance().GetControlsBackText()->setVisible(false);
-	GameUIManager::getInstance().GetControlsBackText()->unregisterCallback("onMouseClick");
-
-	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
-	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
-	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetControlsImage(0)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(0)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetResumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(0)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetControlsImage(1)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(1)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetResumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(1)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
 }
 
 void TowerManager::GoToMainMenu()
@@ -465,9 +538,13 @@ void TowerManager::GoToMainMenu()
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);
-	// Deactivate the pause menu
-	Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	for (int i = 0; i < 2; i++)
+	{
+		// Deactivate the pause menu
+		Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu(i);
+		GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+	}
 
 	GameUIManager::getInstance().ClearClickableCharacterList();
 	TeamManager::getInstance().ClearUpdatedPlayerTeam();

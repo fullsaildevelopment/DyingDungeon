@@ -177,8 +177,6 @@ int playGame()
 	//TeamManager::getInstance().initialize();
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
-	// Create Pause Menu
-	GameUIManager::getInstance().CreatePauseMenuCanvas(gSceneOne);
 
 	// Create Scene Two
 	gSceneBoss = application->createScene("Boss Scene", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
@@ -193,6 +191,13 @@ int playGame()
 
 	// Assign the team slection controller to the tower selector
 	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTeamSelector(gTeamSelectMenu->getComponent<TeamSelectionController>());
+
+
+	// Create Pause Menus for the scenes
+	std::vector<Odyssey::Scene*> gameScenes;
+	gameScenes.push_back(gSceneOne);
+	gameScenes.push_back(gSceneBoss);
+	GameUIManager::getInstance().CreatePauseMenuCanvas(gameScenes);
 	
 	// Set up multithreading
 	application->setMultithreading(true);
