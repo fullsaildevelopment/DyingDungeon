@@ -57,9 +57,9 @@ public: // Functions
 	// Add all heroes to the player team
 	void UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd);
 	// Get the updated player team
-	std::vector<HeroComponent*> GetUpdatedPlayerTeam() { return mPlayerTeamHeroComps; }
+	std::vector<HeroComponent> GetUpdatedPlayerTeam() { return mPlayerTeamHeroComps; }
 	// Get the updated player team hero comp
-	HeroComponent* GetUpdatedPlayerTeamHeroComp(int _index);
+	HeroComponent GetUpdatedPlayerTeamHeroComp(int _index);
 	// Clear the updated team
 	void ClearUpdatedPlayerTeam() { mPlayerTeamHeroComps.clear(); }
 
@@ -90,7 +90,7 @@ private: // Variables
 	// Holds the player characters to add into the Tower Manager
 	std::vector<HeroType> mPlayerTeamToCreate;
 	// Holds the player characters from the end of each level
-	std::vector<HeroComponent*> mPlayerTeamHeroComps;
+	std::vector<HeroComponent> mPlayerTeamHeroComps;
 	// Holds the enemy characters to add into the Tower Manager
 	std::vector<Odyssey::Entity*> mEnemyTeam;
 

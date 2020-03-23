@@ -195,11 +195,11 @@ void TeamManager::UpdatePlayerTeam(std::vector<Odyssey::Entity*> _heroesToAdd)
 
 	for (int i = 0; i < _heroesToAdd.size(); i++)
 	{
-		mPlayerTeamHeroComps.push_back(_heroesToAdd[i]->getComponent<HeroComponent>());
+		mPlayerTeamHeroComps.push_back(*_heroesToAdd[i]->getComponent<HeroComponent>());
 	}
 }
 
-HeroComponent* TeamManager::GetUpdatedPlayerTeamHeroComp(int _index)
+HeroComponent TeamManager::GetUpdatedPlayerTeamHeroComp(int _index)
 {
 	return mPlayerTeamHeroComps[_index];
 }

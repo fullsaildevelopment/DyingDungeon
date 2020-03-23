@@ -777,7 +777,7 @@ void AIMoves::ResetMove()
 	SetPrevMove();
 	ResetDecidingMoves();
 
-	mBestMove->target->GetInpactIndicator()->setActive(false);
+	//mBestMove->target->GetInpactIndicator()->setActive(false);
 
 	mBestMove->skill = nullptr;
 	mBestMove->target = nullptr;

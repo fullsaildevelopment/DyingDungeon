@@ -40,10 +40,21 @@ void TowerManager::initialize()
 	// Create the player team
 	CreateThePlayerTeam();
 
-	//for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
-	//{
-	//	HeroComponent* savedHeroComp = TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
-	//}
+	for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
+	{
+		HeroComponent* savedHeroComp = &TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
+		//mPlayerTeam[i]->removeComponent<HeroComponent>();
+
+		//mPlayerTeam[i]->getComponent<HeroComponent>()->clone();
+
+		// Reassign all of the properties
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetBloodPrefab(savedHeroComp->GetBloodPrefab());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetHP(savedHeroComp->GetHP());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetImpactIndicator(savedHeroComp->GetInpactIndicator());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetMana(savedHeroComp->GetMana());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetProvoked(savedHeroComp->GetProvoked());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetState(savedHeroComp->GetState());
+	}
 	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
@@ -100,160 +111,6 @@ void TowerManager::update(double deltaTime)
 		else
 		{
 			RedAudioManager::Instance().Unmute();
-		}
-	}
-
-	// SPOT LIGHT DEBUGGER FOR HEROES
-	if (false)
-	{
-		float speed = 0.005f;
-		// INTENSITY
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() - speed);
-			}
-		}
-
-		// RANGE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() - speed);
-			}
-		}
-
-		// ANGLE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() - speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() + speed);
-			}
-		}
-
-		// Transform
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
-			}
-		}
-	}
-
-	// SPOT LIGHT DEBUGGER FOR ENEMIES
-	if (false)
-	{
-		float speed = 0.005f;
-		// INTENSITY
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() - speed);
-			}
-		}
-
-		// RANGE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() - speed);
-			}
-		}
-
-		// ANGLE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() - speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() + speed);
-			}
-		}
-
-		// Transform
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
-			}
 		}
 	}
 
@@ -640,6 +497,12 @@ void TowerManager::CreateThePlayerTeam()
 	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+	
+	bool createdPlayerTeamPreviously = false;
+	if (TeamManager::getInstance().GetUpdatedPlayerTeam().size() > 0)
+	{
+		createdPlayerTeamPreviously = true;
+	}
 
 	// Create each player
 	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
@@ -705,15 +568,25 @@ void TowerManager::CreateThePlayerTeam()
 		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
 
+
 		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
-		// Reset the colors of the stats
-		hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
-		hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
-		hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
-		// Make sure the bars are filled
-		hudElements->GetHealthBar()->setFill(1.0f);
-		hudElements->GetManaBar()->setFill(1.0f);
+
+		if (!createdPlayerTeamPreviously)
+		{
+			// Reset the colors of the stats
+			hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
+			hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
+			hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
+			// Make sure the bars are filled
+			hudElements->GetHealthBar()->setFill(1.0f);
+			hudElements->GetManaBar()->setFill(1.0f);
+		}
+		else
+		{
+			hudElements->GetHealthBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP());
+			hudElements->GetManaBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana());
+		}
 
 		// Clickable UI
 		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();

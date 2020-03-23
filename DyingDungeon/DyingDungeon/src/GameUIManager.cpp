@@ -211,7 +211,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	// Create title text
 	height = 100;
 	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 320.0f, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
-	mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"The Dying Dungeon", properties);
+	mainMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 320.0f, position.y + 5.0f), color, width, height, L"The Dying Dungeon", properties);
 
 	// Create new game text 
 	properties.bold = false;
