@@ -26,16 +26,16 @@ void SkillHoverComponent::initialize()
 
 void SkillHoverComponent::onDestroy()
 {
-	// Enter callbacks
-	mSprites[0]->unregisterCallback("onMouseEnter");
-	mSprites[1]->unregisterCallback("onMouseEnter");
-	mSprites[2]->unregisterCallback("onMouseEnter");
-	mSprites[3]->unregisterCallback("onMouseEnter");
-	// Exit callbacks
-	mSprites[0]->unregisterCallback("onMouseExit");
-	mSprites[1]->unregisterCallback("onMouseExit");
-	mSprites[2]->unregisterCallback("onMouseExit");
-	mSprites[3]->unregisterCallback("onMouseExit");
+	//// Enter callbacks
+	//mSprites[0]->unregisterCallback("onMouseEnter");
+	//mSprites[1]->unregisterCallback("onMouseEnter");
+	//mSprites[2]->unregisterCallback("onMouseEnter");
+	//mSprites[3]->unregisterCallback("onMouseEnter");
+	//// Exit callbacks
+	//mSprites[0]->unregisterCallback("onMouseExit");
+	//mSprites[1]->unregisterCallback("onMouseExit");
+	//mSprites[2]->unregisterCallback("onMouseExit");
+	//mSprites[3]->unregisterCallback("onMouseExit");
 }
 
 void SkillHoverComponent::registerSprite(Odyssey::Sprite2D* sprite)

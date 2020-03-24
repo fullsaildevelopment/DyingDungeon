@@ -255,6 +255,19 @@ void TowerManager::update(double deltaTime)
 						// Save team
 						TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
 						mEnemyTeam.clear();
+
+						for (int i = 0; i < mPlayerTeam.size(); i++)
+						{
+							SkillHoverComponent* hover = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<SkillHoverComponent>();
+							
+							for (int i = 0; i < hover->GetSkillSprites().size(); i++)
+							{
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseClick");
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseEnter");
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseExit");
+							}
+						}
+
 						// Switch to the boss scene
 						Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
 					}
@@ -522,6 +535,15 @@ void TowerManager::GoToMainMenu()
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
+		
+		SkillHoverComponent* hover = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<SkillHoverComponent>();
+
+		for (int i = 0; i < hover->GetSkillSprites().size(); i++)
+		{
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseClick");
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseEnter");
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseExit");
+		}
 	}
 	mPlayerTeam.clear();
 
@@ -683,10 +705,6 @@ void TowerManager::CreateThePlayerTeam()
 			hudElements->GetManaNumber()->setText(std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana()) + L"/" + std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana()));
 		}
 
-		// Clickable UI
-		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
-		heroComp->SetupClickableUI(hudElements->GetSkill1(), hudElements->GetSkill2(), hudElements->GetSkill3(), hudElements->GetSkill4());
-
 		// Assign the character component
 		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
 		hover->characterComponent = newCharacter->getComponent<Character>();
@@ -699,6 +717,11 @@ void TowerManager::CreateThePlayerTeam()
 		hover->mCharacterSkills = newCharacter->getComponent<Character>()->GetSkills();
 		// Assign the position that the prefab will needed to be spawned at
 		hover->mHudPositionEnum = skillPopupPos;
+		// Clickable Skills
+		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
+		std::vector<Odyssey::Sprite2D*> skillSprites = hover->GetSkillSprites();
+		heroComp->SetupClickableUI(skillSprites[0], skillSprites[1], skillSprites[2], skillSprites[3]);
+
 
 		// Create the hero clickable UI box
 		Odyssey::Entity* clickableHeroUI = nullptr;

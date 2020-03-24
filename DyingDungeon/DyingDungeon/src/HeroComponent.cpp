@@ -136,7 +136,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -699,16 +699,16 @@ void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::S
 {
 	// Set up sprite's callback function for the Skill1Callback
 	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
-	mSkillSprites.push_back(_skillImage1);
+	//mSkillSprites.push_back(_skillImage1);
 	// Set up sprite's callback function for the Skill2Callback
 	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
-	mSkillSprites.push_back(_skillImage2);
+	//mSkillSprites.push_back(_skillImage2);
 	// Set up sprite's callback function for the Skill3Callback
 	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
-	mSkillSprites.push_back(_skillImage3);
+	//mSkillSprites.push_back(_skillImage3);
 	// Set up sprite's callback function for the Skill4Callback
 	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
-	mSkillSprites.push_back(_skillImage4);
+	//mSkillSprites.push_back(_skillImage4);
 }
 
 // Function that allows the player to take thier turn, Character Controler
@@ -1428,7 +1428,7 @@ void HeroComponent::onDestroy()
 {
 	for (int i = 0; i < mSkillSprites.size(); ++i)
 	{
-		mSkillSprites[i]->unregisterCallback("onMouseClick");
+		//mSkillSprites[i]->unregisterCallback("onMouseClick");
 	}
 }
 
