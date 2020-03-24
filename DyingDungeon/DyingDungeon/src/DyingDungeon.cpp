@@ -180,6 +180,9 @@ int playGame()
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
 
+	// Create Tutorial UI
+	//GameUIManager::getInstance().CreateTutorialCanvas(gSceneOne);
+
 	// Create Scene Two
 	gSceneBoss = application->createScene("Boss Scene", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
 	gSceneBoss->setSkybox("Skybox.dds");

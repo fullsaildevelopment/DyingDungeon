@@ -133,7 +133,7 @@ public: // Functions
 	void HideControlsGuide();
 	
 	// Creation of tutorial
-	void CreateTutorialCanvas();
+	void CreateTutorialCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Set the characters HUD Elements
 	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
@@ -518,41 +518,18 @@ private: // Functions
 	void CharacterEnterHoverCallback();
 	void CharacterExitHoverCallback();
 
-	// Tutorial Level CallBacks
-	void TutorialPlayerCallBack();
-	void TutorialPlayerUICallBack();
-	void TutorialPlayerSkillsCallBack();
-	void TutorialPlayerBuffsCallBack();
-	void TutorialPlayerStatsCallBack();
-	void TutorialEnemyUICallBack();
-	void TutorialEnemyCallBack();
-	void TutorialEnemyBuffsCallBack();
-	void TutorialLevelCallBack();
-	void TutorialTurnNumberCallBack();
-
 	public:
-	void TutorialTempFixCallBack();
+	void EndTutorial();
+	void TutorialCallBack();
 
 	private:
 	// Tutorial Level Sprites
 	Odyssey::Entity* mTutorialEntity = nullptr;
-
 	Odyssey::UICanvas* mTutorialCanvas = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayer = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerUI = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerSkills = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerBuffs = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerStats = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemyUI = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemy = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemyBuffs = nullptr;
-	Odyssey::Sprite2D* mHighlightLevel = nullptr;
-	Odyssey::Sprite2D* mHighlightTurnNumber = nullptr;
-	Odyssey::Text2D* mTutorialText = nullptr;
-	Odyssey::Rectangle2D* tutorialRect = nullptr;
-
-	// Remove if possible after 3/18
-	Odyssey::Scene* gScene = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorial = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorialText = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorialContinueText = nullptr;
+	int tutorialCounter = 0;
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER

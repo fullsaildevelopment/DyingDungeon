@@ -32,13 +32,13 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bo
 	else
 	{
 		StatTracker::Instance().SetTutorialState(true);
-		GameUIManager::getInstance().CreateTutorialCanvas();
-		GameUIManager::getInstance().GetTutorialCanvas()->setActive(true);
+		GameUIManager::getInstance().CreateTutorialCanvas(mPlayerTeam[0]->getScene());
+		GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), true);
 		mPlayerTeam[0]->getComponent<Character>()->SetHP(0);
 		mPlayerTeam[2]->getComponent<Character>()->SetHP(0);
 	}
 	
-
+	
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;
 
