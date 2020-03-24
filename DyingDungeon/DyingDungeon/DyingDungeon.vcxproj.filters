@@ -139,6 +139,12 @@
     <ClCompile Include="src\BossAttackMover.cpp">
       <Filter>Source Files\VFX</Filter>
     </ClCompile>
+    <ClCompile Include="src\CasterMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeteorMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\RedAudio.h">
@@ -295,6 +301,12 @@
       <Filter>Header Files\VFX</Filter>
     </ClInclude>
     <ClInclude Include="src\BossAttackMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CasterMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeteorMover.h">
       <Filter>Header Files\VFX</Filter>
     </ClInclude>
   </ItemGroup>

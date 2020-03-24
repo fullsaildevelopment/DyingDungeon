@@ -13,6 +13,7 @@
 #include "PunchMover.h"
 #include "BossAttackMover.h"
 #include "CasterMover.h"
+#include "MeteorMover.h"
 
 CharacterFactory& CharacterFactory::getInstance()
 {
@@ -315,8 +316,8 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			tempHero->GetSkills()[1]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
 			tempHero->GetSkills()[1]->SetParticleFiringTime(0.20f);
 
-			tempHero->GetSkills()[2]->SetParticleSystem(mVXFMap[""]);
-			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
+			tempHero->GetSkills()[2]->SetParticleSystem(mVXFMap["MageSkill2"]);
+			tempHero->GetSkills()[2]->SetParticleOffset({ 0.0f, 7.5f, 0.0f });
 			tempHero->GetSkills()[2]->SetParticleFiringTime(0.20f);
 
 			tempHero->GetSkills()[3]->SetParticleSystem(mVXFMap["GanfaulSkill2"]);
@@ -699,6 +700,7 @@ void CharacterFactory::MakeVXFEffects()
 	PallySkill3Prefab();
 	// Mage
 	MageSkill1Prefab();
+	MageSkill2Prefab();
 
 	// Skeleton
 	SkeletonSkill1Prefab();
@@ -1070,6 +1072,94 @@ void CharacterFactory::MageSkill1Prefab()
 	skillVFX->setShape(Odyssey::BoxPS(0.0f, 0.0f, 0.0f, 0.4f, 0.4f, 1.75f));
 
 	mVXFMap["MageSkill1"] = mSkill;
+}
+
+void CharacterFactory::MageSkill2Prefab()
+{
+	Odyssey::Entity* mSkill = mApplication->createPrefab();
+	mSkill->addComponent<Odyssey::Transform>();
+	mSkill->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+
+	// Add a light to the prefab
+	Odyssey::Light* light = mSkill->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.75f, 0.25f, 0.0f);
+	light->setRange(25.0f);
+	light->setIntensity(0.5f);
+
+	mSkill->addComponent<MeteorMover>();
+	mSkill->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	Odyssey::RenderManager::getInstance().importModel(mSkill, "assets/models/Lava Rock.dxm", false);
+	mSkill->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.75f, 0.75f, 0.75f, 1.0f });
+	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Flak1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.6f, 0.1f, 0.0f), DirectX::XMFLOAT3(0.2f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.5f, 1.0f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(1.5f, 2.0f);
+	skillVFX->setSize(0.075f, 0.15f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.25f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::SpherePS(0.0f, 0.0f, 0.0f, 0.25f));
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Trail4.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.25f, 0.0f), DirectX::XMFLOAT3(0.2f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.25f, 0.5f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(1.5f, 2.0f);
+	skillVFX->setSize(0.3f, 0.5f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.25f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::BoxPS(0.0f, 0.0f, 0.0f, 0.25f, 0.5f, 0.25f));
+	/*mSkill->addChild(mApplication->createPrefab());
+	Odyssey::Entity* m2 = mSkill->getChildren()[1];
+	m2->addComponent<Odyssey::Transform>();
+	m2->getComponent<Odyssey::Transform>()->setPosition(-0.5f, 3.5f, 0.0f);
+	m2->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	Odyssey::RenderManager::getInstance().importModel(m2, "assets/models/Lava Rock.dxm", false);
+	m2->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.75f, 0.75f, 0.75f, 1.0f });
+	skillVFX = m2->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Flak1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.6f, 0.1f, 0.0f), DirectX::XMFLOAT3(0.2f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.5f, 1.0f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(1.5f, 2.0f);
+	skillVFX->setSize(0.075f, 0.15f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.25f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::SpherePS(-2.5f, 5.0f, 0.0f, 0.75f));
+
+	mSkill->addChild(mApplication->createPrefab());
+	Odyssey::Entity* m3 = mSkill->getChildren()[2];
+	m3->addComponent<Odyssey::Transform>();
+	m3->getComponent<Odyssey::Transform>()->setPosition(0.0f, 2.5f, 0.0f);
+	m3->getComponent<Odyssey::Transform>()->setScale(0.025f, 0.025f, 0.025f);
+	Odyssey::RenderManager::getInstance().importModel(m3, "assets/models/Lava Rock.dxm", false);
+	m3->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.75f, 0.75f, 0.75f, 1.0f });
+	skillVFX = m3->addComponent<Odyssey::ParticleSystem>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Flak1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.6f, 0.1f, 0.0f), DirectX::XMFLOAT3(0.2f, 0.0f, 0.0f));
+	skillVFX->setLifetime(0.5f, 1.0f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(150);
+	skillVFX->setDuration(2.0f);
+	skillVFX->setSpeed(1.5f, 2.0f);
+	skillVFX->setSize(0.075f, 0.15f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.25f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::SpherePS(0.0f, 2.5f, 0.0f, 0.75f));*/
+
+	mVXFMap["MageSkill2"] = mSkill;
 }
 
 //Skeleton VXF

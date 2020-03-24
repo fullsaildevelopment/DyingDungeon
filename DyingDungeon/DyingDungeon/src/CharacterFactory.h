@@ -144,6 +144,7 @@ private: // Functions
 
 	// Mage Skill Effect Prefabs //
 	void MageSkill1Prefab();
+	void MageSkill2Prefab();
 	void SkeletonSkill3Prefab();
 	void GanfaulSkill1Prefab();
 	void GanfaulSkill2Prefab();

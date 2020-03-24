@@ -171,6 +171,7 @@
     <ClCompile Include="src\BossAttackMover.cpp" />
     <ClCompile Include="src\Buffs.cpp" />
     <ClCompile Include="src\CameraController.cpp" />
+    <ClCompile Include="src\CasterMover.cpp" />
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\CharacterFactory.cpp" />
     <ClCompile Include="src\CharacterHUDElements.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="src\JudgementMover.cpp" />
     <ClCompile Include="src\LoadingScreenController.cpp" />
     <ClCompile Include="src\MainMenuController.cpp" />
+    <ClCompile Include="src\MeteorMover.cpp" />
     <ClCompile Include="src\ParticleMover.cpp" />
     <ClCompile Include="src\Provoked.cpp" />
     <ClCompile Include="src\PunchMover.cpp" />
@@ -219,6 +221,7 @@
     <ClInclude Include="src\BossAttackMover.h" />
     <ClInclude Include="src\Buffs.h" />
     <ClInclude Include="src\CameraController.h" />
+    <ClInclude Include="src\CasterMover.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\CharacterFactory.h" />
     <ClInclude Include="src\CharacterHUDElements.h" />
@@ -234,6 +237,7 @@
     <ClInclude Include="src\JudgementMover.h" />
     <ClInclude Include="src\LoadingScreenController.h" />
     <ClInclude Include="src\MainMenuController.h" />
+    <ClInclude Include="src\MeteorMover.h" />
     <ClInclude Include="src\MyTypeDefs.h" />
     <ClInclude Include="src\ParticleMover.h" />
     <ClInclude Include="src\Provoked.h" />
