@@ -265,8 +265,8 @@ void TowerManager::update(double deltaTime)
 		// Update the UI bars
 		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
 
-		if (mIsTutorial && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::J))
-			GameUIManager::getInstance().TutorialTempFixCallBack();
+		if (mIsTutorial && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			GameUIManager::getInstance().TutorialCallBack();
 
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
@@ -283,6 +283,7 @@ void TowerManager::update(double deltaTime)
 				{
 					SetTowerState(NOT_IN_BATTLE);
 					mIsTutorial = false;
+					GameUIManager::getInstance().EndTutorial();
 					GoToMainMenu();
 				}
 				else
@@ -326,6 +327,7 @@ void TowerManager::update(double deltaTime)
 				{
 					SetTowerState(NOT_IN_BATTLE);
 					mIsTutorial = false;
+					GameUIManager::getInstance().EndTutorial();
 					GoToMainMenu();
 				}
 				else
@@ -521,6 +523,10 @@ void TowerManager::TogglePauseMenu()
 
 	if (pauseMenuCanvas->isActive())
 	{
+		// Turn Off Tutorial UI
+		if (mIsTutorial)
+			GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), false);
+
 		// Set the new cursor
 		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 		// Set the time scale to 0 on pause
@@ -529,6 +535,10 @@ void TowerManager::TogglePauseMenu()
 	// else if we are turning off the pause menu
 	else if (!pauseMenuCanvas->isActive())
 	{
+		// Turn on Tutorial UI
+		if (mIsTutorial)
+			GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), true);
+
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
 	}
