@@ -54,17 +54,17 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 0:
 		{
 			// Skill 1
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.20f, -15.0f, 15.0f));
+			mSkillList.push_back(std::make_shared<Attack>(L"SkeletonAttack1", "Skill_1", 0.20f, -15.0f, 15.0f));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			mSkillList[0]->SetSoundEffect("SkeletonAttack1",0.1f);
 			// Skill 2
 			StatusEffect = std::make_shared<Bleed>(0.15f,2,nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"Skelator Slash", "Skill_2", 0.15f, 15.0f, 25.0f, StatusEffect));
+			mSkillList.push_back(std::make_shared<Attack>(L"SkeletonAttack1", "Skill_2", 0.15f, 15.0f, 25.0f, StatusEffect));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
 			mSkillList[1]->SetSoundEffect("SkeletonAttack1",0.1);
 			// Skill 3
 			StatusEffect = std::make_shared <StatDown>(0.10f, 3, STATS::Atk, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"Necrotic Infection", "Skill_3", 0.15f, 100.0f, 10.0f, StatusEffect, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"SkeletonAttack3", "Skill_3", 0.15f, 100.0f, 10.0f, StatusEffect, true));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			mSkillList[2]->SetSoundEffect("SkeletonAttack1", 0.15);
 			break;
@@ -135,17 +135,17 @@ AIMoves::AIMoves(int _enemyID, Character* _caster)
 		case 4:
 		{
 			// Skill 1 
-			mSkillList.push_back(std::make_shared<Attack>(L"Basic Attack", "Skill_1", 0.55f, -15.0f, 10.0f,true));
+			mSkillList.push_back(std::make_shared<Attack>(L"CasterSkill1", "Skill_1", 0.55f, -15.0f, 10.0f,true));
 			mSkillList[0]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_1.png");
 			mSkillList[0]->SetSoundEffect("CasterDemonAttack", 0.1f);
 			// Skill 2
 			StatusEffect = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-			mSkillList.push_back(std::make_shared<Attack>(L"AOE Speed dwn", "Skill_1", 0.55f, 10.0f, 15.0f, StatusEffect, true));
+			mSkillList.push_back(std::make_shared<Attack>(L"CasterSkill1", "Skill_1", 0.55f, 10.0f, 15.0f, StatusEffect, true));
 			mSkillList[1]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_2.png");
 			mSkillList[1]->SetSoundEffect("CasterDemonAttack", 0.1f);
 			// Skill 3
 			StatusEffect = std::make_shared<Shields>(25.0f, 3, nullptr);
-			mSkillList.push_back(std::make_shared<Buffs>(L"Shield", "Skill_1", 0.55f, 20.0f, StatusEffect, true));
+			mSkillList.push_back(std::make_shared<Buffs>(L"CasterSkill1", "Skill_1", 0.55f, 20.0f, StatusEffect, true));
 			mSkillList[2]->SetSkillIconPath(L"assets/images/SkeletonAbilities/Skeleton_Skill_3.png");
 			mSkillList[2]->SetSoundEffect("CasterDemonAttack", 0.1f);
 			break;

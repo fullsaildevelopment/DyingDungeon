@@ -148,6 +148,7 @@ private: // Functions
 	void GanfaulSkill2Prefab();
 	void SkeletonSkill1Prefab();
 	void SkeletonSkill2Prefab();
+	void CasterDemonSkill1Prefab();
 	//////////////////////////////
 
 	// Particle Creation Functions

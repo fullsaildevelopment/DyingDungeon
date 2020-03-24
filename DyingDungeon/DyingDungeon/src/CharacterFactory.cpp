@@ -406,12 +406,12 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 
 			// Set up heros VXF's
 			tempEnemy->GetSkills()[0]->SetParticleSystem(mVXFMap["SkeletonSkill1"]);
-			tempEnemy->GetSkills()[0]->SetParticleOffset({ 0.0f, 3.0f, 0.0f });
-			tempEnemy->GetSkills()[0]->SetParticleFiringTime(0.6f);
+			tempEnemy->GetSkills()[0]->SetParticleOffset({ -0.6f, 2.5f, -0.7f });
+			tempEnemy->GetSkills()[0]->SetParticleFiringTime(0.25f);
 
 			tempEnemy->GetSkills()[1]->SetParticleSystem(mVXFMap["SkeletonSkill1"]);
-			tempEnemy->GetSkills()[1]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
-			tempEnemy->GetSkills()[1]->SetParticleFiringTime(0.4f);
+			tempEnemy->GetSkills()[1]->SetParticleOffset({ -0.6f, 2.5f, -0.7f });
+			tempEnemy->GetSkills()[1]->SetParticleFiringTime(0.3f);
 
 			tempEnemy->GetSkills()[2]->SetParticleSystem(mVXFMap["SkeletonSkill3"]);
 			tempEnemy->GetSkills()[2]->SetParticleOffset({ 0.0f, 0.0f, 0.0f });
@@ -467,6 +467,18 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 
 			// Set up its model
 			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
+
+			tempEnemy->GetSkills()[0]->SetParticleSystem(mVXFMap["CasterSkill1"]);
+			tempEnemy->GetSkills()[0]->SetParticleOffset({ -1.0f, 2.5f, -4.5f });
+			tempEnemy->GetSkills()[0]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[1]->SetParticleSystem(mVXFMap["CasterSkill1"]);
+			tempEnemy->GetSkills()[1]->SetParticleOffset({ -1.0f, 2.5f, -4.5f });
+			tempEnemy->GetSkills()[1]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[2]->SetParticleSystem(mVXFMap["CasterSkill1"]);
+			tempEnemy->GetSkills()[2]->SetParticleOffset({ -1.0f, 2.5f, -4.5f });
+			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.45f);
 
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
@@ -662,6 +674,9 @@ void CharacterFactory::MakeVXFEffects()
 	// Ganfoul
 	GanfaulSkill1Prefab();
 	GanfaulSkill2Prefab();
+
+	// Caster
+	CasterDemonSkill1Prefab();
 }
 
 // Bard VXF
@@ -1036,13 +1051,12 @@ void CharacterFactory::SkeletonSkill1Prefab()
 	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
 	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
 	mSkill->addComponent<PunchMover>(DirectX::XMFLOAT3(20.0f, 2.5f, 10.0f), DirectX::XMFLOAT3(20.0f, 4.5f, 15.0f));
-	//showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
 	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
-	skillVFX->setLifetime(0.25f, 0.75f);
+	skillVFX->setLifetime(0.55f, 0.75f);
 	skillVFX->setParticleCount(0, 100);
-	skillVFX->setEmissionOverLifetime(15);
-	skillVFX->setDuration(120.0f);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
@@ -1217,6 +1231,8 @@ void CharacterFactory::CasterDemonSkill1Prefab()
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	mVXFMap["CasterSkill1"] = mSkill;
 }
 // TODO: THIS IS OTHER STUFF WE WILL MAKE INTO PREFABS
 //Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)

@@ -25,9 +25,9 @@ std::shared_ptr<Odyssey::Component> PunchMover::clone() const
 
 void PunchMover::update(double delta)
 {
-	if (!(mEndPosition.x <= (mTransform->getPosition()).x && mEndPosition.y <= (mTransform->getPosition()).y && mEndPosition.z <= (mTransform->getPosition()).z)) {
+
 		mTransform->addPosition(mVelocity.x, mVelocity.y, mVelocity.z);
-	}
+
 }
 
 void PunchMover::onDestroy()
