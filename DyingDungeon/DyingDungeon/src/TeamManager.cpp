@@ -15,6 +15,20 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 	// Clear the enemy team
 	mEnemyTeam.clear();
 
+	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	{
+		Odyssey::Entity* clickObj = GameUIManager::getInstance().GetClickableUIElements()[i];
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseClick");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseEnter");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseExit");
+
+		// Remove the enemy clickable rectangles because we will be recreating them
+		if (i >= 3)
+		{
+			GameUIManager::getInstance().RemoveClickableCharacterObj(i);
+		}
+	}
+
 	// Destory the previous spot lights
 	for (int i = 0; i < mEnemySpotLights.size(); i++)
 	{

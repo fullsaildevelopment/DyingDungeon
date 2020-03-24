@@ -177,6 +177,8 @@ public: // Functions
 	void AddClickableElementToList(Odyssey::Entity* _clickableUI);
 	// Clear the clickable list
 	void ClearClickableCharacterList() { mClickableUIList.clear(); }
+	// Clear the clickable list
+	void RemoveClickableCharacterObj(int _index) { mClickableUIList.erase(mClickableUIList.begin() + _index); }
 	// Set up the clickable ui callbacks
 	void SetupClickableCharacterUI();
 
@@ -281,11 +283,11 @@ public: // Functions
 	// Get the stats menu		   
 	Odyssey::Entity* GetStatsMenu() { return mStatsMenu; }
 	// Get the rectangle buttons from the pause menu
-	Odyssey::Rectangle2D* GetResumeButton(int _index) { return mResumeBackgrounds[_index]; }
-	Odyssey::Rectangle2D* GetOptionsButton(int _index) { return mOptionsBackgrounds[_index]; }
-	Odyssey::Rectangle2D* GetOptionsVolumeButton(int _index) { return mOptionsVolumeBackgrounds[_index]; }
-	Odyssey::Rectangle2D* GetOptionsControlsButton(int _index) { return mOptionsControlsBackgrounds[_index]; }
-	Odyssey::Rectangle2D* GetMainMenuButton(int _index) { return mMainMenuBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetResumeButton(int _index) { return mResumeBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsButton(int _index) { return mOptionsBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsVolumeButton(int _index) { return mOptionsVolumeBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsControlsButton(int _index) { return mOptionsControlsBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetMainMenuButton(int _index) { return mMainMenuBackgrounds[_index]; }
 	Odyssey::Sprite2D* GetControlsImage(int _index) { return mOptionsControlsImages[_index]; }
 	Odyssey::Text2D* GetControlsBackText(int _index) { return mOptionsControlBackTexts[_index]; }
 	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
@@ -404,16 +406,16 @@ private: // Varibales
 	Odyssey::Rectangle2D* mBlackBackgrounds[2] = { nullptr, nullptr };
 	Odyssey::Rectangle2D* mSmallerBlackBackgrounds[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mPauseTitles[2] = { nullptr, nullptr };
-	Odyssey::Rectangle2D* mResumeBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mResumeBackgrounds[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mResumeTexts[2] = { nullptr, nullptr };
-	Odyssey::Rectangle2D* mOptionsBackgrounds[2] = { nullptr, nullptr };
-	Odyssey::Rectangle2D* mOptionsVolumeBackgrounds[2] = { nullptr, nullptr };
-	Odyssey::Rectangle2D* mOptionsControlsBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsVolumeBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsControlsBackgrounds[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mOptionsTexts[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mOptionsVolumeTexts[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mOptionsControlTexts[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mOptionsControlBackTexts[2] = { nullptr, nullptr };
-	Odyssey::Rectangle2D* mMainMenuBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mMainMenuBackgrounds[2] = { nullptr, nullptr };
 	Odyssey::Text2D* mMainMenuTexts[2] = { nullptr, nullptr };
 	Odyssey::Sprite2D* mOptionsControlsImages[2] = { nullptr, nullptr };
 

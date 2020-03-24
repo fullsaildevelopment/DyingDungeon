@@ -409,7 +409,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	UINT width = 640; // Width
 	UINT height = 50; // Height
 	DirectX::XMFLOAT2 position = { static_cast<float>((screenWidth / 2) - (width / 2)), 50.0f }; // Position
-	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
 
 	// Create tower select title
@@ -450,7 +450,8 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mDoorImages.push_back(doorImage);
 
 	properties.fontSize = 35.0f;
-	properties.bold = false;
+	properties.bold = true;
+	towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(10.0f, 10.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", 100, 60);
 	mTowerBackButton = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
 	properties.fontSize = 50.0f;
 	properties.bold = true;
@@ -473,6 +474,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 25.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.bold = false;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: 1", properties);
 
@@ -518,6 +520,8 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	position.x += 27;
 	properties.fontSize = 30;
 	properties.italic = false;
+	properties.bold = true;
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
 	towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tutorial", properties);
 
 	// Disable the tower info canvas
@@ -536,7 +540,7 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	UINT width = screenWidth; // Width
 	UINT height = 50; // Height
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
 
 	// Create team select title
@@ -546,16 +550,16 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
-	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
+	//teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
 	properties.fontSize = 35.0f;
-	properties.bold = false;
+	properties.bold = true;
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(10.0f, 10.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", 100, 60);
 	mTeamSelectBackButton = teamSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
 
 	//Create the save loadout button
 	position.y += 65.0f;
 	position.x -= 140.0f;
 	properties.fontSize = 35.0f;
-	properties.bold = true;
 	mSaveLoadoutButton = teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 510.0f, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width/5, height);
 	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width, height, L"Save Loadout", properties);
 	
@@ -744,7 +748,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesTo
 		position.y -= 75.0f;//change back to 50.0f later
 		color = { 30.0f, 180.0f, 30.0f, 1.0f };
 		// Add the reusume background to the canvas
-		mResumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mResumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 		// Resume text
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		properties.bold = false;
@@ -755,7 +759,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesTo
 		position.y += 75.0f;
 		color = { 30.0f, 180.0f, 30.0f, 1.0f };
 		// Add the options background to the canvas
-		mOptionsVolumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mOptionsVolumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 		// Options text
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		mOptionsVolumeTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
@@ -763,7 +767,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesTo
 		position.y += 75.0f;
 		color = { 30.0f, 180.0f, 30.0f, 1.0f };
 		// Add the options background to the canvas
-		mOptionsControlsBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mOptionsControlsBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 		// Options text
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		mOptionsControlTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
@@ -772,7 +776,7 @@ void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesTo
 		position.y += 75.0f;
 		color = { 180.0f, 30.0f, 30.0f, 1.0f };
 		// Add the main menu background to the canvas
-		mMainMenuBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mMainMenuBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 		// Main menu text
 		color = { 255.0f, 255.0f, 255.0f, 1.0f };
 		mMainMenuTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);

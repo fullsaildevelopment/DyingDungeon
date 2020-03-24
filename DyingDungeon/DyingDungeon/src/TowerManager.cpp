@@ -548,6 +548,14 @@ void TowerManager::GoToMainMenu()
 		GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
 	}
 
+	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	{
+		Odyssey::Entity* clickObj = GameUIManager::getInstance().GetClickableUIElements()[i];
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseClick");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseEnter");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseExit");
+	}
+
 	GameUIManager::getInstance().ClearClickableCharacterList();
 	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
