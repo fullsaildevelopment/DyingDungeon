@@ -136,7 +136,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -294,7 +294,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.45f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("LightningBolt", 0.0f);
 		mSkillList[3]->SetStatusChance(0.33f);
@@ -699,16 +699,16 @@ void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::S
 {
 	// Set up sprite's callback function for the Skill1Callback
 	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
-	mSkillSprites.push_back(_skillImage1);
+	//mSkillSprites.push_back(_skillImage1);
 	// Set up sprite's callback function for the Skill2Callback
 	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
-	mSkillSprites.push_back(_skillImage2);
+	//mSkillSprites.push_back(_skillImage2);
 	// Set up sprite's callback function for the Skill3Callback
 	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
-	mSkillSprites.push_back(_skillImage3);
+	//mSkillSprites.push_back(_skillImage3);
 	// Set up sprite's callback function for the Skill4Callback
 	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
-	mSkillSprites.push_back(_skillImage4);
+	//mSkillSprites.push_back(_skillImage4);
 }
 
 // Function that allows the player to take thier turn, Character Controler
@@ -1210,8 +1210,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 			for (Odyssey::Entity* t : mHeroList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
-				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+				//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 			}
 			BeginAttack(mHeroList);
 		}
@@ -1223,8 +1223,8 @@ void HeroComponent::ClickOnEnemy(SetNewTargetEvent* targetIndex)
 			for (Odyssey::Entity* t : mEnemyList)
 			{
 				// If the entity if valid and the character is no dead, turn off targeter
-				if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-					t->getComponent<Character>()->mImpactIndicator->setActive(false);
+				//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+					//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 			}
 			BeginAttack(mEnemyList);
 		}
@@ -1243,6 +1243,9 @@ void HeroComponent::SelctionState(int moveIndex)
 
 		// Change state to target selection
 		mCurrentState = STATE::SELECTTARGET;
+
+		// Turn on the skill selected indicator rectangle
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[moveIndex]->setVisible(true);
 	}
 }
 
@@ -1350,8 +1353,8 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		for (Odyssey::Entity* t : targets)
 		{
 			// If the entity if valid and the character is no dead, turn off targeter
-			if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
-				t->getComponent<Character>()->mImpactIndicator->setActive(false);
+			//if (t != nullptr && t->getComponent<Character>()->GetState() != STATE::DEAD)
+				//t->getComponent<Character>()->mImpactIndicator->setActive(false);
 		}
 
 		// Que animations, and set variables for particle effect locations
@@ -1372,16 +1375,16 @@ void HeroComponent::ResetToSelection()
 	for (Odyssey::Entity* e : mEnemyList)
 	{
 		// Turn off targeter
-		if (e != nullptr)
-			e->getComponent<Character>()->mImpactIndicator->setActive(false);
+		//if (e != nullptr)
+			//e->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
 
 	// For each valid entity 
 	for (Odyssey::Entity* h : mHeroList)
 	{
 		// Turn off targeter
-		if(h != nullptr)
-			h->getComponent<Character>()->mImpactIndicator->setActive(false);
+		//if(h != nullptr)
+			//h->getComponent<Character>()->mImpactIndicator->setActive(false);
 	}
 	// Reset temp target and skill variables to default
 	mCurrentSkill = nullptr;
@@ -1419,14 +1422,6 @@ void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 	Odyssey::EventManager::getInstance().subscribe(this, &HeroComponent::ClickOnEnemy);
-}
-
-void HeroComponent::onDestroy()
-{
-	for (int i = 0; i < mSkillSprites.size(); ++i)
-	{
-		mSkillSprites[i]->unregisterCallback("onMouseClick");
-	}
 }
 
 // Skill Call backs for clickable UI

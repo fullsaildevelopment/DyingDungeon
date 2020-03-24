@@ -65,6 +65,7 @@ public: // Functions
 
 	//Increase the character hud index
 	void IncreaseCharacterHUDIndex() { mCharacterHudIndex++; }
+	void ResetCharacterHudIndex() { mCharacterHudIndex = 0; }
 	// Get the character hud index
 	unsigned int GetCharacterHudIndex() { return mCharacterHudIndex; }
 
@@ -148,6 +149,7 @@ private: // Functions
 	void GanfaulSkill2Prefab();
 	void SkeletonSkill1Prefab();
 	void SkeletonSkill2Prefab();
+	void CasterDemonSkill1Prefab();
 	//////////////////////////////
 
 	// Particle Creation Functions

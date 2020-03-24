@@ -66,7 +66,6 @@ private:
 public:
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
-	virtual void onDestroy();
 private:
 	// List that contains the list ofheros and enemies
 	std::vector<Odyssey::Entity*> mHeroList;

@@ -10,6 +10,18 @@ void SkillShowcase::initialize()
 
 void SkillShowcase::update(double deltaTime)
 {
+	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::F))
+	{
+		DirectX::XMVECTOR position = {};
+		DirectX::XMVECTOR rotation = {};
+
+		// Get the prefab's position and rotation
+		position = DirectX::XMLoadFloat3(&(caster1->getComponent<Odyssey::Transform>()->getPosition()));
+		rotation = DirectX::XMLoadFloat3(&(caster1->getComponent<Odyssey::Transform>()->getEulerRotation()));
+
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(caster1, &caster1Spawn, position, rotation));
+	}
+
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::O))
 	{
 		DirectX::XMVECTOR position = {};

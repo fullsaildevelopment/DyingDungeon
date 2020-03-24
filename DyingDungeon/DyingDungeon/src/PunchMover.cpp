@@ -25,9 +25,9 @@ std::shared_ptr<Odyssey::Component> PunchMover::clone() const
 
 void PunchMover::update(double delta)
 {
-	if (!(mEndPosition.x <= (mTransform->getPosition()).x && mEndPosition.y <= (mTransform->getPosition()).y && mEndPosition.z <= (mTransform->getPosition()).z)) {
+
 		mTransform->addPosition(mVelocity.x, mVelocity.y, mVelocity.z);
-	}
+
 }
 
 void PunchMover::onDestroy()
@@ -36,7 +36,8 @@ void PunchMover::onDestroy()
 
 void PunchMover::setParticlePath(DirectX::XMFLOAT3 _startPosition, DirectX::XMFLOAT3 _endPosition)
 {
-	
+	mStartPosition = _startPosition;
+	mEndPosition = _endPosition;
 	mTransform->setPosition(mStartPosition.x, mStartPosition.y, mStartPosition.z);
 	mTransform->setRotation(atanf((mEndPosition.y - mStartPosition.y) / (mEndPosition.z - mStartPosition.z)) * (180.00000000f / 3.14159265f), 0.0f, atanf((mEndPosition.y - mStartPosition.y) / (mEndPosition.x - mStartPosition.x)) * (180.00000000f / 3.14159265f) + 90.00000000f);
 	mVelocity = DirectX::XMFLOAT3((mEndPosition.x - mStartPosition.x) / timeInFrames, (mEndPosition.y - mStartPosition.y) / timeInFrames, (mEndPosition.z - mStartPosition.z) / timeInFrames);

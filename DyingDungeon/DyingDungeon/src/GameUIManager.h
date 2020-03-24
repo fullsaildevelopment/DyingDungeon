@@ -13,11 +13,6 @@ class GameUIManager
 {
 public:
 
-	enum class UIObject
-	{
-		PauseMenu,
-		OptionsMenu
-	};
 
 	enum class ClickableCharacterUI
 	{
@@ -99,7 +94,7 @@ public: // Functions
 	void SaveLoadout1();
 
 	// Creation of the pause menu
-	void CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo);
+	void CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesToAddTo);
 
 	// Creation of the stats menu
 	void CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo);
@@ -138,7 +133,7 @@ public: // Functions
 	void HideControlsGuide();
 	
 	// Creation of tutorial
-	void CreateTutorialCanvas();
+	void CreateTutorialCanvas(Odyssey::Scene* _sceneToAddTo);
 
 	// Set the characters HUD Elements
 	void AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud);
@@ -163,6 +158,7 @@ public: // Functions
 
 	// Add HUD to the character hud list
 	void AddHudToList(Odyssey::Entity* _newHud);
+	void ClearHudList() { mCharacterHudList.clear(); }
 	// Add character health and mana bars to update list in order for the bars to be animated
 	void AddCharacterHpBarsToUpdateList(Character* _currCharacter, float _previousHpAmount, float _newHpAmount);
 	void AddCharacterMpBarsToUpdateList(Character* _currCharacter, float _previousMpAmount, float _newMpAmount);
@@ -177,11 +173,12 @@ public: // Functions
 	void UpdateCharacterHealthPopups(double _deltaTime);
 	// UPdate turn number
 	void UpdateCharacterTurnNumber(Character* _currCharacter, int _turnNumber);
-
 	// Add a cliackable entity to target enemies or allies
-	void AddClickableElementToList(Odyssey::Entity* _clickableUI) { mClickableUIList.push_back(_clickableUI); }
+	void AddClickableElementToList(Odyssey::Entity* _clickableUI);
 	// Clear the clickable list
 	void ClearClickableCharacterList() { mClickableUIList.clear(); }
+	// Clear the clickable list
+	void RemoveClickableCharacterObj(int _index) { mClickableUIList.erase(mClickableUIList.begin() + _index); }
 	// Set up the clickable ui callbacks
 	void SetupClickableCharacterUI();
 
@@ -262,11 +259,11 @@ public: // Functions
 	//
 	Odyssey::Text2D* GetBackOptions() { return mOptionsBack; }
 	//
-	Odyssey::Rectangle2D* GetBackButtonOptions() { return mOptionsBackButton; }
+	Odyssey::Sprite2D* GetBackButtonOptions() { return mOptionsBackButton; }
 	//
-	Odyssey::Rectangle2D* GetVolumeButtonOptions() { return mOptionsVolume; }
+	Odyssey::Sprite2D* GetVolumeButtonOptions() { return mOptionsVolume; }
 	//
-	Odyssey::Rectangle2D* GetControlsButtonOptions() { return mOptionsControls; }
+	Odyssey::Sprite2D* GetControlsButtonOptions() { return mOptionsControls; }
 	//
 	Odyssey::Text2D* GetOptionsButtonMain() { return mMainOptionsText; }
 	// Get the enter battle button sprite
@@ -280,19 +277,19 @@ public: // Functions
 	Odyssey::UICanvas* GetTutorialCanvas() { return mTutorialCanvas; }
 
 	// Get the pause menu
-	Odyssey::Entity* GetPauseMenu() { return mPauseMenu; }
+	Odyssey::Entity* GetPauseMenu(int _index) { return mPauseMenus[_index]; }
 	// Get the options menu		   
-	Odyssey::Entity* GetOptionsMenu() { return mOptionsMenu; }
+	Odyssey::Entity* GetOptionsMenu(int _index) { return mOptionsMenus[_index]; }
 	// Get the stats menu		   
 	Odyssey::Entity* GetStatsMenu() { return mStatsMenu; }
 	// Get the rectangle buttons from the pause menu
-	Odyssey::Rectangle2D* GetResumeButton() { return mResumeBackground; }
-	Odyssey::Rectangle2D* GetOptionsButton() { return mOptionsBackground; }
-	Odyssey::Rectangle2D* GetOptionsVolumeButton() { return mOptionsVolumeBackground; }
-	Odyssey::Rectangle2D* GetOptionsControlsButton() { return mOptionsControlsBackground; }
-	Odyssey::Rectangle2D* GetMainMenuButton() { return mMainMenuBackground; }
-	Odyssey::Sprite2D* GetControlsImage() { return mOptionsControlsImage; }
-	Odyssey::Text2D* GetControlsBackText() { return mOptionsControlBackText; }
+	Odyssey::Sprite2D* GetResumeButton(int _index) { return mResumeBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsButton(int _index) { return mOptionsBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsVolumeButton(int _index) { return mOptionsVolumeBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetOptionsControlsButton(int _index) { return mOptionsControlsBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetMainMenuButton(int _index) { return mMainMenuBackgrounds[_index]; }
+	Odyssey::Sprite2D* GetControlsImage(int _index) { return mOptionsControlsImages[_index]; }
+	Odyssey::Text2D* GetControlsBackText(int _index) { return mOptionsControlBackTexts[_index]; }
 	Odyssey::Text2D* GetTowerSelectBackButton() { return mTowerBackButton; }
 	Odyssey::Text2D* GetTeamSelectBackButton() { return  mTeamSelectBackButton; }
 
@@ -306,9 +303,9 @@ public: // Functions
 	}
 
 	//Setters
-	void SetPauseMenu(Odyssey::Entity* _pauseMenu) { mPauseMenu = _pauseMenu; }
+	void SetPauseMenu(Odyssey::Entity* _pauseMenu, int _index) { mPauseMenus[_index] = _pauseMenu; }
 
-	void SetOptionsMenu(Odyssey::Entity* _optionsMenu) { mOptionsMenu = _optionsMenu; }
+	void SetOptionsMenu(Odyssey::Entity* _optionsMenu, int _index) { mOptionsMenus[_index] = _optionsMenu; }
 
 	void SetStatsMenu(Odyssey::Entity* _statsMenu) { mStatsMenu = _statsMenu; }
 
@@ -345,8 +342,8 @@ private: // Varibales
 	Odyssey::Entity* mSaveLoadoutConfermation = nullptr;
 	Odyssey::Entity* mSaveVolumeConfermation = nullptr;
 	Odyssey::Entity* mMainSaveVolumeConfermation = nullptr;
-	Odyssey::Entity* mPauseMenu = nullptr;
-	Odyssey::Entity* mOptionsMenu = nullptr;
+	Odyssey::Entity* mPauseMenus[2] = { nullptr, nullptr };
+	Odyssey::Entity* mOptionsMenus[2] = { nullptr, nullptr };
 	Odyssey::Entity* mStatsMenu = nullptr;
 	Odyssey::Entity* mCreditsMenu = nullptr;
 	Odyssey::Entity* mMainControls = nullptr;
@@ -357,9 +354,9 @@ private: // Varibales
 	Odyssey::Text2D* mNewGameText = nullptr;
 	Odyssey::Text2D* mStatsText = nullptr;
 	Odyssey::Text2D* mOptionsBack = nullptr;
-	Odyssey::Rectangle2D* mOptionsBackButton = nullptr;
-	Odyssey::Rectangle2D* mOptionsVolume = nullptr;
-	Odyssey::Rectangle2D* mOptionsControls = nullptr;
+	Odyssey::Sprite2D* mOptionsBackButton = nullptr;
+	Odyssey::Sprite2D* mOptionsVolume = nullptr;
+	Odyssey::Sprite2D* mOptionsControls = nullptr;
 	Odyssey::Text2D* mMainControlsBack = nullptr;
 	Odyssey::Sprite2D* mMainPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Sprite2D* mMainMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
@@ -406,28 +403,28 @@ private: // Varibales
 	std::vector<Odyssey::Sprite2D*> mShowInfoButtons;
 
 	// Pause Menu Items
-	Odyssey::Rectangle2D* mBlackBackground = nullptr;
-	Odyssey::Rectangle2D* mSmallerBlackBackground = nullptr;
-	Odyssey::Text2D* mPauseTitle = nullptr;
-	Odyssey::Rectangle2D* mResumeBackground = nullptr;
-	Odyssey::Text2D* mResumeText = nullptr;
-	Odyssey::Rectangle2D* mOptionsBackground = nullptr;
-	Odyssey::Rectangle2D* mOptionsVolumeBackground = nullptr;
-	Odyssey::Rectangle2D* mOptionsControlsBackground = nullptr;
-	Odyssey::Text2D* mOptionsText = nullptr;
-	Odyssey::Text2D* mOptionsVolumeText = nullptr;
-	Odyssey::Text2D* mOptionsControlText = nullptr;
-	Odyssey::Text2D* mOptionsControlBackText = nullptr;
-	Odyssey::Rectangle2D* mMainMenuBackground = nullptr;
-	Odyssey::Text2D* mMainMenuText = nullptr;
-	Odyssey::Sprite2D* mOptionsControlsImage = nullptr;
+	Odyssey::Rectangle2D* mBlackBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Rectangle2D* mSmallerBlackBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mPauseTitles[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mResumeBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mResumeTexts[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsVolumeBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsControlsBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mOptionsTexts[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mOptionsVolumeTexts[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mOptionsControlTexts[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mOptionsControlBackTexts[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mMainMenuBackgrounds[2] = { nullptr, nullptr };
+	Odyssey::Text2D* mMainMenuTexts[2] = { nullptr, nullptr };
+	Odyssey::Sprite2D* mOptionsControlsImages[2] = { nullptr, nullptr };
 
 	// Options Menu Items
 	Odyssey::Text2D* mOptionsTitle = nullptr;
 	Odyssey::Text2D* mVolumeText = nullptr;
-	Odyssey::Rectangle2D* mVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
-	Odyssey::Sprite2D* mPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
-	Odyssey::Sprite2D* mMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mVolumeBar[8] = { nullptr,nullptr,nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mPlusImage[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMinusImage[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Text2D* mBackButtonText = nullptr;
 
 	//Stats Menu Items
@@ -490,8 +487,9 @@ private: // Varibales
 	// Bools
 
 private: // Functions
-	void CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo);
+	void CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index);
 	void OptionsBackButton();
+	void OptionsBossBackButton();
 	void DecreaseMasterVolume();
 	void DecreaseBackgroundVolume();
 	void DecreaseSFXVolume();
@@ -520,41 +518,18 @@ private: // Functions
 	void CharacterEnterHoverCallback();
 	void CharacterExitHoverCallback();
 
-	// Tutorial Level CallBacks
-	void TutorialPlayerCallBack();
-	void TutorialPlayerUICallBack();
-	void TutorialPlayerSkillsCallBack();
-	void TutorialPlayerBuffsCallBack();
-	void TutorialPlayerStatsCallBack();
-	void TutorialEnemyUICallBack();
-	void TutorialEnemyCallBack();
-	void TutorialEnemyBuffsCallBack();
-	void TutorialLevelCallBack();
-	void TutorialTurnNumberCallBack();
-
 	public:
-	void TutorialTempFixCallBack();
+	void EndTutorial();
+	void TutorialCallBack();
 
 	private:
 	// Tutorial Level Sprites
 	Odyssey::Entity* mTutorialEntity = nullptr;
-
 	Odyssey::UICanvas* mTutorialCanvas = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayer = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerUI = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerSkills = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerBuffs = nullptr;
-	Odyssey::Sprite2D* mHighlightPlayerStats = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemyUI = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemy = nullptr;
-	Odyssey::Sprite2D* mHighlightEnemyBuffs = nullptr;
-	Odyssey::Sprite2D* mHighlightLevel = nullptr;
-	Odyssey::Sprite2D* mHighlightTurnNumber = nullptr;
-	Odyssey::Text2D* mTutorialText = nullptr;
-	Odyssey::Rectangle2D* tutorialRect = nullptr;
-
-	// Remove if possible after 3/18
-	Odyssey::Scene* gScene = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorial = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorialText = nullptr;
+	Odyssey::Sprite2D* mHighlightTutorialContinueText = nullptr;
+	int tutorialCounter = 0;
 
 private: // Other stuff
 	// TODO: REFACTOR THIS LATER
@@ -565,10 +540,8 @@ private: // Other stuff
 
 private: // Prefab stuff
 	// Prefab Maps
-	std::map<UIObject, Odyssey::Entity*> mUIObjectsPrefabMap;
 	std::map<ClickableCharacterUI, Odyssey::Entity*> mClickableUIPrefabMap;
 
 	// Prefab Creation Functions
-	Odyssey::Entity* CreatePauseMenuPrefab();
 	Odyssey::Entity* CreateClickableUIPrefab(DirectX::XMFLOAT2 _clickableRectPos, bool _isHero);
 };

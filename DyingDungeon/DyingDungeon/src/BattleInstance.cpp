@@ -32,13 +32,13 @@ BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bo
 	else
 	{
 		StatTracker::Instance().SetTutorialState(true);
-		GameUIManager::getInstance().CreateTutorialCanvas();
-		GameUIManager::getInstance().GetTutorialCanvas()->setActive(true);
+		GameUIManager::getInstance().CreateTutorialCanvas(mPlayerTeam[0]->getScene());
+		GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), true);
 		mPlayerTeam[0]->getComponent<Character>()->SetHP(0);
 		mPlayerTeam[2]->getComponent<Character>()->SetHP(0);
 	}
 	
-
+	
 	// Make a turn order index to keep track of the index for both of the player and the enemy for loop.
 	int turnOrderIndex = 0;
 
@@ -273,6 +273,11 @@ void BattleInstance::SetTurnIndicatorPosition()
 	{
 		// Turn off their hud blocker
 		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
+		CharacterHUDElements* hudElements = GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>();
+		hudElements->GetHealthBar()->setFill(mCurrentCharacter->getComponent<Character>()->GetHP() / mCurrentCharacter->getComponent<Character>()->GetMaxHP());
+		hudElements->GetHealthNumber()->setText(std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetHP()) + L"/" + std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMaxHP()));
+		hudElements->GetManaBar()->setFill(mCurrentCharacter->getComponent<Character>()->GetMana() / mCurrentCharacter->getComponent<Character>()->GetMaxMana());
+		hudElements->GetManaNumber()->setText(std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMana()) + L"/" + std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMaxMana()));
 	}
 
 	// Get the character's position

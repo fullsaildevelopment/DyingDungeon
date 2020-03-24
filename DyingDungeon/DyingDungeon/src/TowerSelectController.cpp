@@ -244,9 +244,9 @@ void TowerSelectController::ChangeDoor1State()
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[0], vec, vec));
 		// Change enemy sprites and level number
-		//ChangeTowerInfoElements(mLevelInfoPopups[0], 1);
+		ChangeTowerInfoElements(mLevelInfoPopups[0], 1);
 	}
 	else
 	{
@@ -255,7 +255,7 @@ void TowerSelectController::ChangeDoor1State()
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
 		// Destroy the info popup
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[0]));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[0]));
 	}
 
 	// Flip the bool for next time
@@ -273,10 +273,10 @@ void TowerSelectController::ChangeDoor2State()
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[1], vec, vec));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[1], vec, vec));
 
 		// Change enemy sprites and level number
-		//ChangeTowerInfoElements(mLevelInfoPopups[1], 2);
+		ChangeTowerInfoElements(mLevelInfoPopups[1], 2);
 	}
 	else
 	{
@@ -285,7 +285,7 @@ void TowerSelectController::ChangeDoor2State()
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
 		// Destroy the info popup
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[1]));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[1]));
 	}
 
 	// Flip the bool for next time
@@ -303,10 +303,10 @@ void TowerSelectController::ChangeDoor3State()
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[2], vec, vec));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[2], vec, vec));
 
 		// Change enemy sprites and level number
-		//ChangeTowerInfoElements(mLevelInfoPopups[2], 3);
+		ChangeTowerInfoElements(mLevelInfoPopups[2], 3);
 	}
 	else
 	{
@@ -315,7 +315,7 @@ void TowerSelectController::ChangeDoor3State()
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
 		// Destroy the info popup
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[2]));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[2]));
 	}
 
 	// Flip the bool for next time
@@ -333,10 +333,10 @@ void TowerSelectController::ChangeDoor4State()
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[3], vec, vec));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[3], vec, vec));
 
 		// Change enemy sprites and level number
-		//ChangeTowerInfoElements(mLevelInfoPopups[3], 4);
+		ChangeTowerInfoElements(mLevelInfoPopups[3], 4);
 	}
 	else
 	{
@@ -345,7 +345,7 @@ void TowerSelectController::ChangeDoor4State()
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 
 		// Destroy the info popup
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[3]));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[3]));
 	}
 
 	// Flip the bool for next time
@@ -363,10 +363,10 @@ void TowerSelectController::ChangeDoor5State()
 		// Create the info prefab
 		DirectX::XMVECTOR vec = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Odyssey::Entity* prefab = TowerSelectionPrefabFactory::getInstance().GetInfoPrefab();
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[4], vec, vec));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mLevelInfoPopups[4], vec, vec));
 
 		// Change enemy sprites and level number
-		//ChangeTowerInfoElements(mLevelInfoPopups[4], 5);
+		ChangeTowerInfoElements(mLevelInfoPopups[4], 5);
 	}
 	else
 	{
@@ -374,7 +374,7 @@ void TowerSelectController::ChangeDoor5State()
 		mDoorList[4].mDoCloseDoorAnimation = true;
 		RedAudioManager::Instance().PlaySFX("DoorClose");
 		// Destroy the info popup
-		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[4]));
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mLevelInfoPopups[4]));
 	}
 
 	// Flip the bool for next time
