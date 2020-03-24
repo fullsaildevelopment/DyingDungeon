@@ -41,6 +41,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include "CasterMover.h"
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 // Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
@@ -104,6 +105,7 @@ void setupMageVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupWarriorVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMonkVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupCasterVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
@@ -1328,6 +1330,7 @@ void setupSkillVFX(Odyssey::Application* application)
 	setupPaladinVFX(application, showcase);
 	setupSkeletonVFX(application, showcase);
 	setupGanfaulVFX(application, showcase);
+	setupCasterVFX(application, showcase);
 }
 
 void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
@@ -1614,7 +1617,7 @@ void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showca
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
 	skillVFX->setParticleCount(0, 100);
-	skillVFX->setEmissionOverLifetime(15);
+	skillVFX->setEmissionOverLifetime(75);
 	skillVFX->setDuration(7.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
@@ -1684,6 +1687,77 @@ void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 	skillVFX->setGravity(0.0f);
 	skillVFX->setLooping(false);
 	skillVFX->setShape(Odyssey::CirclePS(0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));*/
+}
+
+void setupCasterVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	showcase->getComponent<SkillShowcase>()->caster1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(0.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f/2.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f + (3.14159265f/2.0f));
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
 }
 
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
