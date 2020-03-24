@@ -36,4 +36,7 @@ public:
 
 	Odyssey::Entity* ganfaul1;
 	Odyssey::Entity* ganfaul1Spawn;
+	
+	Odyssey::Entity* caster1;
+	Odyssey::Entity* caster1Spawn;
 };

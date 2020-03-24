@@ -12,6 +12,7 @@
 #include "SpinKickMover.h"
 #include "PunchMover.h"
 #include "BossAttackMover.h"
+#include "CasterMover.h"
 
 CharacterFactory& CharacterFactory::getInstance()
 {
@@ -1145,6 +1146,77 @@ void CharacterFactory::GanfaulSkill2Prefab()
 	skillVFX->setShape(Odyssey::CirclePS(-0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 
 	mVXFMap["GanfaulSkill2"] = mSkill;
+}
+
+void CharacterFactory::CasterDemonSkill1Prefab()
+{
+	Odyssey::Entity* mSkill = mApplication->createPrefab();
+	mSkill->addComponent<Odyssey::Transform>();
+	mSkill->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	mSkill->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	mSkill->addComponent<CasterMover>(0.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	//mSkill->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	mSkill->addComponent<CasterMover>(3.14159265f / 2.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	//mSkill->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	mSkill->addComponent<CasterMover>(3.14159265f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = mSkill->addComponent<Odyssey::ParticleSystem>();
+	//mSkill->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	mSkill->addComponent<CasterMover>(3.14159265f + (3.14159265f / 2.0f));
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
 }
 // TODO: THIS IS OTHER STUFF WE WILL MAKE INTO PREFABS
 //Odyssey::ParticleSystem* CharacterFactory::setUpFireButBetter(Odyssey::Scene* _sceneToAddTo)
