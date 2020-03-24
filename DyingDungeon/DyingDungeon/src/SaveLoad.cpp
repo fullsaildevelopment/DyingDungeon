@@ -355,6 +355,11 @@ void SaveLoad::ShutdownSave(Odyssey::ShutdownApplicationEvent* saEvent)
 	SaveSettings();
 }
 
+void SaveLoad::EngineShutdownSave(Odyssey::EngineShutdownEvent* esEvent)
+{
+	SaveSettings();
+}
+
 bool SaveLoad::SaveSettings()
 {
 	bool perperExport = true;

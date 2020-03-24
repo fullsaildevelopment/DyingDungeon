@@ -1084,12 +1084,12 @@ void CharacterFactory::SkeletonSkill1Prefab()
 	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
 	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
 	mSkill->addComponent<PunchMover>(DirectX::XMFLOAT3(20.0f, 2.5f, 10.0f), DirectX::XMFLOAT3(20.0f, 4.5f, 15.0f));
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "SmokeParticle.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.55f, 0.75f);
 	skillVFX->setParticleCount(0, 100);
 	skillVFX->setEmissionOverLifetime(75);
-	skillVFX->setDuration(3.0f);
+	skillVFX->setDuration(0.4f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
 	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
@@ -1111,11 +1111,11 @@ void CharacterFactory::SkeletonSkill3Prefab()
 	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
 	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
 	mSkill->addComponent<SpinKickMover>();
-	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Spin_Kick_Energy.png");
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "SmokeParticle.png");
 	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
 	skillVFX->setLifetime(0.25f, 0.75f);
 	skillVFX->setParticleCount(0, 100);
-	skillVFX->setEmissionOverLifetime(15);
+	skillVFX->setEmissionOverLifetime(35);
 	skillVFX->setDuration(3.0f);
 	skillVFX->setSpeed(1.25f, 1.75f);
 	skillVFX->setSize(0.25f, 0.75f);
