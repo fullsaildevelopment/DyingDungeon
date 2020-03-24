@@ -497,6 +497,26 @@ Odyssey::Entity* CharacterFactory::CreateCharacterPrefab(CharacterOptions _chara
 			// Set up its model
 			Odyssey::RenderManager::getInstance().importModel(newCharacter, tempEnemy->GetModel().c_str(), false);
 
+			tempEnemy->GetSkills()[0]->SetParticleSystem(mVXFMap["GanfaulSkill1"]);
+			tempEnemy->GetSkills()[0]->SetParticleOffset({ 0.0f, 2.5f, 0.0f });
+			tempEnemy->GetSkills()[0]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[1]->SetParticleSystem(mVXFMap["GanfaulSkill1"]);
+			tempEnemy->GetSkills()[1]->SetParticleOffset({ 0.0f, 2.5f, -0.0f });
+			tempEnemy->GetSkills()[1]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[2]->SetParticleSystem(mVXFMap["GanfaulSkill1"]);
+			tempEnemy->GetSkills()[2]->SetParticleOffset({ 0.0f, 2.5f, -0.0f });
+			tempEnemy->GetSkills()[2]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[3]->SetParticleSystem(mVXFMap["GanfaulSkill1"]);
+			tempEnemy->GetSkills()[3]->SetParticleOffset({ 0.0f, 2.5f, -0.0f });
+			tempEnemy->GetSkills()[3]->SetParticleFiringTime(0.45f);
+
+			tempEnemy->GetSkills()[4]->SetParticleSystem(mVXFMap["GanfaulSkill1"]);
+			tempEnemy->GetSkills()[4]->SetParticleOffset({ 0.0f, 2.5f, -0.0f });
+			tempEnemy->GetSkills()[4]->SetParticleFiringTime(0.45f);
+
 			// For each animation in its vector of animations path, import an animation
 			for (int i = 0; i < tempEnemy->GetAnimationPaths().size(); ++i)
 			{

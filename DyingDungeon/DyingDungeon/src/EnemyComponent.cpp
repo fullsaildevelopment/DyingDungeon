@@ -692,7 +692,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
 				temp->getComponent<PunchMover>()->setParticlePath(tempPos1, tempPos2);
 			}
-			if (wcscmp(wStringToCompare.c_str(), L"CasterSkill1") == 0)
+			else if (wcscmp(wStringToCompare.c_str(), L"CasterSkill1") == 0)
 			{
 				temp = mMoves.GetMove()->skill->GetParticleSystem();
 				tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
@@ -703,6 +703,17 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 				position = DirectX::XMLoadFloat3(&(tempPos1));
 				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
 			}
+			/*if (wcscmp(wStringToCompare.c_str(), L"GanfoulAttack1") == 0)
+			{
+				temp = mMoves.GetMove()->skill->GetParticleSystem();
+				tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+				tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+				tempPos1.x += tempPos2.x;
+				tempPos1.y += tempPos2.y;
+				tempPos1.z += tempPos2.z;
+				position = DirectX::XMLoadFloat3(&(tempPos1));
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+			}*/
 			else if (mMoves.GetMove()->skill->IsAOE())
 			{
 				if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
