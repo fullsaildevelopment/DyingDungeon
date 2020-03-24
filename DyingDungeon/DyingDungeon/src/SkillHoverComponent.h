@@ -25,7 +25,6 @@ class SkillHoverComponent : public Odyssey::Component
 public:
 	virtual std::shared_ptr<Odyssey::Component> clone() const;
 	virtual void initialize();
-	virtual void onDestroy();
 	void registerSprite(Odyssey::Sprite2D* sprite);
 	void skill1Enter();
 	void skill2Enter();

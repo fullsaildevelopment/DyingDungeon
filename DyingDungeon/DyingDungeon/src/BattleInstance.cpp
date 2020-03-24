@@ -273,6 +273,11 @@ void BattleInstance::SetTurnIndicatorPosition()
 	{
 		// Turn off their hud blocker
 		GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetHudBlocker()->setVisible(false);
+		CharacterHUDElements* hudElements = GameUIManager::getInstance().GetCharacterHuds()[mCurrentCharacter->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>();
+		hudElements->GetHealthBar()->setFill(mCurrentCharacter->getComponent<Character>()->GetHP() / mCurrentCharacter->getComponent<Character>()->GetMaxHP());
+		hudElements->GetHealthNumber()->setText(std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetHP()) + L"/" + std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMaxHP()));
+		hudElements->GetManaBar()->setFill(mCurrentCharacter->getComponent<Character>()->GetMana() / mCurrentCharacter->getComponent<Character>()->GetMaxMana());
+		hudElements->GetManaNumber()->setText(std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMana()) + L"/" + std::to_wstring((int)mCurrentCharacter->getComponent<Character>()->GetMaxMana()));
 	}
 
 	// Get the character's position

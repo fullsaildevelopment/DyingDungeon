@@ -863,7 +863,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 								mMoves.GetMove()->skill->Use(*this, *temp);
 
 							// Reset Impact Indicators (AOE ONLY)
-							temp->GetInpactIndicator()->setActive(false);
+							//temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}
@@ -892,7 +892,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 								mMoves.GetMove()->skill->Use(*this, *temp);
 
 							// Reset Impact Indicators (AOE ONLY)
-							temp->GetInpactIndicator()->setActive(false);
+							//temp->GetInpactIndicator()->setActive(false);
 						}
 					}
 				}

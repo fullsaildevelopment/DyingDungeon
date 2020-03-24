@@ -85,6 +85,7 @@ private: // Varibales
 	// Bools
 	bool mIsPaused = false;
 	bool mIsTutorial = false;
+	bool mIsBossScene = false;
 
 	// Tower State
 	TOWER_STATE mTowerState = TOWER_STATE::NOT_IN_BATTLE;
