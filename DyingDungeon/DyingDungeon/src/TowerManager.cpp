@@ -95,7 +95,7 @@ void TowerManager::update(double deltaTime)
 		// Always look for the pause input button
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
 			!GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>()->isActive() &&
-			!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+			!GameUIManager::getInstance().GetOptionsMenu(0)->getComponent<Odyssey::UICanvas>()->isActive())
 		{
 			// Turn the pause menu either on or off
 			TogglePauseMenu();
@@ -106,7 +106,7 @@ void TowerManager::update(double deltaTime)
 		// Always look for the pause input button
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
 			!GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>()->isActive() &&
-			!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+			!GameUIManager::getInstance().GetOptionsMenu(1)->getComponent<Odyssey::UICanvas>()->isActive())
 		{
 			// Turn the pause menu either on or off
 			TogglePauseMenu();
@@ -450,17 +450,19 @@ void TowerManager::ShowOptionsMenu()
 		// Turn off the pause menu
 		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>();
 		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+		// Turn on the options menu
+		Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu(0)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
 	}
 	else
 	{
 		// Turn off the pause menu
 		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>();
 		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+		// Turn on the options menu
+		Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu(1)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
 	}
-
-	// Turn on the options menu
-	Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>();
-	GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
 }
 
 void TowerManager::ShowControlScreen()
@@ -581,8 +583,8 @@ void TowerManager::CreateThePlayerTeam()
 	{
 		createdPlayerTeamPreviously = true;
 		// Reset HUD stuff
-		CharacterFactory::getInstance().ResetCharacterHudIndex();
-		GameUIManager::getInstance().ClearHudList();
+		//CharacterFactory::getInstance().ResetCharacterHudIndex();
+		//GameUIManager::getInstance().ClearHudList();
 		// This must also be the boss scene
 		mCurrentLevel = mNumberOfLevels;
 	}

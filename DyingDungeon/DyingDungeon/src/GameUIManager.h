@@ -277,7 +277,7 @@ public: // Functions
 	// Get the pause menu
 	Odyssey::Entity* GetPauseMenu(int _index) { return mPauseMenus[_index]; }
 	// Get the options menu		   
-	Odyssey::Entity* GetOptionsMenu() { return mOptionsMenu; }
+	Odyssey::Entity* GetOptionsMenu(int _index) { return mOptionsMenus[_index]; }
 	// Get the stats menu		   
 	Odyssey::Entity* GetStatsMenu() { return mStatsMenu; }
 	// Get the rectangle buttons from the pause menu
@@ -303,7 +303,7 @@ public: // Functions
 	//Setters
 	void SetPauseMenu(Odyssey::Entity* _pauseMenu, int _index) { mPauseMenus[_index] = _pauseMenu; }
 
-	void SetOptionsMenu(Odyssey::Entity* _optionsMenu) { mOptionsMenu = _optionsMenu; }
+	void SetOptionsMenu(Odyssey::Entity* _optionsMenu, int _index) { mOptionsMenus[_index] = _optionsMenu; }
 
 	void SetStatsMenu(Odyssey::Entity* _statsMenu) { mStatsMenu = _statsMenu; }
 
@@ -341,7 +341,7 @@ private: // Varibales
 	Odyssey::Entity* mSaveVolumeConfermation = nullptr;
 	Odyssey::Entity* mMainSaveVolumeConfermation = nullptr;
 	Odyssey::Entity* mPauseMenus[2] = { nullptr, nullptr };
-	Odyssey::Entity* mOptionsMenu = nullptr;
+	Odyssey::Entity* mOptionsMenus[2] = { nullptr, nullptr };
 	Odyssey::Entity* mStatsMenu = nullptr;
 	Odyssey::Entity* mCreditsMenu = nullptr;
 	Odyssey::Entity* mMainControls = nullptr;
@@ -420,9 +420,9 @@ private: // Varibales
 	// Options Menu Items
 	Odyssey::Text2D* mOptionsTitle = nullptr;
 	Odyssey::Text2D* mVolumeText = nullptr;
-	Odyssey::Rectangle2D* mVolumeBar[4] = { nullptr,nullptr,nullptr,nullptr };
-	Odyssey::Sprite2D* mPlusImage[4] = { nullptr, nullptr, nullptr, nullptr };
-	Odyssey::Sprite2D* mMinusImage[4] = { nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Rectangle2D* mVolumeBar[8] = { nullptr,nullptr,nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mPlusImage[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+	Odyssey::Sprite2D* mMinusImage[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 	Odyssey::Text2D* mBackButtonText = nullptr;
 
 	//Stats Menu Items
@@ -487,6 +487,7 @@ private: // Varibales
 private: // Functions
 	void CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index);
 	void OptionsBackButton();
+	void OptionsBossBackButton();
 	void DecreaseMasterVolume();
 	void DecreaseBackgroundVolume();
 	void DecreaseSFXVolume();

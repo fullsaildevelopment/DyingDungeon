@@ -1684,10 +1684,10 @@ void GameUIManager::UpdateStatsMenu()
 void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 {
 	// Set options menu pointer and add a canvas
-	mOptionsMenu = _sceneToAddTo->createEntity();
-	mOptionsMenu->addComponent<Odyssey::UICanvas>();
+	mOptionsMenus[_index] = _sceneToAddTo->createEntity();
+	mOptionsMenus[_index]->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the options menu
-	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenu->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenus[_index]->getComponent<Odyssey::UICanvas>();
 
 	// Set init values
 	// Create the rectangle object
@@ -1745,15 +1745,30 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
 	// Add the volume bar to the canvas
 	color = { 50.0f, 180.0f, 255.0f, 1.0f };
-	mVolumeBar[0] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mVolumeBar[1] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
-	mVolumeBar[2] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
-	mVolumeBar[3] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
-	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
-	mVolumeBar[0]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
-	mVolumeBar[3]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
-	mVolumeBar[1]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
-	mVolumeBar[2]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+	if (_index == 0)
+	{
+		mVolumeBar[0] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mVolumeBar[1] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+		mVolumeBar[2] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+		mVolumeBar[3] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
+		// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+		mVolumeBar[0]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+		mVolumeBar[1]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
+		mVolumeBar[2]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+		mVolumeBar[3]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
+	}
+	else if (_index == 1)
+	{
+		mVolumeBar[4] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mVolumeBar[5] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+		mVolumeBar[6] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+		mVolumeBar[7] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
+		// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+		mVolumeBar[4]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+		mVolumeBar[5]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
+		mVolumeBar[6]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+		mVolumeBar[7]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
+	}
 
 	// Create the plus and minus symbols that the user can click on to adjust the volume
 	UINT imageWidth = 32;
@@ -1768,27 +1783,55 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 150.0f), color, 70, 25, L"SFX ", properties);
 	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 225.0f), color, 70, 30, L"Dialog ", properties);
 
-	mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	
-	mMinusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
-	mMinusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
-	mMinusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
-	mMinusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	if (_index == 0)
+	{
+		mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+
+		mMinusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
+		mMinusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
+		mMinusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
+		mMinusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	}
+	else if (_index == 1)
+	{
+		mMinusImage[4] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[5] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[6] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[7] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+
+		mMinusImage[4]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
+		mMinusImage[5]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
+		mMinusImage[6]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
+		mMinusImage[7]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	}
 
 	// Plus Symbol
 	position.x += (static_cast<float>(imageWidth) * 1.5f) + width + (static_cast<float>(imageWidth) / 2.0f);
-	mPlusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	
-	mPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
-	mPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
-	mPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
-	mPlusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	if (_index == 0)
+	{
+		mPlusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
+		mPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
+		mPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
+		mPlusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	}
+	else if (_index == 1)
+	{
+		mPlusImage[4] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[5] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[6] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[7] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[4]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
+		mPlusImage[5]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
+		mPlusImage[6]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
+		mPlusImage[7]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	}
 
 	// Create the options back button
 	position = originalPosition;
@@ -1801,21 +1844,33 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	// Add the back button text
 	mBackButtonText = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
-	// Have the back button go to the pause menu
-	mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
+	if (_index == 0)
+		mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
+	else
+		mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBossBackButton);
+
 
 	// Turn off the canvas when creating it
-	ToggleCanvas(mOptionsMenu->getComponent<Odyssey::UICanvas>(), false);
+	ToggleCanvas(mOptionsMenus[_index]->getComponent<Odyssey::UICanvas>(), false);
 }
 
 // This function will get called when you click on the back button on the options menu in pause
 void GameUIManager::OptionsBackButton()
 {
 	// Turn off the options menu's canvas
-	mOptionsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mOptionsMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(false);
 	
 	// Turn on the pause menu's canvas
 	mPauseMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(true);
+}
+
+void GameUIManager::OptionsBossBackButton()
+{
+	// Turn off the options menu's canvas
+	mOptionsMenus[1]->getComponent<Odyssey::UICanvas>()->setActive(false);
+
+	// Turn on the pause menu's canvas
+	mPauseMenus[1]->getComponent<Odyssey::UICanvas>()->setActive(true);
 }
 
 // Create hero character portrait
@@ -2625,6 +2680,7 @@ void GameUIManager::DecreaseMasterVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar[0]->setFill(volumeRatio);
+	mVolumeBar[4]->setFill(volumeRatio);
 	mMainVolumeBar[0]->setFill(volumeRatio);
 }
 
@@ -2636,6 +2692,7 @@ void GameUIManager::DecreaseBackgroundVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
 	mVolumeBar[1]->setFill(volumeRatio);
+	mVolumeBar[5]->setFill(volumeRatio);
 	mMainVolumeBar[1]->setFill(volumeRatio);
 }
 
@@ -2647,6 +2704,7 @@ void GameUIManager::DecreaseSFXVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
 	mVolumeBar[2]->setFill(volumeRatio);
+	mVolumeBar[6]->setFill(volumeRatio);
 	mMainVolumeBar[2]->setFill(volumeRatio);
 }
 
@@ -2658,6 +2716,7 @@ void GameUIManager::DecreaseDialogVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
 	mVolumeBar[3]->setFill(volumeRatio);
+	mVolumeBar[7]->setFill(volumeRatio);
 	mMainVolumeBar[3]->setFill(volumeRatio);
 }
 
@@ -2669,6 +2728,7 @@ void GameUIManager::IncreaseMasterVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar[0]->setFill(volumeRatio);
+	mVolumeBar[4]->setFill(volumeRatio);
 	mMainVolumeBar[0]->setFill(volumeRatio);
 }
 
@@ -2680,6 +2740,7 @@ void GameUIManager::IncreaseBackgroundVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
 	mVolumeBar[1]->setFill(volumeRatio);
+	mVolumeBar[5]->setFill(volumeRatio);
 	mMainVolumeBar[1]->setFill(volumeRatio);
 }
 
@@ -2691,6 +2752,7 @@ void GameUIManager::IncreaseSFXVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
 	mVolumeBar[2]->setFill(volumeRatio);
+	mVolumeBar[6]->setFill(volumeRatio);
 	mMainVolumeBar[2]->setFill(volumeRatio);
 }
 
@@ -2702,6 +2764,7 @@ void GameUIManager::IncreaseDialogVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
 	mVolumeBar[3]->setFill(volumeRatio);
+	mVolumeBar[7]->setFill(volumeRatio);
 	mMainVolumeBar[3]->setFill(volumeRatio);
 }
 
