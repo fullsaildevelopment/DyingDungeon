@@ -294,7 +294,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.45f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("LightningBolt", 0.0f);
 		mSkillList[3]->SetStatusChance(0.33f);
