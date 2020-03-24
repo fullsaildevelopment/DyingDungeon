@@ -92,6 +92,7 @@ public:
 	/// <returns>bool of wheather the file was loaded in properly</returns>
 	bool LoadLoadOut(std::string loadoutName);
 	void ShutdownSave(Odyssey::ShutdownApplicationEvent* saEvent);
+	void EngineShutdownSave(Odyssey::EngineShutdownEvent* esEvent);
 	bool SaveSettings();
 	bool LoadSettings();
 	/// <summary>
