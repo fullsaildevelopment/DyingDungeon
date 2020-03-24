@@ -7,6 +7,7 @@
 #include "CharacterHUDElements.h"
 #include "EnemyComponent.h"
 #include <string>
+#include "SkillHoverComponent.h"
 
 BattleInstance::BattleInstance(EntityList _playerTeam, EntityList _enemyTeam, bool isTutorial)
 {

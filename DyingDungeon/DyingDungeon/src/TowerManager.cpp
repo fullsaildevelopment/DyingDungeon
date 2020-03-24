@@ -48,10 +48,6 @@ void TowerManager::initialize()
 	for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
 	{
 		HeroComponent* savedHeroComp = &TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
-		//mPlayerTeam[i]->removeComponent<HeroComponent>();
-
-		//mPlayerTeam[i]->getComponent<HeroComponent>()->clone();
-
 		// Reassign all of the properties
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetBloodPrefab(savedHeroComp->GetBloodPrefab());
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetHP(savedHeroComp->GetHP());
@@ -59,6 +55,18 @@ void TowerManager::initialize()
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetMana(savedHeroComp->GetMana());
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetProvoked(savedHeroComp->GetProvoked());
 		mPlayerTeam[i]->getComponent<HeroComponent>()->SetState(savedHeroComp->GetState());
+
+		CharacterHUDElements* hudElements = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>();
+		hudElements->GetHealthBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP());
+		hudElements->GetHealthNumber()->setText(std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP()) + L"/" + std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP()));
+		hudElements->GetManaBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana());
+		hudElements->GetManaNumber()->setText(std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana()) + L"/" + std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana()));
+
+		if (mPlayerTeam[i]->getComponent<HeroComponent>()->GetState() == STATE::DEAD)
+		{
+			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Dead");
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(false);
+		}
 
 		mIsBossScene = true;
 	}
@@ -696,13 +704,6 @@ void TowerManager::CreateThePlayerTeam()
 			// Make sure the bars are filled
 			hudElements->GetHealthBar()->setFill(1.0f);
 			hudElements->GetManaBar()->setFill(1.0f);
-		}
-		else
-		{
-			hudElements->GetHealthBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP());
-			hudElements->GetHealthNumber()->setText(std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP()) + L"/" + std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP()));
-			hudElements->GetManaBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana());
-			hudElements->GetManaNumber()->setText(std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana()) + L"/" + std::to_wstring(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana()));
 		}
 
 		// Assign the character component

@@ -1424,14 +1424,6 @@ void HeroComponent::initialize()
 	Odyssey::EventManager::getInstance().subscribe(this, &HeroComponent::ClickOnEnemy);
 }
 
-void HeroComponent::onDestroy()
-{
-	for (int i = 0; i < mSkillSprites.size(); ++i)
-	{
-		//mSkillSprites[i]->unregisterCallback("onMouseClick");
-	}
-}
-
 // Skill Call backs for clickable UI
 void HeroComponent::Skill1Callback()
 {
