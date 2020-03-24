@@ -150,8 +150,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 300.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "GanfoulHitReaction";
+		mSoundClips["Death"] = "GanfoulHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -326,8 +326,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "MeleeDemonHitReaction";
+		mSoundClips["Death"] = "MeleeDemonHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -419,8 +419,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "CasterDemonHitReaction";
+		mSoundClips["Death"] = "CasterDemonHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
