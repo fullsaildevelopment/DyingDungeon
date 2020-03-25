@@ -31,7 +31,7 @@ void SpinKickMover::update(double delta)
 	if (mcurrnetDegree >= 6.28) {
 		mcurrnetDegree = 0.0f;
 	}
-	mTransform->setPosition(cosRadius + initialPosition.x, mTransform->getPosition().y + 0.00025f, initialPosition.z + sinRadius);
+	mTransform->setPosition(cosRadius + initialPosition.x, mTransform->getPosition().y + 0.005f, initialPosition.z + sinRadius);
 	mTransform->setRotation(0.0f, (mcurrnetDegree*(180.0f /3.14f)), 0.0f);
 }
 
