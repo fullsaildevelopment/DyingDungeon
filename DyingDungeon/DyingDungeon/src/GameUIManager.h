@@ -178,7 +178,7 @@ public: // Functions
 	// Clear the clickable list
 	void ClearClickableCharacterList() { mClickableUIList.clear(); }
 	// Clear the clickable list
-	void RemoveClickableCharacterObj(int _index) { mClickableUIList.erase(mClickableUIList.begin() + _index); }
+	void RemoveClickableCharacterObj(int _index);
 	// Set up the clickable ui callbacks
 	void SetupClickableCharacterUI();
 

@@ -1344,6 +1344,11 @@ void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey
 	hudElements->ChangeHealthNumber(std::to_wstring((int)_newCharacter->GetHP()) + L"/" + std::to_wstring((int)_newCharacter->GetMaxHP()));
 }
 
+void GameUIManager::RemoveClickableCharacterObj(int _index)
+{
+	mClickableUIList.erase(mClickableUIList.begin() + _index);
+}
+
 void GameUIManager::SetupClickableCharacterUI()
 {
 	for (int i = 0; i < mClickableUIList.size(); i++)
