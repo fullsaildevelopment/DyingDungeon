@@ -15,8 +15,7 @@ public:
 
 private:
 	Odyssey::Transform* mTransform;
-	DirectX::XMFLOAT3 initialPosition;
 	float mRadius;
-	float mcurrnetDegree;
+	float mCurrentDegree;
 };
 

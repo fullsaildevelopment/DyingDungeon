@@ -10,10 +10,9 @@ CLASS_DEFINITION(Odyssey::Component, SpinKickMover)
 
 void SpinKickMover::initialize()
 {
-	mcurrnetDegree = 0.0f;
+	mCurrentDegree = 0.0f;
 	mTransform = mEntity->getComponent<Odyssey::Transform>();
 	mRadius = 1.2f;
-	initialPosition = DirectX::XMFLOAT3(mTransform->getPosition().x, mTransform->getPosition().y, mTransform->getPosition().z);
 }
 
 std::shared_ptr<Odyssey::Component> SpinKickMover::clone() const
@@ -24,15 +23,15 @@ std::shared_ptr<Odyssey::Component> SpinKickMover::clone() const
 void SpinKickMover::update(double delta)
 {
 	//static float radiance = 0.0f;
-	float sinRadius = sinf(mcurrnetDegree) * mRadius;
-	float cosRadius = cosf(mcurrnetDegree) * mRadius;
-	mcurrnetDegree += (delta*6.0f);
-	mcurrnetDegree = max(0.0f, min(mcurrnetDegree, 6.28f));
-	if (mcurrnetDegree >= 6.28) {
-		mcurrnetDegree = 0.0f;
+	float sinRadius = sinf(mCurrentDegree) * mRadius;
+	float cosRadius = cosf(mCurrentDegree) * mRadius;
+	mCurrentDegree += (delta*6.0f);
+	mCurrentDegree = max(0.0f, min(mCurrentDegree, 6.28f));
+	if (mCurrentDegree >= 6.28) {
+		mCurrentDegree = 0.0f;
 	}
-	mTransform->setPosition(cosRadius + initialPosition.x, mTransform->getPosition().y + 0.005f, initialPosition.z + sinRadius);
-	mTransform->setRotation(0.0f, (mcurrnetDegree*(180.0f /3.14f)), 0.0f);
+	mTransform->addPosition(5.0f * cosRadius * delta, 0.5f * delta, 5.0f * sinRadius * delta);
+	mTransform->setRotation(0.0f, (mCurrentDegree*(180.0f /3.14f)), 0.0f);
 }
 
 void SpinKickMover::onDestroy()

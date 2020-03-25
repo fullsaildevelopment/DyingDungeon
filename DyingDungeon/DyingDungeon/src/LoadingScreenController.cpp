@@ -28,7 +28,7 @@ LoadingScreenController::LoadingScreenController()
 	// Mage is sub 1
 	titleList[1] = L"Velia - The Vengeful Witch";
 	backgroundList[1] = L"assets/images/FantasyBackground1.jpg";
-	spriteList[1] = L"assets/images/Renaud.png";
+	spriteList[1] = L"assets/images/Velia.png";
 	biographyList[1] = L"Velia lived a peaceful life in the forests outside of Metis. It wasn’t until Ganfaul’s armies marched across the Forest of Gelmeur that her peace was forever shattered. In their conquest, thousands of innocent villagers were slaughtered. Among these were Velia’s own parents. Little does Ganfaul know that he made a fatal error and a terrible enemy on that day. Velia dedicated herself to her magical studies so she could one day exact revenge and kill Ganfaul.";
 	skill1TextList[1] = L"Meteor Shard";
 	skill2TextList[1] = L"Wind Slash";
@@ -42,7 +42,7 @@ LoadingScreenController::LoadingScreenController()
 	// Bard is sub 2
 	titleList[2] = L"Gale - The Beautiful Rose";
 	backgroundList[2] = L"assets/images/FantasyBackground2.jpg";
-	spriteList[2] = L"assets/images/Renaud.png";
+	spriteList[2] = L"assets/images/Gale.png";
 	biographyList[2] = L"Gale was orphaned at a young age. She was adopted by a minstrel that worked in one of the taverns who taught Gale the art of song and dance. Her natural talent and beauty combined with her charisma lent her a profitable position at the tavern, servicing men and women alike. But she longed for more. She wanted songs recounting her amazing escapades, immortalizing her in the words of the stories she lived. She wanted to become a hero.";
 	skill1TextList[2] = L"Starfire Arrow";
 	skill2TextList[2] = L"Song of Misery";
@@ -56,7 +56,7 @@ LoadingScreenController::LoadingScreenController()
 	// Warrior
 	titleList[3] = L"Cedric - The Drunkard";
 	backgroundList[3] = L"assets/images/FantasyBackground3.jpg";
-	spriteList[3] = L"assets/images/Renaud.png";
+	spriteList[3] = L"assets/images/Cedric.png";
 	biographyList[3] = L"Cedric spent his entire life training to become guard captain for The Council. It was a joyous occasion when he finally received the title. When Ganfaul and his followers rose up against the church, Cedric and his allies were quickly overwhelmed by their powerful magic. Cedric was stomped into the dirt, left to die with his comrades. Somehow, he managed to crawl out of the fight and survive, but the scars of war never left him. He stands with the heroes now in a final grasp at redemption.";
 	skill1TextList[3] = L"Splitting Strike";
 	skill2TextList[3] = L"Armor Buster";
@@ -234,8 +234,7 @@ void LoadingScreenController::constructLoadingScreen()
 
 void LoadingScreenController::randomizeLoadingScreen()
 {
-	int index = std::rand() % 6;
-	index = 5;
+	int index = std::rand() % 4;
 	Odyssey::UICanvas* canvas = mLoadingScreenPrefab->getComponent<Odyssey::UICanvas>();
 	std::vector<Odyssey::Sprite2D*> spriteElements = canvas->getElements<Odyssey::Sprite2D>();
 	spriteElements[0]->setSprite(backgroundList[index]);
