@@ -156,7 +156,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 4]->setText(rewardsText);
 		rewardsText.clear();
 
-		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%\n");
+		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 5]->setText(rewardsText);
 		rewardsText.clear();
 
