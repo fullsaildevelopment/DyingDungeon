@@ -178,15 +178,15 @@ void TeamSelectionController::onDestroy()
 void TeamSelectionController::CreateModelsAndPopups()
 {
 	// Set up variables
-	float xOffset = -5.0f;
-	float yHeight = -2.0f;
-	float zDepth = 8.0f;
+	float xOffset = 34.0f;
+	float yHeight = 1.34f;
+	float zDepth = -6.0f;
 	Odyssey::Entity* character = nullptr;
 	Odyssey::Entity* infoPopup = mEntity->getScene()->createEntity();
 	Odyssey::Entity* prefab = nullptr;
 	Odyssey::UICanvas* infoPopupCanvas = nullptr;
 	DirectX::XMVECTOR position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 80.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
 
 	// Make Slot 1 Characters
@@ -221,18 +221,18 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
-		rotation = DirectX::XMVectorSet(0.0f, 320.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 260.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 80.0f, 0.0f, 1.0f);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 	}
 
 	// Update variables for the slot 2 characters
-	xOffset = 0.0f;
+	zDepth = 0.0f;
 	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 100.0f, 0.0f, 1.0f);
 	uiPosition = { 490.0f, 145.0f };
 
 	// Make Slot 2 Characters
@@ -261,9 +261,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
-		rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 280.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 100.0f, 0.0f, 1.0f);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -276,9 +276,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 	}
 
 	// Update variables for the slot 3 characters
-	xOffset = 5.0f;
+	zDepth = 6.0f;
 	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 1.0f);
 	uiPosition = { 860.0f, 145.0f };
 
 	// Make Slot 3 Characters
@@ -301,9 +301,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk); 
-		rotation = DirectX::XMVectorSet(0.0f, 40.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 300.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 1.0f);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);

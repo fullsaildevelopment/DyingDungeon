@@ -51,8 +51,8 @@ void MainMenuController::initialize()
 	// Create a paladin and add him to the main menu scene
 	mPaladinCharacter = nullptr;
 	Odyssey::Entity* prefab = nullptr;
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(36.75f, 1.34f, 1.88f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 90.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
