@@ -7,6 +7,7 @@
 #include "EventManager.h"
 #include "CombatEvents.h"
 #include "TeamManager.h"
+#include "SaveLoad.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -1150,6 +1151,7 @@ void GameUIManager::HideMainVolume()
 	mMainMinusImage[1]->unregisterCallback("onMouseClick");
 	mMainMinusImage[2]->unregisterCallback("onMouseClick");
 	mMainMinusImage[3]->unregisterCallback("onMouseClick");
+	SaveLoad::Instance().SaveSettings();
 
 	ShowMainOptions();
 }
@@ -1825,6 +1827,9 @@ void GameUIManager::OptionsBackButton()
 	
 	// Turn on the pause menu's canvas
 	mPauseMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(true);
+
+	SaveLoad::Instance().SaveSettings();
+
 }
 
 void GameUIManager::OptionsBossBackButton()
@@ -1834,6 +1839,8 @@ void GameUIManager::OptionsBossBackButton()
 
 	// Turn on the pause menu's canvas
 	mPauseMenus[1]->getComponent<Odyssey::UICanvas>()->setActive(true);
+
+	SaveLoad::Instance().SaveSettings();
 }
 
 // Create hero character portrait
