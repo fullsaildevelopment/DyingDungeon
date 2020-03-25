@@ -279,18 +279,31 @@ void setupMainMenu(Odyssey::Application* application)
 	light->setSpotAngle(0.0f);
 
 	// Set the light's position and direction
-	Odyssey::Entity* eLight = gMainMenu->createEntity();
-	eLight->addComponent<Odyssey::Transform>();
-	eLight->getComponent<Odyssey::Transform>()->setPosition(36.75f, 10.0f, 1.88f);
-	eLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//Odyssey::Entity* eLight = gMainMenu->createEntity();
+	//eLight->addComponent<Odyssey::Transform>();
+	//eLight->getComponent<Odyssey::Transform>()->setPosition(36.75f, 10.0f, 1.88f);
+	//eLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//// Set up the spot light
+	//light = eLight->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(30.0f);
+	//light->setSpotAngle(0.4f);
 
-	// Set up the spot light
-	light = eLight->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Spot);
-	light->setColor(0.5f, 0.4f, 0.3f);
-	light->setIntensity(1.0f);
-	light->setRange(30.0f);
-	light->setSpotAngle(0.4f);
+	// Set up the point light
+	Odyssey::Entity* pointLight = gMainMenu->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, 1.88f);//DirectX::XMVectorSet(36.75f, 1.34f, 1.88f, 1.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
 
 	// Create the UI
 	GameUIManager::getInstance().CreateMainMenuCanvas(gMainMenu);
@@ -335,39 +348,66 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	gMenuLights[4]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, -5.5f);
 	gMenuLights[4]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
 
-	// Set up the directional light
-	light = gMenuLights[4]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Spot);
-	light->setColor(0.5f, 0.4f, 0.3f);
-	light->setIntensity(1.0f);
-	light->setRange(50.0f);
-	light->setSpotAngle(0.5f);
+	//// Set up the directional light
+	//light = gMenuLights[4]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
+	//
+	//gMenuLights[5] = gTeamSelectScene->createEntity();
+	//gMenuLights[5]->addComponent<Odyssey::Transform>();
+	//gMenuLights[5]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 0.0f);
+	//gMenuLights[5]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//
+	//// Set up the directional light
+	//light = gMenuLights[5]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
+	//
+	//gMenuLights[6] = gTeamSelectScene->createEntity();
+	//gMenuLights[6]->addComponent<Odyssey::Transform>();
+	//gMenuLights[6]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 5.5f);
+	//gMenuLights[6]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//
+	//// Set up the directional light
+	//light = gMenuLights[6]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
 
-	gMenuLights[5] = gTeamSelectScene->createEntity();
-	gMenuLights[5]->addComponent<Odyssey::Transform>();
-	gMenuLights[5]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 0.0f);
-	gMenuLights[5]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set up the point light
+	Odyssey::Entity* pointLight = gTeamSelectScene->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, 5.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
 
-	// Set up the directional light
-	light = gMenuLights[5]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Spot);
-	light->setColor(0.5f, 0.4f, 0.3f);
-	light->setIntensity(1.0f);
-	light->setRange(50.0f);
-	light->setSpotAngle(0.5f);
-
-	gMenuLights[6] = gTeamSelectScene->createEntity();
-	gMenuLights[6]->addComponent<Odyssey::Transform>();
-	gMenuLights[6]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 5.5f);
-	gMenuLights[6]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
-
-	// Set up the directional light
-	light = gMenuLights[6]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Spot);
-	light->setColor(0.5f, 0.4f, 0.3f);
-	light->setIntensity(1.0f);
-	light->setRange(50.0f);
-	light->setSpotAngle(0.5f);
+	pointLight = gTeamSelectScene->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, -5.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
 
 	// Create the UI for the team selection
 	GameUIManager::getInstance().CreateTeamSelectMenuCanvas(gTeamSelectScene);
@@ -1189,7 +1229,7 @@ void setupSceneTwo()
 	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
-	// Create the table candle entity
+	// Create the top light entity
 	Odyssey::Entity* topLight = gSceneBoss->createEntity();
 
 	// Set the transform position and rotation

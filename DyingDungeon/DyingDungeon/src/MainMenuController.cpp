@@ -56,6 +56,10 @@ void MainMenuController::initialize()
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
+	mPaladinCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
 	//mPaladinCharacter->getChildren()[1]->setVisible(false);
 }
 

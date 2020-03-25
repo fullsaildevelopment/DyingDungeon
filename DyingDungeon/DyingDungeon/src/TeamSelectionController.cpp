@@ -106,6 +106,14 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 600);
 		RedAudioManager::Instance().LoopRandom("BackgroundBattle");
 
+		for (int i = 0; i < mSlot1CharacterList.size(); i++)
+		{
+			for (int j = 0; j < mSlot1CharacterList[i]->getChildren().size(); j++)
+			{
+				mSlot1CharacterList[i]->getChildren()[j]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.2f, 0.2f, 0.2f, 1.0f });
+			}
+		}
+
 		// Set up the tower manager with how many levels we want
 		//mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
@@ -328,6 +336,11 @@ void TeamSelectionController::TurnOffModels()
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{
 		mSlot1CharacterList[i]->setVisible(false);
+
+		for (int j = 0; j < mSlot1CharacterList[i]->getChildren().size(); j++)
+		{
+			mSlot1CharacterList[i]->getChildren()[j]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.3f, 0.3f, 0.3f, 1.0f });
+		}
 	}
 
 	// Turn off every character
