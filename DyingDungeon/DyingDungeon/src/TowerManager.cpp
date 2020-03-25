@@ -765,7 +765,8 @@ void TowerManager::CreateThePlayerTeam()
 
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
-		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		//DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		DirectX::XMVECTOR impactIndicatorPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 0.1f, DirectX::XMVectorGetZ(mPlayerPositions[i]), 1.0f };
 		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
 		// Assign the impact indicator for the heroes

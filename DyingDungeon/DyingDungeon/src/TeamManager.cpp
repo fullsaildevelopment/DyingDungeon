@@ -26,6 +26,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 		if (i >= 3)
 		{
 			GameUIManager::getInstance().RemoveClickableCharacterObj(i);
+			i--;
 		}
 	}
 
@@ -161,7 +162,7 @@ std::vector<Odyssey::Entity*> TeamManager::CreateEnemyTeam(int _index)
 
 		// Create the impact indicator for the enemies
 		Odyssey::Entity* impactIndicator = nullptr;
-		DirectX::XMVECTOR impactIndicatorPosition = position;
+		DirectX::XMVECTOR impactIndicatorPosition = { DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position) + 0.1f, DirectX::XMVectorGetZ(position), 1.0f };
 		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, rotation));
 
