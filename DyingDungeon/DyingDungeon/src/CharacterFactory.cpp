@@ -1233,7 +1233,7 @@ void CharacterFactory::GanfaulSkill1Prefab()
 	skillVFX->setLifetime(0.75f, 0.75f);
 	skillVFX->setParticleCount(0, 300);
 	skillVFX->setEmissionOverLifetime(75);
-	skillVFX->setDuration(8.0f);
+	skillVFX->setDuration(1.75f);
 	skillVFX->setSpeed(1.75f, 1.75f);
 	skillVFX->setSize(0.25f, 0.25f);
 	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
