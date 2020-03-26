@@ -39,9 +39,6 @@ public:
 	void ClickOnEnemy(SetNewTargetEvent* targetIndex);
 
 private:
-	// Bool for if im cheating or not
-	bool mIsCheating;
-
 	// Pointer to the current skill the player has selected
 	Skills* mCurrentSkill;
 

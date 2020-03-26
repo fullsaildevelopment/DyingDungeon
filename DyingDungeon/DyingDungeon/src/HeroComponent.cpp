@@ -38,7 +38,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mID = id;
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
-	mIsCheating = false;
 	mIsBleeding = false;
 	mBleedTimer = 0;
 	mIsRegenerating = false;
@@ -679,14 +678,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		break;
 	}
 	}
-
-#ifdef _DEBUG
-		mSkillList.push_back(std::make_shared<Attack>(L"The Funny Move", "Skill_1", 0.5f, 0.0f, 1000.0f, temp));
-		mSkillList.push_back(std::make_shared<Heal>(L"The other funny move", "Skill_2", 0.5f, 0.0f, -1000.0f));
-#endif // _DEBUG
-
-	
-
 }
 
 // Destructor
@@ -781,28 +772,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::C))
-			mIsCheating = !mIsCheating;
-
-		// Cheat code to instakill a target
-		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
-		{
-			// Set temp variable to the selected move
-			mCurrentSkill = mSkillList[4].get();
-
-			// Change state to target selection
-			mCurrentState = STATE::SELECTTARGET;
-		}
-
-		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
-		{
-			// Set temp variable to the selected move
-			mCurrentSkill = mSkillList[5].get();
-
-			// Change state to target selection
-			mCurrentState = STATE::SELECTTARGET;
-		}
-
 		// Use ability 1
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
@@ -1097,17 +1066,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				else if(mCurrentTarget != nullptr)
 					mCurrentSkill->Use(*this, *mCurrentTarget);
 			}
-
 			// Reset static bools
 			animeTrigger = false;
 			particleTrigger = false;
 			soundTrigger = false;
-
-			// Set this characters state to finished unless im cheating
-			if (!mIsCheating)
-				mCurrentState = STATE::FINISHED;
-			else
-				ResetToSelection();
+			mCurrentState = STATE::FINISHED;
 		}
 		break;
 	}
@@ -1331,18 +1294,6 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		// Set current target to something to avoid repeating this loop
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 	}
-
-	// Spit out current targets stats
-	if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D8))
-	{
-		std::cout << "Name: " << mCurrentTarget->GetName().c_str() << std::endl;
-		std::cout << "Attack: " << mCurrentTarget->GetAtk() << std::endl;
-		std::cout << "Defense: " << mCurrentTarget->GetDef() << std::endl;
-		std::cout << "Speed: " << mCurrentTarget->GetSpeed() << std::endl;
-		std::cout << "Health: " << mCurrentTarget->GetHP() << std::endl;
-		std::cout << "Mana: " << mCurrentTarget->GetMana() << std::endl;
-	}
-
 	// If enter is hit set state to in progress and begin playing animations for caster
 	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
 	{
