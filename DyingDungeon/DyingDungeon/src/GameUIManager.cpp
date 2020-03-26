@@ -957,7 +957,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	// Setup the title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	height = 50;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits & Contact Info", properties);
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits", properties);
 
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
@@ -981,7 +981,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 16.0f;
 
 	// Engineering credits
-	const wchar_t* engineeringCredits = L"Max Nastri - Odyssey Engine Creator\n\nTristen Maturski - UI / Gameplay Developer\n\nJeffrey Ouma - Audio / File IO Developer\n\nBryce Monkus - AI / Gameplay Developer";
+	const wchar_t* engineeringCredits = L"Max Nastri - Odyssey Engine Creator\n\nTristen Maturski - UI / Gameplay Developer\n\nLane Langford - AI / Gameplay Developer\n\nJeffrey Ouma - Audio / File IO Developer\n\nBryce Monkus - AI / Gameplay Developer";
 	position.y += 50;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, engineeringCredits, properties);
 
@@ -1014,7 +1014,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 22.0f;
 
 	// Writing title
-	position.y += 70;
+	position.y += 80;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Writing", properties);
 
 	// Writing credits properties
@@ -1036,7 +1036,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	// Asset title
 	position.x = 550;
-	position.y += 70;
+	position.y += 80;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Asset Credits", properties);
 
 	// Asset credits properties
