@@ -959,104 +959,101 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	height = 50;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits & Contact Info", properties);
 
-
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 
-	// Setup the first credit - 1st Row
-	color = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	position.y += 75;
-	position.x += pad;
+	// Engineering title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Max Nastri - Odyssey Engine Creator", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Max.Nastri@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (941) 303-9809", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: GameDevPortfolio.net", properties);
+	properties.fontSize = 22.0f;
 
-	// Setup the first credit - 2nd Row
-	color = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	// Engineering title
+	position.x += pad;
 	position.y += 75;
-	position.x -= pad;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tristen Maturski - Lead Gameplay Developer", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Maturski62@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (413) 672-1013", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+	height = 500;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Engineering", properties);
 
-	// Setup the second credit - 1st Row
-	color = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
-	position.y = 135;
-	position.x += 425;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Lane Langford - AI/Gameplay Developer", properties);
-	position.y += 35;
-	position.x += pad;
+	// Engineering credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
 	properties.bold = false;
-	properties.italic = true;
+	properties.italic = false;
 	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: LaneLangford.2020@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (352) 275-7723", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
 
-	// Setup the second credit - 2nd Row
-	color = DirectX::XMFLOAT4(75.0f, 100.0f, 255.0f, 1.0f);
-	position.y += 75;
-	position.x -= pad;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Bryce Monkus - Lead AI Developer", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Brycemnks@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (704) 441-5402", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+	// Engineering credits
+	const wchar_t* engineeringCredits = L"Max Nastri - Odyssey Engine Creator\n\nTristen Maturski - UI / Gameplay Developer\n\nJeffrey Ouma - Audio / File IO Developer\n\nBryce Monkus - AI / Gameplay Developer";
+	position.y += 50;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, engineeringCredits, properties);
 
-	// Setup the third credit - 3rd Row
-	color = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
-	position.y += 75;
-	position.x = position.x - pad - 190;
+	// Production title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Jeffrey Ouma - Audio/Tools Developer", properties);
-	position.y += 35;
-	position.x += pad;
+	properties.fontSize = 22.0f;
+
+	// Production title
+	position.x += 525.0f;
+	position.y -= 50.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Production", properties);
+
+	// Production credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
 	properties.bold = false;
-	properties.italic = true;
+	properties.italic = false;
 	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Jwaostar@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (703) 419-5296", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Production credits
+	const wchar_t* productionCredits = L"Carlos Lugo - Executive Producer\n\nJarick Rivers - Producer";
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, productionCredits, properties);
+
+	// Writing title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 22.0f;
+
+	// Writing title
+	position.y += 70;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Writing", properties);
+
+	// Writing credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 16.0f;
+
+	// Writing credits
+	const wchar_t* writingCredits = L"Justin Williams - Narrative Designer\n\nMya Wells - Writer / Editor";
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, writingCredits, properties);
+
+	// Asset title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 24.0f;
+
+	// Asset title
+	position.x = 550;
+	position.y += 70;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Asset Credits", properties);
+
+	// Asset credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+
+	// Asset credits
+	const wchar_t* audioCredits = L"Mixamo.com - Character Assets\n\nMana Station (Unity) - Environment Assets\n\nPoneti free (Unity) - 2d Assets\n\nBlack Hammer (Unity) - 2d Assets\n\nAural Space (Unity) - VFX Assets";
+	position.x = 215;
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, audioCredits, properties);
+
+	const wchar_t* audioCredits2 = L"AlineAudio - Audio Assets\n\nAmeAngelofSin - Audio Assets\n\nJason Shaw - Audio Assets\n\nMGWSoundDesign - Audio Assets\n\nSI-PML - Audio Assets";
+	position.x += 525;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, audioCredits2, properties);
 
 	// Setup the back button
 	position = DirectX::XMFLOAT2(220.0f, 610.0f);
