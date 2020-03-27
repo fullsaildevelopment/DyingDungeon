@@ -994,7 +994,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	// Production title
 	position.x += 525.0f;
 	position.y -= 50.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Production", properties);
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Production / Audio", properties);
 
 	// Production credits properties
 	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
@@ -1003,7 +1003,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 16.0f;
 
 	// Production credits
-	const wchar_t* productionCredits = L"Carlos Lugo - Executive Producer\n\nJarick Rivers - Producer";
+	const wchar_t* productionCredits = L"Jarick Rivers - Producer\n\nJoshua Packard - Sound Designer\n\nDevin Phares - Audio";
 	position.y += 35;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, productionCredits, properties);
 
@@ -1014,7 +1014,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 22.0f;
 
 	// Writing title
-	position.y += 80;
+	position.y += 110;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Writing", properties);
 
 	// Writing credits properties
@@ -1036,7 +1036,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	// Asset title
 	position.x = 550;
-	position.y += 80;
+	position.y += 70;
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Asset Credits", properties);
 
 	// Asset credits properties
@@ -1056,7 +1056,7 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, audioCredits2, properties);
 
 	// Setup the back button
-	position = DirectX::XMFLOAT2(220.0f, 610.0f);
+	position = DirectX::XMFLOAT2(220.0f, 620.0f);
 	color = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
