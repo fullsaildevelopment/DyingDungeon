@@ -413,7 +413,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
 		mSkillList[3]->SetSoundEffect("Purify", 0.0f);
-		mSkillList[3]->SetSkillDescription(L"Play a song that clenses harmful effects from your party. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Magically cleanse all harmful effects for your party. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
