@@ -65,6 +65,7 @@ public: // Functions
 
 	//Increase the character hud index
 	void IncreaseCharacterHUDIndex() { mCharacterHudIndex++; }
+	void ResetCharacterHudIndex() { mCharacterHudIndex = 0; }
 	// Get the character hud index
 	unsigned int GetCharacterHudIndex() { return mCharacterHudIndex; }
 
@@ -143,6 +144,13 @@ private: // Functions
 
 	// Mage Skill Effect Prefabs //
 	void MageSkill1Prefab();
+	void MageSkill2Prefab();
+	void SkeletonSkill3Prefab();
+	void GanfaulSkill1Prefab();
+	void GanfaulSkill2Prefab();
+	void SkeletonSkill1Prefab();
+	void SkeletonSkill2Prefab();
+	void CasterDemonSkill1Prefab();
 	//////////////////////////////
 
 	// Particle Creation Functions

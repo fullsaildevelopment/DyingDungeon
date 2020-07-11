@@ -14,9 +14,9 @@
 #include "CharacterHUDElements.h"
 #include "SkillHUDElements.h"
 #include "SkillHoverComponent.h"
+#include "LoadingScreenController.h"
 
 CLASS_DEFINITION(Component, TowerManager)
-
 std::shared_ptr<Odyssey::Component> TowerManager::clone() const
 {
 	return std::make_shared<TowerManager>(*this);
@@ -35,29 +35,92 @@ void TowerManager::initialize()
 	// The tower will not be paused on start up
 	mIsPaused = false;
 
+	GameUIManager::getInstance().ClearClickableCharacterList();
+
 	// Create the player team
 	CreateThePlayerTeam();
 
+	if (mCurrentLevel == mNumberOfLevels)
+		mIsBossScene = true;
+	else
+		mIsBossScene = false;
+
+	for (int i = 0; i < TeamManager::getInstance().GetUpdatedPlayerTeam().size(); i++)
+	{
+		HeroComponent* savedHeroComp = &TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i);
+		// Reassign all of the properties
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetBloodPrefab(savedHeroComp->GetBloodPrefab());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetHP(savedHeroComp->GetHP());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetImpactIndicator(savedHeroComp->GetInpactIndicator());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetMana(savedHeroComp->GetMana());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetProvoked(savedHeroComp->GetProvoked());
+		mPlayerTeam[i]->getComponent<HeroComponent>()->SetState(savedHeroComp->GetState());
+
+		CharacterHUDElements* hudElements = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>();
+		hudElements->GetHealthBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP());
+		hudElements->GetHealthNumber()->setText(std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetHP()) + L"/" + std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxHP()));
+		hudElements->GetManaBar()->setFill(TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana() / TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana());
+		hudElements->GetManaNumber()->setText(std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMana()) + L"/" + std::to_wstring((int)TeamManager::getInstance().GetUpdatedPlayerTeamHeroComp(i).GetMaxMana()));
+
+		if (mPlayerTeam[i]->getComponent<HeroComponent>()->GetState() == STATE::DEAD)
+		{
+			mPlayerTeam[i]->getComponent<Odyssey::Animator>()->playClip("Dead");
+			GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(false);
+		}
+
+		mIsBossScene = true;
+	}
+
 	// Create a Battle when we set up the tower !!THIS WILL BE TEMPORARY!!
-	CreateBattleInstance();
+	if (!mIsTutorial)
+		CreateBattleInstance();
+	else
+		CreateTutorialInstance();
 
 	// Set the pause menu button callbacks
-	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
-	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
-	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetResumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(0)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetResumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(1)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+
+	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 }
 
 void TowerManager::update(double deltaTime)
 {
-	// Always look for the pause input button
-	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
-		!GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>()->isActive() &&
-		!GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>()->isActive())
+	if (!mIsBossScene)
 	{
-		// Turn the pause menu either on or off
-		TogglePauseMenu();
+		// Always look for the pause input button
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
+			!GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>()->isActive() &&
+			!GameUIManager::getInstance().GetOptionsMenu(0)->getComponent<Odyssey::UICanvas>()->isActive())
+		{
+			// Turn the pause menu either on or off
+			TogglePauseMenu();
+		}
 	}
+	else
+	{
+		// Always look for the pause input button
+		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::P) &&
+			!GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>()->isActive() &&
+			!GameUIManager::getInstance().GetOptionsMenu(1)->getComponent<Odyssey::UICanvas>()->isActive())
+		{
+			// Turn the pause menu either on or off
+			TogglePauseMenu();
+		}
+	}
+
 
 	// Toggles the combat canvas
 	if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Tab))
@@ -92,160 +155,6 @@ void TowerManager::update(double deltaTime)
 		}
 	}
 
-	// SPOT LIGHT DEBUGGER FOR HEROES
-	if (false)
-	{
-		float speed = 0.005f;
-		// INTENSITY
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() - speed);
-			}
-		}
-
-		// RANGE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() - speed);
-			}
-		}
-
-		// ANGLE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() - speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Light* light = mCharacterSpotLights[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() + speed);
-			}
-		}
-
-		// Transform
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				Odyssey::Transform* trans = mCharacterSpotLights[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
-			}
-		}
-	}
-
-	// SPOT LIGHT DEBUGGER FOR ENEMIES
-	if (true)
-	{
-		float speed = 0.005f;
-		// INTENSITY
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::B))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::N))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setIntensity(light->getIntensity() - speed);
-			}
-		}
-
-		// RANGE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::G))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() + speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::H))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setRange(light->getRange() - speed);
-			}
-		}
-
-		// ANGLE
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::T))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() - speed);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Y))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Light* light = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Light>();
-				light->setSpotAngle(light->getSpotAngle() + speed);
-			}
-		}
-
-		// Transform
-		if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Up))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y + speed, trans->getPosition().z);
-			}
-		}
-		else if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Down))
-		{
-			for (int i = 0; i < TeamManager::getInstance().GetEnemySpotLights().size(); i++)
-			{
-				Odyssey::Transform* trans = TeamManager::getInstance().GetEnemySpotLights()[i]->getComponent<Odyssey::Transform>();
-				trans->setPosition(trans->getPosition().x, trans->getPosition().y - speed, trans->getPosition().z);
-			}
-		}
-	}
-
 	// Don't update unless the game is not paused
 	if (!mIsPaused)
 	{
@@ -253,6 +162,9 @@ void TowerManager::update(double deltaTime)
 		//GameUIManager::getInstance().UpdateCharacterHealthPopups(deltaTime);
 		// Update the UI bars
 		GameUIManager::getInstance().UpdateCharacterBars(deltaTime);
+
+		if (mIsTutorial && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			GameUIManager::getInstance().TutorialCallBack();
 
 		// If we are in battle, Update the battle
 		if (GetTowerState() == IN_BATTLE)
@@ -264,9 +176,21 @@ void TowerManager::update(double deltaTime)
 			{
 				// Destroy the battle instance
 				DestroyBattleInstance();
-				SetTowerState(IN_REWARDS);
-				Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
-				Rewards->setActive(true);
+
+				if (mIsTutorial)
+				{
+					SetTowerState(NOT_IN_BATTLE);
+					mIsTutorial = false;
+					GameUIManager::getInstance().EndTutorial();
+					GoToMainMenu();
+				}
+				else
+				{
+					SetTowerState(IN_REWARDS);
+					Odyssey::EventManager::getInstance().publish(new RewardsActiveEvent(mCurrentLevel));
+					ToggleCharacterUI(false);
+					Rewards->setActive(true);
+				}
 
 				//Check to see if the update returned PLAYER_TEAM_DIED
 				if (result == mCurrentBattle->PLAYER_TEAM_DIED)
@@ -277,8 +201,14 @@ void TowerManager::update(double deltaTime)
 				}
 				else
 				{
-					// Update to the next level
-					mCurrentLevel = GetCurrentLevel() + 1;
+					if (!mIsTutorial)
+					{
+						// Update to the next level
+						mCurrentLevel = GetCurrentLevel() + 1;
+
+						if (mCurrentLevel > mNumberOfLevels)
+							SetTowerState(NOT_IN_BATTLE);
+					}
 				}
 			}
 		}
@@ -290,6 +220,14 @@ void TowerManager::update(double deltaTime)
 				mUsedBossCheatCode = false;
 				// Create temp xp variable
 				float tempXP = 0.0f;
+
+				if (mIsTutorial)
+				{
+					SetTowerState(NOT_IN_BATTLE);
+					mIsTutorial = false;
+					GameUIManager::getInstance().EndTutorial();
+					GoToMainMenu();
+				}
 
 				// Check to see if that was our last level for completing the tower
 				if (GetCurrentLevel() > mNumberOfLevels)
@@ -303,8 +241,6 @@ void TowerManager::update(double deltaTime)
 					{
 						mPlayerTeam[i]->getComponent<Character>()->AddExp(tempXP);
 					}
-					// Go to main menu screen
-					GoToMainMenu();
 				}
 				else
 				{
@@ -322,12 +258,36 @@ void TowerManager::update(double deltaTime)
 							currCharacter->SetState(STATE::NONE);
 						}
 					}
-					// Make a new battle to continue the tower
-					CreateBattleInstance();
-				}
 
-				// Turn off the rewads screen
-				Rewards->setActive(false);
+					// Boss Level
+					if (mCurrentLevel == mNumberOfLevels)
+					{
+						// Save team
+						TeamManager::getInstance().UpdatePlayerTeam(mPlayerTeam);
+						mEnemyTeam.clear();
+
+						for (int i = 0; i < mPlayerTeam.size(); i++)
+						{
+							SkillHoverComponent* hover = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<SkillHoverComponent>();
+							
+							for (int i = 0; i < hover->GetSkillSprites().size(); i++)
+							{
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseClick");
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseEnter");
+								hover->GetSkillSprites()[i]->unregisterCallback("onMouseExit");
+							}
+						}
+
+						// Switch to the boss scene
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Boss Scene"));
+					}
+					else
+						CreateBattleInstance();
+
+					// Turn off the rewads screen
+					Rewards->setActive(false);
+					ToggleCharacterUI(true);
+				}
 			}
 			float stat_opacity = Rewards->getElements<Odyssey::Text2D>()[Rewards->getElements<Odyssey::Text2D>().size() - 1]->getOpacity();
 			if (stat_opacity <= 0.0f) {
@@ -344,7 +304,12 @@ void TowerManager::update(double deltaTime)
 		}
 		else if (GetTowerState() == NOT_IN_BATTLE)
 		{
-
+			if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::Enter))
+			{
+				Rewards->setActive(false);
+				ToggleCharacterUI(true);
+				GoToMainMenu();
+			}
 		}
 	}
 }
@@ -352,8 +317,8 @@ void TowerManager::update(double deltaTime)
 void TowerManager::SetUpTowerManager(int _numberOfBattles)
 {
 	// Set the number of levels for this tower
-	mNumberOfLevels = _numberOfBattles;
-	mCurrentBattle = nullptr;
+	//mNumberOfLevels = _numberOfBattles;
+	//mCurrentBattle = nullptr;
 }
 
 void TowerManager::CreateBattleInstance()
@@ -364,6 +329,8 @@ void TowerManager::CreateBattleInstance()
 
 	// Clear the combat at the start of each battle log
 	GameUIManager::getInstance().ClearCombatLog();
+
+	StatTracker::Instance().SetTutorialState(false);
 
 	// Send off the current level number
 	Odyssey::EventManager::getInstance().publish(new LevelStartEvent(mCurrentLevel, mPlayerTeam[0]->getComponent<Character>()->GetName(), mPlayerTeam[1]->getComponent<Character>()->GetName(), mPlayerTeam[2]->getComponent<Character>()->GetName(),
@@ -393,7 +360,43 @@ void TowerManager::CreateBattleInstance()
 	GameUIManager::getInstance().SetupClickableCharacterUI();
 
 	// Create the battle instance
-	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam);
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, false);
+
+	// Since we created a BattleInstance we will be in combat
+	SetTowerState(IN_BATTLE);
+}
+
+void TowerManager::CreateTutorialInstance()
+{
+	StatTracker::Instance().SetTutorialState(true);
+
+	GameUIManager::getInstance().ClearCombatLog();
+
+	// Remove the current enemy team from the scene
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		// Clear the status effects
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
+		// Destory the previous enemy's UI Elements
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]));
+		// Destroy the previous enemy's impact indicator
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetInpactIndicator()));
+		// Destroy the previous enemy's blood particle effect
+		//Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]->getComponent<Character>()->GetPSBlood()->getEntity()));
+		// Destroy the previous enemies
+		Odyssey::EventManager::getInstance().publish(new Odyssey::DestroyEntityEvent(mEnemyTeam[i]));
+	}
+	
+	// Clear the previous enemy list
+	mEnemyTeam.clear();
+	// Create the new enemy team before creating the battle
+	mEnemyTeam = TeamManager::getInstance().CreateEnemyTeam(1);
+
+	// Set up clickable character UI
+	GameUIManager::getInstance().SetupClickableCharacterUI();
+
+	// Create the battle instance
+	mCurrentBattle = new BattleInstance(mPlayerTeam, mEnemyTeam, true);
 
 	// Since we created a BattleInstance we will be in combat
 	SetTowerState(IN_BATTLE);
@@ -422,23 +425,23 @@ void TowerManager::TogglePauseMenu()
 	mIsPaused = !mIsPaused;
 
 	// Toggle pause menu canvas
-	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* pauseMenuCanvas = nullptr;
+	// Always look for the pause input button
+	if (!mIsBossScene)
+		pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>();
+	else
+		pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>();
+
 	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, !pauseMenuCanvas->isActive());
 
-	// Turn off the hero ui depening if the pause menu is on or off
-	for (int i = 0; i < mPlayerTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
-
-	// Turn off the enemy ui depening if the pause menu is on or off
-	for (int i = 0; i < mEnemyTeam.size(); i++)
-	{
-		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(!pauseMenuCanvas->isActive());
-	}
+	ToggleCharacterUI(!pauseMenuCanvas->isActive());
 
 	if (pauseMenuCanvas->isActive())
 	{
+		// Turn Off Tutorial UI
+		if (mIsTutorial)
+			GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), false);
+
 		// Set the new cursor
 		Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 		// Set the time scale to 0 on pause
@@ -447,44 +450,99 @@ void TowerManager::TogglePauseMenu()
 	// else if we are turning off the pause menu
 	else if (!pauseMenuCanvas->isActive())
 	{
+		// Turn on Tutorial UI
+		if (mIsTutorial)
+			GameUIManager::getInstance().ToggleCanvas(GameUIManager::getInstance().GetTutorialCanvas(), true);
+
 		// Set the time scale back to 1
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SetTimeScaleEvent(1.0f));
 	}
 }
 
+void TowerManager::ToggleCharacterUI(bool _onOrOff)
+{
+	// Turn off the hero ui depening if the pause menu is on or off
+	for (int i = 0; i < mPlayerTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
+	}
+
+	// Turn off the enemy ui depening if the pause menu is on or off
+	for (int i = 0; i < mEnemyTeam.size(); i++)
+	{
+		GameUIManager::getInstance().GetCharacterHuds()[mEnemyTeam[i]->getComponent<Character>()->GetHudIndex()]->setActive(_onOrOff);
+	}
+}
+
 void TowerManager::ShowOptionsMenu()
 {
-	// Turn off the pause menu
-	Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu()->getComponent<Odyssey::UICanvas>();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
-
-	// Turn on the options menu
-	Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu()->getComponent<Odyssey::UICanvas>();
-	GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
+	if (!mIsBossScene)
+	{
+		// Turn off the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(0)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+		// Turn on the options menu
+		Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu(0)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
+	}
+	else
+	{
+		// Turn off the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = GameUIManager::getInstance().GetPauseMenu(1)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(pauseMenuCanvas, false);
+		// Turn on the options menu
+		Odyssey::UICanvas* optionsMenuCanvas = GameUIManager::getInstance().GetOptionsMenu(1)->getComponent<Odyssey::UICanvas>();
+		GameUIManager::getInstance().ToggleCanvas(optionsMenuCanvas, true);
+	}
 }
 
 void TowerManager::ShowControlScreen()
 {
-	GameUIManager::getInstance().GetControlsImage()->setVisible(true);
-	GameUIManager::getInstance().GetControlsBackText()->setVisible(true);
-	GameUIManager::getInstance().GetControlsBackText()->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetControlsImage(0)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(0)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(0)->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+		GameUIManager::getInstance().GetResumeButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuButton(0)->unregisterCallback("onMouseClick");
+	}
+	else
+	{
+		GameUIManager::getInstance().GetControlsImage(1)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(1)->setVisible(true);
+		GameUIManager::getInstance().GetControlsBackText(1)->registerCallback("onMouseClick", this, &TowerManager::HideControlScreen);
+		GameUIManager::getInstance().GetResumeButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetMainMenuButton(1)->unregisterCallback("onMouseClick");
+	}
 
-	GameUIManager::getInstance().GetResumeButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetOptionsVolumeButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetOptionsControlsButton()->unregisterCallback("onMouseClick");
-	GameUIManager::getInstance().GetMainMenuButton()->unregisterCallback("onMouseClick");
 }
 
 void TowerManager::HideControlScreen()
 {
-	GameUIManager::getInstance().GetControlsImage()->setVisible(false);
-	GameUIManager::getInstance().GetControlsBackText()->setVisible(false);
-	GameUIManager::getInstance().GetControlsBackText()->unregisterCallback("onMouseClick");
-
-	GameUIManager::getInstance().GetResumeButton()->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
-	GameUIManager::getInstance().GetOptionsVolumeButton()->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
-	GameUIManager::getInstance().GetOptionsControlsButton()->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
-	GameUIManager::getInstance().GetMainMenuButton()->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	if (!mIsBossScene)
+	{
+		GameUIManager::getInstance().GetControlsImage(0)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(0)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(0)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetResumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(0)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(0)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
+	else
+	{
+		GameUIManager::getInstance().GetControlsImage(1)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(1)->setVisible(false);
+		GameUIManager::getInstance().GetControlsBackText(1)->unregisterCallback("onMouseClick");
+		GameUIManager::getInstance().GetResumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::TogglePauseMenu);
+		GameUIManager::getInstance().GetOptionsVolumeButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowOptionsMenu);
+		GameUIManager::getInstance().GetOptionsControlsButton(1)->registerCallback("onMouseClick", this, &TowerManager::ShowControlScreen);
+		GameUIManager::getInstance().GetMainMenuButton(1)->registerCallback("onMouseClick", this, &TowerManager::GoToMainMenu);
+	}
 }
 
 void TowerManager::GoToMainMenu()
@@ -495,6 +553,15 @@ void TowerManager::GoToMainMenu()
 	for (int i = 0; i < mPlayerTeam.size(); i++)
 	{
 		GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<CharacterHUDElements>()->ClearStatusEffects();
+		
+		SkillHoverComponent* hover = GameUIManager::getInstance().GetCharacterHuds()[mPlayerTeam[i]->getComponent<Character>()->GetHudIndex()]->getComponent<SkillHoverComponent>();
+
+		for (int i = 0; i < hover->GetSkillSprites().size(); i++)
+		{
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseClick");
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseEnter");
+			hover->GetSkillSprites()[i]->unregisterCallback("onMouseExit");
+		}
 	}
 	mPlayerTeam.clear();
 
@@ -513,9 +580,24 @@ void TowerManager::GoToMainMenu()
 
 	// Deactivate the rewards screen
 	Rewards->setActive(false);
-	// Deactivate the pause menu
-	Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu();
-	GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+
+	for (int i = 0; i < 2; i++)
+	{
+		// Deactivate the pause menu
+		Odyssey::Entity* pauseMenu = GameUIManager::getInstance().GetPauseMenu(i);
+		GameUIManager::getInstance().ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+	}
+
+	for (int i = 0; i < GameUIManager::getInstance().GetClickableUIElements().size(); i++)
+	{
+		Odyssey::Entity* clickObj = GameUIManager::getInstance().GetClickableUIElements()[i];
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseClick");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseEnter");
+		clickObj->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>()->unregisterCallback("onMouseExit");
+	}
+
+	GameUIManager::getInstance().ClearClickableCharacterList();
+	TeamManager::getInstance().ClearUpdatedPlayerTeam();
 
 	// Set the current level back to 1
 	mCurrentLevel = 1;
@@ -541,6 +623,19 @@ void TowerManager::CreateThePlayerTeam()
 	mPlayerPositions[0] = DirectX::XMVectorSet(-5.0f, 0.0f, 10.0f, 1.0f); // First Character Selected
 	mPlayerPositions[1] = DirectX::XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f); // Second Character Selected
 	mPlayerPositions[2] = DirectX::XMVectorSet(5.0f, 0.0f, 10.0f, 1.0f); // Third Character Selected
+
+	mPlayerTeam.clear();
+	
+	bool createdPlayerTeamPreviously = false;
+	if (TeamManager::getInstance().GetUpdatedPlayerTeam().size() > 0)
+	{
+		createdPlayerTeamPreviously = true;
+		// Reset HUD stuff
+		//CharacterFactory::getInstance().ResetCharacterHudIndex();
+		//GameUIManager::getInstance().ClearHudList();
+		// This must also be the boss scene
+		mCurrentLevel = mNumberOfLevels;
+	}
 
 	// Create each player
 	for (int i = 0; i < TeamManager::getInstance().GetPlayerTeamToCreate().size(); i++)
@@ -606,19 +701,20 @@ void TowerManager::CreateThePlayerTeam()
 		prefab = CharacterFactory::getInstance().GetHUDPrefab(hudID);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &newHUD, mPlayerPositions[i], mPlayerRotation));
 
+
 		// Set up the clickable UI and skill hover huds
 		CharacterHUDElements* hudElements = newHUD->getComponent<CharacterHUDElements>();
-		// Reset the colors of the stats
-		hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
-		hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
-		hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
-		// Make sure the bars are filled
-		hudElements->GetHealthBar()->setFill(1.0f);
-		hudElements->GetManaBar()->setFill(1.0f);
 
-		// Clickable UI
-		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
-		heroComp->SetupClickableUI(hudElements->GetSkill1(), hudElements->GetSkill2(), hudElements->GetSkill3(), hudElements->GetSkill4());
+		if (!createdPlayerTeamPreviously)
+		{
+			// Reset the colors of the stats
+			hudElements->GetAttackNumber()->setColor(255.0f, 255.0f, 255.0f);
+			hudElements->GetDefenseNumber()->setColor(255.0f, 255.0f, 255.0f);
+			hudElements->GetSpeedNumber()->setColor(255.0f, 255.0f, 255.0f);
+			// Make sure the bars are filled
+			hudElements->GetHealthBar()->setFill(1.0f);
+			hudElements->GetManaBar()->setFill(1.0f);
+		}
 
 		// Assign the character component
 		SkillHoverComponent* hover = newHUD->addComponent<SkillHoverComponent>();
@@ -632,6 +728,11 @@ void TowerManager::CreateThePlayerTeam()
 		hover->mCharacterSkills = newCharacter->getComponent<Character>()->GetSkills();
 		// Assign the position that the prefab will needed to be spawned at
 		hover->mHudPositionEnum = skillPopupPos;
+		// Clickable Skills
+		HeroComponent* heroComp = newCharacter->getComponent<HeroComponent>();
+		std::vector<Odyssey::Sprite2D*> skillSprites = hover->GetSkillSprites();
+		heroComp->SetupClickableUI(skillSprites[0], skillSprites[1], skillSprites[2], skillSprites[3]);
+
 
 		// Create the hero clickable UI box
 		Odyssey::Entity* clickableHeroUI = nullptr;
@@ -664,7 +765,8 @@ void TowerManager::CreateThePlayerTeam()
 
 		// Create the impact indicator for the heroes
 		Odyssey::Entity* impactIndicator = nullptr;
-		DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		//DirectX::XMVECTOR impactIndicatorPosition = mPlayerPositions[i];
+		DirectX::XMVECTOR impactIndicatorPosition = { DirectX::XMVectorGetX(mPlayerPositions[i]), DirectX::XMVectorGetY(mPlayerPositions[i]) + 0.1f, DirectX::XMVectorGetZ(mPlayerPositions[i]), 1.0f };
 		prefab = CharacterFactory::getInstance().GetImpactIndicatorPrefab();
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &impactIndicator, impactIndicatorPosition, mPlayerRotation));
 		// Assign the impact indicator for the heroes

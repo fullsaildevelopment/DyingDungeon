@@ -26,6 +26,9 @@ namespace Odyssey
 	public: // Interface
 		Entity* createEntity();
 
+		void setName(const char* name);
+
+		const char* getName();
 		void addComponent(Component* component);
 
 		void addElement(UIElement* element);
@@ -59,6 +62,7 @@ namespace Odyssey
 
 	protected: // Members
 		Entity* mMainCamera;
+		const char* mName;
 		std::vector<std::shared_ptr<Entity>> mSceneEntities;
 		std::vector<Component*> mComponentList;
 		Entity* mSkybox;

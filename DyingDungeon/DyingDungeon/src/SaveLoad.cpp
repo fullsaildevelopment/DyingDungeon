@@ -3,6 +3,7 @@
 SaveLoad::SaveLoad()
 {
 	m_saveProfile = "Profile_0/";
+	Odyssey::EventManager::getInstance().subscribe(this, &SaveLoad::ShutdownSave);
 }
 
 SaveLoad& SaveLoad::Instance()
@@ -349,6 +350,60 @@ bool SaveLoad::LoadLoadOut(std::string loadoutName)
 	return true;
 }
 
+void SaveLoad::ShutdownSave(Odyssey::ShutdownApplicationEvent* saEvent)
+{
+	SaveSettings();
+}
+
+void SaveLoad::EngineShutdownSave(Odyssey::EngineShutdownEvent* esEvent)
+{
+	SaveSettings();
+}
+
+bool SaveLoad::SaveSettings()
+{
+	bool perperExport = true;
+	std::fstream file(std::string("profiles/" + m_saveProfile + "settings/sound_config"), std::ios::out | std::ios::trunc | std::ios::binary);
+	if (file.is_open())
+	{
+		for (int i = -1; i < 3; i++)
+		{
+			unsigned int vol = RedAudioManager::Instance().GetVolume((RedAudioManager::AudioType)i);
+			file.write((const char*)&vol, sizeof(unsigned int));
+		}
+	}
+	else
+	{
+		perperExport = false;
+	}
+	return perperExport;
+}
+
+bool SaveLoad::LoadSettings()
+{
+	bool perperExport = true;
+	std::string settings_path = std::string("profiles/" + m_saveProfile + "settings/sound_config");
+	std::experimental::filesystem::v1::path dir = settings_path;
+	if (std::experimental::filesystem::exists(dir))
+	{
+		std::fstream file(settings_path, std::ios::in | std::ios::binary);
+		if (file.is_open())
+		{
+			for (int i = -1; i < 3; i++)
+			{
+				unsigned int vol = 0;
+				file.read((char*)&vol, sizeof(unsigned int));
+				RedAudioManager::Instance().SetMasterVolume(vol, RedAudioManager::AudioType(i));
+			}
+		}
+		else
+		{
+			perperExport = false;
+		}
+	}
+	return perperExport;
+}
+
 unsigned int SaveLoad::dir_file_count(std::string path)
 {
 	std::experimental::filesystem::v1::path dir = path;
@@ -406,6 +461,8 @@ void SaveLoad::CreateProfileDirectory()
 	create_directory(path);
 	std::string loadout_path =  path + "loadouts/";
 	create_directory(loadout_path);
+	std::string settings_path = path + "settings/";
+	create_directory(settings_path);
 }
 
 std::string SaveLoad::GetSaveProfile()

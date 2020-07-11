@@ -80,11 +80,6 @@ namespace Odyssey
 		mPrefabList.push_back(entity);
 
 		// Initialize the entity's components
-		for (Component* component : entity->getComponents<Component>())
-		{
-			component->initialize();
-		}
-
 		for (Entity* prefabChild : spawnPrefab->getChildren())
 		{
 			std::shared_ptr<Entity> child = std::make_shared<Entity>(*prefabChild);
@@ -98,6 +93,11 @@ namespace Odyssey
 			}
 			mPrefabList.push_back(child);
 			entity->addChild(child.get());
+		}
+
+		for (Component* component : entity->getComponents<Component>())
+		{
+			component->initialize();
 		}
 
 		// Add the entity to the list and return

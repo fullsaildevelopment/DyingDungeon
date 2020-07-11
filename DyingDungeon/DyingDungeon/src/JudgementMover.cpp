@@ -33,6 +33,26 @@ void JudgementMover::SetVelocity(DirectX::XMFLOAT3 newVelocity, float speed)
 	mVelocity = DirectX::XMLoadFloat3(&newVelocity);
 	mVelocity = DirectX::XMVector3Normalize(mVelocity);
 	mVelocity = DirectX::XMVectorMultiply(mVelocity, {speed, speed, speed});
+
+	// Get ready for some math to rotate the meteor to face the velocity direction
+
+	// Get the forward direction
+	DirectX::XMFLOAT3 fwd = mEntity->getComponent<Odyssey::Transform>()->getForward();
+
+	// Dot the forward and the velocity
+	float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat3(&fwd), mVelocity));
+
+	// Multiply the magnitude of the forward and the velocity
+	float mag = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMLoadFloat3(&fwd))) * DirectX::XMVectorGetX(DirectX::XMVector3Length(mVelocity));
+	
+	// Get the angle between the two vectors and convert it to degrees
+	float theta = DirectX::XMConvertToDegrees(std::acosf((dot / mag)));
+
+	// Determine the direction of the rotation
+	theta *= (mVelocity.m128_f32[0] > 0) ? 1 : -1;
+
+	// Apply the rotation in the y direction
+	mEntity->getComponent<Odyssey::Transform>()->setRotation(0.0f, theta, 0.0f);
 }
 
 void JudgementMover::SetSpinOnX(bool spinOnX)

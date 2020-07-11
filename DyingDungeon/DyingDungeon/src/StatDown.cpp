@@ -35,7 +35,7 @@ StatDown::StatDown(float ammountOfEffect, int duration, STATS stat ,Character* t
 
 StatDown::~StatDown()
 {
-	if (mRecipient != nullptr && mRemoveMe == false && mRecipient->GetLevel() == 1)
+	if (mRecipient != nullptr && mRemoveMe == false && mRecipient->GetLevel() == 0)
 		Remove();
 	mTypeId = EFFECTTYPE::None;
 	mAmountOfEffect = -1.0f;
@@ -63,20 +63,29 @@ void StatDown::Remove()
 	{
 	case STATS::Atk:
 	{
-		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(false);
-		mRecipient->IncreaseAtk(mAmountOfEffect);
+		if (GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>() != nullptr)
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetAttackDownBuff()->setVisible(false);
+			mRecipient->IncreaseAtk(mAmountOfEffect);
+		}
 		break;
 	}
 	case STATS::Def:
 	{
-		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(false);
-		mRecipient->IncreaseDef(mAmountOfEffect);
+		if (GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>() != nullptr)
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetDefenseDownBuff()->setVisible(false);
+			mRecipient->IncreaseDef(mAmountOfEffect);
+		}
 		break;
 	}
 	case STATS::Spd:
 	{
-		GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(false);
-		mRecipient->IncreaseSpd(mAmountOfEffect);
+		if (GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>() != nullptr)
+		{
+			GameUIManager::getInstance().GetCharacterHuds()[mRecipient->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSpeedDownBuff()->setVisible(false);
+			mRecipient->IncreaseSpd(mAmountOfEffect);
+		}
 		break;
 	}
 	default:

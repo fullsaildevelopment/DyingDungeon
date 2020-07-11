@@ -156,7 +156,7 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 4]->setText(rewardsText);
 		rewardsText.clear();
 
-		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%\n");
+		rewardsText.append(FormatToPercentageW(CalculateDamageMitigatated(m_levels.back().characters[i].first.unique_id, static_cast<unsigned int>(m_levels.size())), 2) + L"%");
 		m_p_canvas->getElements<Odyssey::Text2D>()[((i + 1) * 10) + 5]->setText(rewardsText);
 		rewardsText.clear();
 
@@ -181,30 +181,35 @@ void StatTracker::UpdateRewardScreen(RewardsActiveEvent* raEvent)
 
 void StatTracker::LogDamageDeltEvent(CharacterDealtDamageEvent* cddEvent)
 {
-	CHARACTER_STAT newCharacterStat;
-	m_levels.back().turns.back().actionName = cddEvent->actionName;
-	m_levels.back().turns.back().actionType = Action::Attack;
-	m_levels.back().turns.back().effect = cddEvent->actionEffect;
-	m_levels.back().turns.back().value = cddEvent->damageAmount;
-	m_levels.back().turns.back().attackModifier = cddEvent->atkMod;
-
+	if (!mIsTutorial)
+	{
+		CHARACTER_STAT newCharacterStat;
+		m_levels.back().turns.back().actionName = cddEvent->actionName;
+		m_levels.back().turns.back().actionType = Action::Attack;
+		m_levels.back().turns.back().effect = cddEvent->actionEffect;
+		m_levels.back().turns.back().value = cddEvent->damageAmount;
+		m_levels.back().turns.back().attackModifier = cddEvent->atkMod;
+	}
 }
 
 void StatTracker::LogTakeDamageEvent(CharacterTakeDamage* ctdEvent)
 {
 	//m_levels.back().turns.back().targetNames.push_back(ctdEvent->targetName);
 	//m_levels.back().turns.back().blockValues.push_back(ctdEvent->mitigationAmount);
-	CHARACTER_STAT newCharacterStat;
-	if (ctdEvent->targetPointer->IsHero()) {
-		newCharacterStat.characterName = ctdEvent->targetName;
-		newCharacterStat.unique_id = GetUniqueID(ctdEvent->targetPointer);
-	}
-	else
+	if (!mIsTutorial)
 	{
-		newCharacterStat.characterName = ctdEvent->targetName;
-		newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(ctdEvent->targetPointer)->GetID());
+		CHARACTER_STAT newCharacterStat;
+		if (ctdEvent->targetPointer->IsHero()) {
+			newCharacterStat.characterName = ctdEvent->targetName;
+			newCharacterStat.unique_id = GetUniqueID(ctdEvent->targetPointer);
+		}
+		else
+		{
+			newCharacterStat.characterName = ctdEvent->targetName;
+			newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(ctdEvent->targetPointer)->GetID());
+		}
+		m_levels.back().turns.back().targets.push_back(std::make_pair(newCharacterStat, ctdEvent->mitigationAmount));
 	}
-	m_levels.back().turns.back().targets.push_back(std::make_pair(newCharacterStat, ctdEvent->mitigationAmount));
 }
 
 unsigned int StatTracker::GetUniqueID(Character* character) 
@@ -226,132 +231,149 @@ unsigned int StatTracker::GetUniqueID(Character* character)
 
 void StatTracker::LogHealingEvent(CharacterHealsEvent* chcEvent)
 {
-	m_levels.back().turns.back().actionName = chcEvent->actionName;
-	m_levels.back().turns.back().actionType = Action::Aid;
-	m_levels.back().turns.back().value = chcEvent->health;
-
+	if (!mIsTutorial)
+	{
+		m_levels.back().turns.back().actionName = chcEvent->actionName;
+		m_levels.back().turns.back().actionType = Action::Aid;
+		m_levels.back().turns.back().value = chcEvent->health;
+	}
 }
 
 void StatTracker::LogReciveHealingEvent(CharacterRecivesHealingEvent* crhEvent) 
 {
-	CHARACTER_STAT newCharacterStat;
-	if (crhEvent->targetPointer->IsHero()) {
-		newCharacterStat.characterName = std::string("HEAL" + crhEvent->targetName);
-		newCharacterStat.unique_id = GetUniqueID(crhEvent->targetPointer);
-	}
-	else
+	if (!mIsTutorial)
 	{
-		newCharacterStat.characterName = std::string("HEAL" + crhEvent->targetName); 
-		newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(crhEvent->targetPointer)->GetID());
-	}
+		CHARACTER_STAT newCharacterStat;
+		if (crhEvent->targetPointer->IsHero()) {
+			newCharacterStat.characterName = std::string("HEAL" + crhEvent->targetName);
+			newCharacterStat.unique_id = GetUniqueID(crhEvent->targetPointer);
+		}
+		else
+		{
+			newCharacterStat.characterName = std::string("HEAL" + crhEvent->targetName);
+			newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(crhEvent->targetPointer)->GetID());
+		}
 
-	m_levels.back().turns.back().buffedTargets.push_back(std::make_pair(newCharacterStat, crhEvent->healingAmount));
-	
-	if (m_levels.back().turns.back().unique_id == newCharacterStat.unique_id &&
-		m_levels.back().turns.back().actionType != Action::Attack) 
-	{
-		m_levels.back().turns.back().actionType = Action::Defend;
+		m_levels.back().turns.back().buffedTargets.push_back(std::make_pair(newCharacterStat, crhEvent->healingAmount));
+
+		if (m_levels.back().turns.back().unique_id == newCharacterStat.unique_id &&
+			m_levels.back().turns.back().actionType != Action::Attack)
+		{
+			m_levels.back().turns.back().actionType = Action::Defend;
+		}
 	}
 }
 
 void StatTracker::LogBuffingEvent(CharacterBuffsEvent* cbEvent) 
 {
-	m_levels.back().turns.back().actionName = cbEvent->actionName;
-	m_levels.back().turns.back().actionType = Action::Aid;
-	m_levels.back().turns.back().value = cbEvent->buffValue;
-	//m_levels.back().turns.back().isSheild = true;
-	m_levels.back().turns.back().effect = cbEvent->buffType;
-	CHARACTER_STAT newCharacterStat;
-	if (cbEvent->targetPointer->IsHero()) {
-		newCharacterStat.characterName = cbEvent->targetName;
-		newCharacterStat.unique_id = GetUniqueID(cbEvent->targetPointer);
-	}
-	else
+	if (!mIsTutorial)
 	{
-		newCharacterStat.characterName = cbEvent->targetName;
-		newCharacterStat.unique_id = (666*100) + static_cast<int>(static_cast<EnemyComponent*>(cbEvent->targetPointer)->GetID());
+		m_levels.back().turns.back().actionName = cbEvent->actionName;
+		m_levels.back().turns.back().actionType = Action::Aid;
+		m_levels.back().turns.back().value = cbEvent->buffValue;
+		//m_levels.back().turns.back().isSheild = true;
+		m_levels.back().turns.back().effect = cbEvent->buffType;
+		CHARACTER_STAT newCharacterStat;
+		if (cbEvent->targetPointer->IsHero()) {
+			newCharacterStat.characterName = cbEvent->targetName;
+			newCharacterStat.unique_id = GetUniqueID(cbEvent->targetPointer);
+		}
+		else
+		{
+			newCharacterStat.characterName = cbEvent->targetName;
+			newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(cbEvent->targetPointer)->GetID());
+		}
+		if (m_levels.back().turns.back().unique_id == newCharacterStat.unique_id &&
+			m_levels.back().turns.back().targets.size() <= 1 &&
+			m_levels.back().turns.back().actionType != Action::Attack)
+		{
+			m_levels.back().turns.back().actionType = Action::Defend;
+		}
+		m_levels.back().turns.back().buffedTargets.push_back(std::make_pair(newCharacterStat, cbEvent->buffValue));
 	}
-	if (m_levels.back().turns.back().unique_id == newCharacterStat.unique_id &&
-		m_levels.back().turns.back().targets.size() <= 1 &&
-		m_levels.back().turns.back().actionType != Action::Attack)
-	{
-		m_levels.back().turns.back().actionType = Action::Defend;
-	}
-	m_levels.back().turns.back().buffedTargets.push_back(std::make_pair(newCharacterStat, cbEvent->buffValue));
 }
 
 void StatTracker::LogDebuffingEvent(CharacterDebuffsEvent* cdEvent)
 {
-	m_levels.back().turns.back().actionName = cdEvent->actionName;
-	m_levels.back().turns.back().actionType = Action::Attack;
-	//m_levels.back().turns.back().value = cdEvent->debuffValue;
-	//m_levels.back().turns.back().isSheild = true;
-	m_levels.back().turns.back().effect = cdEvent->debuffType;
-	CHARACTER_STAT newCharacterStat;
-	if (cdEvent->targetPointer->IsHero()) {
-		newCharacterStat.characterName = std::string("DEBUFF" + cdEvent->targetName);
-		newCharacterStat.unique_id = GetUniqueID(cdEvent->targetPointer);
-		newCharacterStat.characterClass = static_cast<HeroComponent*>(cdEvent->targetPointer)->GetID();
-	}
-	else
+	if (!mIsTutorial)
 	{
-		newCharacterStat.characterName = std::string("DEBUFF" + cdEvent->targetName);
-		newCharacterStat.unique_id = (666*100) + static_cast<int>(static_cast<EnemyComponent*>(cdEvent->targetPointer)->GetID());
-		//newCharacterStat.characterClass = static_cast<EnemyComponent*>(cdEvent->targetPointer)->GetID();
-	}
-	m_levels.back().turns.back().debuffedTargets.push_back(std::make_pair(newCharacterStat, cdEvent->debuffValue));
+		m_levels.back().turns.back().actionName = cdEvent->actionName;
+		m_levels.back().turns.back().actionType = Action::Attack;
+		//m_levels.back().turns.back().value = cdEvent->debuffValue;
+		//m_levels.back().turns.back().isSheild = true;
+		m_levels.back().turns.back().effect = cdEvent->debuffType;
+		CHARACTER_STAT newCharacterStat;
+		if (cdEvent->targetPointer->IsHero()) {
+			newCharacterStat.characterName = std::string("DEBUFF" + cdEvent->targetName);
+			newCharacterStat.unique_id = GetUniqueID(cdEvent->targetPointer);
+			newCharacterStat.characterClass = static_cast<HeroComponent*>(cdEvent->targetPointer)->GetID();
+		}
+		else
+		{
+			newCharacterStat.characterName = std::string("DEBUFF" + cdEvent->targetName);
+			newCharacterStat.unique_id = (666 * 100) + static_cast<int>(static_cast<EnemyComponent*>(cdEvent->targetPointer)->GetID());
+			//newCharacterStat.characterClass = static_cast<EnemyComponent*>(cdEvent->targetPointer)->GetID();
+		}
+		m_levels.back().turns.back().debuffedTargets.push_back(std::make_pair(newCharacterStat, cdEvent->debuffValue));
 
-	/*if (m_levels.back().turns.back().characterName == cdEvent->targetName &&
-		m_levels.back().turns.back().targetNames.size() <= 1 &&
-		m_levels.back().turns.back().actionType != Action::Attack)
-	{
-		m_levels.back().turns.back().actionType = Action::Defend;
-	}*/
+		/*if (m_levels.back().turns.back().characterName == cdEvent->targetName &&
+			m_levels.back().turns.back().targetNames.size() <= 1 &&
+			m_levels.back().turns.back().actionType != Action::Attack)
+		{
+			m_levels.back().turns.back().actionType = Action::Defend;
+		}*/
+	}
 }
 
 void StatTracker::LevelStartReflex(LevelStartEvent* lsEvent)
 {
-	//srand(time(NULL));
-	StatTracker::Level newLevel;
-	newLevel.levelNumber = lsEvent->levelNumber;
-	for(int i = 0; i < 3; i++)
+	if (!mIsTutorial)
 	{
-		newLevel.characters[i].first.characterName = lsEvent->playerCharacters[i];
-		newLevel.characters[i].second = lsEvent->playerPortaits[i];
-		newLevel.character_pointers[i] = lsEvent->playerPointers[i];
-		newLevel.characters[i].first.characterClass = static_cast<HeroComponent*>(lsEvent->playerPointers[i])->GetID();
-		/*if (m_levels.empty() || newLevel.character_pointers[i] != m_levels.back().character_pointers[i])
+		//srand(time(NULL));
+		StatTracker::Level newLevel;
+		newLevel.levelNumber = lsEvent->levelNumber;
+		for (int i = 0; i < 3; i++)
 		{
-			newLevel.characters[i].first.second = (rand() % (9999999 - 1000000 + 1) + 1000000);
+			newLevel.characters[i].first.characterName = lsEvent->playerCharacters[i];
+			newLevel.characters[i].second = lsEvent->playerPortaits[i];
+			newLevel.character_pointers[i] = lsEvent->playerPointers[i];
+			newLevel.characters[i].first.characterClass = static_cast<HeroComponent*>(lsEvent->playerPointers[i])->GetID();
+			/*if (m_levels.empty() || newLevel.character_pointers[i] != m_levels.back().character_pointers[i])
+			{
+				newLevel.characters[i].first.second = (rand() % (9999999 - 1000000 + 1) + 1000000);
+			}
+			else
+			{
+				newLevel.characters[i].first.second = m_levels.back().characters[i].first.second;
+			}*/
+			newLevel.characters[i].first.unique_id = GetUniqueID(newLevel.character_pointers[i]);
 		}
-		else
-		{
-			newLevel.characters[i].first.second = m_levels.back().characters[i].first.second;
-		}*/
-		newLevel.characters[i].first.unique_id = GetUniqueID(newLevel.character_pointers[i]);
-	}
 
-	m_levels.push_back(newLevel);
-	m_currentLevel = newLevel.levelNumber;
+		m_levels.push_back(newLevel);
+		m_currentLevel = newLevel.levelNumber;
+	}
 }
 
 void StatTracker::TurnStartReflex(TurnStartEvent* tsEvent)
 {
-	StatTracker::Turn newTurn;
-	/*for (int i = 0; i < 3; i++)
+	if (!mIsTutorial)
 	{
-		if (m_levels.back().character_pointers[i] == tsEvent->playerPointer)
-		{*/
-			newTurn.unique_id = GetUniqueID(tsEvent->playerPointer);
-	/*		break;
-		}
-	}*/
-	m_levels.back().turnCount = tsEvent->turn;
-	newTurn.characterName = tsEvent->characterName;
-	newTurn.round = tsEvent->round;
-	newTurn.isPlayer = tsEvent->isPlayer;
-	m_levels.back().turns.push_back(newTurn);
-	m_levels.back().turnCount = static_cast<uint32_t>(m_levels.back().turns.size());
+		StatTracker::Turn newTurn;
+		/*for (int i = 0; i < 3; i++)
+		{
+			if (m_levels.back().character_pointers[i] == tsEvent->playerPointer)
+			{*/
+		newTurn.unique_id = GetUniqueID(tsEvent->playerPointer);
+		/*		break;
+			}
+		}*/
+		m_levels.back().turnCount = tsEvent->turn;
+		newTurn.characterName = tsEvent->characterName;
+		newTurn.round = tsEvent->round;
+		newTurn.isPlayer = tsEvent->isPlayer;
+		m_levels.back().turns.push_back(newTurn);
+		m_levels.back().turnCount = static_cast<uint32_t>(m_levels.back().turns.size());
+	}
 }
 
 unsigned int StatTracker::GetStatCount(Action stat)

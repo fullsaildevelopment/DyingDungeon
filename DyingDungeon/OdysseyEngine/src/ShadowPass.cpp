@@ -176,7 +176,7 @@ namespace Odyssey
 			for (int i = 0; i < renderPackage.renderObjects.size(); i++)
 			{
 				// Check if the object has a mesh renderer
-				if (renderPackage.renderObjects[i].meshRenderer)
+				if (renderPackage.renderObjects[i].entity->isActive() && renderPackage.renderObjects[i].entity->isVisible() && renderPackage.renderObjects[i].meshRenderer)
 				{
 					// Make sure the mesh renderer is active
 					if (renderPackage.renderObjects[i].meshRenderer->isActive() && renderPackage.renderObjects[i].meshRenderer->isShadowCaster())

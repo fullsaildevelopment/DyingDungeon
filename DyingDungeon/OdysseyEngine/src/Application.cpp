@@ -96,6 +96,11 @@ namespace Odyssey
 		// Set the new active scene
 		if (mSceneMap.count(evnt->sceneName) > 0)
 		{
+			if (mIsMultithreading == false)
+			{
+				mActiveScene->onDestroy();
+			}
+
 			mActiveScene = mSceneMap[evnt->sceneName];
 
 			// Check the active scene is set
@@ -105,8 +110,11 @@ namespace Odyssey
 				mActiveScene->initialize();
 
 				// Notify the thread manager to restart the scene thread
-				ThreadManager::getInstance().changeActiveScene(mActiveScene);
-				mIsRendering = false;
+				if (mIsMultithreading)
+				{
+					ThreadManager::getInstance().changeActiveScene(mActiveScene);
+					mIsRendering = false;
+				}
 			}
 		}
 	}
@@ -307,6 +315,7 @@ namespace Odyssey
 	Scene* Application::createScene(std::string name)
 	{
 		mSceneMap[name] = std::make_shared<SceneDX11>();
+		mSceneMap[name]->setName(name.c_str());
 
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)
@@ -320,6 +329,7 @@ namespace Odyssey
 	Scene* Application::createScene(std::string name, DirectX::XMFLOAT3 center, float radius)
 	{
 		mSceneMap[name] = std::make_shared<SceneDX11>(center, radius);
+		mSceneMap[name]->setName(name.c_str());
 
 		// Check if there is no active scene
 		if (mActiveScene == nullptr)

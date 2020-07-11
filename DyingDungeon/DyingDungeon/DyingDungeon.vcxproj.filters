@@ -130,6 +130,21 @@
     <ClCompile Include="src\TowerInfoElements.cpp">
       <Filter>Source Files\User Interface</Filter>
     </ClCompile>
+    <ClCompile Include="src\PunchMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpinKickMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BossAttackMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CasterMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeteorMover.cpp">
+      <Filter>Source Files\VFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\RedAudio.h">
@@ -278,6 +293,21 @@
     </ClInclude>
     <ClInclude Include="src\TowerInfoElements.h">
       <Filter>Header Files\User Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PunchMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpinKickMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BossAttackMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CasterMover.h">
+      <Filter>Header Files\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeteorMover.h">
+      <Filter>Header Files\VFX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

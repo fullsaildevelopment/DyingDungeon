@@ -15,7 +15,6 @@ CLASS_DEFINITION(Odyssey::Component, TeamSelectionController)
 TeamSelectionController::TeamSelectionController(Odyssey::Application* application)
 {
 	mApplication = application;
-	mCurrentTower = nullptr;
 }
 
 std::shared_ptr<Odyssey::Component> TeamSelectionController::clone() const
@@ -40,6 +39,7 @@ void TeamSelectionController::initialize()
 
 	// Register callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->registerCallback("onMouseClick", this, &TeamSelectionController::EnterBattle);
+	GameUIManager::getInstance().GetTeamSelectBackButton()->registerCallback("onMouseClick", this, &TeamSelectionController::GoBackToTowerSelect);
 
 	// Register callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->registerCallback("onMouseClick", this, &TeamSelectionController::DecreaseSlot1Index);
@@ -106,12 +106,23 @@ void TeamSelectionController::update(double deltaTime)
 		RedAudioManager::Instance().SetVolume("TorchBurningQuietly", 600);
 		RedAudioManager::Instance().LoopRandom("BackgroundBattle");
 
+		for (int i = 0; i < mSlot1CharacterList.size(); i++)
+		{
+			for (int j = 0; j < mSlot1CharacterList[i]->getChildren().size(); j++)
+			{
+				mSlot1CharacterList[i]->getChildren()[j]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.2f, 0.2f, 0.2f, 1.0f });
+			}
+		}
+
 		// Set up the tower manager with how many levels we want
-		mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
+		//mCurrentTower->getComponent<TowerManager>()->SetUpTowerManager(TeamManager::getInstance().GetEnemiesToCreateList().size());
 
 		// Change the scene to the game
 		//Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("Scene One"));
-		Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Scene One"));
+		if (!mIsBossScene)
+			Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Scene One"));
+		else
+			Odyssey::EventManager::getInstance().publish(new SpawnLoadingScreenEvent("Boss Scene"));
 	}
 	else if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::M))
 	{
@@ -137,6 +148,7 @@ void TeamSelectionController::onDestroy()
 {
 	// Unregister callbacks
 	GameUIManager::getInstance().GetEnterBattleButton()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetTeamSelectBackButton()->unregisterCallback("onMouseClick");
 
 	// Unregister callbacks for the arrows
 	GameUIManager::getInstance().GetTeamSelectionArrows()[0]->unregisterCallback("onMouseClick");
@@ -174,15 +186,15 @@ void TeamSelectionController::onDestroy()
 void TeamSelectionController::CreateModelsAndPopups()
 {
 	// Set up variables
-	float xOffset = -5.0f;
-	float yHeight = -2.0f;
-	float zDepth = 8.0f;
+	float xOffset = 34.0f;
+	float yHeight = 1.34f;
+	float zDepth = -6.0f;
 	Odyssey::Entity* character = nullptr;
 	Odyssey::Entity* infoPopup = mEntity->getScene()->createEntity();
 	Odyssey::Entity* prefab = nullptr;
 	Odyssey::UICanvas* infoPopupCanvas = nullptr;
 	DirectX::XMVECTOR position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR rotation = DirectX::XMVectorSet(0.0f, 80.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 120.0f, 145.0f };
 
 	// Make Slot 1 Characters
@@ -217,18 +229,18 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
-		rotation = DirectX::XMVectorSet(0.0f, 320.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 260.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 140.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 80.0f, 0.0f, 1.0f);
 		mSlot1CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot1CharacterInfoPopupList.push_back(infoPopupCanvas);
 	}
 
 	// Update variables for the slot 2 characters
-	xOffset = 0.0f;
+	zDepth = 0.0f;
 	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 100.0f, 0.0f, 1.0f);
 	uiPosition = { 490.0f, 145.0f };
 
 	// Make Slot 2 Characters
@@ -257,9 +269,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk);
-		rotation = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 280.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 100.0f, 0.0f, 1.0f);
 		mSlot2CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot2CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -272,9 +284,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 	}
 
 	// Update variables for the slot 3 characters
-	xOffset = 5.0f;
+	zDepth = 6.0f;
 	position = DirectX::XMVectorSet(xOffset, yHeight, zDepth, 1.0f);
-	rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+	rotation = DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 1.0f);
 	uiPosition = { 860.0f, 145.0f };
 
 	// Make Slot 3 Characters
@@ -297,9 +309,9 @@ void TeamSelectionController::CreateModelsAndPopups()
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
 		// Monk
 		prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Monk); 
-		rotation = DirectX::XMVectorSet(0.0f, 40.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 300.0f, 0.0f, 1.0f);
 		Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &character, position, rotation));
-		rotation = DirectX::XMVectorSet(0.0f, 220.0f, 0.0f, 1.0f);
+		rotation = DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 1.0f);
 		mSlot3CharacterList.push_back(character);
 		infoPopupCanvas = GameUIManager::getInstance().SetupInfoPopup(infoPopup, character->getComponent<Character>(), uiPosition);
 		mSlot3CharacterInfoPopupList.push_back(infoPopupCanvas);
@@ -324,6 +336,11 @@ void TeamSelectionController::TurnOffModels()
 	for (int i = 0; i < mSlot1CharacterList.size(); i++)
 	{
 		mSlot1CharacterList[i]->setVisible(false);
+
+		for (int j = 0; j < mSlot1CharacterList[i]->getChildren().size(); j++)
+		{
+			mSlot1CharacterList[i]->getChildren()[j]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.3f, 0.3f, 0.3f, 1.0f });
+		}
 	}
 
 	// Turn off every character
@@ -1009,4 +1026,10 @@ void TeamSelectionController::ConfermationNo()
 	GameUIManager::getInstance().GetSaveConfermationMenu()->setActive(false);
 	GameUIManager::getInstance().GetSaveConfermationButtons()[0]->unregisterCallback("onMouseClick");
 	GameUIManager::getInstance().GetSaveConfermationButtons()[1]->unregisterCallback("onMouseClick");
+}
+
+void TeamSelectionController::GoBackToTowerSelect()
+{
+	// Change to the tower selection screen
+	Odyssey::EventManager::getInstance().publish(new Odyssey::SceneChangeEvent("TowerSelection"));
 }

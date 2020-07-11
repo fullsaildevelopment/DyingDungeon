@@ -51,11 +51,15 @@ void MainMenuController::initialize()
 	// Create a paladin and add him to the main menu scene
 	mPaladinCharacter = nullptr;
 	Odyssey::Entity* prefab = nullptr;
-	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(2.0f, -2.5f, 6.0f, 1.0f);
-	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 180.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR charPosition = DirectX::XMVectorSet(36.75f, 1.34f, 1.88f, 1.0f);
+	DirectX::XMVECTOR charRotation = DirectX::XMVectorSet(0.0f, 90.0f, 0.0f, 1.0f);
 	DirectX::XMFLOAT2 uiPosition = { 0.0f, 0.0f };
 	prefab = CharacterFactory::getInstance().GetCharacterPrefab(CharacterFactory::CharacterOptions::Paladin);
 	Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(prefab, &mPaladinCharacter, charPosition, charRotation));
+	mPaladinCharacter->getChildren()[0]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[1]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[2]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
+	mPaladinCharacter->getChildren()[3]->getComponent<Odyssey::MeshRenderer>()->getMaterial()->setGlobalAmbient({ 0.6f, 0.6f, 0.6f, 1.0f });
 	//mPaladinCharacter->getChildren()[1]->setVisible(false);
 }
 
@@ -118,6 +122,10 @@ void MainMenuController::onDestroy()
 		GameUIManager::getInstance().GetMainMenuMinusVolumeButtons()[i]->unregisterCallback("onMouseClick");
 	}
 	// TODO: M3B1 ONLY END
+	GameUIManager::getInstance().GetOptionsButtonMain()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetBackButtonOptions()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetVolumeButtonOptions()->unregisterCallback("onMouseClick");
+	GameUIManager::getInstance().GetControlsButtonOptions()->unregisterCallback("onMouseClick");
 }
 
 void MainMenuController::EnterTowerSelectScreen()
@@ -132,4 +140,19 @@ void MainMenuController::EnterTowerSelectScreen()
 void MainMenuController::ExitGame()
 {
 	Odyssey::EventManager::getInstance().publish(new Odyssey::ShutdownApplicationEvent());
+}
+
+void MainMenuController::ShowVolumeConfermation()
+{
+	 //GameUIManager::getInstance().Get
+}
+
+void MainMenuController::VolumeConfermationYes()
+{
+
+}
+
+void MainMenuController::VolumeConfermationNo()
+{
+
 }

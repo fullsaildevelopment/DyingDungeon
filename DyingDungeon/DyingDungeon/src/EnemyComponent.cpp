@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "CharacterHUDElements.h"
+#include "PunchMover.h"
 
 CLASS_DEFINITION(Character, EnemyComponent)
 
@@ -150,8 +151,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 300.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "GanfoulHitReaction";
+		mSoundClips["Death"] = "GanfoulHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -326,8 +327,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "MeleeDemonHitReaction";
+		mSoundClips["Death"] = "MeleeDemonHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -419,8 +420,8 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
-		mSoundClips["Death"] = "MaleDeath";
+		mSoundClips["Hit"] = "CasterDemonHitReaction";
+		mSoundClips["Death"] = "CasterDemonHitReaction";
 
 		// Set the stats for the character //
 		////////////////////////////////////
@@ -585,6 +586,7 @@ EnemyComponent::EnemyComponent(GameplayTypes::ENEMYID _enemyID)
 	default:
 		break;
 	}
+	mMoves = AIMoves(static_cast<int>(mID), this);
 }
 
 // Destructor
@@ -666,12 +668,109 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 			RedAudioManager::Instance().PlaySFX(mMoves.GetMove()->skill->GetSoundEffectName().c_str());
 			soundTriggerButBetter = true;
 		}
+
 		// Fire particle effects when the timming is right
 		if (mMoves.GetMove()->skill->GetParticleSystem() != nullptr && !particleTriggerButBetter && mAnimator->getProgress() > mMoves.GetMove()->skill->GetPSFiringTime())
 		{
-			// Turn particle effect on
-			//mMoves.GetMove()->skill->GetParticleSystem()->getEntity()->setActive(true);
-			//mMoves.GetMove()->skill->GetParticleSystem()->play();
+			DirectX::XMFLOAT3 tempPos1;
+			DirectX::XMFLOAT3 tempPos2;
+			DirectX::XMVECTOR position = { 0.0f,0.0f,0.0f,0.0f };
+			DirectX::XMVECTOR rotation = DirectX::XMLoadFloat3(&mMoves.GetMove()->skill->GetParticleSystem()->getComponent<Odyssey::Transform>()->getEulerRotation());
+			Odyssey::Entity* temp = nullptr;
+			std::wstring wStringToCompare = mMoves.GetMove()->skill->GetSkillName().c_str();
+			if (wcscmp(wStringToCompare.c_str(), L"SkeletonAttack1") == 0)
+			{
+				temp = mMoves.GetMove()->skill->GetParticleSystem();
+				tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+				tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+				tempPos1.x += tempPos2.x;
+				tempPos1.y += tempPos2.y;
+				tempPos1.z += tempPos2.z;
+				tempPos2 = mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+				tempPos2.y += 3.0f;
+				position = DirectX::XMLoadFloat3(&(tempPos1));
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+				temp->getComponent<PunchMover>()->setParticlePath(tempPos1, tempPos2);
+			}
+			else if (wcscmp(wStringToCompare.c_str(), L"CasterSkill1") == 0)
+			{
+				temp = mMoves.GetMove()->skill->GetParticleSystem();
+				tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+				tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+				tempPos1.x += tempPos2.x;
+				tempPos1.y += tempPos2.y;
+				tempPos1.z += tempPos2.z;
+				position = DirectX::XMLoadFloat3(&(tempPos1));
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+			}
+			/*if (wcscmp(wStringToCompare.c_str(), L"GanfoulAttack1") == 0)
+			{
+				temp = mMoves.GetMove()->skill->GetParticleSystem();
+				tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+				tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+				tempPos1.x += tempPos2.x;
+				tempPos1.y += tempPos2.y;
+				tempPos1.z += tempPos2.z;
+				position = DirectX::XMLoadFloat3(&(tempPos1));
+				Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+			}*/
+			else if (mMoves.GetMove()->skill->IsAOE())
+			{
+				if (mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::ATTACK || mMoves.GetMove()->skill->GetSkillTypeId() == GameplayTypes::SKILLTYPE::DEBUFF)
+				{
+					for (Odyssey::Entity* c : playerTeam)
+					{
+						if (c == nullptr)
+							continue;
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+						tempPos1.x += tempPos2.x;
+						tempPos1.y += tempPos2.y;
+						tempPos1.z += tempPos2.z;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+				else
+				{
+					for (Odyssey::Entity* c : enemyTeam)
+					{
+						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
+						tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+						tempPos1.x += tempPos2.x + 0.5f;
+						tempPos1.y += tempPos2.y + 0.5f;
+						tempPos1.z += tempPos2.z + 0.5f;
+						position = DirectX::XMLoadFloat3(&(tempPos1));
+						position = DirectX::XMLoadFloat3(&(c->getComponent<Odyssey::Transform>()->getPosition()));
+						Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+					}
+				}
+			}
+			else
+			{
+				if (mMoves.GetMove()->skill->SetPartilceIsProjectile())
+				{
+					tempPos1 = mEntity->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					tempPos2 = mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = { tempPos2.x - tempPos1.x,tempPos2.y - tempPos1.y + 3.0f,tempPos2.z - tempPos1.z };
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+				}
+				else
+				{
+					tempPos1 = mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Transform>()->getPosition();
+					tempPos2 = mMoves.GetMove()->skill->GetParticleOffset();
+					tempPos1.x += tempPos2.x;
+					tempPos1.y += tempPos2.y;
+					tempPos1.z += tempPos2.z;
+					position = DirectX::XMLoadFloat3(&(tempPos1));
+					Odyssey::EventManager::getInstance().publish(new Odyssey::SpawnEntityEvent(mMoves.GetMove()->skill->GetParticleSystem(), &temp, position, rotation));
+				}
+			}
 
 			// Set static bool to true to prevent repeating this effect
 			particleTriggerButBetter = true;
@@ -694,7 +793,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 						{
 							// Play "Hit" animation
 							c->getComponent<Odyssey::Animator>()->playClip("Hit");
-
+							RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Hit").c_str());
 							// Play particle effect
 							c->getComponent<Character>()->SpawnBloodEffect();
 						}
@@ -704,7 +803,7 @@ bool EnemyComponent::TakeTurn(std::vector<Odyssey::Entity*> playerTeam, std::vec
 				{
 					// Play "Hit" animation
 					mMoves.GetMove()->target->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
-
+					RedAudioManager::Instance().PlaySFX(mMoves.GetMove()->target->GetSoundClipName("Hit").c_str());
 					// Play particle effect
 					mMoves.GetMove()->target->SpawnBloodEffect();
 				}
@@ -932,5 +1031,5 @@ std::shared_ptr<Odyssey::Component> EnemyComponent::clone() const
 void EnemyComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
-	mMoves = AIMoves(static_cast<int>(mID), this);
+	//mMoves = AIMoves(static_cast<int>(mID), this);
 }

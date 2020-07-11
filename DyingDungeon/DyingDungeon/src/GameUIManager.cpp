@@ -7,6 +7,7 @@
 #include "EventManager.h"
 #include "CombatEvents.h"
 #include "TeamManager.h"
+#include "SaveLoad.h"
 
 // TODO: REFACTOR LATER
 #include "SkillHoverComponent.h"
@@ -27,11 +28,6 @@ void GameUIManager::initialize(Odyssey::Application* _application)
 
 	// Create the entity to create new UI prefabs
 	Odyssey::Entity* newUIPrefab;
-
-	// Create the pause menu prefab
-	newUIPrefab = CreatePauseMenuPrefab();
-	// Add the new pause menu to the prefab map
-	mUIObjectsPrefabMap[UIObject::PauseMenu] = newUIPrefab;
 
 	// Create the hero clickable UI elements
 	newUIPrefab = CreateClickableUIPrefab(DirectX::XMFLOAT2(300.0f, 300.0f), true);
@@ -192,9 +188,9 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	Odyssey::UICanvas* mainMenuControlsCanvas = mMainControls->addComponent<Odyssey::UICanvas>();
 
 	// Setup init values
-	UINT width = screenWidth;
+	UINT width = 640;
 	UINT height = screenHeight;
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+	DirectX::XMFLOAT2 position = { -100.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 
 	// Set up text properties
@@ -208,34 +204,36 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	// Create title text
 	height = 100;
-	mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"The Dying Dungeon", properties);
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 425.0f, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	mainMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 425.0f, position.y + 5.0f), color, width, height, L"The Dying Dungeon", properties);
 
 	// Create new game text 
 	properties.bold = false;
 	properties.fontSize = 40.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.textAlignment = Odyssey::TextAlignment::Center;
+	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	position.x += 200.0f;
 	position.y += 250.0f;
-	width = 200;
+	width = 300;
 	height = 50;
 	// TODO: MAYBE COMMENT THIS IN? LOOKS DUMB
 	//mainMenuCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f), width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mNewGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"New Game", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mStatsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Game Statistics", properties);
 
 	// TODO: M3B1 ONLY REFACTOR LATER
 	position.y += 70.0f;
-	width += 70;
-	mMainOptionsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, 60, L"Options", properties);
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+	mMainOptionsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Options", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mCreditsText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits", properties);
 	position.y += 70.0f;
-	width += 70;
+	mainMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mExitGameText = mainMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Exit Game", properties);
 	// TODO: M3B1 ONLY END
 
@@ -256,31 +254,35 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	position.y -= 160.0f;
+	mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 5.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height + 20.0f);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height + 20, L"Options", properties);
 
 	position.y += 115.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the reusume background to the canvas
-	mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.bold = false;
 	properties.fontSize = 30.0f;
+	mOptionsVolume = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Sound", properties);
 
 	position.y += 75.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the options background to the canvas
-	mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Options text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsControls = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Controls", properties);
 
 	position.y += 75.0f;
 	color = { 30.0f, 180.0f, 30.0f, 1.0f };
 	// Add the options background to the canvas
-	mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	//mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Options text
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
+	mOptionsBackButton = mainMenuOptionsCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
 	mainMenuOptionsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
 
 	properties.fontSize = 25.0f;
@@ -301,7 +303,7 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	properties.bold = false;
 	properties.fontSize = 20.0f;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , 0.0f };
 	//position.y -= 10.0f;
 	position.x += (width / 2.0f) - 40.0f;
 	mVolumeText = mainMenuVolumeCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Volume", properties);
@@ -359,6 +361,24 @@ void GameUIManager::CreateMainMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	mMainPlusImage[1] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[2] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
 	mMainPlusImage[3] = mainMenuVolumeCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+	
+	mMainSaveVolumeConfermation = _sceneToAddTo->createEntity();
+	Odyssey::UICanvas* saveVolumeSettingsConfermationCanvas = mMainSaveVolumeConfermation->addComponent<Odyssey::UICanvas>();
+
+	position = { (screenWidth / 2.0f) - (static_cast<float>(width / 2) / 2.0f), (screenHeight / 2.0f) - (static_cast<float>(height * 6) / 2.0f) };
+
+	saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Rectangle2D>(position, DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 2, height * 6)->setOpacity(1.0f);
+	/*position.y -= 50.0f;
+	position.x -= 320.0f;*/
+	position.y += 10.0f;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(position, DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f), width / 2, height * 2, L"Are you sure you want to overrid?", properties)->setFontSize(40.0f);
+	//mSaveVolumeConfermationButtonsMain[1] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 130.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"Yes", properties);
+	//mSaveVolumeConfermationButtonsMain[0] = saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width / 10, height * 2);
+	//saveVolumeSettingsConfermationCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x + 370.0f, position.y + 130.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), width / 10, height * 2, L"No", properties);
+
+	mMainSaveVolumeConfermation->setActive(false);
 
 	mMainMenuOptions->setVisible(false);
 	mMainMenuOptions->setActive(false);
@@ -385,10 +405,10 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	Odyssey::UICanvas* towerSelectMenuCanvas = mTowerSelectMenu->getComponent<Odyssey::UICanvas>();
 
 	// Initialize variables
-	UINT width = screenWidth; // Width
+	UINT width = 640; // Width
 	UINT height = 50; // Height
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	DirectX::XMFLOAT2 position = { static_cast<float>((screenWidth / 2) - (width / 2)), 50.0f }; // Position
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
 
 	// Create tower select title
@@ -398,6 +418,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
+	towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y - 25.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", width, height + 50);
 	mTowerSelectTitle = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select A Tower To Enter", properties);
 
 	// Create door to click on
@@ -427,6 +448,13 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	doorImage = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/DoorImages/MedievalDoor-1.png", width, height);
 	mDoorImages.push_back(doorImage);
 
+	properties.fontSize = 35.0f;
+	properties.bold = true;
+	towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(10.0f, 10.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", 100, 60);
+	mTowerBackButton = towerSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+	properties.fontSize = 50.0f;
+	properties.bold = true;
+
 	// Start creating the tower info popup
 	width = 500;
 	height = 300;
@@ -445,6 +473,7 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.fontSize = 25.0f;
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
+	properties.bold = false;
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tower Level: 1", properties);
 
@@ -481,6 +510,19 @@ void GameUIManager::CreateTowerSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	height = 275;
 	properties.fontSize = 12.0f;
 	mTowerInfoCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"A grand pair of worn statues in a overcast mountain top marks the entrance to this dungeon. Beyond the pair of worn statues lies a grand, humid room. It's covered in remains, ash and ash. Your torch allows you to see carved out openings filled with pottery, worn and ravished by time itself.", properties);
+	
+	// Setup Tutorial Button
+	position.x = screenWidth - 180;
+	position.y = 10;
+	mTutorialButton = towerSelectMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", 165, 62);
+	position.y += 10;
+	position.x += 27;
+	properties.fontSize = 30;
+	properties.italic = false;
+	properties.bold = true;
+	color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	towerSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tutorial", properties);
+
 	// Disable the tower info canvas
 	mTowerInfoCanvas->setActive(false);
 }
@@ -497,7 +539,7 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	UINT width = screenWidth; // Width
 	UINT height = 50; // Height
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
+	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	Odyssey::TextProperties properties;
 
 	// Create team select title
@@ -507,8 +549,12 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	properties.textAlignment = Odyssey::TextAlignment::Center;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	properties.fontName = L"Tw Cen MT Condensed";
-	teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
-	
+	//teamSelectMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Select 3 Team Members", properties);
+	properties.fontSize = 35.0f;
+	properties.bold = true;
+	teamSelectMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(10.0f, 10.0f), L"assets/images/TeamSelectionImages/SmallBoard.png", 100, 60);
+	mTeamSelectBackButton = teamSelectMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(10.0f, 10.0f), color, 100, 60, L"Back", properties);
+
 	//Create the save loadout button
 	position.y += 65.0f;
 	position.x -= 140.0f;
@@ -655,96 +701,100 @@ void GameUIManager::CreateTeamSelectMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 }
 
 // This is where I will design and add all elements into the pause menu canvas
-void GameUIManager::CreatePauseMenuCanvas(Odyssey::Scene* _sceneToAddTo)
+void GameUIManager::CreatePauseMenuCanvas(std::vector<Odyssey::Scene*> _scenesToAddTo)
 {
-	//Create the pause menu pointer
-	mPauseMenu = _sceneToAddTo->createEntity();
-	mPauseMenu->addComponent<Odyssey::UICanvas>();
-	// Get canvas component of the pause menu
-	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->getComponent<Odyssey::UICanvas>();
+	for (int i = 0; i < _scenesToAddTo.size(); i++)
+	{
+		//Create the pause menu pointer
+		Odyssey::Entity* pauseMenu = _scenesToAddTo[i]->createEntity();
+		pauseMenu->addComponent<Odyssey::UICanvas>();
+		// Get canvas component of the pause menu
+		Odyssey::UICanvas* pauseMenuCanvas = pauseMenu->getComponent<Odyssey::UICanvas>();
 
-	// Create the rectangle object
-	UINT width = 1920; // Width
-	UINT height = 1080; // Height
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
-	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
-	// Add the rectangle to the pause menu canvas
-	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
+		// Create the rectangle object
+		UINT width = 1920; // Width
+		UINT height = 1080; // Height
+		DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
+		DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
+		// Add the rectangle to the pause menu canvas
+		mBlackBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		// Make the rectangle have 50% transparency
+		mBlackBackgrounds[i]->setOpacity(BackgroundBigOpacity);
 
-	// Create the pause menu smaller black rectangle
-	width = 640;
-	height = 360;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	// Add the rectangle to the pause menu canvas
-	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+		// Create the pause menu smaller black rectangle
+		width = 640;
+		height = 360;
+		position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+		// Add the rectangle to the pause menu canvas
+		mSmallerBlackBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mSmallerBlackBackgrounds[i]->setOpacity(BackgroundSmallOpacity);
 
-	// Create Pause Title
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	Odyssey::TextProperties properties;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Tw Cen MT Condensed";
-	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
+		// Create Pause Title
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		Odyssey::TextProperties properties;
+		properties.bold = true;
+		properties.italic = false;
+		properties.fontSize = 60.0f;
+		properties.textAlignment = Odyssey::TextAlignment::Center;
+		properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
+		properties.fontName = L"Tw Cen MT Condensed";
+		mPauseTitles[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
 
-	// Resume Button
-	width /= (UINT)2.5f;
-	height = 50;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	position.y -= 75.0f;//change back to 50.0f later
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the reusume background to the canvas
-	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Resume text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	properties.bold = false;
-	properties.fontSize = 30.0f;
-	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
+		// Resume Button
+		width /= (UINT)2.5f;
+		height = 50;
+		position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
+		position.y -= 75.0f;//change back to 50.0f later
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the reusume background to the canvas
+		mResumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+		// Resume text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		properties.bold = false;
+		properties.fontSize = 30.0f;
+		mResumeTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
 
-	// Options Button
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsVolumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsVolumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
+		// Options Button
+		position.y += 75.0f;
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the options background to the canvas
+		mOptionsVolumeBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+		// Options text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mOptionsVolumeTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"VOLUME", properties);
 
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsControlsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsControlText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
+		position.y += 75.0f;
+		color = { 30.0f, 180.0f, 30.0f, 1.0f };
+		// Add the options background to the canvas
+		mOptionsControlsBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+		// Options text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mOptionsControlTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"CONTROLS", properties);
 
-	// Main Menu Button
-	position.y += 75.0f;
-	color = { 180.0f, 30.0f, 30.0f, 1.0f };
-	// Add the main menu background to the canvas
-	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Main menu text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
+		// Main Menu Button
+		position.y += 75.0f;
+		color = { 180.0f, 30.0f, 30.0f, 1.0f };
+		// Add the main menu background to the canvas
+		mMainMenuBackgrounds[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TeamSelectionImages/SmallBoard.png", width, height);
+		// Main menu text
+		color = { 255.0f, 255.0f, 255.0f, 1.0f };
+		mMainMenuTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
 
-	mOptionsControlsImage = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/KeyGuide.png", screenWidth, screenHeight);
-	mOptionsControlsImage->setVisible(false);
+		mOptionsControlsImages[i] = pauseMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(0.0f, 0.0f), L"assets/images/KeyGuide.png", screenWidth, screenHeight);
+		mOptionsControlsImages[i]->setVisible(false);
 
-	properties.textAlignment = Odyssey::TextAlignment::Left;
-	mOptionsControlBackText = pauseMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), color, width, height, L"Back", properties);
-	mOptionsControlBackText->setVisible(false);
-	properties.textAlignment = Odyssey::TextAlignment::Center;
+		properties.textAlignment = Odyssey::TextAlignment::Left;
+		mOptionsControlBackTexts[i] = pauseMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(0.0f, 0.0f), color, width, height, L"Back", properties);
+		mOptionsControlBackTexts[i]->setVisible(false);
+		properties.textAlignment = Odyssey::TextAlignment::Center;
 
-	// Turn off the canvas when creating it
-	ToggleCanvas(mPauseMenu->getComponent<Odyssey::UICanvas>(), false);
+		// Turn off the canvas when creating it
+		ToggleCanvas(pauseMenu->getComponent<Odyssey::UICanvas>(), false);
+		mPauseMenus[i] = pauseMenu;
 
-	// Make options menu
-	CreateOptionsMenu(_sceneToAddTo);
+		// Make options menu
+		CreateOptionsMenu(_scenesToAddTo[i], i);
+	}
 }
 
 void GameUIManager::CreateStatsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
@@ -907,109 +957,106 @@ void GameUIManager::CreateCreditsMenuCanvas(Odyssey::Scene* _sceneToAddTo)
 	// Setup the title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f }; // Color
 	height = 50;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits & Contact Info", properties);
-
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Credits", properties);
 
 	properties.textAlignment = Odyssey::TextAlignment::Left;
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Top;
 
-	// Setup the first credit - 1st Row
-	color = DirectX::XMFLOAT4(31.0f, 255.0f, 203.0f, 1.0f);
-	position.y += 75;
-	position.x += pad;
+	// Engineering title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Max Nastri - Odyssey Engine Creator", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Max.Nastri@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (941) 303-9809", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: GameDevPortfolio.net", properties);
+	properties.fontSize = 22.0f;
 
-	// Setup the first credit - 2nd Row
-	color = DirectX::XMFLOAT4(255.0f, 203.0f, 31.0f, 1.0f);
+	// Engineering title
+	position.x += pad;
 	position.y += 75;
-	position.x -= pad;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Tristen Maturski - Lead Gameplay Developer", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Maturski62@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (413) 672-1013", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+	height = 500;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Engineering", properties);
 
-	// Setup the second credit - 1st Row
-	color = DirectX::XMFLOAT4(31.0f, 255.0f, 75.0f, 1.0f);
-	position.y = 135;
-	position.x += 425;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Lane Langford - AI/Gameplay Developer", properties);
-	position.y += 35;
-	position.x += pad;
+	// Engineering credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
 	properties.bold = false;
-	properties.italic = true;
+	properties.italic = false;
 	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: LaneLangford.2020@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (352) 275-7723", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
 
-	// Setup the second credit - 2nd Row
-	color = DirectX::XMFLOAT4(75.0f, 100.0f, 255.0f, 1.0f);
-	position.y += 75;
-	position.x -= pad;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Bryce Monkus - Lead AI Developer", properties);
-	position.y += 35;
-	position.x += pad;
-	properties.bold = false;
-	properties.italic = true;
-	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Brycemnks@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (704) 441-5402", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+	// Engineering credits
+	const wchar_t* engineeringCredits = L"Max Nastri - Odyssey Engine Creator\n\nTristen Maturski - UI / Gameplay Developer\n\nLane Langford - AI / Gameplay Developer\n\nJeffrey Ouma - Audio / File IO Developer\n\nBryce Monkus - AI / Gameplay Developer";
+	position.y += 50;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, engineeringCredits, properties);
 
-	// Setup the third credit - 3rd Row
-	color = DirectX::XMFLOAT4(255.0f, 35.0f, 35.0f, 1.0f);
-	position.y += 75;
-	position.x = position.x - pad - 190;
+	// Production title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
-	properties.fontSize = 18.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Jeffrey Ouma - Audio/Tools Developer", properties);
-	position.y += 35;
-	position.x += pad;
+	properties.fontSize = 22.0f;
+
+	// Production title
+	position.x += 525.0f;
+	position.y -= 50.0f;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Production / Audio", properties);
+
+	// Production credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
 	properties.bold = false;
-	properties.italic = true;
+	properties.italic = false;
 	properties.fontSize = 16.0f;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Email: Jwaostar@gmail.com", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Phone: (703) 419-5296", properties);
-	position.y += 30;
-	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Portfolio: TheDyingDungeon.home.blog", properties);
+
+	// Production credits
+	const wchar_t* productionCredits = L"Jarick Rivers - Producer\n\nJoshua Packard - Sound Designer\n\nDevin Phares - Audio";
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, productionCredits, properties);
+
+	// Writing title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 22.0f;
+
+	// Writing title
+	position.y += 110;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Writing", properties);
+
+	// Writing credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 16.0f;
+
+	// Writing credits
+	const wchar_t* writingCredits = L"Justin Williams - Narrative Designer\n\nMya Wells - Writer / Editor";
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, writingCredits, properties);
+
+	// Asset title properties
+	color = DirectX::XMFLOAT4(255.0f, 200.0f, 30.0f, 1.0f);
+	properties.bold = true;
+	properties.italic = false;
+	properties.fontSize = 24.0f;
+
+	// Asset title
+	position.x = 550;
+	position.y += 70;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Asset Credits", properties);
+
+	// Asset credits properties
+	color = DirectX::XMFLOAT4(225.0f, 225.0f, 225.0f, 1.0f);
+	properties.bold = false;
+	properties.italic = false;
+	properties.fontSize = 18.0f;
+
+	// Asset credits
+	const wchar_t* audioCredits = L"Mixamo.com - Character Assets\n\nMana Station (Unity) - Environment Assets\n\nPoneti free (Unity) - 2d Assets\n\nBlack Hammer (Unity) - 2d Assets\n\nAural Space (Unity) - VFX Assets";
+	position.x = 215;
+	position.y += 35;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, audioCredits, properties);
+
+	const wchar_t* audioCredits2 = L"AlineAudio - Audio Assets\n\nAmeAngelofSin - Audio Assets\n\nJason Shaw - Audio Assets\n\nMGWSoundDesign - Audio Assets\n\nSI-PML - Audio Assets";
+	position.x += 525;
+	creditsCanvas->addElement<Odyssey::Text2D>(position, color, width, height, audioCredits2, properties);
 
 	// Setup the back button
-	position = DirectX::XMFLOAT2(220.0f, 610.0f);
+	position = DirectX::XMFLOAT2(220.0f, 620.0f);
 	color = DirectX::XMFLOAT4(255.0f, 255.0f, 255.0f, 1.0f);
 	properties.bold = true;
 	properties.italic = false;
@@ -1071,8 +1118,9 @@ void GameUIManager::HideMainOptions()
 void GameUIManager::ShowMainVolume()
 {
 	mMainMenuOptions->setActive(false);
+	mMainMenuOptions->setVisible(false);
 	mMainMenuVolume->setActive(true);
-	mMainMenuOptions->setVisible(true);
+	mMainMenuVolume->setVisible(true);
 	mOptionsBack->registerCallback("onMouseClick", this, &GameUIManager::HideMainVolume);
 	mMainPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
 	mMainPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
@@ -1100,6 +1148,7 @@ void GameUIManager::HideMainVolume()
 	mMainMinusImage[1]->unregisterCallback("onMouseClick");
 	mMainMinusImage[2]->unregisterCallback("onMouseClick");
 	mMainMinusImage[3]->unregisterCallback("onMouseClick");
+	SaveLoad::Instance().SaveSettings();
 
 	ShowMainOptions();
 }
@@ -1244,6 +1293,28 @@ void GameUIManager::HideControlsGuide()
 	ShowMainOptions();
 }
 
+void GameUIManager::CreateTutorialCanvas(Odyssey::Scene* _sceneToAddTo)
+{
+	tutorialCounter = 0;
+
+	mTutorialEntity = _sceneToAddTo->createEntity();
+	mTutorialEntity->addComponent<Odyssey::UICanvas>();
+	mTutorialCanvas = mTutorialEntity->getComponent<Odyssey::UICanvas>();
+
+	DirectX::XMFLOAT2 position = { 0, 0 };
+	UINT imageWidth = screenWidth;
+	UINT imageHeight = screenHeight;
+
+	mHighlightTutorial = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/HighlightPlayer.png", imageWidth, imageHeight);
+	mHighlightTutorial->setOpacity(.8f);
+
+	mHighlightTutorialText = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/ExplainPlayer.png", imageWidth, imageHeight);
+
+	mHighlightTutorialContinueText = mTutorialCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/TutorialLevel/ExplainClickToContinue.png", imageWidth, imageHeight);
+
+	mTutorialCanvas->setActive(false);
+}
+
 void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey::Entity* _newHud)
 {
 	// Get the hud elements to assign
@@ -1272,12 +1343,17 @@ void GameUIManager::AssignCharacterHudElements(Character* _newCharacter, Odyssey
 	hudElements->ChangeHealthNumber(std::to_wstring((int)_newCharacter->GetHP()) + L"/" + std::to_wstring((int)_newCharacter->GetMaxHP()));
 }
 
+void GameUIManager::RemoveClickableCharacterObj(int _index)
+{
+	mClickableUIList.erase(mClickableUIList.begin() + _index);
+}
+
 void GameUIManager::SetupClickableCharacterUI()
 {
 	for (int i = 0; i < mClickableUIList.size(); i++)
 	{
 		Odyssey::Rectangle2D* rect = mClickableUIList[i]->getComponent<Odyssey::UICanvas>()->getElement<Odyssey::Rectangle2D>();
-
+		
 		if (i == 0)
 		{
 			rect->registerCallback("onMouseClick", this, &GameUIManager::Character1ClickableCallback);
@@ -1567,13 +1643,13 @@ void GameUIManager::UpdateStatsMenu()
 }
 
 // This is where I will design and add all elements into the options menu canvas
-void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
+void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo, int _index)
 {
 	// Set options menu pointer and add a canvas
-	mOptionsMenu = _sceneToAddTo->createEntity();
-	mOptionsMenu->addComponent<Odyssey::UICanvas>();
+	mOptionsMenus[_index] = _sceneToAddTo->createEntity();
+	mOptionsMenus[_index]->addComponent<Odyssey::UICanvas>();
 	// Get canvas component of the options menu
-	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenu->getComponent<Odyssey::UICanvas>();
+	Odyssey::UICanvas* optionsMenuCanvas = mOptionsMenus[_index]->getComponent<Odyssey::UICanvas>();
 
 	// Set init values
 	// Create the rectangle object
@@ -1582,9 +1658,9 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	DirectX::XMFLOAT2 position = { 0.0f, 0.0f }; // Position
 	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f }; // Color
 	// Add the rectangle to the options menu canvas
-	mBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mBlackBackgrounds[_index] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
 	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
+	mBlackBackgrounds[_index]->setOpacity(BackgroundBigOpacity);
 
 	// Create the pause menu smaller black rectangle
 	width = 640;
@@ -1592,8 +1668,8 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
 	DirectX::XMFLOAT2 originalPosition = position;
 	// Add the rectangle to the options menu canvas
-	mSmallerBlackBackground = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
+	mSmallerBlackBackgrounds[_index] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+	mSmallerBlackBackgrounds[_index]->setOpacity(BackgroundSmallOpacity);
 
 	// Create options title
 	color = { 255.0f, 255.0f, 255.0f, 1.0f };
@@ -1631,15 +1707,30 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
 	// Add the volume bar to the canvas
 	color = { 50.0f, 180.0f, 255.0f, 1.0f };
-	mVolumeBar[0] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mVolumeBar[1] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
-	mVolumeBar[2] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
-	mVolumeBar[3] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
-	// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
-	mVolumeBar[0]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
-	mVolumeBar[3]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
-	mVolumeBar[1]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
-	mVolumeBar[2]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+	if (_index == 0)
+	{
+		mVolumeBar[0] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mVolumeBar[1] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+		mVolumeBar[2] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+		mVolumeBar[3] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
+		// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+		mVolumeBar[0]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+		mVolumeBar[1]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
+		mVolumeBar[2]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+		mVolumeBar[3]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
+	}
+	else if (_index == 1)
+	{
+		mVolumeBar[4] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
+		mVolumeBar[5] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), color, width, height);
+		mVolumeBar[6] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), color, width, height);
+		mVolumeBar[7] = optionsMenuCanvas->addElement<Odyssey::Rectangle2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), color, width, height);
+		// TODO :: FILL THE RECTANGLE BASED ON THE VOLUME LEVEL
+		mVolumeBar[4]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f);
+		mVolumeBar[5]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f);
+		mVolumeBar[6]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f);
+		mVolumeBar[7]->setFill(static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f);
+	}
 
 	// Create the plus and minus symbols that the user can click on to adjust the volume
 	UINT imageWidth = 32;
@@ -1654,27 +1745,55 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 150.0f), color, 70, 25, L"SFX ", properties);
 	optionsMenuCanvas->addElement<Odyssey::Text2D>(DirectX::XMFLOAT2(position.x - 80.0f, position.y + 225.0f), color, 70, 30, L"Dialog ", properties);
 
-	mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	mMinusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
-	
-	mMinusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
-	mMinusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
-	mMinusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
-	mMinusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	if (_index == 0)
+	{
+		mMinusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+
+		mMinusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
+		mMinusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
+		mMinusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
+		mMinusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	}
+	else if (_index == 1)
+	{
+		mMinusImage[4] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[5] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[6] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+		mMinusImage[7] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/minusSymbol.png", imageWidth, imageHeight);
+
+		mMinusImage[4]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseMasterVolume);
+		mMinusImage[5]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseBackgroundVolume);
+		mMinusImage[6]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseSFXVolume);
+		mMinusImage[7]->registerCallback("onMouseClick", this, &GameUIManager::DecreaseDialogVolume);
+	}
 
 	// Plus Symbol
 	position.x += (static_cast<float>(imageWidth) * 1.5f) + width + (static_cast<float>(imageWidth) / 2.0f);
-	mPlusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	mPlusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
-	
-	mPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
-	mPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
-	mPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
-	mPlusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	if (_index == 0)
+	{
+		mPlusImage[0] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[1] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[2] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[3] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[0]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
+		mPlusImage[1]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
+		mPlusImage[2]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
+		mPlusImage[3]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	}
+	else if (_index == 1)
+	{
+		mPlusImage[4] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(position, L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[5] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 75.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[6] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 150.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[7] = optionsMenuCanvas->addElement<Odyssey::Sprite2D>(DirectX::XMFLOAT2(position.x, position.y + 225.0f), L"assets/images/plusSymbol.png", imageWidth, imageHeight);
+		mPlusImage[4]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseMasterVolume);
+		mPlusImage[5]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseBackgroundVolume);
+		mPlusImage[6]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseSFXVolume);
+		mPlusImage[7]->registerCallback("onMouseClick", this, &GameUIManager::IncreaseDialogVolume);
+	}
 
 	// Create the options back button
 	position = originalPosition;
@@ -1687,21 +1806,38 @@ void GameUIManager::CreateOptionsMenu(Odyssey::Scene* _sceneToAddTo)
 	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
 	// Add the back button text
 	mBackButtonText = optionsMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"Back", properties);
-	// Have the back button go to the pause menu
-	mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
+	if (_index == 0)
+		mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBackButton);
+	else
+		mBackButtonText->registerCallback("onMouseClick", this, &GameUIManager::OptionsBossBackButton);
+
 
 	// Turn off the canvas when creating it
-	ToggleCanvas(mOptionsMenu->getComponent<Odyssey::UICanvas>(), false);
+	ToggleCanvas(mOptionsMenus[_index]->getComponent<Odyssey::UICanvas>(), false);
 }
 
 // This function will get called when you click on the back button on the options menu in pause
 void GameUIManager::OptionsBackButton()
 {
 	// Turn off the options menu's canvas
-	mOptionsMenu->getComponent<Odyssey::UICanvas>()->setActive(false);
+	mOptionsMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(false);
 	
 	// Turn on the pause menu's canvas
-	mPauseMenu->getComponent<Odyssey::UICanvas>()->setActive(true);
+	mPauseMenus[0]->getComponent<Odyssey::UICanvas>()->setActive(true);
+
+	SaveLoad::Instance().SaveSettings();
+
+}
+
+void GameUIManager::OptionsBossBackButton()
+{
+	// Turn off the options menu's canvas
+	mOptionsMenus[1]->getComponent<Odyssey::UICanvas>()->setActive(false);
+
+	// Turn on the pause menu's canvas
+	mPauseMenus[1]->getComponent<Odyssey::UICanvas>()->setActive(true);
+
+	SaveLoad::Instance().SaveSettings();
 }
 
 // Create hero character portrait
@@ -2498,6 +2634,11 @@ void GameUIManager::UpdateCharacterTurnNumber(Character* _currCharacter, int _tu
 		mCharacterHudList[_currCharacter->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetTurnNumber()->setText(std::to_wstring(_turnNumber));
 }
 
+void GameUIManager::AddClickableElementToList(Odyssey::Entity* _clickableUI)
+{
+	mClickableUIList.push_back(_clickableUI);
+}
+
 void GameUIManager::DecreaseMasterVolume()
 {
 	// Decrease volume with Red's audio manager
@@ -2506,6 +2647,7 @@ void GameUIManager::DecreaseMasterVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar[0]->setFill(volumeRatio);
+	mVolumeBar[4]->setFill(volumeRatio);
 	mMainVolumeBar[0]->setFill(volumeRatio);
 }
 
@@ -2517,6 +2659,7 @@ void GameUIManager::DecreaseBackgroundVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
 	mVolumeBar[1]->setFill(volumeRatio);
+	mVolumeBar[5]->setFill(volumeRatio);
 	mMainVolumeBar[1]->setFill(volumeRatio);
 }
 
@@ -2528,6 +2671,7 @@ void GameUIManager::DecreaseSFXVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
 	mVolumeBar[2]->setFill(volumeRatio);
+	mVolumeBar[6]->setFill(volumeRatio);
 	mMainVolumeBar[2]->setFill(volumeRatio);
 }
 
@@ -2539,6 +2683,7 @@ void GameUIManager::DecreaseDialogVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
 	mVolumeBar[3]->setFill(volumeRatio);
+	mVolumeBar[7]->setFill(volumeRatio);
 	mMainVolumeBar[3]->setFill(volumeRatio);
 }
 
@@ -2550,6 +2695,7 @@ void GameUIManager::IncreaseMasterVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::None)) / 1000.0f;
 	mVolumeBar[0]->setFill(volumeRatio);
+	mVolumeBar[4]->setFill(volumeRatio);
 	mMainVolumeBar[0]->setFill(volumeRatio);
 }
 
@@ -2561,6 +2707,7 @@ void GameUIManager::IncreaseBackgroundVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Background)) / 1000.0f;
 	mVolumeBar[1]->setFill(volumeRatio);
+	mVolumeBar[5]->setFill(volumeRatio);
 	mMainVolumeBar[1]->setFill(volumeRatio);
 }
 
@@ -2572,6 +2719,7 @@ void GameUIManager::IncreaseSFXVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::SFX)) / 1000.0f;
 	mVolumeBar[2]->setFill(volumeRatio);
+	mVolumeBar[6]->setFill(volumeRatio);
 	mMainVolumeBar[2]->setFill(volumeRatio);
 }
 
@@ -2583,6 +2731,7 @@ void GameUIManager::IncreaseDialogVolume()
 	// Set the fill of the volume bar
 	float volumeRatio = static_cast<float>(RedAudioManager::Instance().GetVolume(RedAudioManager::AudioType::Dialog)) / 1000.0f;
 	mVolumeBar[3]->setFill(volumeRatio);
+	mVolumeBar[7]->setFill(volumeRatio);
 	mMainVolumeBar[3]->setFill(volumeRatio);
 }
 
@@ -2718,77 +2867,6 @@ void GameUIManager::UpdateCombatLogText(float damage)
 // Prefab Creation Functions //
 //                           //
 ///////////////////////////////
-Odyssey::Entity* GameUIManager::CreatePauseMenuPrefab()
-{
-	// Create the pause menu prefab
-	mPauseMenu = mApplication->createPrefab();
-	// Add a canvas to the object
-	Odyssey::UICanvas* pauseMenuCanvas = mPauseMenu->addComponent<Odyssey::UICanvas>();
-
-	// Create the rectangle object
-	UINT width = 1920;
-	UINT height = 1080;
-	DirectX::XMFLOAT2 position = { 0.0f, 0.0f };
-	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	// Add the rectangle to the pause menu canvas
-	mBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Make the rectangle have 50% transparency
-	mBlackBackground->setOpacity(BackgroundBigOpacity);
-
-	// Create the pause menu smaller black rectangle
-	width = 640;
-	height = 360;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	// Add the rectangle to the pause menu canvas
-	mSmallerBlackBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	mSmallerBlackBackground->setOpacity(BackgroundSmallOpacity);
-
-	// Create Pause Title
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	Odyssey::TextProperties properties;
-	properties.bold = true;
-	properties.italic = false;
-	properties.fontSize = 60.0f;
-	properties.textAlignment = Odyssey::TextAlignment::Center;
-	properties.paragraphAlignment = Odyssey::ParagraphAlignment::Center;
-	properties.fontName = L"Tw Cen MT Condensed";
-	mPauseTitle = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, 640, 60, L"Paused", properties);
-
-	// Resume Button
-	width /= (UINT)2.5f;
-	height = 50;
-	position = { ((screenWidth / 2.0f) - (width / 2.0f)) , ((screenHeight / 2.0f) - (height / 2.0f)) };
-	position.y -= 50.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the reusume background to the canvas
-	mResumeBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Resume text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	properties.bold = false;
-	properties.fontSize = 30.0f;
-	mResumeText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"RESUME", properties);
-
-	// Options Button
-	position.y += 75.0f;
-	color = { 30.0f, 180.0f, 30.0f, 1.0f };
-	// Add the options background to the canvas
-	mOptionsBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Options text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mOptionsText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"OPTIONS", properties);
-
-	// Main Menu Button
-	position.y += 75.0f;
-	color = { 180.0f, 30.0f, 30.0f, 1.0f };
-	// Add the main menu background to the canvas
-	mMainMenuBackground = pauseMenuCanvas->addElement<Odyssey::Rectangle2D>(position, color, width, height);
-	// Main menu text
-	color = { 255.0f, 255.0f, 255.0f, 1.0f };
-	mMainMenuText = pauseMenuCanvas->addElement<Odyssey::Text2D>(position, color, width, height, L"MAIN MENU", properties);
-
-	return mPauseMenu;
-}
-
 // Clickable functions
 Odyssey::Entity* GameUIManager::CreateClickableUIPrefab(DirectX::XMFLOAT2 _clickableRectPos, bool _isHero)
 {
@@ -2868,3 +2946,115 @@ void GameUIManager::CharacterExitHoverCallback()
 	// Set the cursor to the basic pointer
 	Odyssey::EventManager::getInstance().publish(new Odyssey::ChangeMouseCursorEvent(L"assets/images/Cursor/Cursor_Basic.cur"));
 }
+
+void GameUIManager::TutorialCallBack()
+{
+	UINT imageWidth = 1280;
+	UINT imageHeight = 720;
+
+	switch (tutorialCounter)
+	{
+		// Display Player UI
+		case 0:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightPlayerUI.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainPlayerUI.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Player Abilities
+		case 1:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightPlayerAbilities.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainPlayerAbilities.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Stats
+		case 2:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightPlayerStats.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainPlayerStats.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Buffs
+		case 3:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightPlayerBuffs.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainPlayerBuffs.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Turn 
+		case 4:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightTurnNumber.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainTurnOrder.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Level
+		case 5:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightLevel.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainLevel.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Enemy
+		case 6:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightEnemy.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainEnemy.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Enemy UI
+		case 7:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightEnemyUI.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainEnemyUI.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Display Enemy Buffs
+		case 8:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightEnemyBuffs.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainEnemyBuffs.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Turn Off Canvas
+		case 9:
+		{
+			mHighlightTutorial->setSprite(L"assets/images/blackSquare.png", imageWidth, imageHeight);
+			mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainEnd.png", imageWidth, imageHeight);
+			tutorialCounter += 1;
+			break;
+		}
+		// Turn Off Canvas
+		case 10:
+		{
+			mTutorialCanvas->setActive(false);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+}
+
+void GameUIManager::EndTutorial()
+{
+	UINT imageWidth = 1280;
+	UINT imageHeight = 720;
+	mHighlightTutorial->setSprite(L"assets/images/TutorialLevel/HighlightPlayer.png", imageWidth, imageHeight);
+	mHighlightTutorialText->setSprite(L"assets/images/TutorialLevel/ExplainPlayer.png", imageWidth, imageHeight);
+
+	tutorialCounter = 0;
+	mTutorialCanvas->setActive(false);
+}
+

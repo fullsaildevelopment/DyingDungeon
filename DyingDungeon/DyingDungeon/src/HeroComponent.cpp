@@ -38,7 +38,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 	mID = id;
 	mHeroList.resize(4);
 	mEnemyList.resize(4);
-	mIsCheating = false;
 	mIsBleeding = false;
 	mBleedTimer = 0;
 	mIsRegenerating = false;
@@ -77,7 +76,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mThemeColor = {255.0f,203.0f,31.0f};
     
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Hit"] = "PaladinHitReaction";
 		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the animation paths //
@@ -136,7 +135,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 
 		// Set the description for the character //
 		////////////////////////////////////////////////////////////////////////////////////////////
-		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess’ light to protect his allies.";
+		mDescription = L"The last paladin in the Church of Metis, seeking justice. He uses the Goddess light to protect his allies.";
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Set the base HP and current HP
@@ -156,26 +155,26 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.47f, -20.0f, 12.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Judgement", "Skill_1", 0.45f, -20.0f, 12.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("PaladinAttack",0.25f);
-		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 12 damage provoking him to hit you. Restores 15 mana.");
+		mSkillList[0]->SetSoundEffect("Judgement",0.0f);
+		mSkillList[0]->SetSkillDescription(L"Strike an enemy with divine power dealing 12 damage provoking him to hit you. Restores 20 mana.");
 		// Skill 2
 		mSkillList.push_back(std::make_shared<Attack>(L"Smite", "Skill_2", 0.50f, 30.0f, 35.0f, 10.0f));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("PaladinAttack",0.25f);
-		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 20 mana.");
+		mSkillList[1]->SetSoundEffect("Smite",0.25f);
+		mSkillList[1]->SetSkillDescription(L"Smite the enemy with holy light dealing 35 damage and healing the paladin for 20 health. Costs 30 mana.");
 		// Skill 3
 		temp = std::make_shared<Shields>(25.0f, 3, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Shield of Light", "Skill_3", 0.89f, 25.0f, temp, true, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("SpellCasting",0.25f);
-		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 20 mana.");
+		mSkillList[2]->SetSoundEffect("ShieldOfLight",0.25f);
+		mSkillList[2]->SetSkillDescription(L"A shield of light slams down in front of all team members granting 25 temp health for 3 turns. Costs 25 mana.");
 		// Skill 4
 		temp = std::make_shared<StatUp>(0.5f, 3, STATS::Def, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Blessing of Light", "Skill_4", 0.89f, 15.0f,temp,true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/PaladinSkills/Paladin_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("SpellCasting", 0.25f);
+		mSkillList[3]->SetSoundEffect("BlessingOfLight", 0.25f);
 		mSkillList[3]->SetSkillDescription(L"Protects all allies from harm granting them 50% increased defense 3 turns. Costs 15 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -206,7 +205,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 150.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "MageHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -274,30 +273,31 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills // kills in 5, can take 6
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Magic Missile", "Skill_1", 0.60f, -15.0f, 17.0f));
+
+		mSkillList.push_back(std::make_shared<Attack>(L"Meteor Shard", "Skill_1", 0.65f, -15.0f, 17.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("MagicWoosh", 0.25f);
+		mSkillList[0]->SetSoundEffect("MeteorShard", 0.0f);
 		mSkillList[0]->SetSkillDescription(L"Send forth an orb of incredibly destructive chaotic elemental magic inflicting 17 damage. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f,2,STATS::Spd,nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"Wind Slash", "Skill_2", 0.25f, 15.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("MagicWoosh", 0.25f);
+		mSkillList[1]->SetSoundEffect("WindSlash", 0.0f);
 		mSkillList[1]->SetStatusChance(0.5f);
 		mSkillList[1]->SetSkillDescription(L"Slash all enemies with a burst of wind dealing 15 damage per hit with a 50% chance to inflict speed down. Costs 15 mana.");
 		// Skill 3
 		temp = std::make_shared<Bleed>(0.10f, 1, nullptr);
 		mSkillList.push_back(std::make_shared<Attack>(L"FireStorm", "Skill_3", 0.60f, 30.0f, 30.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("LargeFireball", 0.25f);
+		mSkillList[2]->SetSoundEffect("FireStorm", 0.0f);
 		mSkillList[2]->SetSkillDescription(L"Conjure a hellstorm dealing 30 damage to all enemies and inflicting burn. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Stun>(1,nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.25f, 25.0f, 25.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Lightning Bolt", "Skill_4", 0.45f, 25.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MageSkills/Mage_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("MagicZap", 0.25f);
+		mSkillList[3]->SetSoundEffect("LightningBolt", 0.0f);
 		mSkillList[3]->SetStatusChance(0.33f);
-		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 25 damage to a single enemy with a 33% chance of inflicting a stun. Costs 35 mana.");
+		mSkillList[3]->SetSkillDescription(L"Channel a bolt of lightning dealing 25 damage to a single enemy with a 33% chance of inflicting a stun. Costs 25 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
@@ -327,7 +327,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 125.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "BardHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -391,33 +391,34 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Spd, nullptr); 
 		mSkillList.push_back(std::make_shared<Attack>(L"Starfire Arrow", "Skill_1", 0.60f, -10.0f, 10.0f, temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("ArrowReleaseHit", 0.25f);
+		mSkillList[0]->SetSoundEffect("StarFireArrow", 0.0f);
 		mSkillList[0]->SetStatusChance(0.25f);
 		mSkillList[0]->SetSkillDescription(L"Fire a magical arrow at a single target dealing 10 damage, with a 25% chance to inflict a 50% speed down. Returns 10 mana.");
 		// Skill 2
 		temp = std::make_shared<StatDown>(0.15f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.25f, 10.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Song of Misery", "Skill_1", 0.60f, 10.0f, 15.0f, temp, true));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("SongOfMisery", 0.25f);
 		mSkillList[1]->SetStatusChance(0.5f);
-		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 15 mana.");
+		mSkillList[1]->SetSkillDescription(L"Fill the air with miserable music dealing 15 damage to all enemies, with a 50% chance to inflict a 15% defense down. Costs 10 mana.");
 		// Skill 3
 		temp = std::make_shared<StatUp>(0.25f, 3, STATS::Atk, nullptr);
 		mSkillList.push_back(std::make_shared<Heal>(L"Song of Hope", "Skill_2", 0.60f, 30.0f, 25.0f, true));
 		mSkillList[2]->SetStatusEffect(temp);
 		mSkillList[2]->SetSkillIconPath(L"assets/images/BardSkills/Bard_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
-		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving a ally hope, healing for 35 health, and giving a 30% attack up. Costs 20 mana.");
+		mSkillList[2]->SetSoundEffect("SongOfHope", 0.0f);
+		mSkillList[2]->SetSkillDescription(L"Play a delightful song giving a ally hope, healing for 35 health, and giving a 30% attack up. Costs 30 mana.");
 		// Skill 4
 		temp = std::make_shared<Clense>(1, nullptr);
 		mSkillList.push_back(std::make_shared<Buffs>(L"Purify", "Skill_2", 0.25f, 35.0f, temp, true, true));
 		mSkillList[3]->SetSkillIconPath(L"assets/images//BardSkills/Bard_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("MagicalVanish", 0.25f);
-		mSkillList[3]->SetSkillDescription(L"Does nothing but looks cool :D");
+		mSkillList[3]->SetSoundEffect("Purify", 0.0f);
+		mSkillList[3]->SetSkillDescription(L"Magically cleanse all harmful effects for your party. Costs 35 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		break;
 	}
+
 	case GameplayTypes::HEROID::Warrior:
 	{
 		// Set the character Model path
@@ -442,7 +443,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 75.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "MaleHitReaction";
+		mSoundClips["Hit"] = "WarriorHitReaction";
 		mSoundClips["Death"] = "MaleDeath";
 
 		// Set the stats for the character //
@@ -518,31 +519,32 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		// Make the character skills //
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
-		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.5f, -10.0f, 15.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"Splitting Strike", "Skill_1", 0.4f, -10.0f, 15.0f));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("", 0.25f);
+		mSkillList[0]->SetSoundEffect("SplittingStrike", 0.1f);
 		mSkillList[0]->SetSkillDescription(L"Attempt to split a single target in half, dealing 15 damage. Returns 10 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.5f, 20.0f, 15.0f,temp, false));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Buster", "Skill_2", 0.4f, 20.0f, 15.0f,temp, false));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("ArmorBuster", 0.15f);
 		mSkillList[1]->SetSkillDescription(L"Crush an opponent's armor lowering their defense 50% and dealing 35 damage. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<Provoked>(1, this, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.5f, 15.0f, 20.0f ,temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Cleave", "Skill_3", 0.3f, 15.0f, 20.0f ,temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
+		mSkillList[2]->SetSoundEffect("Cleave", 0.1f);
 		mSkillList[2]->SetStatusChance(0.75f);
 		mSkillList[2]->SetSkillDescription(L"Cleave through the enemy party, dealing 20 damage per hit with a 75% chance to provoke. Cost 15 mana.");
 		// Skill 4 
-		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.5f, 30.0f, 35.0f));
+		mSkillList.push_back(std::make_shared<Attack>(L"RAGE!", "Skill_4", 0.3f, 30.0f, 35.0f));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/WarriorSkills/Warrior_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("", 0.25f);
+		mSkillList[3]->SetSoundEffect("Rage", 0.1f);
 		mSkillList[3]->SetSkillDescription(L"Go into a bloodthirsty rage, hitting the target for 45 damage. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	}
+
 	case GameplayTypes::HEROID::Monk:
 	{
 		// Set the character Model path
@@ -567,7 +569,7 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		mBaseMaxMana = mCurrentMana = 100.0f;
 
 		// Sound Clips
-		mSoundClips["Hit"] = "FemaleHitReaction";
+		mSoundClips["Hit"] = "MonkHitReaction";
 		mSoundClips["Death"] = "FemaleDeath";
 
 		// Set the stats for the character //
@@ -644,28 +646,28 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Skill 1
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Spd, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Leg Sweep", "Skill_1", 0.5f, -15.0f, 12.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Jab", "Skill_1", 0.25f, -15.0f, 12.0f,temp));
 		mSkillList[0]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_1.png");
-		mSkillList[0]->SetSoundEffect("", 0.25f);
+		mSkillList[0]->SetSoundEffect("Jab", 0.0f);
 		mSkillList[0]->SetStatusChance(0.5f);
 		mSkillList[0]->SetSkillDescription(L"dealing 15 damage with 50% chance to inflict a speed down. Refunds 15 mana.");
 		// Skill 2 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Def, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.5f, 20.0f, 20.0f, temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Armor Break", "Skill_2", 0.15f, 20.0f, 20.0f, temp));
 		mSkillList[1]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_2.png");
-		mSkillList[1]->SetSoundEffect("", 0.25f);
+		mSkillList[1]->SetSoundEffect("ArmorBreak", 0.05f);
 		mSkillList[1]->SetSkillDescription(L"dealing 15 damage and inflicting defense down for 3 turns. Cost 20 mana.");
 		// Skill 3 
 		temp = std::make_shared<StatDown>(0.5f, 3, STATS::Atk, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.5f, 15.0f, 15.0f, temp, true));
+		mSkillList.push_back(std::make_shared<Attack>(L"Pressure Point", "Skill_3", 0.4f, 15.0f, 15.0f, temp, true));
 		mSkillList[2]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_3.png");
-		mSkillList[2]->SetSoundEffect("", 0.25f);
+		mSkillList[2]->SetSoundEffect("PressurePoint", 0.1f);
 		mSkillList[2]->SetSkillDescription(L"delaing 25 lowering their attack for 3 turns. Cost 15 mana.");
 		// Skill 4
 		temp = std::make_shared<Bleed>(0.15f, 2, nullptr);
-		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.5f, 30.0f, 25.0f,temp));
+		mSkillList.push_back(std::make_shared<Attack>(L"Break Ribs", "Skill_4", 0.15f, 30.0f, 25.0f,temp));
 		mSkillList[3]->SetSkillIconPath(L"assets/images/MonkSkills/Monk_Skill_4.png");
-		mSkillList[3]->SetSoundEffect("", 0.25f);
+		mSkillList[3]->SetSoundEffect("BreakRibs", 0.1f);
 		mSkillList[3]->SetSkillDescription(L"dealing 30 damage and inflicting bleed for 3 turns. Cost 30 mana.");
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
@@ -676,14 +678,6 @@ HeroComponent::HeroComponent(GameplayTypes::HEROID id)
 		break;
 	}
 	}
-
-#ifdef _DEBUG
-		mSkillList.push_back(std::make_shared<Attack>(L"The Funny Move", "Skill_1", 0.5f, 0.0f, 1000.0f, temp));
-		mSkillList.push_back(std::make_shared<Heal>(L"The other funny move", "Skill_2", 0.5f, 0.0f, -1000.0f));
-#endif // _DEBUG
-
-	
-
 }
 
 // Destructor
@@ -696,16 +690,16 @@ void HeroComponent::SetupClickableUI(Odyssey::Sprite2D* _skillImage1, Odyssey::S
 {
 	// Set up sprite's callback function for the Skill1Callback
 	_skillImage1->registerCallback("onMouseClick", this, &HeroComponent::Skill1Callback);
-	mSkillSprites.push_back(_skillImage1);
+	//mSkillSprites.push_back(_skillImage1);
 	// Set up sprite's callback function for the Skill2Callback
 	_skillImage2->registerCallback("onMouseClick", this, &HeroComponent::Skill2Callback);
-	mSkillSprites.push_back(_skillImage2);
+	//mSkillSprites.push_back(_skillImage2);
 	// Set up sprite's callback function for the Skill3Callback
 	_skillImage3->registerCallback("onMouseClick", this, &HeroComponent::Skill3Callback);
-	mSkillSprites.push_back(_skillImage3);
+	//mSkillSprites.push_back(_skillImage3);
 	// Set up sprite's callback function for the Skill4Callback
 	_skillImage4->registerCallback("onMouseClick", this, &HeroComponent::Skill4Callback);
-	mSkillSprites.push_back(_skillImage4);
+	//mSkillSprites.push_back(_skillImage4);
 }
 
 // Function that allows the player to take thier turn, Character Controler
@@ -778,28 +772,6 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 	// Here the player will be able to select from his four options for skills
 	case STATE::SELECTMOVE:
 	{
-		if (Odyssey::InputManager::getInstance().getKeyUp(KeyCode::C))
-			mIsCheating = !mIsCheating;
-
-		// Cheat code to instakill a target
-		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D0))
-		{
-			// Set temp variable to the selected move
-			mCurrentSkill = mSkillList[4].get();
-
-			// Change state to target selection
-			mCurrentState = STATE::SELECTTARGET;
-		}
-
-		if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D9))
-		{
-			// Set temp variable to the selected move
-			mCurrentSkill = mSkillList[5].get();
-
-			// Change state to target selection
-			mCurrentState = STATE::SELECTTARGET;
-		}
-
 		// Use ability 1
 		if (Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D1))
 		{
@@ -914,6 +886,8 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					for (Odyssey::Entity* c : enemies)
 					{
+						if (c == nullptr)
+							continue;
 						tempPos1 = c->getComponent<Odyssey::Transform>()->getPosition();
 						tempPos2 = mCurrentSkill->GetParticleOffset();
 						tempPos1.x += tempPos2.x;
@@ -991,14 +965,16 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 
 							// Play particle effect
 							c->getComponent<Character>()->SpawnBloodEffect();
+							RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Hit").c_str());
 						}
 					}
+					// Play audio "hit" sound effect
 				}
 				else if (mCurrentTarget != nullptr && mCurrentTarget->GetState() != STATE::DEAD)
 				{
 					// Play "Hit" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("Hit");
-
+					RedAudioManager::Instance().PlaySFX(mCurrentTarget->GetSoundClipName("Hit").c_str());
 					// Play particle effect
 					mCurrentTarget->SpawnBloodEffect();
 				}
@@ -1016,6 +992,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 						{
 							// Play "GotBuffed" animation
 							c->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+							//RedAudioManager::Instance().PlaySFX(c->getComponent<Character>()->GetSoundClipName("Buffed").c_str());
 						}
 					}
 				}
@@ -1023,6 +1000,7 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				{
 					// Play "GotBuffed" animation
 					mCurrentTarget->getEntity()->getComponent<Odyssey::Animator>()->playClip("GotBuffed");
+					//RedAudioManager::Instance().PlaySFX(mCurrentTarget->GetSoundClipName("Buffed").c_str());
 				}
 			}
 			// Set trigger to true to avoid repeating the recipents animation
@@ -1088,17 +1066,11 @@ bool HeroComponent::TakeTurn(EntityList heros, EntityList enemies)
 				else if(mCurrentTarget != nullptr)
 					mCurrentSkill->Use(*this, *mCurrentTarget);
 			}
-
 			// Reset static bools
 			animeTrigger = false;
 			particleTrigger = false;
 			soundTrigger = false;
-
-			// Set this characters state to finished unless im cheating
-			if (!mIsCheating)
-				mCurrentState = STATE::FINISHED;
-			else
-				ResetToSelection();
+			mCurrentState = STATE::FINISHED;
 		}
 		break;
 	}
@@ -1234,6 +1206,9 @@ void HeroComponent::SelctionState(int moveIndex)
 
 		// Change state to target selection
 		mCurrentState = STATE::SELECTTARGET;
+
+		// Turn on the skill selected indicator rectangle
+		GameUIManager::getInstance().GetCharacterHuds()[this->GetHudIndex()]->getComponent<CharacterHUDElements>()->GetSkillBackgroundList()[moveIndex]->setVisible(true);
 	}
 }
 
@@ -1294,14 +1269,14 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 
 		// Turn on thier targeter
 		mCurrentTarget->mImpactIndicator->setActive(true);
-
+		
 		// if my prev targert doesnt equal my current target
 		if (prevChar != mCurrentTarget)
 		{
 			// If there is an old target, turn off targeter
 			if (prevChar != nullptr)
 				prevChar->mImpactIndicator->setActive(false);
-
+		
 			// Set the old target to mt current one
 			prevChar = mCurrentTarget;
 		}
@@ -1319,18 +1294,6 @@ bool HeroComponent::SelectTarget(EntityList targets, int& targetIndex)
 		// Set current target to something to avoid repeating this loop
 		mCurrentTarget = targets[targetIndex]->getComponent<Character>();
 	}
-
-	// Spit out current targets stats
-	if (mIsCheating && Odyssey::InputManager::getInstance().getKeyPress(KeyCode::D8))
-	{
-		std::cout << "Name: " << mCurrentTarget->GetName().c_str() << std::endl;
-		std::cout << "Attack: " << mCurrentTarget->GetAtk() << std::endl;
-		std::cout << "Defense: " << mCurrentTarget->GetDef() << std::endl;
-		std::cout << "Speed: " << mCurrentTarget->GetSpeed() << std::endl;
-		std::cout << "Health: " << mCurrentTarget->GetHP() << std::endl;
-		std::cout << "Mana: " << mCurrentTarget->GetMana() << std::endl;
-	}
-
 	// If enter is hit set state to in progress and begin playing animations for caster
 	if (Odyssey::InputManager::getInstance().getKeyDown(KeyCode::Enter))
 	{
@@ -1410,14 +1373,6 @@ void HeroComponent::initialize()
 {
 	mAnimator = mEntity->getComponent<Odyssey::Animator>();
 	Odyssey::EventManager::getInstance().subscribe(this, &HeroComponent::ClickOnEnemy);
-}
-
-void HeroComponent::onDestroy()
-{
-	for (int i = 0; i < mSkillSprites.size(); ++i)
-	{
-		mSkillSprites[i]->unregisterCallback("onMouseClick");
-	}
 }
 
 // Skill Call backs for clickable UI

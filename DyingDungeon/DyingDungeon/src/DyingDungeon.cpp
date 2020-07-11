@@ -27,6 +27,9 @@
 #include "LoadingScreenController.h"
 #include "SkillShowcase.h"
 #include "PurifyMover.h"
+#include "SpinKickMover.h"
+#include "PunchMover.h"
+#include "BossAttackMover.h"
 #include "JudgementMover.h"
 
 // Engine includes
@@ -38,6 +41,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include "CasterMover.h"
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 // Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
@@ -62,7 +66,7 @@ namespace
 	Odyssey::Scene* gMainMenu;
 	Odyssey::Scene* gLoadingScene;
 	Odyssey::Scene* gSceneOne;
-	Odyssey::Scene* gSceneTwo;
+	Odyssey::Scene* gSceneBoss;
 	Odyssey::Scene* gTowerSelectScene;
 	Odyssey::Scene* gTeamSelectScene;
 	Odyssey::Entity* gMainCamera;
@@ -73,7 +77,8 @@ namespace
 	Odyssey::Entity* gRewardsScreen;
 	Odyssey::Entity* gPaladin;
 	Odyssey::Entity* gSkeleton;
-	Odyssey::Entity* gCurrentTower;
+	Odyssey::Entity* gSceneOneTower;
+	Odyssey::Entity* gSceneBossTower;
 	Odyssey::Entity* gTurnIndicatorModel;
 	//Vectors
 	std::vector<Odyssey::Entity*> gPlayerUnit;
@@ -99,11 +104,14 @@ void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 void setupMageVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupWarriorVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMonkVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupCasterVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
+void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase);
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent);
 void setupMainMenu(Odyssey::Application* application);
 void setupTeamSelectMenu(Odyssey::Application* application);
 void setupRewardsPrefab(Odyssey::Application* application);
-void setupTowerManager();
+void setupTowerManager(Odyssey::Scene* _sceneToAddTo, int _sceneNum);
 void setupEnemiesToCreate(Odyssey::Application* application);
 void setupAudio();
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error);
@@ -161,26 +169,42 @@ int playGame()
 	// Set up the rewards screen prefab
 	setupRewardsPrefab(application.get());
 	// Set up the tower manager
-	setupTowerManager();
-	// Set the current tower manager for the tower select screen
-	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTowerManager(gCurrentTower);
+	setupTowerManager(gSceneOne, 1);
+	// Add tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->AddTowerManager(gSceneOneTower);
+	// Add the game's towers
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->AddTowerManager(gSceneOneTower);
 	// Set up the enemies that the player will battle
 	setupEnemiesToCreate(application.get());
 	//TeamManager::getInstance().initialize();
 	// Create the battle log for the game
 	GameUIManager::getInstance().CreateBattleLog(gSceneOne);
-	// Create Pause Menu
-	GameUIManager::getInstance().CreatePauseMenuCanvas(gSceneOne);
+
+	// Create Tutorial UI
+	//GameUIManager::getInstance().CreateTutorialCanvas(gSceneOne);
 
 	// Create Scene Two
-	gSceneTwo = application->createScene("Scene Two", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
-	gSceneTwo->setSkybox("Skybox.dds");
+	gSceneBoss = application->createScene("Boss Scene", DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
+	gSceneBoss->setSkybox("Skybox.dds");
 	setupSceneTwo();
-	// Set the game's current tower
-	gTeamSelectMenu->getComponent<TeamSelectionController>()->SetTowerManager(gCurrentTower);
+	// Set up the tower manager
+	setupTowerManager(gSceneBoss, 2);
+	// Add tower manager for the tower select screen
+	gTowerSelectMenu->getComponent<TowerSelectController>()->AddTowerManager(gSceneBossTower);
+	// Add the game's towers
+	gTeamSelectMenu->getComponent<TeamSelectionController>()->AddTowerManager(gSceneBossTower);
+
+	// Assign the team slection controller to the tower selector
+	gTowerSelectMenu->getComponent<TowerSelectController>()->SetTeamSelector(gTeamSelectMenu->getComponent<TeamSelectionController>());
+
+	// Create Pause Menus for the scenes
+	std::vector<Odyssey::Scene*> gameScenes;
+	gameScenes.push_back(gSceneOne);
+	gameScenes.push_back(gSceneBoss);
+	GameUIManager::getInstance().CreatePauseMenuCanvas(gameScenes);
 	
 	// Set up multithreading
-	application->setMultithreading(true);
+	application->setMultithreading(false);
 
 	// Play audio
 	setupAudio();
@@ -197,12 +221,17 @@ int playGame()
 
 void setupMenu(Odyssey::Application* application, Odyssey::Scene*& _sceneObject, Odyssey::Entity*& _entityToAdd, const wchar_t* _imageName, std::string _menuName, MenuComponent _menuComponent)
 {
-	_sceneObject = application->createScene(_menuName, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f);
+	_sceneObject = application->createScene(_menuName, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 50.0f);
+	_sceneObject->setSkybox("Skybox.dds");
+	Odyssey::RenderManager::getInstance().importScene(_sceneObject, "assets/models/BossScene.dxm");
 	_entityToAdd = _sceneObject->createEntity();
 	_entityToAdd->addComponent<Odyssey::Transform>();
 	_entityToAdd->addComponent<Odyssey::UICanvas>();
 	_entityToAdd->addComponent<Odyssey::Camera>();
 	_entityToAdd->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	_entityToAdd->getComponent<Odyssey::Transform>()->setPosition(44.85f, 5.34f, -0.88f);
+	_entityToAdd->getComponent<Odyssey::Transform>()->setRotation(3.7f, -88.0f, 0.0f);
+	_entityToAdd->addComponent<CameraController>();
 	UINT width = gMainWindow->getWidth();
 	UINT height = gMainWindow->getHeight();
 
@@ -235,26 +264,45 @@ void setupMainMenu(Odyssey::Application* application)
 	// Create Menu
 	setupMenu(application, gMainMenu, gMenu, L"", "MainMenu", MenuComponent::eMainMenu);
 
-	// Set up a directional light
+	// Set the light's position and direction
 	gMenuLights[0] = gMainMenu->createEntity();
 	gMenuLights[0]->addComponent<Odyssey::Transform>();
 	gMenuLights[0]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	gMenuLights[0]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	gMenuLights[0]->getComponent<Odyssey::Transform>()->setRotation(15.0f, 250.0f, 0.0f);
+
+	// Set up the directional light
 	Odyssey::Light* light = gMenuLights[0]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Directional);
-	light->setColor(0.4f, 0.5f, 0.7f);
-	light->setIntensity(1.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(0.5f);
 	light->setRange(0.0f);
 	light->setSpotAngle(0.0f);
 
-	gMenuLights[1] = gMainMenu->createEntity();
-	gMenuLights[1]->addComponent<Odyssey::Transform>();
-	gMenuLights[1]->getComponent<Odyssey::Transform>()->setPosition(0.0, 10.0f, 0.0f);
-	light = gMenuLights[1]->addComponent<Odyssey::Light>();
+	// Set the light's position and direction
+	//Odyssey::Entity* eLight = gMainMenu->createEntity();
+	//eLight->addComponent<Odyssey::Transform>();
+	//eLight->getComponent<Odyssey::Transform>()->setPosition(36.75f, 10.0f, 1.88f);
+	//eLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//// Set up the spot light
+	//light = eLight->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(30.0f);
+	//light->setSpotAngle(0.4f);
+
+	// Set up the point light
+	Odyssey::Entity* pointLight = gMainMenu->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, 1.88f);//DirectX::XMVectorSet(36.75f, 1.34f, 1.88f, 1.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.5f, 0.5f, 0.5f);
-	light->setIntensity(5.0f);
-	light->setRange(30.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
 	// Create the UI
@@ -269,26 +317,96 @@ void setupTeamSelectMenu(Odyssey::Application* application)
 	// Get the team selection controller
 	TeamSelectionController* teamSelectionController = gTeamSelectMenu->getComponent<TeamSelectionController>();
 
-	// Set up a directional light
+	// Set the light's position and direction
 	gMenuLights[2] = gTeamSelectScene->createEntity();
 	gMenuLights[2]->addComponent<Odyssey::Transform>();
 	gMenuLights[2]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	gMenuLights[2]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	gMenuLights[2]->getComponent<Odyssey::Transform>()->setRotation(15.0f, 250.0f, 0.0f);
+
+	// Set up the directional light
 	Odyssey::Light* light = gMenuLights[2]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Directional);
-	light->setColor(0.4f, 0.5f, 0.7f);
-	light->setIntensity(1.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(0.5f);
 	light->setRange(0.0f);
 	light->setSpotAngle(0.0f);
 
 	gMenuLights[3] = gTeamSelectScene->createEntity();
 	gMenuLights[3]->addComponent<Odyssey::Transform>();
-	gMenuLights[3]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 2.0f);
+	gMenuLights[3]->getComponent<Odyssey::Transform>()->setPosition(44.85f, 5.34f, -0.88f);
+
+	// Set up the ambient light
 	light = gMenuLights[3]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.5f, 0.5f, 0.5f);
+	light->setColor(0.3f, 0.3f, 0.5f);
 	light->setIntensity(1.0f);
-	light->setRange(30.0f);
+	light->setRange(25.0f);
+	light->setSpotAngle(0.0f);
+
+	gMenuLights[4] = gTeamSelectScene->createEntity();
+	gMenuLights[4]->addComponent<Odyssey::Transform>();
+	gMenuLights[4]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, -5.5f);
+	gMenuLights[4]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+
+	//// Set up the directional light
+	//light = gMenuLights[4]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
+	//
+	//gMenuLights[5] = gTeamSelectScene->createEntity();
+	//gMenuLights[5]->addComponent<Odyssey::Transform>();
+	//gMenuLights[5]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 0.0f);
+	//gMenuLights[5]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//
+	//// Set up the directional light
+	//light = gMenuLights[5]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
+	//
+	//gMenuLights[6] = gTeamSelectScene->createEntity();
+	//gMenuLights[6]->addComponent<Odyssey::Transform>();
+	//gMenuLights[6]->getComponent<Odyssey::Transform>()->setPosition(34.85f, 5.34f, 5.5f);
+	//gMenuLights[6]->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	//
+	//// Set up the directional light
+	//light = gMenuLights[6]->addComponent<Odyssey::Light>();
+	//light->setLightType(Odyssey::LightType::Spot);
+	//light->setColor(0.5f, 0.4f, 0.3f);
+	//light->setIntensity(1.0f);
+	//light->setRange(50.0f);
+	//light->setSpotAngle(0.5f);
+
+	// Set up the point light
+	Odyssey::Entity* pointLight = gTeamSelectScene->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, 5.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
+	light->setSpotAngle(0.0f);
+
+	pointLight = gTeamSelectScene->createEntity();
+	// Set the transform position and rotation
+	pointLight->addComponent<Odyssey::Transform>();
+	pointLight->getComponent<Odyssey::Transform>()->setPosition(40.0f, 5.0f, -5.0f);
+	pointLight->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	// Set the light's values
+	light = pointLight->addComponent<Odyssey::Light>();
+	light->setLightType(Odyssey::LightType::Point);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
 	// Create the UI for the team selection
@@ -476,21 +594,33 @@ void setupRewardsPrefab(Odyssey::Application* application)
 	StatTracker::Instance().SetCanvas(canvas, static_cast<unsigned int>(rewardsImageHeight / 4), static_cast<unsigned int>(rewardsImageHeight / 4));
 }
 
-void setupTowerManager()
+void setupTowerManager(Odyssey::Scene* _sceneToAddTo, int _sceneNum)
 {
-	// TODO: Add the tower manger to other scenes as well
-	// Create the current tower entity
-	gCurrentTower = gSceneOne->createEntity();
-	gCurrentTower->addComponent<TowerManager>();
-	gCurrentTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
-	// TODO: REFACTOR LATER
-	gCurrentTower->getComponent<TowerManager>()->scene = gSceneOne;
+	switch (_sceneNum)
+	{
+		case 1:
+			gSceneOneTower = _sceneToAddTo->createEntity();
+			gSceneOneTower->addComponent<TowerManager>();
+			gSceneOneTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
+			gSceneOneTower->getComponent<TowerManager>()->scene = _sceneToAddTo;
+			break;
+		case 2:
+			// BOSS SCENE
+			gSceneBossTower = _sceneToAddTo->createEntity();
+			gSceneBossTower->addComponent<TowerManager>();
+			gSceneBossTower->getComponent<TowerManager>()->Rewards = gRewardsScreen->getComponent<Odyssey::UICanvas>();
+			gSceneBossTower->getComponent<TowerManager>()->scene = _sceneToAddTo;
+			gSceneBossTower->getComponent<TowerManager>()->SetCurrentLevel(5);
+			break;
+		default:
+			break;
+	}
 }
 
 void setupEnemiesToCreate(Odyssey::Application* application)
 {
 	//Set the current tower in the TeamManager 
-	TeamManager::getInstance().SetTheCurrentTower(gCurrentTower);
+	TeamManager::getInstance().SetTheCurrentTower(gSceneOneTower);
 	// Set the first scene in the TeamManager
 	TeamManager::getInstance().SetTheFirstScene(gSceneOne);
 
@@ -521,20 +651,8 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 		TeamManager::EnemySetups levelOneEnemy;
 		// Set enemy properties
 		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
-		levelOneEnemy.pPosition = leftPosition;
-		levelOneEnemy.pRotation = leftRotation;
-		// Add enemy to list
-		newEnemies.push_back(levelOneEnemy);
-		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelOneEnemy.pPosition = middlePosition;
 		levelOneEnemy.pRotation = middleRotation;
-		// Add enemy to list
-		newEnemies.push_back(levelOneEnemy);
-		// Set enemy properties
-		levelOneEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
-		levelOneEnemy.pPosition = rightPosition;
-		levelOneEnemy.pRotation = rightRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelOneEnemy);
 		// Add the list to the enemies to create variable in Team Manager
@@ -550,22 +668,22 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 	// LEVEL TWO ENEMIES
 	if (true)
 	{
-		// Level Two Enemies
+		// Level One Enemies
 		TeamManager::EnemySetups levelTwoEnemy;
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = leftPosition;
 		levelTwoEnemy.pRotation = leftRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = middlePosition;
 		levelTwoEnemy.pRotation = middleRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelTwoEnemy);
 		// Set enemy properties
-		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelTwoEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
 		levelTwoEnemy.pPosition = rightPosition;
 		levelTwoEnemy.pRotation = rightRotation;
 		// Add enemy to list
@@ -583,14 +701,80 @@ void setupEnemiesToCreate(Odyssey::Application* application)
 	// LEVEL THREE ENEMIES
 	if (true)
 	{
-		// Level One Enemies
+		// Level Three Enemies
 		TeamManager::EnemySetups levelThreeEnemy;
 		// Set enemy properties
-		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelThreeEnemy.pPosition = leftPosition;
+		levelThreeEnemy.pRotation = leftRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
 		levelThreeEnemy.pPosition = middlePosition;
 		levelThreeEnemy.pRotation = middleRotation;
 		// Add enemy to list
 		newEnemies.push_back(levelThreeEnemy);
+		// Set enemy properties
+		levelThreeEnemy.pEnemyType = TeamManager::EnemyType::Skeleton;
+		levelThreeEnemy.pPosition = rightPosition;
+		levelThreeEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelThreeEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL FOUR ENEMIES
+	if (true)
+	{
+		// Level Four Enemies
+		TeamManager::EnemySetups levelFourEnemy;
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelFourEnemy.pPosition = leftPosition;
+		levelFourEnemy.pRotation = leftRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::MeleeDemon;
+		levelFourEnemy.pPosition = middlePosition;
+		levelFourEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Set enemy properties
+		levelFourEnemy.pEnemyType = TeamManager::EnemyType::CasterDemon;
+		levelFourEnemy.pPosition = rightPosition;
+		levelFourEnemy.pRotation = rightRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFourEnemy);
+		// Add the list to the enemies to create variable in Team Manager
+		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
+
+		// Create the info prefab for the tower selection screen
+		TowerSelectionPrefabFactory::getInstance().CreateTowerSelectionPrefab(application, newEnemies);
+
+		// Clear the new enemy list 
+		newEnemies.clear();
+	}
+
+	// LEVEL FIVE ENEMIES
+	if (true)
+	{
+		// Level Five Enemies
+		TeamManager::EnemySetups levelFiveEnemy;
+		// Set enemy properties
+		levelFiveEnemy.pEnemyType = TeamManager::EnemyType::Ganfaul;
+		levelFiveEnemy.pPosition = middlePosition;
+		levelFiveEnemy.pRotation = middleRotation;
+		// Add enemy to list
+		newEnemies.push_back(levelFiveEnemy);
 		// Add the list to the enemies to create variable in Team Manager
 		TeamManager::getInstance().AddEnemiesListToCreate(newEnemies);
 
@@ -607,97 +791,130 @@ void setupAudio()
 	//RedAudioManager::Instance();
 	//SFX                                |                          Paths                       |  |        Alias        |     |           Audio Type          |        |     Group     |
 	// Male Hit reactions / Death
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3",					"MaleHitReaction",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt2-death-pain.mp3",					"MaleDeath",				RedAudioManager::AudioType::SFX);
-	// Female Hit Reaction / Death
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_1.mp3",				"FemaleHitReaction",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_2.mp3",				"FemaleDeath",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/PaladinSFX/SFX_Paladin_Plate_Hit_Reaction_1.mp3",	"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/PaladinSFX/SFX_Paladin_Blessing_Of_Light_1.mp3",		"BlessingOfLight",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/PaladinSFX/SFX_Paladin_Judgement_2.mp3",				"Judgement",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/PaladinSFX/SFX_Paladin_Shield_Of_Light_1.mp3",		"ShieldOfLight",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/PaladinSFX/SFX_Paladin_Smite_2.mp3",					"Smite",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt1-death-pain.mp3",								"MaleHitReaction",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/grunt2-death-pain.mp3",								"MaleDeath",				RedAudioManager::AudioType::SFX);
+	// Female Hit Reaction / Death																				
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_1.mp3",							"FemaleHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/female_hit_reaction_2.mp3",							"FemaleDeath",				RedAudioManager::AudioType::SFX);
+																												
+	// Paladin Sound effects																					
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",										"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",									"PaladinSwordSwing",		RedAudioManager::AudioType::SFX);
+																												
+	// Mage Sound Effects																						
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MageSFX/SFX_Mage_Female_Hit_Reaction_2.mp3",			"MageHitReaction",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MageSFX/SFX_Mage_Lightning_Bolt_1.mp3",				"LightningBolt",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MageSFX/SFX_Mage_Meteor_Shard_1.mp3",				"MeteorShard",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MageSFX/SFX_Mage_Fire_Storm_1.mp3", 					"FireStorm",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MageSFX/SFX_Mage_Wind_Slash_1.mp3", 					"WindSlash",				RedAudioManager::AudioType::SFX);
+																												
+	// Bard Sound Effects																						
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/BardSFX/SFX_Bard_Leather_Hit Reaction_1.mp3",		"BardHitReaction",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/BardSFX/SFX_Bard_Purify_1.mp3",						"Purify",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/BardSFX/SFX_Bard_Song_Of_Hope_1.mp3",				"SongOfHope",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/BardSFX/SFX_Bard_Song_Of_Misery_1.mp3",				"SongOfMisery",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/BardSFX/SFX_Bard_Star_Fire_Arrow_1.mp3",				"StarFireArrow",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",								"ShootArrow",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",										"Heal",						RedAudioManager::AudioType::SFX);
+																												
+	// Warrior Sound Effects																					
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/WarriorSFX/SFX_Warrior_Man_Hit_Reaction_1.mp3",		"WarriorHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/WarriorSFX/SFX_Warrior_Armor_Buster_1.mp3",			"ArmorBuster",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/WarriorSFX/SFX_Warrior_Cleave_1.mp3",				"Cleave",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/WarriorSFX/SFX_Warrior_RAGE_1.mp3",					"Rage",						RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/WarriorSFX/SFX_Warrior_Splitting_Strike_1.mp3",		"SplittingStrike",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/three_axe_swing.mp3",								"WarriorTripleAttack",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/single_slash.mp3",									"WarriorSingleAttack",		RedAudioManager::AudioType::SFX);
+																												
+	// Monk Sound Effects																						
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MonkSFX/SFX_Monk_Body_Blow_Hit_Reaction_1.mp3",		"MonkHitReaction",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MonkSFX/SFX_Monk_Armor_Break_1.mp3",					"ArmorBreak",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MonkSFX/SFX_Monk_Break_Ribs_1.mp3",					"BreakRibs",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MonkSFX/SFX_Monk_Jab_1.mp3",							"Jab",						RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MonkSFX/SFX_Monk_Pressure_Point_1.mp3",				"PressurePoint",			RedAudioManager::AudioType::SFX);
+																												
+	// Skeleton Sound Effects																					
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/SkeletonSFX/SFX_Skeleton_Attack_1.mp3",				"SkeletonPunch",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_death.mp3",									"SkeletonDeath",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/SkeletonSFX/SFX_Skeleton_Attack_1.mp3",				"SkeletonAttack1",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/SkeletonSFX/SFX_Skeleton_Hit_Reaction_1.mp3",		"SkeletonHit",				RedAudioManager::AudioType::SFX);
+																											 
+	// Ganfoul sound effects																				 
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/GanfoulSFX/SFX_Ganfoul_Hit_Reaction_1.mp3",			"GanfoulHitReaction",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/GanfoulSFX/SFX_Ganfoul_Attack_1.mp3",				"GanfoulAttack",			RedAudioManager::AudioType::SFX);
 
-	// Paladin Sound effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"PaladinHitReaction",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/sword_slash.mp3",						"PaladinSwordSwing",		RedAudioManager::AudioType::SFX);
-
-	// Mage Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_swish.mp3",						"MagicMissle",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/small_fireball.mp3",						"FireStorm",				RedAudioManager::AudioType::SFX);
-
-	// Bard Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/arrow_woosh_impact.mp3",					"ShootArrow",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/heal_sound.mp3",							"Heal",						RedAudioManager::AudioType::SFX);
-
-	// Warrior Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/three_axe_swing.mp3",					"WarriorTripleAttack",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/single_slash.mp3",						"WarriorSingleAttack",		RedAudioManager::AudioType::SFX);
-
-	// Monk Sound Effects
-
-	// Skeleton Sound Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/bone_punch.mp3",							"SkeletonPunch",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_death.mp3",						"SkeletonDeath",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_kick.mp3",						"SkeletonAttack1",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/skeleton_hit.mp3",						"SkeletonHit",				RedAudioManager::AudioType::SFX);
-
-	// Ganfoul sound effects
-
-	// Summoner Sound Effects
-
-	// Caster Demon Sound Effects
-
-	// Melee Demon Sound Efffects
-
-	// Enemy Mage Sound Efffects
-
-	// Music
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",						"BackgroundBattle",			RedAudioManager::AudioType::Background);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",					"BackgroundMenu1",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",						"BackgroundMenu2",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",				"BackgroundMenu3",			RedAudioManager::AudioType::Background,		"BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/losing.mp3",							"Loss",						RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/medieval_parade.mp3",					"Win",						RedAudioManager::AudioType::SFX);
-
-	// Misc Sounds Effects
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",			"TorchBurning",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",	"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",		"TorchBurningWind",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",							"CharacterEntrance",		RedAudioManager::AudioType::SFX);
-
-	// Memes
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",						"NoManaCritical",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_3.mp3",						"NoManaBitch",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_2.mp3",						"NoManaMidium",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_1.mp3",						"NoManaLow",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",						"ForwardAerial",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",							"GokuSJJ3",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",				"DeathMeme",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",							"FBIRade",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",							"GTAWanted",				RedAudioManager::AudioType::SFX);
-	// Tower select screen door sounds
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",							"DoorOpen",					RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",							"DoorClose",				RedAudioManager::AudioType::SFX);
+	// Summoner Sound Effects																				 
 	
-	//Background Sound
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",						"BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/rage_in_the_darkness.mp3",				"BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
-	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",					"BackgroundMenu1",			RedAudioManager::AudioType::Background, "BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",						"BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
-	RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",				"BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+
+	// Caster Demon Sound Effects																			 
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/CasterDemonSFX/SFX_Caster_Demon_Hit_Reaction_1.mp3",	"CasterDemonHitReaction",	RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/CasterDemonSFX/SFX_Caster_Demon_Attack_1.mp3",		"CasterDemonAttack",		RedAudioManager::AudioType::SFX);
+
+	// Melee Demon Sound Efffects																			 
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MeleeDemonSFX/SFX_Melee_Demon_Hit_Reaction_1.mp3",	"MeleeDemonHitReaction",	RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/MeleeDemonSFX/SFX_Melee_Demon_Attack_1.mp3",			"MeleeDemonAttack",			RedAudioManager::AudioType::SFX);
+
+	// Enemy Mage Sound Efffects																			 
+	
+
+	// Music																								 
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/losing.mp3",										"Loss",						RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/medieval_parade.mp3",								"Win",						RedAudioManager::AudioType::SFX);
+																												
+	// Misc Sounds Effects																						
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning.mp3",						"TorchBurning",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_quietly.mp3",				"TorchBurningQuietly",		RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/fire_torch_burning_wind.mp3",					"TorchBurningWind",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",										"DoorOpen",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",										"DoorClose",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_poof.mp3",										"CharacterEntrance",		RedAudioManager::AudioType::SFX);
+																												
+	// Memes																									
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_4.mp3",								"NoManaCritical",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_3.mp3",								"NoManaBitch",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_2.mp3",								"NoManaMidium",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/no_mana_clip_1.mp3",								"NoManaLow",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/forward_aerial.mp3",								"ForwardAerial",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/gokusjj3.mp3",										"GokuSJJ3",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/windows_death_sound.mp3",							"DeathMeme",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/fbi_rade.mp3",										"FBIRade",					RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/gta_wanted.mp3",									"GTAWanted",				RedAudioManager::AudioType::SFX);
+	// Tower select screen door sounds																			
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Open.mp3",										"DoorOpen",					RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/Door_Close.mp3",										"DoorClose",				RedAudioManager::AudioType::SFX);
+																												
+	//Background Sound																						 
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/battle_music.mp3",							 "BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/rage_in_the_darkness.mp3",					 "BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_1.mp3",				"BackgroundBattle1",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_2.mp3",				"BackgroundBattle2",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/BattleMusic/Music_Battle_Track_3.mp3",				"BackgroundBattle3",		RedAudioManager::AudioType::Background, "BackgroundBattle");
+	RedAudioManager::Instance().AddAudio("assets/audio/Ambience/dark_depths.mp3",								"BackgroundMenu1",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_1.mp3",					"BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_2.mp3",					"BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	RedAudioManager::Instance().AddAudio("assets/audio/Music/MenuMusic/Music_Menu_Track_3.mp3",					"BackgroundMenu4",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/menu_music.mp3",								 "BackgroundMenu2",			RedAudioManager::AudioType::Background, "BackgroundMenu");
+	//RedAudioManager::Instance().AddAudio("assets/audio/Music/divinum_creaturae.mp3",						 "BackgroundMenu3",			RedAudioManager::AudioType::Background, "BackgroundMenu");
 	// Extras
-	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",							"ArrowHit",					RedAudioManager::AudioType::SFX);
-	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",					"ElectricBlast",			RedAudioManager::AudioType::SFX);
-	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",							"MagicZap",					RedAudioManager::AudioType::SFX);
-	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",						"MagicalVanish",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",		"PlateArmorHit",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",						"LargeFireball",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",						"PoisonSlime",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",					"ChargeAndFire",			RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",							"SpellCasting",				RedAudioManager::AudioType::SFX);
-	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",						"Lightning2",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/armor_hit.mp3",								 "ArrowHit",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_energy_burst.mp3",						 "ElectricBlast",			RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magic_zap.mp3",								 "MagicZap",				RedAudioManager::AudioType::SFX);
+	//RedAudioManager::Instance().AddAudio("assets/audio/SFX/magical_vanish.mp3",							 "MagicalVanish",			RedAudioManager::AudioType::SFX);																								  
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/medieval_impact_plate_armor.mp3",					"PlateArmorHit",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/large_fireball.mp3",									"LargeFireball",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/slime_sound.mp3",									"PoisonSlime",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/charge_and_fire.mp3",								"ChargeAndFire",			RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/spell_cast.mp3",										"SpellCasting",				RedAudioManager::AudioType::SFX);
+	RedAudioManager::Instance().AddAudio("assets/audio/SFX/lightning_2.mp3",									"Lightning2",				RedAudioManager::AudioType::SFX);
 
 	//Play Initial Loop
 	//RedAudioManager::Instance().Loop("Death");
-	RedAudioManager::Instance().Mute();
+	//RedAudioManager::Instance().Mute();
 	//RedAudioManager::Instance().Stop("BackgroundMenu");
 }
 
@@ -960,339 +1177,105 @@ void setupSceneOne()
 
 void setupSceneTwo()
 {
-	// LIGHTS
-	// Set up a directional light
-	gScene1Lights[0] = gSceneTwo->createEntity();
+	Odyssey::Entity* gSceneOneCamera = gSceneBoss->createEntity();
+	gSceneOneCamera->addComponent<Odyssey::Transform>();
+	gSceneOneCamera->getComponent<Odyssey::Transform>()->setPosition(0.105f, 7.827f, 1.286f);
+	gSceneOneCamera->getComponent<Odyssey::Transform>()->setRotation(28.965f, 0.0f, 0.0f);
+	gSceneOneCamera->addComponent<Odyssey::Camera>();
+	gSceneOneCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
+	gSceneOneCamera->addComponent<CameraController>();
+
+	Odyssey::RenderManager::getInstance().importScene(gSceneBoss, "assets/models/BossScene.dxm");
+
+	// Set the light's position and direction
+	gScene1Lights[0] = gSceneBoss->createEntity();
 	gScene1Lights[0]->addComponent<Odyssey::Transform>();
 	gScene1Lights[0]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 0.0f, 0.0f);
-	gScene1Lights[0]->getComponent<Odyssey::Transform>()->setRotation(25.0f, 100.0f, 0.0f);
+	gScene1Lights[0]->getComponent<Odyssey::Transform>()->setRotation(15.0f, 250.0f, 0.0f);
+
+	// Set up the directional light
 	Odyssey::Light* light = gScene1Lights[0]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Directional);
-	light->setColor(0.4f, 0.5f, 0.7f);
+	light->setColor(0.3f, 0.3f, 0.5f);
 	light->setIntensity(1.0f);
 	light->setRange(0.0f);
 	light->setSpotAngle(0.0f);
 
-	// Arena ambient
-	gScene1Lights[1] = gSceneTwo->createEntity();
+	// Set the light's position and direction
+	gScene1Lights[1] = gSceneBoss->createEntity();
 	gScene1Lights[1]->addComponent<Odyssey::Transform>();
-	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setPosition(0.0f, 10.0f, 0.0f);
+	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setPosition(-3.5f, 3.0f, 4.5f);
+	gScene1Lights[1]->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+
+	// Set up the ambient light
 	light = gScene1Lights[1]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.5f, 0.5f, 0.5f);
-	light->setIntensity(2.0f);
-	light->setRange(50.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(0.55f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
-	// World-Space Left Pillar 1
-	gScene1Lights[2] = gSceneTwo->createEntity();
+	// Set the light's position and direction
+	gScene1Lights[2] = gSceneBoss->createEntity();
 	gScene1Lights[2]->addComponent<Odyssey::Transform>();
-	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, 14.4f);
+	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setPosition(-3.5f, 4.0f, 25.0f);
+	gScene1Lights[2]->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 0.0f);
+
+	// Set up the directional light
 	light = gScene1Lights[2]->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
+	light->setColor(0.65f, 0.3f, 0.15f);
+	light->setIntensity(0.55f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
-	// World-Space Left Pillar 2
-	gScene1Lights[3] = gSceneTwo->createEntity();
-	gScene1Lights[3]->addComponent<Odyssey::Transform>();
-	gScene1Lights[3]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, 7.5f);
-	light = gScene1Lights[3]->addComponent<Odyssey::Light>();
+	// Create the top light entity
+	Odyssey::Entity* topLight = gSceneBoss->createEntity();
+
+	// Set the transform position and rotation
+	topLight->addComponent<Odyssey::Transform>();
+	topLight->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.169f, 15.364f);
+	topLight->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+
+	// Set the light's values
+	light = topLight->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
-	// World-Space Left Pillar 3
-	gScene1Lights[4] = gSceneTwo->createEntity();
-	gScene1Lights[4]->addComponent<Odyssey::Transform>();
-	gScene1Lights[4]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, -6.22f);
-	light = gScene1Lights[4]->addComponent<Odyssey::Light>();
+	// Create the table candle entity
+	Odyssey::Entity* backLight = gSceneBoss->createEntity();
+
+	// Set the transform position and rotation
+	backLight->addComponent<Odyssey::Transform>();
+	backLight->getComponent<Odyssey::Transform>()->setPosition(0.0f, 11.169f, 0.364f);
+	backLight->getComponent<Odyssey::Transform>()->setRotation(-15.0f, 0.0f, 0.0f);
+
+	// Set the light's values
+	light = backLight->addComponent<Odyssey::Light>();
 	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
+	light->setColor(0.3f, 0.3f, 0.5f);
+	light->setIntensity(4.0f);
+	light->setRange(20.0f);
 	light->setSpotAngle(0.0f);
 
-	// World-Space Left Pillar 4
-	gScene1Lights[5] = gSceneTwo->createEntity();
-	gScene1Lights[5]->addComponent<Odyssey::Transform>();
-	gScene1Lights[5]->getComponent<Odyssey::Transform>()->setPosition(-5.45f, 4.75f, -13.22f);
-	light = gScene1Lights[5]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Right Pillar 1
-	gScene1Lights[6] = gSceneTwo->createEntity();
-	gScene1Lights[6]->addComponent<Odyssey::Transform>();
-	gScene1Lights[6]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, 14.4f);
-	light = gScene1Lights[6]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Right Pillar 2
-	gScene1Lights[7] = gSceneTwo->createEntity();
-	gScene1Lights[7]->addComponent<Odyssey::Transform>();
-	gScene1Lights[7]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, 7.5f);
-	light = gScene1Lights[7]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Right Pillar 3
-	gScene1Lights[8] = gSceneTwo->createEntity();
-	gScene1Lights[8]->addComponent<Odyssey::Transform>();
-	gScene1Lights[8]->getComponent<Odyssey::Transform>()->setPosition(5.45f, 4.75f, -13.22f);
-	light = gScene1Lights[8]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Left Door Light 1
-	gScene1Lights[9] = gSceneTwo->createEntity();
-	gScene1Lights[9]->addComponent<Odyssey::Transform>();
-	gScene1Lights[9]->getComponent<Odyssey::Transform>()->setPosition(-12.0f, 4.75f, -6.7f);
-	light = gScene1Lights[9]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Left Door Light 2
-	gScene1Lights[10] = gSceneTwo->createEntity();
-	gScene1Lights[10]->addComponent<Odyssey::Transform>();
-	gScene1Lights[10]->getComponent<Odyssey::Transform>()->setPosition(-12.0f, 4.75f, 1.2f);
-	light = gScene1Lights[10]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Right Door Light 1
-	gScene1Lights[11] = gSceneTwo->createEntity();
-	gScene1Lights[11]->addComponent<Odyssey::Transform>();
-	gScene1Lights[11]->getComponent<Odyssey::Transform>()->setPosition(12.74f, 5.0f, -2.85f);
-	light = gScene1Lights[11]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// World-Space Right Door Light 2
-	gScene1Lights[12] = gSceneTwo->createEntity();
-	gScene1Lights[12]->addComponent<Odyssey::Transform>();
-	gScene1Lights[12]->getComponent<Odyssey::Transform>()->setPosition(12.74f, 5.0f, 4.25f);
-	light = gScene1Lights[12]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(5.0f);
-	light->setSpotAngle(0.0f);
-
-	// Library-Area Candle Light
-	gScene1Lights[13] = gSceneTwo->createEntity();
-	gScene1Lights[13]->addComponent<Odyssey::Transform>();
-	gScene1Lights[13]->getComponent<Odyssey::Transform>()->setPosition(-1.25f, 12.5f, -35.0f);
-	light = gScene1Lights[13]->addComponent<Odyssey::Light>();
-	light->setLightType(Odyssey::LightType::Point);
-	light->setColor(0.8f, 0.5f, 0.4f);
-	light->setIntensity(2.0f);
-	light->setRange(12.5f);
-	light->setSpotAngle(0.0f);
-
-	//CAMERA
-	gMainCamera = gSceneTwo->createEntity();
-	gMainCamera->addComponent<Odyssey::Transform>();
-	gMainCamera->getComponent<Odyssey::Transform>()->setPosition(0.395f, 6.703f, 13.438f);
-	gMainCamera->getComponent<Odyssey::Transform>()->setRotation(23.669f, -178.152f, 0.0f);
-	gMainCamera->addComponent<Odyssey::Camera>();
-	gMainCamera->getComponent<Odyssey::Camera>()->setAspectRatio(gMainWindow->getAspectRatio());
-	gMainCamera->addComponent<CameraController>();
-
-	// SCENE
-	//Odyssey::RenderManager::getInstance().importScene(gSceneTwo, "assets/models/TestArena.dxm");
-
-	// FIRE PARTICLE EFFECTS
-	Odyssey::Entity* fire1 = gSceneTwo->createEntity();
-	fire1->addComponent<Odyssey::Transform>();
-	fire1->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -6.42f);
-	fire1->addComponent<Odyssey::ParticleSystem>();
-	fire1->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire1->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire1->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire1->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire2 = gSceneTwo->createEntity();
-	fire2->addComponent<Odyssey::Transform>();
-	fire2->getComponent<Odyssey::Transform>()->setPosition(-5.65f, 4.67f, -13.42f);
-	fire2->addComponent<Odyssey::ParticleSystem>();
-	fire2->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire2->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire2->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire2->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire3 = gSceneTwo->createEntity();
-	fire3->addComponent<Odyssey::Transform>();
-	fire3->getComponent<Odyssey::Transform>()->setPosition(5.65f, 4.67f, -13.42f);
-	fire3->addComponent<Odyssey::ParticleSystem>();
-	fire3->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire3->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire3->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire3->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire4 = gSceneTwo->createEntity();
-	fire4->addComponent<Odyssey::Transform>();
-	fire4->getComponent<Odyssey::Transform>()->setPosition(-12.6f, 4.17f, -6.42f);
-	fire4->addComponent<Odyssey::ParticleSystem>();
-	fire4->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire4->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire4->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire4->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire5 = gSceneTwo->createEntity();
-	fire5->addComponent<Odyssey::Transform>();
-	fire5->getComponent<Odyssey::Transform>()->setPosition(12.65f, 4.67f, -2.92f);
-	fire5->addComponent<Odyssey::ParticleSystem>();
-	fire5->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire5->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire5->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire5->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire6 = gSceneTwo->createEntity();
-	fire6->addComponent<Odyssey::Transform>();
-	fire6->getComponent<Odyssey::Transform>()->setPosition(5.59f, 4.67f, 7.59f);
-	fire6->addComponent<Odyssey::ParticleSystem>();
-	fire6->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire6->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire6->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire6->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire7 = gSceneTwo->createEntity();
-	fire7->addComponent<Odyssey::Transform>();
-	fire7->getComponent<Odyssey::Transform>()->setPosition(5.59f, 4.67f, 14.62f);
-	fire7->addComponent<Odyssey::ParticleSystem>();
-	fire7->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire7->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire7->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire7->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire8 = gSceneTwo->createEntity();
-	fire8->addComponent<Odyssey::Transform>();
-	fire8->getComponent<Odyssey::Transform>()->setPosition(-5.74f, 4.67f, 7.53f);
-	fire8->addComponent<Odyssey::ParticleSystem>();
-	fire8->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire8->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire8->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire8->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire9 = gSceneTwo->createEntity();
-	fire9->addComponent<Odyssey::Transform>();
-	fire9->getComponent<Odyssey::Transform>()->setPosition(-5.78f, 4.67f, 14.62f);
-	fire9->addComponent<Odyssey::ParticleSystem>();
-	fire9->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire9->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire9->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire9->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire10 = gSceneTwo->createEntity();
-	fire10->addComponent<Odyssey::Transform>();
-	fire10->getComponent<Odyssey::Transform>()->setPosition(12.66f, 4.7f, 4.12f);
-	fire10->addComponent<Odyssey::ParticleSystem>();
-	fire10->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire10->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire10->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire10->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
-
-	Odyssey::Entity* fire11 = gSceneTwo->createEntity();
-	fire11->addComponent<Odyssey::Transform>();
-	fire11->getComponent<Odyssey::Transform>()->setPosition(-12.66f, 4.25f, 1.53f);
-	fire11->addComponent<Odyssey::ParticleSystem>();
-	fire11->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Fire4.jpg");
-	fire11->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(1.0f, 0.75f, 0.75f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	fire11->getComponent<Odyssey::ParticleSystem>()->setLifetime(1.25f, 1.75f);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setParticleCount(25, 75);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(90);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setSpeed(0.25f, 0.45f);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setSize(0.4f, 0.45f);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
-	fire11->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.075f, 35.0f, 35.0f));
+	Odyssey::Entity* fog = gSceneBoss->createEntity();
+	fog->addComponent<Odyssey::Transform>();
+	fog->getComponent<Odyssey::Transform>()->setPosition(0, 0, 0);
+	fog->addComponent<Odyssey::ParticleSystem>();
+	fog->getComponent<Odyssey::ParticleSystem>()->setTexture(Odyssey::TextureType::Diffuse, "Smoke.jpg");
+	fog->getComponent<Odyssey::ParticleSystem>()->setColor(DirectX::XMFLOAT3(0.125f, 0.1f, 0.1f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	fog->getComponent<Odyssey::ParticleSystem>()->setLifetime(12.5f, 25.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setParticleCount(0, 1000);
+	fog->getComponent<Odyssey::ParticleSystem>()->setEmissionOverLifetime(60);
+	fog->getComponent<Odyssey::ParticleSystem>()->setDuration(5.0);
+	fog->getComponent<Odyssey::ParticleSystem>()->setSpeed(1.0f, 1.25f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setSize(20.0f, 20.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setGravity(4.0f);
+	fog->getComponent<Odyssey::ParticleSystem>()->setLooping(true);
+	fog->getComponent<Odyssey::ParticleSystem>()->setShape(Odyssey::BoxPS(0.0f, -5.5f, 20.0f, 25.0f, 1.0f, 75.0f));
 }
 
 void setupLoadingScene(Odyssey::Application* application)
@@ -1324,6 +1307,9 @@ void setupSkillVFX(Odyssey::Application* application)
 	// PALADIN SKILLS START HERE
 	setupBardVFX(application, showcase);
 	setupPaladinVFX(application, showcase);
+	setupSkeletonVFX(application, showcase);
+	setupGanfaulVFX(application, showcase);
+	setupCasterVFX(application, showcase);
 }
 
 void setupBardVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
@@ -1594,6 +1580,165 @@ void setupPaladinVFX(Odyssey::Application* application, Odyssey::Entity* showcas
 	skillVFX->setShape(Odyssey::CirclePS(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, true));
 }
 
+void setupSkeletonVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	// Create the skill 4 prefab
+	showcase->getComponent<SkillShowcase>()->skeleton1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<Odyssey::ParticleSystem>();
+	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
+	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
+	showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
+	//showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "SmokeParticle.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(7.0f);
+	skillVFX->setSpeed(1.25f, 1.75f);
+	skillVFX->setSize(0.25f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
+	skillVFX->setGravity(1.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	showcase->getComponent<SkillShowcase>()->skeleton2 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->skeleton2->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 10.0f);
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<Odyssey::ParticleSystem>();
+	//Odyssey::RenderManager::getInstance().importModel(showcase->getComponent<SkillShowcase>()->skeleton1, "assets/models/Hammer.dxm", false);
+	//showcase->getComponent<SkillShowcase>()->skeleton1->getComponent<Odyssey::Transform>()->setRotation(0.0f, 0.0f, 90.0f);
+	showcase->getComponent<SkillShowcase>()->skeleton2->addComponent<PunchMover>(DirectX::XMFLOAT3(20.0f, 2.5f, 10.0f), DirectX::XMFLOAT3(20.0f, 4.5f, 15.0f));
+	//showcase->getComponent<SkillShowcase>()->skeleton1->addComponent<SpinKickMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "SmokeParticle.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 100);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(7.0f);
+	skillVFX->setSpeed(1.25f, 1.75f);
+	skillVFX->setSize(0.75f, 0.75f);
+	skillVFX->setSizeOverLifetime(0.5f, 1.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+}
+
+void setupGanfaulVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	// Create the skill 1 prefab
+	showcase->getComponent<SkillShowcase>()->ganfaul1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<BossAttackMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(8.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(-0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));
+	
+	/*skillVFX = showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->ganfaul1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->ganfaul1->addComponent<BossAttackMover>();
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.75f, 0.65f, 0.0f), DirectX::XMFLOAT3(144.0f, 144.0f, 144.0f));
+	skillVFX->setLifetime(0.75f, 0.75f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(8.0f);
+	skillVFX->setSpeed(1.25f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.0f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::CirclePS(0.5f, 0.0f, 0.0f, 1.0f, 1.0f, true));*/
+}
+
+void setupCasterVFX(Odyssey::Application* application, Odyssey::Entity* showcase)
+{
+	showcase->getComponent<SkillShowcase>()->caster1 = application->createPrefab();
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::Transform>();
+	showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setPosition(20.0f, 2.5f, 5.0f);
+
+	Odyssey::ParticleSystem* skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(0.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f/2.0f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f);
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+
+	skillVFX = showcase->getComponent<SkillShowcase>()->caster1->addComponent<Odyssey::ParticleSystem>();
+	//showcase->getComponent<SkillShowcase>()->caster1->getComponent<Odyssey::Transform>()->setRotation(90.0f, 0.0f, 0.0f);
+	showcase->getComponent<SkillShowcase>()->caster1->addComponent<CasterMover>(3.14159265f + (3.14159265f/2.0f));
+	skillVFX->setTexture(Odyssey::TextureType::Diffuse, "Star1.png");
+	skillVFX->setColor(DirectX::XMFLOAT3(0.0f, 10.0f, 215.0f), DirectX::XMFLOAT3(144.0f, 0.0f, 73.0f));
+	skillVFX->setLifetime(0.9f, 0.9f);
+	skillVFX->setParticleCount(0, 300);
+	skillVFX->setEmissionOverLifetime(75);
+	skillVFX->setDuration(3.0f);
+	skillVFX->setSpeed(1.75f, 1.75f);
+	skillVFX->setSize(0.25f, 0.25f);
+	skillVFX->setSizeOverLifetime(0.5f, 0.5f);
+	skillVFX->setGravity(0.0f);
+	skillVFX->setLooping(false);
+	skillVFX->setShape(Odyssey::ConePS(0.0f, 0.0f, 0.0f, 0.01f, 0.01f, 0.01f));
+}
+
 LONG WINAPI DumpOutput(struct _EXCEPTION_POINTERS* in_error)
 {
 	struct tm newTime;
@@ -1628,6 +1773,7 @@ int main()
 
 	SetUnhandledExceptionFilter(DumpOutput);
 	SaveLoad::Instance().CreateProfileDirectory();
+	SaveLoad::Instance().LoadSettings();
 	//StatTracker::Instance().OutputStatSheet();
 	//DumpFile Test
 	/*int test = 120;

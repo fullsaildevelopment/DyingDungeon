@@ -154,7 +154,7 @@ namespace Odyssey
 		for (Light* light : renderPackage.sceneLights)
 		{
 			ShaderLight shaderLight;
-			if (sceneLighting.numLights != 12 && light->getEntity()->isActive() && light->getEntity()->isVisible())
+			if (sceneLighting.numLights != 16 && light->getEntity()->isActive() && light->getEntity()->isVisible())
 			{
 				if (light->getLightType() == LightType::Point)
 				{
